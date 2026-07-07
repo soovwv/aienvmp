@@ -51,9 +51,9 @@ function securityActions(security = {}) {
     highRisk ? "high" : "medium",
     "security",
     packageHints.length
-      ? `Review vulnerable packages before dependency or deployment changes: ${packageHints.join("; ")}.`
-      : "Review vulnerability summary before dependency or deployment changes.",
-    "aienvmp context --json"
+      ? `Review dependency read set and protocol before remediation: ${packageHints.join("; ")}.`
+      : "Review dependency read set and protocol before vulnerability remediation.",
+    "aienvmp intent --actor agent:id --action planned-change --target dependency"
   )];
 }
 

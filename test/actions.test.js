@@ -28,6 +28,8 @@ test("recommendedActions prioritizes security remediation with fix versions", ()
 
   assert.equal(actions[0].id, "review-security-remediation");
   assert.equal(actions[0].priority, "high");
+  assert.equal(actions[0].command, "aienvmp intent --actor agent:id --action planned-change --target dependency");
+  assert.match(actions[0].summary, /dependency read set and protocol/);
   assert.match(actions[0].summary, /lodash/);
   assert.match(actions[0].summary, /high\/90/);
   assert.match(actions[0].summary, /4\.17\.21/);
