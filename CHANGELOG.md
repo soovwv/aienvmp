@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.49
+
+- Added a `write-sbom` GitHub Action input for explicit SBOM artifact generation.
+- Added Action steps for writing `.aienvmp/sbom.json` and `.aienvmp/sbom.cdx.json`.
+- Updated the GitHub Action example to enable SBOM writing.
+- Added native light SBOM artifact upload paths to the example workflow.
+- Added CycloneDX-lite artifact upload paths to the example workflow.
+- Updated README CI usage to mention SBOM artifacts.
+- Added regression coverage for Action SBOM inputs, commands, and example upload paths.
+
 ## 0.1.48
 
 - Added `aienvmp sbom --format cyclonedx-lite` for a lightweight CycloneDX-compatible export.

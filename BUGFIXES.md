@@ -76,6 +76,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: `aienvmp sbom --format cyclonedx-lite` and `.aienvmp/sbom.cdx.json` now export project-manifest packages in a CycloneDX-compatible shape with explicit limitations.
 - Verification: tests cover component mapping, vulnerability hints, sync output, schema metadata, and dashboard links.
 
+### CI example did not surface SBOM artifacts clearly
+
+- Issue: sync could generate SBOM artifacts, but the GitHub Action and example upload list did not make them explicit.
+- Fix: the Action now has `write-sbom` and the example uploads both native and CycloneDX-lite SBOM artifacts.
+- Verification: Action tests cover input metadata, SBOM write commands, and example artifact paths.
+
 ## Template
 
 ### Title

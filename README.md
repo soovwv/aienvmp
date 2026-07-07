@@ -87,13 +87,14 @@ aienvmp doctor --strict security|policy|coordination|all
 
 ## CI
 
-The GitHub Action writes status, schema, doctor, plan, and dashboard artifacts. `strict: "off"` reports warnings without failing the job.
+The GitHub Action writes status, schema, doctor, plan, SBOM, and dashboard artifacts. `strict: "off"` reports warnings without failing the job.
 
 ```yaml
 - uses: soovwv/aienvmp@main
   with:
     write-status: "true"
     write-plan: "true"
+    write-sbom: "true"
     strict: "off"
 ```
 

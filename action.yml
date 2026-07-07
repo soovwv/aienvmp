@@ -27,6 +27,10 @@ inputs:
     description: Write doctor JSON with advisory/strict exit behavior
     required: false
     default: "true"
+  write-sbom:
+    description: Write standalone light SBOM and CycloneDX-lite artifacts
+    required: false
+    default: "true"
 
 runs:
   using: composite
@@ -63,6 +67,14 @@ runs:
         if [ "${{ inputs.write-doctor-json }}" = "true" ]; then
           mkdir -p "${{ inputs.directory }}/.aienvmp"
           node "$GITHUB_ACTION_PATH/bin/aienvmp.js" doctor --dir "${{ inputs.directory }}" --json > "${{ inputs.directory }}/.aienvmp/doctor.json"
+        fi
+
+    - name: Write SBOM artifacts
+      shell: bash
+      run: |
+        if [ "${{ inputs.write-sbom }}" = "true" ]; then
+          node "$GITHUB_ACTION_PATH/bin/aienvmp.js" sbom --dir "${{ inputs.directory }}" --write --quiet
+          node "$GITHUB_ACTION_PATH/bin/aienvmp.js" sbom --dir "${{ inputs.directory }}" --format cyclonedx-lite --write --quiet
         fi
 
     - name: Doctor
