@@ -14,14 +14,26 @@ test("buildPlan creates a read-only action plan", () => {
     security: {
       enabled: true,
       summary: { total: 1, critical: 0, high: 1, moderate: 0, low: 0, info: 0 },
-      topPackages: [{ name: "lodash", severity: "high", fixAvailable: true, fixVersions: ["4.17.21"] }]
+      topPackages: [{
+        name: "lodash",
+        scanner: "npm-audit",
+        severity: "high",
+        fixAvailable: true,
+        fixVersions: ["4.17.21"],
+        advisories: [{ id: "GHSA-test", title: "Prototype Pollution", url: "https://example.test/advisory", severity: "high" }]
+      }]
     }
   }, [{ code: "security-vulnerabilities", message: "high risk" }], [], {});
 
   assert.equal(plan.status, "review-required");
   assert.equal(plan.recommendedActions[0].id, "review-security-remediation");
+  assert.equal(plan.remediationSteps[0].package, "lodash");
+  assert.equal(plan.remediationSteps[0].fixVersions[0], "4.17.21");
+  assert.equal(plan.remediationSteps[0].advisories[0].id, "GHSA-test");
   assert.match(renderPlan(plan), /read-only/);
   assert.match(renderPlan(plan), /lodash/);
+  assert.match(renderPlan(plan), /Remediation steps/);
+  assert.match(renderPlan(plan), /4\.17\.21/);
 });
 
 test("planWorkspace can write plan artifacts", async () => {

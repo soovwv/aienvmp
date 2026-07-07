@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.17
+
+- Added bounded security remediation steps to `aienvmp plan`.
+- Included package fix versions and advisory references in plan JSON and markdown output.
+- Kept remediation output read-only and review-oriented.
+
 ## 0.1.16
 
 - Added scoped strict checks with `doctor --strict security|policy|coordination|all`.

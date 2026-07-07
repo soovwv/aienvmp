@@ -56,12 +56,42 @@ export function buildPlan(manifest, warnings = [], intents = [], policy = {}) {
       summary: manifest.security?.summary || { total: 0, critical: 0, high: 0, moderate: 0, low: 0, info: 0 },
       topPackages: manifest.security?.topPackages || []
     },
+    remediationSteps: remediationSteps(manifest.security),
     notes: [
       "This plan is read-only.",
       "Ask the user before global runtime, package manager, Docker, or global package changes.",
       "Prefer project-local version files and local environments."
     ]
   };
+}
+
+function remediationSteps(security = {}) {
+  if (!security.enabled) return [];
+  return (security.topPackages || []).slice(0, 8).map((pkg) => {
+    const fixVersions = Array.isArray(pkg.fixVersions) ? pkg.fixVersions.slice(0, 5) : [];
+    const advisories = Array.isArray(pkg.advisories)
+      ? pkg.advisories.map((item) => ({
+        id: item.id || "",
+        title: item.title || "",
+        url: item.url || "",
+        severity: item.severity || pkg.severity || "unknown"
+      })).slice(0, 5)
+      : [];
+    return {
+      package: pkg.name,
+      scanner: pkg.scanner || "unknown",
+      severity: pkg.severity || "unknown",
+      fixAvailable: pkg.fixAvailable === true,
+      fixVersions,
+      advisories,
+      steps: [
+        "Review the package changelog and advisory details.",
+        fixVersions.length ? `Prefer an upgrade path to ${fixVersions.join(", ")} if compatible.` : "Identify a compatible patched version before changing dependencies.",
+        "Run project tests after dependency changes.",
+        "Record the environment or dependency change with aienvmp record."
+      ]
+    };
+  });
 }
 
 function reviewGates(warnings, intents, security = {}) {

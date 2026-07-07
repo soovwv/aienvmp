@@ -182,11 +182,23 @@ export function renderPlan(plan) {
     "Review gates:",
     ...plan.reviewGates.map((item) => `- ${item}`),
     "",
+    "Remediation steps:",
+    ...(plan.remediationSteps?.length ? plan.remediationSteps.slice(0, 5).flatMap(remediationLines) : ["- none"]),
+    "",
     "Warnings:",
     ...(plan.warnings.length ? plan.warnings.map((warning) => `- [${warning.code}] ${warning.message}`) : ["- none"]),
     ""
   ];
   return lines.join("\n");
+}
+
+function remediationLines(item) {
+  const fix = item.fixVersions?.length ? `fix ${item.fixVersions.join(", ")}` : item.fixAvailable ? "fix available" : "review required";
+  const advisories = (item.advisories || []).map((advisory) => advisory.id || advisory.title).filter(Boolean).slice(0, 2);
+  return [
+    `- ${item.package}: ${item.severity}; ${fix}${advisories.length ? `; advisories ${advisories.join(", ")}` : ""}`,
+    ...item.steps.slice(0, 4).map((step) => `  - ${step}`)
+  ];
 }
 
 export function renderDashboard(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
