@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.24
+
+- Added a dashboard CI Readiness card for `doctor --strict security|policy|coordination|all`.
+- Reused the same non-blocking warning engine so humans can pick CI enforcement scope without changing local operation.
+- Surfaced matched warning codes per strict scope for faster AI and human review.
+
 ## 0.1.23
 
 - Added compact `stepSummary` output to `context --json`.

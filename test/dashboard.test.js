@@ -45,6 +45,23 @@ test("renderDashboard includes the audit summary surface", () => {
       code: "node-version-mismatch",
       category: "runtime",
       summary: ".nvmrc requests 20, but detected node is 24.0.0."
+    }],
+    ciReadiness: [{
+      scope: "security",
+      status: "pass",
+      matchedWarningCodes: []
+    }, {
+      scope: "policy",
+      status: "fail",
+      matchedWarningCodes: ["node-version-mismatch"]
+    }, {
+      scope: "coordination",
+      status: "pass",
+      matchedWarningCodes: []
+    }, {
+      scope: "all",
+      status: "fail",
+      matchedWarningCodes: ["node-version-mismatch"]
     }]
   }, [], [], [], {});
 
@@ -62,6 +79,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /4\.17\.21/);
   assert.match(html, /Environment Steps/);
   assert.match(html, /node-version-mismatch/);
+  assert.match(html, /CI Readiness/);
+  assert.match(html, /security/);
+  assert.match(html, /policy/);
   assert.match(html, /Global Inventory/);
   assert.match(html, /Security Summary/);
   assert.match(html, /lodash/);
@@ -76,10 +96,10 @@ test("dashWorkspace links written plan artifacts", async () => {
     trust: { state: "observed", verified: false },
     workspace: { path: dir, name: path.basename(dir) },
     os: { platform: "test", release: "test", arch: "x64" },
-    runtimes: {},
+    runtimes: { node: "24.0.0" },
     packageManagers: {},
     containers: {},
-    projectHints: {},
+    projectHints: { nvmrc: "20" },
     agentFiles: {}
   });
   await fs.writeFile(path.join(dir, ".aienvmp", "plan.md"), "# plan\n", "utf8");
@@ -109,4 +129,6 @@ test("dashWorkspace links written plan artifacts", async () => {
   assert.match(html, /3\.2\.25/);
   assert.match(html, /Environment Steps/);
   assert.match(html, /mixed-node-lockfiles/);
+  assert.match(html, /CI Readiness/);
+  assert.match(html, /node-version-mismatch/);
 });

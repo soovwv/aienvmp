@@ -66,6 +66,7 @@ npx aienvmp snippet agents
 ## CI Usage
 
 Use the GitHub Action to write the env map, plan, dashboard, and optional strict checks. See [examples/github-action.yml](examples/github-action.yml).
+The dashboard shows which strict scopes are CI-ready before you enforce them.
 
 ```yaml
 - uses: soovwv/aienvmp@main

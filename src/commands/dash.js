@@ -8,6 +8,7 @@ import { dashboardPath, intentsPath, manifestPath, planJsonPath, planMdPath, tim
 import { renderDashboard } from "../render.js";
 import { loadPolicy, policyWarnings } from "../policy.js";
 import { recommendedActions } from "../actions.js";
+import { strictResult } from "./doctor.js";
 
 export async function dashWorkspace(args) {
   const dir = workspaceDir(args);
@@ -20,13 +21,31 @@ export async function dashWorkspace(args) {
   const planArtifacts = await detectedPlanArtifacts(dir);
   const planRemediation = await detectedPlanRemediation(dir);
   const planEnvironment = await detectedPlanEnvironment(dir);
-  const html = renderDashboard({ ...manifest, recommendedActions: recommendedActions(manifest, { warnings, intents }), planArtifacts, planRemediation, planEnvironment }, timeline, warnings, intents, policy);
+  const html = renderDashboard({
+    ...manifest,
+    recommendedActions: recommendedActions(manifest, { warnings, intents }),
+    planArtifacts,
+    planRemediation,
+    planEnvironment,
+    ciReadiness: ciReadiness(warnings)
+  }, timeline, warnings, intents, policy);
   const out = dashboardPath(dir);
   await fs.mkdir(path.dirname(out), { recursive: true });
   await fs.writeFile(out, html, "utf8");
   if (!args.quiet) console.log(`dashboard: ${out}`);
   if (args.open) openFile(out);
   return { dashboard: out };
+}
+
+function ciReadiness(warnings) {
+  return ["security", "policy", "coordination", "all"].map((scope) => {
+    const result = strictResult(warnings, { strict: scope });
+    return {
+      scope,
+      status: result.fail ? "fail" : "pass",
+      matchedWarningCodes: result.matchedWarningCodes
+    };
+  });
 }
 
 async function detectedPlanArtifacts(dir) {
