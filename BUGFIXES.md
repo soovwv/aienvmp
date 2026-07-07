@@ -40,6 +40,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: `doctor --json` now exposes `exitBehavior`, and enforcement gate metadata explains when strict mode sets a failure exit code.
 - Verification: Windows and macOS candidate smoke checks confirmed default `doctor --json` exits successfully while `doctor --strict policy --json` fails on matching policy warnings.
 
+### Record follow-up loop needed platform verification
+
+- Issue: dependency/security records need to guide the next AI back through sync, status, and handoff without forcing operations.
+- Fix: `record` timeline entries now include follow-up metadata, and status/context/dashboard surface unresolved follow-ups.
+- Verification: Windows and macOS candidate smoke checks confirmed `record --target dependency` appears in `status --json` followUps and the dashboard Follow-ups card.
+
 ## Template
 
 ### Title

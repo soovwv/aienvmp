@@ -7,6 +7,7 @@
 - Surfaced pending follow-ups in status/preflight and context outputs.
 - Added a dashboard Follow-ups card for unresolved env/SBOM record refresh work.
 - Updated the README change loop to show record, sync, status, and handoff as one simple continuation flow.
+- Documented Windows/macOS candidate verification for the record follow-up loop.
 
 ## 0.1.42
 
