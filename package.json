@@ -1,0 +1,34 @@
+{
+  "name": "aienvmp",
+  "version": "0.1.0",
+  "description": "AI-first environment maps and lightweight runtime SBOMs for shared development machines.",
+  "type": "module",
+  "bin": {
+    "aienvmp": "./bin/aienvmp.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "ai",
+    "environment",
+    "env-map",
+    "sbom",
+    "runtime",
+    "codex",
+    "claude",
+    "gemini"
+  ],
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,11 @@
+node_modules/
+npm-debug.log*
+*.tgz
+
+# Generated workspace outputs. Keep the source and tests in git; regenerate
+# these with `aienvmp scan`, `aienvmp compile`, and `aienvmp dash`.
+sample-app/.aienvmp/
+sample-app/AIENV.md
+sample-app/AGENTS.md
+sample-app/CLAUDE.md
+sample-app/GEMINI.md
