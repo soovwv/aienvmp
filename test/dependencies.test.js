@@ -103,6 +103,11 @@ test("buildLightSbom creates an AI-ready package and risk summary", () => {
 
   const sbom = buildLightSbom(snapshot, security);
   assert.equal(sbom.mode, "light-sbom");
+  assert.equal(sbom.source.dependencies, "project manifests");
+  assert.equal(sbom.source.vulnerabilities, "optional scanner summary");
+  assert.equal(sbom.confidence.directDependencies, "high");
+  assert.equal(sbom.confidence.transitiveDependencies, "not-resolved");
+  assert.match(sbom.limitations[1], /transitive/);
   assert.equal(sbom.summary.packages, 2);
   assert.deepEqual(sbom.summary.ecosystems, { npm: 1, python: 1 });
   assert.deepEqual(sbom.summary.lockfiles.map((item) => item.file), ["package-lock.json", "pnpm-lock.yaml"]);
@@ -120,6 +125,7 @@ test("buildLightSbom creates an AI-ready package and risk summary", () => {
   assert.match(sbom.dependencyChangeHints[0].beforeChange[1], /package-lock\.json/);
   assert.match(sbom.dependencyChangeHints[0].beforeChange[0], /package\.json/);
   assert.equal(sbom.aiUse.dependencySource, "project manifests only; no install or resolver is run");
+  assert.match(sbom.aiUse.trustRule, /fast AI planning map/);
 });
 
 test("remediationPriority scores severity, direct dependency, and fix availability", () => {

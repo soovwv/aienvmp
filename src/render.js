@@ -578,6 +578,10 @@ function lightSbomLines(lightSbom = {}) {
     `- Transitive or unmatched vulnerable packages: ${summary.transitiveOrUnmatchedVulnerablePackages || 0}`,
     `- Lockfiles: ${(summary.lockfiles || []).map((item) => item.file).join(", ") || "none"}`
   ];
+  if (lightSbom.source || lightSbom.confidence) {
+    lines.push(`- Source: ${lightSbom.source?.dependencies || "project manifests"}; vulnerabilities: ${lightSbom.source?.vulnerabilities || "not scanned"}`);
+    lines.push(`- Confidence: direct ${lightSbom.confidence?.directDependencies || "unknown"}; transitive ${lightSbom.confidence?.transitiveDependencies || "unknown"}`);
+  }
   if (lightSbom.packageManagerPolicy) {
     lines.push(`- Package manager policy: ${lightSbom.packageManagerPolicy.status}`);
     lines.push(`- Package manager guidance: ${lightSbom.packageManagerPolicy.guidance}`);

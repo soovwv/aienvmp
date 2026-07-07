@@ -74,6 +74,9 @@ function lightSbomSummary(lightSbom = {}) {
       guidance: "No lockfile policy detected."
     },
     dependencyChangeHints: (lightSbom.dependencyChangeHints || []).slice(0, 8),
+    source: lightSbom.source || {},
+    confidence: lightSbom.confidence || {},
+    limitations: lightSbom.limitations || [],
     aiUse: lightSbom.aiUse || {}
   };
 }

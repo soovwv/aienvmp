@@ -5,6 +5,7 @@
 - Added preflight contract metadata so AI and CI consumers can rely on stable entry fields while ignoring additive changes.
 - Added `aienvmp schema --json` to print the stable AI-readable output contract without scanning a workspace.
 - Exposed coordination summaries at the root of `context --json` and `handoff --json`, with a human-readable handoff section.
+- Added light SBOM source, confidence, and limitation hints so agents know what the lightweight snapshot does and does not prove.
 
 ## 0.1.40
 

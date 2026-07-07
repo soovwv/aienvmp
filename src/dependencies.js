@@ -79,6 +79,23 @@ export function buildLightSbom(snapshot = {}, security = {}) {
     schemaVersion: 1,
     mode: "light-sbom",
     note: "AI-ready package and vulnerability summary from read-only project files and optional scanners.",
+    source: {
+      dependencies: "project manifests",
+      lockfiles: "file presence only",
+      vulnerabilities: security.enabled ? "optional scanner summary" : "not scanned",
+      resolver: "not run"
+    },
+    confidence: {
+      directDependencies: "high",
+      lockfileManager: snapshot.lockfiles?.length ? "medium" : "none",
+      transitiveDependencies: "not-resolved",
+      vulnerabilities: security.enabled ? "scanner-provided" : "not-scanned"
+    },
+    limitations: [
+      "Does not install packages.",
+      "Does not resolve full transitive dependency graphs.",
+      "Does not replace CycloneDX, SPDX, Syft, Trivy, npm audit, or pip-audit outputs."
+    ],
     summary: {
       ecosystems: countBy(packages, "ecosystem"),
       managers: countBy(packages, "manager"),
@@ -96,7 +113,8 @@ export function buildLightSbom(snapshot = {}, security = {}) {
     aiUse: {
       beforeDependencyChanges: "Read lightSbom.summary and lightSbom.topRisk before changing dependencies.",
       securityMode: security.enabled ? "scanner-summary" : "scanner-off",
-      dependencySource: "project manifests only; no install or resolver is run"
+      dependencySource: "project manifests only; no install or resolver is run",
+      trustRule: "Use lightSbom as a fast AI planning map; verify with dedicated scanners before security claims."
     }
   };
 }

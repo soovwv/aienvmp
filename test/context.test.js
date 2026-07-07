@@ -46,6 +46,18 @@ test("contextWorkspace JSON includes compact step summary", async () => {
         packages: 1,
         riskPackages: []
       }],
+      source: {
+        dependencies: "project manifests",
+        lockfiles: "file presence only",
+        vulnerabilities: "not scanned",
+        resolver: "not run"
+      },
+      confidence: {
+        directDependencies: "high",
+        transitiveDependencies: "not-resolved",
+        vulnerabilities: "not-scanned"
+      },
+      limitations: ["Does not install packages."],
       aiUse: { dependencySource: "project manifests only; no install or resolver is run" }
     },
     security: { enabled: false }
@@ -87,6 +99,9 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   assert.equal(json.dependencySnapshot.packages[0].name, "express");
   assert.equal(json.lightSbom.summary.packages, 1);
   assert.equal(json.lightSbom.dependencyChangeHints[0].manifest, "package.json");
+  assert.equal(json.lightSbom.source.dependencies, "project manifests");
+  assert.equal(json.lightSbom.confidence.transitiveDependencies, "not-resolved");
+  assert.match(json.lightSbom.limitations[0], /install/);
   assert.equal(json.lightSbom.aiUse.dependencySource, "project manifests only; no install or resolver is run");
   assert.equal(json.stepSummary.environment[0].code, "node-version-mismatch");
   assert.deepEqual(json.stepSummary.remediation, []);

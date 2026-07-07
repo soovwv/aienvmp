@@ -27,6 +27,9 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.equal(manifest.dependencySnapshot.packages[0].name, "express");
   assert.equal(manifest.dependencySnapshot.lockfiles[0].file, "package-lock.json");
   assert.equal(manifest.lightSbom.mode, "light-sbom");
+  assert.equal(manifest.lightSbom.source.dependencies, "project manifests");
+  assert.equal(manifest.lightSbom.source.resolver, "not run");
+  assert.equal(manifest.lightSbom.confidence.transitiveDependencies, "not-resolved");
   assert.equal(manifest.lightSbom.summary.packages, 1);
   assert.equal(manifest.lightSbom.summary.lockfiles[0].file, "package-lock.json");
   assert.equal(manifest.lightSbom.packageManagerPolicy.status, "clear");
@@ -45,6 +48,8 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.match(aiEnv, /Recommended Intent Targets/);
   assert.match(aiEnv, /Dependency Read Set/);
   assert.match(aiEnv, /Dependency Change Protocol/);
+  assert.match(aiEnv, /Source: project manifests/);
+  assert.match(aiEnv, /transitive not-resolved/);
   assert.match(aiEnv, /planned-change --target dependency/);
   const status = JSON.parse(await fs.readFile(path.join(dir, ".aienvmp", "status.json"), "utf8"));
   assert.equal(status.schemaVersion, 1);
