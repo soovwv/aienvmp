@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { strictResult } from "../src/commands/doctor.js";
 import { coordinationWarnings, diagnose, handoffWarnings, securityWarnings, staleIntentWarnings } from "../src/doctor.js";
 
 test("diagnose reports mixed lockfiles and version mismatches", () => {
@@ -82,4 +83,19 @@ test("coordinationWarnings reports multiple agents changing the same target", ()
   assert.equal(warnings.length, 1);
   assert.equal(warnings[0].code, "conflicting-open-intents");
   assert.equal(warnings[0].target, "node");
+});
+
+test("strictResult filters failures by strict scope", () => {
+  const warnings = [
+    { code: "security-vulnerabilities", message: "security" },
+    { code: "policy-version-mismatch", message: "policy" },
+    { code: "conflicting-open-intents", message: "coordination" }
+  ];
+
+  assert.equal(strictResult(warnings, {}).fail, false);
+  assert.deepEqual(strictResult(warnings, { strict: "security" }).matchedWarningCodes, ["security-vulnerabilities"]);
+  assert.deepEqual(strictResult(warnings, { strict: "policy" }).matchedWarningCodes, ["policy-version-mismatch"]);
+  assert.deepEqual(strictResult(warnings, { strict: "coordination" }).matchedWarningCodes, ["conflicting-open-intents"]);
+  assert.equal(strictResult(warnings, { ci: true }).scope, "all");
+  assert.equal(strictResult(warnings, { ci: true }).fail, true);
 });

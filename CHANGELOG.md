@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.16
+
+- Added scoped strict checks with `doctor --strict security|policy|coordination|all`.
+- Kept `doctor --ci` compatible as strict `all`.
+- Updated the GitHub Action `strict` input to support scoped enforcement while keeping advisory mode by default.
+
 ## 0.1.15
 
 - Added dashboard links for written AI plan artifacts.

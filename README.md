@@ -63,7 +63,8 @@ aienvmp plan              # read-only AI action plan, no automatic fixes
 aienvmp handoff           # next-agent handoff summary + recommended actions
 aienvmp intent            # record a planned env change
 aienvmp record            # record what changed
-aienvmp doctor --ci       # strict CI check
+aienvmp doctor --ci       # strict CI check for all warnings
+aienvmp doctor --strict security  # fail only scoped warnings
 ```
 
 ## Principles
@@ -72,6 +73,7 @@ aienvmp doctor --ci       # strict CI check
 - AI-first
 - lightweight
 - one advisory engine, optional enforcement with `doctor --ci`
+- scoped enforcement with `doctor --strict security|policy|coordination|all`
 - non-blocking unless strict mode is explicitly requested
 - security checks are opt-in and read-only
 

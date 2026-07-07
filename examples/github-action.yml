@@ -14,4 +14,4 @@ jobs:
         with:
           directory: "."
           write-plan: "true"
-          strict: "false"
+          strict: "off" # security, policy, coordination, all, or off

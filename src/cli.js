@@ -98,7 +98,7 @@ Advanced:
   aienvmp snippet [agents|claude|gemini] [--write AGENTS.md]
   aienvmp compile [--dir .]
   aienvmp diff [--dir .]
-  aienvmp doctor [--dir .] [--json] [--ci]
+  aienvmp doctor [--dir .] [--json] [--ci] [--strict security|policy|coordination|all]
   aienvmp dash [--dir .] [--open]
 `);
 }

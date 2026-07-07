@@ -8,9 +8,9 @@ inputs:
     required: false
     default: "."
   strict:
-    description: Fail when doctor reports warnings
+    description: Fail when doctor reports scoped warnings
     required: false
-    default: "false"
+    default: "off"
   write-plan:
     description: Write read-only AI plan artifacts
     required: false
@@ -35,6 +35,8 @@ runs:
       run: |
         if [ "${{ inputs.strict }}" = "true" ]; then
           node "$GITHUB_ACTION_PATH/bin/aienvmp.js" doctor --dir "${{ inputs.directory }}" --ci
+        elif [ "${{ inputs.strict }}" != "false" ] && [ "${{ inputs.strict }}" != "off" ]; then
+          node "$GITHUB_ACTION_PATH/bin/aienvmp.js" doctor --dir "${{ inputs.directory }}" --strict "${{ inputs.strict }}"
         else
           node "$GITHUB_ACTION_PATH/bin/aienvmp.js" doctor --dir "${{ inputs.directory }}"
         fi
