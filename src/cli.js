@@ -74,7 +74,7 @@ function printUsage() {
   console.log(`aienvmp - AI-first env map + lightweight runtime SBOM
 
 Usage:
-  aienvmp sync [--dir .] [--json] [--quiet] [--deep]
+  aienvmp sync [--dir .] [--json] [--quiet] [--deep] [--security]
   aienvmp context [--dir .] [--json]
   aienvmp handoff [--dir .] [--json] [--record --actor agent:id]
 
@@ -87,7 +87,7 @@ Common:
 
 Advanced:
   aienvmp init [--dir .]
-  aienvmp scan [--dir .] [--deep]
+  aienvmp scan [--dir .] [--deep] [--security]
   aienvmp intent [--dir .] --actor agent:codex --action "install pnpm"
   aienvmp resolve [--dir .] --actor human:you --id <intent-id> [--status resolved|cancelled]
   aienvmp record [--dir .] --actor agent:codex --summary "updated .nvmrc" [--target node] [--before 20] [--after 24]

@@ -42,10 +42,23 @@ export function diagnose(manifest, context = {}) {
       message: "Environment snapshot is older than 24 hours. Run `aienvmp sync` before changing the environment."
     });
   }
+  warnings.push(...securityWarnings(manifest.security));
   warnings.push(...coordinationWarnings(context.intents || []));
   warnings.push(...staleIntentWarnings(context.intents || []));
   warnings.push(...handoffWarnings(context.timeline || []));
   return warnings;
+}
+
+export function securityWarnings(security = {}) {
+  if (!security.enabled || !security.summary) return [];
+  const summary = security.summary;
+  if (Number(summary.critical || 0) > 0 || Number(summary.high || 0) > 0) {
+    return [{
+      code: "security-vulnerabilities",
+      message: `Security scan found ${summary.critical || 0} critical and ${summary.high || 0} high vulnerabilities. Review before changing or deploying the environment.`
+    }];
+  }
+  return [];
 }
 
 export function coordinationWarnings(intents = []) {

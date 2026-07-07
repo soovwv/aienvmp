@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.8
+
+- Added optional `sync --security` / `scan --security` vulnerability summary collection.
+- Added read-only npm audit parsing for light SBOM security awareness.
+- Exposed security summaries to AI-facing context, handoff, `AIENV.md`, and the dashboard.
+
 ## 0.1.7
 
 - Added stale open intent warnings for long-running environment change plans.

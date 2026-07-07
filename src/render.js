@@ -31,6 +31,8 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
   pushMap(lines, "Containers", manifest.containers);
   lines.push("## Global Tool Inventory", "");
   lines.push(...inventoryLines(manifest.inventory), "");
+  lines.push("## Security Summary", "");
+  lines.push(...securityLines(manifest.security), "");
   lines.push("## Project Requirements And Hints", "");
   pushMap(lines, "Detected", manifest.projectHints);
   lines.push("## Drift And Warnings", "");
@@ -96,6 +98,7 @@ export function renderContext(manifest, timeline = [], warnings = [], intents = 
     `Python: ${manifest.runtimes.python || manifest.runtimes.python3 || "not detected"}`,
     `Docker: ${manifest.containers.docker ? "available" : "not detected"}`,
     `Inventory: ${manifest.inventory?.mode || "basic"}${manifest.inventory?.enabled ? " enabled" : " disabled"}`,
+    `Security: ${manifest.security?.mode || "basic"}${manifest.security?.enabled ? ` enabled (${manifest.security.summary?.total || 0} vulnerabilities)` : " disabled"}`,
     `Policy Node: ${policy.node || "not set"}`,
     `Policy Python: ${policy.python || "not set"}`,
     `Policy Package Manager: ${policy.packageManager || "not set"}`,
@@ -135,6 +138,7 @@ export function renderHandoff(handoff) {
     `- Python: ${handoff.safeRuntime.python}`,
     `- Docker: ${handoff.safeRuntime.docker}`,
     `- Inventory: ${handoff.inventory?.mode || "basic"}${handoff.inventory?.enabled ? " enabled" : " disabled"}`,
+    `- Security: ${handoff.security?.mode || "basic"}${handoff.security?.enabled ? ` enabled (${handoff.security.summary?.total || 0} vulnerabilities)` : " disabled"}`,
     "",
     "Open intents:",
     ...(handoff.openIntents.length ? handoff.openIntents.map((i) => `- ${i.actor}: ${i.action}${i.target ? ` (${i.target})` : ""}`) : ["- none"]),
@@ -213,6 +217,9 @@ const rows=o=>entries(o).map(([k,v])=>\`<tr><th>\${esc(k)}</th><td><code>\${esc(
 const inventoryGroups=manifest.inventory?.tools||{};
 const inventoryCount=Object.values(inventoryGroups).reduce((sum,items)=>sum+(Array.isArray(items)?items.length:0),0);
 const inventoryHtml=manifest.inventory?.enabled?('<table>'+Object.entries(inventoryGroups).map(([k,v])=>\`<tr><th>\${esc(k)}</th><td><code>\${Array.isArray(v)?v.length:0} tools</code></td></tr>\`).join('')+'</table>'):'<div class="okline">Deep global inventory is off. Run <code>aienvmp sync --deep</code> when an AI needs global tool awareness.</div>';
+const sec=manifest.security||{};
+const secSummary=sec.summary||{total:0,critical:0,high:0,moderate:0,low:0,info:0};
+const securityHtml=sec.enabled?\`<table><tr><th>Total</th><td><code>\${esc(secSummary.total||0)}</code></td></tr><tr><th>Critical</th><td><code>\${esc(secSummary.critical||0)}</code></td></tr><tr><th>High</th><td><code>\${esc(secSummary.high||0)}</code></td></tr><tr><th>Moderate</th><td><code>\${esc(secSummary.moderate||0)}</code></td></tr><tr><th>Low</th><td><code>\${esc(secSummary.low||0)}</code></td></tr></table>\`:'<div class="okline">Security scan is off. Run <code>aienvmp sync --security</code> for read-only vulnerability summary.</div>';
 const change=c=>c.type==='changed'?\`\${c.scope} \${c.key}: \${c.before} -> \${c.after}\`:\`\${c.scope} \${c.key}: \${c.type} \${c.after||c.before}\`;
 const timelineLabel=t=>t.change?change(t.change):(t.summary||t.action||t.type||'recorded change');
 const agentNames={agents:'Codex',claude:'Claude',gemini:'Gemini'};
@@ -257,6 +264,7 @@ document.getElementById('app').innerHTML=\`
     \${card('Containers',manifest.containers?.docker?'<span class="pill">available</span>':'<span class="pill off">not detected</span>',\`<table>\${rows(manifest.containers)}</table>\`)}
     \${card('Project Hints',\`<span class="pill">\${entries(manifest.projectHints).length} hints</span>\`,\`<table>\${rows(manifest.projectHints)}</table>\`)}
     \${card('Global Inventory',manifest.inventory?.enabled?'<span class="pill">deep</span>':'<span class="pill off">basic</span>',inventoryHtml)}
+    \${card('Security Summary',sec.enabled?'<span class="pill warn">security</span>':'<span class="pill off">basic</span>',securityHtml)}
   </div>
   <aside>
     \${card('Environment Health',warnings.length?'<span class="pill warn">attention</span>':'<span class="pill">clear</span>',warnHtml)}
@@ -324,6 +332,19 @@ function inventoryLines(inventory = {}) {
     lines.push(`- ${name}: ${items.length} tools`);
   }
   return lines;
+}
+
+function securityLines(security = {}) {
+  if (!security.enabled) return ["- Mode: basic", "- Security scan is disabled. Run `aienvmp sync --security` when vulnerability context is needed."];
+  const summary = security.summary || {};
+  return [
+    "- Mode: security",
+    `- Total vulnerabilities: ${summary.total || 0}`,
+    `- Critical: ${summary.critical || 0}`,
+    `- High: ${summary.high || 0}`,
+    `- Moderate: ${summary.moderate || 0}`,
+    `- Low: ${summary.low || 0}`
+  ];
 }
 
 function policyLines(policy) {

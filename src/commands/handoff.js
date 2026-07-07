@@ -53,6 +53,7 @@ export function buildHandoff(manifest, timeline = [], warnings = [], intents = [
       docker: manifest.containers?.docker ? "available" : "not detected"
     },
     inventory: inventorySummary(manifest.inventory),
+    security: securitySummary(manifest.security),
     policy: {
       node: policy.node || "not set",
       python: policy.python || "not set",
@@ -71,6 +72,14 @@ export function buildHandoff(manifest, timeline = [], warnings = [], intents = [
     recommendedNext: reviewRequired
       ? "review warnings and open intents before environment changes"
       : "continue with project-local work; record intent before environment changes"
+  };
+}
+
+function securitySummary(security = {}) {
+  return {
+    mode: security.mode || "basic",
+    enabled: security.enabled === true,
+    summary: security.summary || { total: 0, critical: 0, high: 0, moderate: 0, low: 0, info: 0 }
   };
 }
 

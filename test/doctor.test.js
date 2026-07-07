@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { coordinationWarnings, diagnose, handoffWarnings, staleIntentWarnings } from "../src/doctor.js";
+import { coordinationWarnings, diagnose, handoffWarnings, securityWarnings, staleIntentWarnings } from "../src/doctor.js";
 
 test("diagnose reports mixed lockfiles and version mismatches", () => {
   const warnings = diagnose({
@@ -18,6 +18,16 @@ test("diagnose reports mixed lockfiles and version mismatches", () => {
     "python-version-mismatch",
     "mixed-node-lockfiles"
   ]);
+});
+
+test("securityWarnings reports high or critical vulnerability summaries", () => {
+  const warnings = securityWarnings({
+    enabled: true,
+    summary: { total: 2, critical: 1, high: 1 }
+  });
+
+  assert.equal(warnings.length, 1);
+  assert.equal(warnings[0].code, "security-vulnerabilities");
 });
 
 test("staleIntentWarnings reports old open intents", () => {

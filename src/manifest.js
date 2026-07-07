@@ -5,6 +5,7 @@ import { commandOutput, commandVersion } from "./shell.js";
 import { exists } from "./fsutil.js";
 import { observedTrust } from "./trust.js";
 import { scanGlobalInventory } from "./inventory.js";
+import { scanSecurity } from "./security.js";
 
 export async function buildManifest(dir, options = {}) {
   const now = new Date().toISOString();
@@ -14,7 +15,7 @@ export async function buildManifest(dir, options = {}) {
     generatedAt: now,
     generatedBy: {
       name: "aienvmp",
-      command: options.deep ? "aienvmp sync --deep" : "aienvmp sync"
+      command: generatedCommand(options)
     },
     trust: observedTrust(new Date(now)),
     workspace: {
@@ -27,6 +28,7 @@ export async function buildManifest(dir, options = {}) {
     containers: await scanContainers(),
     projectHints: await scanProjectHints(dir),
     inventory: await scanGlobalInventory({ deep: options.deep }),
+    security: await scanSecurity(dir, { security: options.security }),
     agentFiles: await scanAgentFiles(dir),
     agentProtocol: {
       sourceOfTruth: "AIENV.md",
@@ -78,6 +80,10 @@ export async function buildManifest(dir, options = {}) {
         uvTools: "uv tool list",
         brew: "brew list --versions"
       },
+      security: {
+        mode: "basic by default; vulnerability summaries only when requested",
+        npmAudit: "npm audit --json"
+      },
       projectHints: [
         ".nvmrc",
         ".python-version",
@@ -94,6 +100,10 @@ export async function buildManifest(dir, options = {}) {
     }
   };
   return manifest;
+}
+
+function generatedCommand(options = {}) {
+  return ["aienvmp", "sync", options.deep ? "--deep" : "", options.security ? "--security" : ""].filter(Boolean).join(" ");
 }
 
 async function scanOS() {

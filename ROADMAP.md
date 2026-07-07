@@ -7,6 +7,7 @@
 - Strengthen trust states: observed, planned, changed, review, verified, stale
 - Detect multi-agent environment intent conflicts
 - Keep one advisory decision engine with optional strict enforcement
+- Keep vulnerability checks opt-in and read-only
 - Stabilize `.aienvmp/manifest.json` and JSON command schemas
 - Keep `sync`, `context`, and `handoff` as the simple core flow
 - Improve the dashboard for 10-second human review
@@ -20,6 +21,9 @@
 - Global tool inventory:
   - richer summaries for `npm -g`, `pipx list`, `uv tool list`, and Homebrew
   - optional `--deep` scanners for more toolchains
+- Security summaries:
+  - Python vulnerability summary via optional scanner detection
+  - OS/container vulnerability summaries through optional external tools
 - Conflict detection:
   - package manager policy vs lockfile mismatch
   - monorepo/project boundary aware intent targets

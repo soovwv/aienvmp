@@ -21,10 +21,11 @@ npx aienvmp handoff
 npx aienvmp handoff --record --actor agent:codex
 ```
 
-Optional deeper read-only inventory:
+Optional read-only checks:
 
 ```bash
 npx aienvmp sync --deep
+npx aienvmp sync --security
 ```
 
 ## Output
@@ -68,6 +69,7 @@ aienvmp doctor --ci       # strict CI check
 - lightweight
 - one advisory engine, optional enforcement with `doctor --ci`
 - non-blocking unless strict mode is explicitly requested
+- security checks are opt-in and read-only
 
 ## Development
 

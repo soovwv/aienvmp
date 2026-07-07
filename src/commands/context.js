@@ -25,6 +25,7 @@ export async function contextWorkspace(args) {
       packageManagers: manifest.packageManagers,
       containers: manifest.containers,
       inventory: inventorySummary(manifest.inventory),
+      security: securitySummary(manifest.security),
       projectHints: manifest.projectHints,
       warnings,
       policy,
@@ -35,6 +36,14 @@ export async function contextWorkspace(args) {
     return;
   }
   console.log(renderContext(manifest, timeline, warnings, intents, policy));
+}
+
+function securitySummary(security = {}) {
+  return {
+    mode: security.mode || "basic",
+    enabled: security.enabled === true,
+    summary: security.summary || { total: 0, critical: 0, high: 0, moderate: 0, low: 0, info: 0 }
+  };
 }
 
 function inventorySummary(inventory = {}) {
