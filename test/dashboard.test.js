@@ -126,6 +126,12 @@ test("renderDashboard includes the audit summary surface", () => {
       matchedWarningCodes: ["node-version-mismatch"]
     }],
     preflight: {
+      intentTargets: [{
+        target: "dependency",
+        reason: "Security findings are dependency-related; record dependency intent before remediation.",
+        sources: ["security"],
+        command: "aienvmp intent --actor agent:id --action planned-change --target dependency"
+      }],
       enforcementProfile: {
         defaultMode: "advisory",
         localOperation: "non-blocking",
@@ -150,6 +156,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /AI Handoff/);
   assert.match(html, /Recommended Actions/);
   assert.match(html, /Review express/);
+  assert.match(html, /AI Intent Targets/);
+  assert.match(html, /dependency/);
+  assert.match(html, /planned-change --target dependency/);
   assert.match(html, /AI Plan Artifacts/);
   assert.match(html, /plan\.md/);
   assert.match(html, /Remediation Steps/);
@@ -234,6 +243,8 @@ test("dashWorkspace links written plan artifacts", async () => {
   const html = await fs.readFile(path.join(dir, ".aienvmp", "dashboard.html"), "utf8");
 
   assert.match(html, /AI Plan Artifacts/);
+  assert.match(html, /AI Intent Targets/);
+  assert.match(html, /planned-change --target node/);
   assert.match(html, /href="plan\.md"/);
   assert.match(html, /href="plan\.json"/);
   assert.match(html, /Remediation Steps/);
