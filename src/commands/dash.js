@@ -7,6 +7,7 @@ import { openIntents, readJsonl, readTimeline } from "../timeline.js";
 import { dashboardPath, intentsPath, manifestPath, timelinePath, workspaceDir } from "../paths.js";
 import { renderDashboard } from "../render.js";
 import { loadPolicy, policyWarnings } from "../policy.js";
+import { recommendedActions } from "../actions.js";
 
 export async function dashWorkspace(args) {
   const dir = workspaceDir(args);
@@ -16,7 +17,7 @@ export async function dashWorkspace(args) {
   const intents = openIntents(await readJsonl(intentsPath(dir)));
   const policy = await loadPolicy(dir);
   const warnings = [...diagnose(manifest, { timeline, intents }), ...policyWarnings(manifest, policy)];
-  const html = renderDashboard(manifest, timeline, warnings, intents, policy);
+  const html = renderDashboard({ ...manifest, recommendedActions: recommendedActions(manifest, { warnings, intents }) }, timeline, warnings, intents, policy);
   const out = dashboardPath(dir);
   await fs.mkdir(path.dirname(out), { recursive: true });
   await fs.writeFile(out, html, "utf8");

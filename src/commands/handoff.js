@@ -5,6 +5,7 @@ import { intentsPath, manifestPath, timelinePath, workspaceDir } from "../paths.
 import { renderHandoff } from "../render.js";
 import { openIntents, readJsonl, readTimeline } from "../timeline.js";
 import { changedTrust } from "../trust.js";
+import { recommendedActions } from "../actions.js";
 
 export async function handoffWorkspace(args) {
   const dir = workspaceDir(args);
@@ -42,6 +43,7 @@ async function recordHandoff(file, handoff, actor) {
 
 export function buildHandoff(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const reviewRequired = warnings.length > 0 || intents.length > 0;
+  const actions = recommendedActions(manifest, { warnings, intents });
   return {
     status: reviewRequired ? "review-required" : "clear",
     trust: manifest.trust || {},
@@ -63,6 +65,7 @@ export function buildHandoff(manifest, timeline = [], warnings = [], intents = [
     },
     openIntents: intents.slice(-5).reverse(),
     warnings,
+    recommendedActions: actions,
     recentChanges: timeline.slice(-5).reverse(),
     mustNotDo: [
       "do not change global runtimes without user approval",

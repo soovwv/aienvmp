@@ -17,7 +17,14 @@ test("renderDashboard includes the audit summary surface", () => {
       enabled: true,
       summary: { total: 1, critical: 0, high: 1, moderate: 0, low: 0, info: 0 },
       topPackages: [{ name: "lodash", severity: "high", fixAvailable: true }]
-    }
+    },
+    recommendedActions: [{
+      id: "review-security-remediation",
+      priority: "high",
+      category: "security",
+      summary: "Review lodash before dependency changes.",
+      command: "aienvmp context --json"
+    }]
   }, [], [], [], {});
 
   assert.match(html, /Audit summary/);
@@ -26,6 +33,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Open env changes/);
   assert.match(html, /Trust/);
   assert.match(html, /AI Handoff/);
+  assert.match(html, /Recommended Actions/);
+  assert.match(html, /Review lodash/);
   assert.match(html, /Global Inventory/);
   assert.match(html, /Security Summary/);
   assert.match(html, /lodash/);

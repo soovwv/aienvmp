@@ -149,6 +149,9 @@ export function renderHandoff(handoff) {
     "Warnings:",
     ...(handoff.warnings.length ? handoff.warnings.map((w) => `- ${w.message}`) : ["- none"]),
     "",
+    "Recommended actions:",
+    ...(handoff.recommendedActions?.length ? handoff.recommendedActions.map((item) => `- [${item.priority}] ${item.summary}${item.command ? ` (${item.command})` : ""}`) : ["- none"]),
+    "",
     "Recent changes:",
     ...(handoff.recentChanges.length ? handoff.recentChanges.map((t) => `- ${formatTimeline(t)}`) : ["- none"]),
     "",
@@ -234,6 +237,8 @@ const warnHtml=warnings.length?'<div class="warnings">'+warnings.map(w=>\`<div c
 const timelineHtml=timeline.length?'<div class="timeline">'+timeline.slice(-8).reverse().map(t=>\`<div class="event"><time>\${esc(t.at.replace('T',' ').slice(0,16))}</time><div><b>\${esc(t.actor||'system')}</b> \${esc(timelineLabel(t))}</div></div>\`).join('')+'</div>':'<div class="okline">No previous environment changes recorded.</div>';
 const intentsHtml=intents.length?'<div class="timeline">'+intents.slice(-6).reverse().map(i=>\`<div class="event"><time>\${esc(i.at.replace('T',' ').slice(0,16))}</time><div><b>\${esc(i.actor)}</b> plans \${esc(i.action)}</div></div>\`).join('')+'</div>':'<div class="okline">No pending agent intents recorded.</div>';
 const policyHtml=entries(policy).length?\`<table>\${rows(policy)}</table>\`:'<div class="okline">No explicit version policy set.</div>';
+const actions=manifest.recommendedActions||[];
+const actionsHtml=actions.length?'<div class="timeline">'+actions.slice(0,6).map(a=>\`<div class="event"><time>\${esc(a.priority)}</time><div><b>\${esc(a.category)}</b> \${esc(a.summary)}\${a.command?\`<div class="path">\${esc(a.command)}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No recommended actions. Continue project-local work.</div>';
 const card=(title,badge,body)=>\`<section class="card"><div class="card-head"><h2>\${title}</h2>\${badge||''}</div>\${body}</section>\`;
 const reviewRequired=warnings.length>0||intents.length>0;
 const recentChanges=timeline.slice(-8).length;
@@ -273,6 +278,8 @@ document.getElementById('app').innerHTML=\`
     \${card('Security Summary',sec.enabled?'<span class="pill warn">security</span>':'<span class="pill off">basic</span>',securityHtml)}
   </div>
   <aside>
+    \${card('Recommended Actions','<span class="pill">'+actions.length+' actions</span>',actionsHtml)}
+    <div style="height:14px"></div>
     \${card('Environment Health',warnings.length?'<span class="pill warn">attention</span>':'<span class="pill">clear</span>',warnHtml)}
     <div style="height:14px"></div>
     \${card('Version Policy','<span class="pill">'+entries(policy).length+' rules</span>',policyHtml)}

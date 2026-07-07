@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.13
+
+- Added `recommendedActions` to AI handoff output.
+- Added a Recommended Actions dashboard card for human review.
+- Reused the same advisory action engine across context, doctor, handoff, and dashboard.
+
 ## 0.1.12
 
 - Added AI-readable `recommendedActions` to `context --json` and `doctor --json`.
