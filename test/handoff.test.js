@@ -54,8 +54,10 @@ test("buildHandoff summarizes next-agent environment state", () => {
   assert.equal(handoff.recommendedActions[0].id, "review-security-remediation");
   assert.equal(handoff.dependencyHandoff.readSet[0].manifest, "package.json");
   assert.equal(handoff.dependencyHandoff.protocol.mode, "advisory");
+  assert.equal(handoff.agentActivity.environmentRecordCount, 1);
   assert.match(renderHandoff(handoff), /AI Handoff/);
   assert.match(renderHandoff(handoff), /Decision: project-local-work/);
+  assert.match(renderHandoff(handoff), /Agent activity/);
   assert.match(renderHandoff(handoff), /Recommended actions/);
   assert.match(renderHandoff(handoff), /Dependency handoff/);
   assert.match(renderHandoff(handoff), /dependency-change --target dependency/);
@@ -124,4 +126,32 @@ test("buildHandoff exposes coordination summary for next agents", () => {
   assert.deepEqual(handoff.coordination.conflictTargets, ["dependency"]);
   assert.match(renderHandoff(handoff), /Coordination/);
   assert.match(renderHandoff(handoff), /Conflicts: dependency/);
+});
+
+test("buildHandoff exposes multi-agent activity for next agents", () => {
+  const handoff = buildHandoff({
+    trust: { state: "observed", verified: false },
+    workspace: { path: "/tmp/work", name: "work" },
+    runtimes: {},
+    containers: {},
+    dependencySnapshot: { summary: { packages: 1 } }
+  }, [
+    {
+      at: "2026-07-08T00:00:00.000Z",
+      actor: "agent:codex",
+      type: "agent-record",
+      target: "dependency",
+      summary: "dependency-change"
+    },
+    {
+      at: "2026-07-08T00:01:00.000Z",
+      actor: "agent:claude",
+      type: "agent-record",
+      target: "dependency",
+      summary: "dependency remediation"
+    }
+  ], [], [], {});
+
+  assert.deepEqual(handoff.agentActivity.multiActorTargets, ["dependency"]);
+  assert.match(renderHandoff(handoff), /multi-agent/);
 });

@@ -75,6 +75,34 @@ test("buildStatus exposes pending follow-ups from timeline", () => {
   assert.equal(status.followUps[0].commands[0], "aienvmp sync");
 });
 
+test("buildStatus exposes multi-agent activity since last handoff", () => {
+  const status = buildStatus({
+    runtimes: {},
+    dependencySnapshot: { summary: { packages: 1 } },
+    security: { summary: { total: 0 } }
+  }, [], [], [
+    {
+      at: "2026-07-08T00:00:00.000Z",
+      actor: "agent:codex",
+      type: "agent-record",
+      target: "dependency",
+      summary: "dependency-change"
+    },
+    {
+      at: "2026-07-08T00:01:00.000Z",
+      actor: "agent:gemini",
+      type: "agent-record",
+      target: "dependency",
+      summary: "security dependency fix"
+    }
+  ]);
+
+  assert.equal(status.agentActivity.environmentRecordCount, 2);
+  assert.deepEqual(status.agentActivity.multiActorTargets, ["dependency"]);
+  assert.deepEqual(status.agentActivity.targets[0].actors, ["agent:codex", "agent:gemini"]);
+  assert.match(status.agentActivity.next, /handoff/);
+});
+
 test("statusWorkspace JSON reports review-required and strict suggestion", async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-status-"));
   await fs.mkdir(path.join(dir, ".aienvmp"), { recursive: true });

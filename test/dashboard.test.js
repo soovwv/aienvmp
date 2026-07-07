@@ -130,7 +130,7 @@ test("renderDashboard includes the audit summary surface", () => {
         name: "aienvmp-preflight",
         version: 1,
         stability: "additive",
-        aiEntryFields: ["state", "nextAgent", "coordination", "dependencyReadSet"],
+        aiEntryFields: ["state", "nextAgent", "coordination", "agentActivity", "dependencyReadSet"],
         rule: "Consumers should ignore unknown fields."
       },
       intentTargets: [{
@@ -163,6 +163,18 @@ test("renderDashboard includes the audit summary surface", () => {
         reason: "Dependency or security records should refresh the env map and handoff context.",
         commands: ["aienvmp sync", "aienvmp status --write", "aienvmp handoff --record --actor agent:id"]
       }],
+      agentActivity: {
+        environmentRecordCount: 2,
+        multiActorTargets: ["dependency"],
+        next: "Run handoff and review follow-ups before another environment change.",
+        targets: [{
+          target: "dependency",
+          count: 2,
+          actors: ["agent:codex", "agent:claude"],
+          latestSummary: "dependency remediation",
+          multiActor: true
+        }]
+      },
       dependencyReadSet: [{
         manifest: "package.json",
         ecosystem: "npm",
@@ -222,6 +234,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Follow-ups/);
   assert.match(html, /dependency-change/);
   assert.match(html, /aienvmp status --write/);
+  assert.match(html, /Agent Activity/);
+  assert.match(html, /dependency remediation/);
+  assert.match(html, /multi-agent/);
   assert.match(html, /AI Contract/);
   assert.match(html, /aienvmp-preflight/);
   assert.match(html, /nextAgent/);

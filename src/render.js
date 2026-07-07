@@ -176,6 +176,9 @@ export function renderContext(manifest, timeline = [], warnings = [], intents = 
     "Follow-ups:",
     ...followUpLines(manifest.preflight?.followUps),
     "",
+    "Agent activity:",
+    ...agentActivityLines(manifest.preflight?.agentActivity),
+    "",
     "Open intents:",
     ...(intents.length ? intents.slice(-5).reverse().map((i) => `- ${i.actor}: ${i.action}`) : ["- none"]),
     "",
@@ -207,6 +210,9 @@ export function renderHandoff(handoff) {
     "",
     "Coordination:",
     ...coordinationHandoffLines(handoff.coordination),
+    "",
+    "Agent activity:",
+    ...agentActivityLines(handoff.agentActivity),
     "",
     "Warnings:",
     ...(handoff.warnings.length ? handoff.warnings.map((w) => `- ${w.message}`) : ["- none"]),
@@ -317,6 +323,16 @@ function followUpLines(followUps = []) {
   return followUps.slice(0, 5).map((item) => {
     const command = item.commands?.[0] ? ` (${item.commands[0]})` : "";
     return `- ${item.target || "environment"}: ${item.summary || item.reason || "follow-up required"}${command}`;
+  });
+}
+
+function agentActivityLines(activity = {}) {
+  const targets = activity.targets || [];
+  if (!targets.length) return ["- none"];
+  return targets.slice(0, 5).map((item) => {
+    const actors = item.actors?.length ? item.actors.join(", ") : "unknown";
+    const flag = item.multiActor ? "multi-agent" : "single-agent";
+    return `- ${item.target}: ${item.count} record(s), ${actors}, ${flag}${item.latestSummary ? ` - ${item.latestSummary}` : ""}`;
   });
 }
 
@@ -448,6 +464,9 @@ const intentTargets=manifest.preflight?.intentTargets||[];
 const intentTargetsHtml=intentTargets.length?'<div class="timeline">'+intentTargets.slice(0,5).map(t=>\`<div class="event"><time>\${esc(t.target)}</time><div><b>\${esc(t.target)}</b> \${esc(t.reason||'Record this target before environment changes.')}\${t.command?\`<div class="path">\${esc(t.command)}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No specific target recommendation. Use <code>aienvmp intent --actor agent:id --action planned-change</code>.</div>';
 const followUps=manifest.preflight?.followUps||[];
 const followUpsHtml=followUps.length?'<div class="timeline">'+followUps.slice(0,5).map(f=>\`<div class="event"><time>\${esc(f.target||'env')}</time><div><b>\${esc(f.summary||'follow-up')}</b> \${esc(f.reason||'Refresh shared context.')}\${f.commands?.length?\`<div class="path">\${esc(f.commands.join(' -> '))}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No pending follow-ups after environment records.</div>';
+const agentActivity=manifest.preflight?.agentActivity||{};
+const activityTargets=agentActivity.targets||[];
+const activityHtml=activityTargets.length?'<div class="timeline">'+activityTargets.slice(0,5).map(a=>\`<div class="event"><time>\${esc(a.target||'env')}</time><div><b>\${esc((a.actors||[]).join(', ')||'unknown')}</b> \${esc(a.count||0)} record(s) \${a.multiActor?'<code>multi-agent</code>':'<code>single-agent</code>'}\${a.latestSummary?\`<div class="path">\${esc(a.latestSummary)}</div>\`:''}</div></div>\`).join('')+'</div><div class="path">'+esc(agentActivity.next||'Review activity before environment changes.')+'</div>':'<div class="okline">No recorded environment activity needs coordination.</div>';
 const dependencyReadSet=manifest.preflight?.dependencyReadSet||[];
 const dependencyReadSetHtml=dependencyReadSet.length?'<div class="timeline">'+dependencyReadSet.slice(0,5).map(d=>\`<div class="event"><time>\${esc(d.ecosystem||'deps')}</time><div><b>\${esc(d.manifest||'dependency files')}</b> <code>\${esc(d.manager||'unknown')}</code><div class="path">\${esc([d.manifest,...(d.lockfiles||[])].filter(Boolean).join(', '))}</div>\${d.riskPackages?.length?\`<div class="path">risk: \${esc(d.riskPackages.join(', '))}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No dependency files detected.</div>';
 const dependencyProtocol=manifest.preflight?.dependencyChangeProtocol||{};
@@ -503,6 +522,8 @@ document.getElementById('app').innerHTML=\`
     \${card('AI Intent Targets','<span class="pill">'+intentTargets.length+' targets</span>',intentTargetsHtml)}
     <div style="height:14px"></div>
     \${card('Follow-ups',followUps.length?'<span class="pill warn">'+followUps.length+' pending</span>':'<span class="pill">clear</span>',followUpsHtml)}
+    <div style="height:14px"></div>
+    \${card('Agent Activity',agentActivity.multiActorTargets?.length?'<span class="pill warn">'+agentActivity.multiActorTargets.length+' shared</span>':'<span class="pill">clear</span>',activityHtml)}
     <div style="height:14px"></div>
     \${card('AI Contract','<span class="pill">'+(contract.stability||'additive')+'</span>',contractHtml)}
     <div style="height:14px"></div>

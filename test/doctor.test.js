@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { doctorWorkspace } from "../src/commands/doctor.js";
 import { strictResult } from "../src/commands/doctor.js";
-import { coordinationWarnings, diagnose, handoffWarnings, securityWarnings, staleIntentWarnings } from "../src/doctor.js";
+import { coordinationWarnings, diagnose, handoffWarnings, multiAgentRecordWarnings, securityWarnings, staleIntentWarnings } from "../src/doctor.js";
 import { writeJson } from "../src/fsutil.js";
 
 test("diagnose reports mixed lockfiles and version mismatches", () => {
@@ -90,6 +90,56 @@ test("handoffWarnings treats dependency records as handoff-worthy changes", () =
 
   assert.equal(warnings.length, 1);
   assert.equal(warnings[0].code, "handoff-stale");
+});
+
+test("multiAgentRecordWarnings reports shared target records after handoff", () => {
+  const warnings = multiAgentRecordWarnings([
+    {
+      at: "2026-07-08T00:00:00.000Z",
+      actor: "agent:codex",
+      type: "agent-record",
+      target: "dependency",
+      summary: "dependency-change"
+    },
+    {
+      at: "2026-07-08T00:01:00.000Z",
+      actor: "agent:claude",
+      type: "agent-record",
+      target: "dependency",
+      summary: "security dependency fix"
+    }
+  ]);
+
+  assert.equal(warnings.length, 1);
+  assert.equal(warnings[0].code, "multi-agent-records");
+  assert.equal(warnings[0].target, "dependency");
+});
+
+test("multiAgentRecordWarnings accepts a later handoff", () => {
+  const warnings = multiAgentRecordWarnings([
+    {
+      at: "2026-07-08T00:00:00.000Z",
+      actor: "agent:codex",
+      type: "agent-record",
+      target: "node",
+      summary: "updated node"
+    },
+    {
+      at: "2026-07-08T00:01:00.000Z",
+      actor: "agent:claude",
+      type: "agent-record",
+      target: "node",
+      summary: "changed node"
+    },
+    {
+      at: "2026-07-08T00:02:00.000Z",
+      actor: "agent:codex",
+      type: "agent-handoff",
+      summary: "handoff clear"
+    }
+  ]);
+
+  assert.equal(warnings.length, 0);
 });
 
 test("coordinationWarnings reports multiple agents changing the same target", () => {

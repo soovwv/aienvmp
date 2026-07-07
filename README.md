@@ -51,6 +51,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `status.json.nextAgent` tells the next AI what to read and whether to review first.
 - `dependencyReadSet` lists manifests and lockfiles before package or security changes.
 - `coordination.conflictTargets` shows where multiple agents are planning changes.
+- `agentActivity.multiActorTargets` shows where multiple agents actually recorded env changes.
 - `followUps` shows records that still need `sync`, `status`, or `handoff`.
 - `handoff` carries dependency read-set and protocol guidance for the next AI.
 - Light SBOM includes source/confidence hints; verify security claims with dedicated scanners.

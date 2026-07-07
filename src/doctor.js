@@ -46,6 +46,7 @@ export function diagnose(manifest, context = {}) {
   warnings.push(...coordinationWarnings(context.intents || []));
   warnings.push(...staleIntentWarnings(context.intents || []));
   warnings.push(...handoffWarnings(context.timeline || []));
+  warnings.push(...multiAgentRecordWarnings(context.timeline || []));
   return warnings;
 }
 
@@ -108,6 +109,32 @@ export function handoffWarnings(timeline = []) {
   }];
 }
 
+export function multiAgentRecordWarnings(timeline = []) {
+  const lastHandoffAt = lastTime(timeline, (item) => item.type === "agent-handoff");
+  const byTarget = new Map();
+  for (const item of timeline) {
+    if (!isEnvironmentChange(item)) continue;
+    if (lastHandoffAt && timeOf(item) <= lastHandoffAt) continue;
+    const actor = String(item.actor || "").trim();
+    if (!actor) continue;
+    const target = normalizeTarget(item.target || inferTarget(`${item.summary || ""} ${item.action || ""} ${item.change?.key || ""}`) || "environment");
+    const list = byTarget.get(target) || [];
+    list.push(item);
+    byTarget.set(target, list);
+  }
+  const warnings = [];
+  for (const [target, list] of byTarget) {
+    const actors = [...new Set(list.map((item) => item.actor).filter(Boolean))];
+    if (actors.length < 2) continue;
+    warnings.push({
+      code: "multi-agent-records",
+      target,
+      message: `Multiple agents recorded environment changes for ${target} after the last handoff. Run handoff and review follow-ups before continuing.`
+    });
+  }
+  return warnings;
+}
+
 function inferTarget(action = "") {
   const normalized = String(action).toLowerCase();
   for (const target of ["dependency", "node", "python", "docker", "npm", "pnpm", "yarn", "uv", "pip", "pipx"]) {
@@ -115,6 +142,23 @@ function inferTarget(action = "") {
   }
   if (normalized.includes("package") || normalized.includes("lockfile") || normalized.includes("vulnerab")) return "dependency";
   return "";
+}
+
+function normalizeTarget(target = "") {
+  const normalized = String(target).trim().toLowerCase();
+  if (["npm", "pnpm", "yarn"].includes(normalized)) return "package-manager";
+  if (["pip", "pipx", "uv"].includes(normalized)) return "python";
+  return normalized || "environment";
+}
+
+function lastTime(items = [], predicate) {
+  const item = [...items].reverse().find(predicate);
+  return item ? timeOf(item) : 0;
+}
+
+function timeOf(item = {}) {
+  const value = new Date(item.at || 0).getTime();
+  return Number.isFinite(value) ? value : 0;
 }
 
 function isEnvironmentChange(item = {}) {

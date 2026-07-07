@@ -15,6 +15,10 @@ export function recommendedActions(manifest = {}, context = {}) {
     actions.push(action("coordinate-agents", "high", "coordination", "Multiple agents are planning changes to the same environment target. Coordinate with the user before proceeding."));
   }
 
+  if (warnings.some((warning) => warning.code === "multi-agent-records")) {
+    actions.push(action("review-agent-activity", "high", "coordination", "Multiple agents recorded changes for the same environment target. Review activity and record a handoff before more environment work.", "aienvmp handoff --record --actor agent:id"));
+  }
+
   actions.push(...securityActions(manifest.security));
 
   if (hasRuntimePolicyWarning(warnings)) {

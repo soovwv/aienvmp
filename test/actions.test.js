@@ -43,3 +43,13 @@ test("recommendedActions reports coordination work for open intents", () => {
 
   assert.deepEqual(actions.map((item) => item.id).slice(0, 2), ["review-open-intents", "coordinate-agents"]);
 });
+
+test("recommendedActions reports multi-agent record review", () => {
+  const actions = recommendedActions({}, {
+    warnings: [{ code: "multi-agent-records", message: "activity" }],
+    intents: []
+  });
+
+  assert.equal(actions[0].id, "review-agent-activity");
+  assert.match(actions[0].command, /handoff/);
+});

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.44
+
+- Added multi-agent record warnings when multiple agents record environment changes for the same target after the last handoff.
+- Added `agentActivity` to the shared preflight contract so status/context/handoff can expose recent env records by target and actor.
+- Surfaced agent activity in context, handoff, and the dashboard for faster shared-server review.
+- Added a recommended handoff action for multi-agent record activity.
+- Mapped `multi-agent-records` into the optional `doctor --strict coordination` scope while keeping local behavior advisory by default.
+- Documented the new AI contract field in the compact README.
+- Added regression tests for warning detection, handoff reset behavior, status JSON, dashboard HTML, and recommended actions.
+
 ## 0.1.43
 
 - Added follow-up metadata to `record` timeline entries so dependency/security changes point agents back to sync, status, and handoff.

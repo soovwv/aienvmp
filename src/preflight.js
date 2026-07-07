@@ -15,6 +15,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
   const dependencyChangeProtocol = dependencyProtocol(manifest, dependencyReadSet);
   const coordination = coordinationSummary(intents);
   const followUps = pendingFollowUps(timeline);
+  const agentActivity = agentActivitySummary(timeline);
   return {
     schemaVersion: 1,
     contract: preflightContract(),
@@ -55,6 +56,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     quickstart: agentQuickstart(decision.reviewRequired),
     nextAgent: nextAgentHint(state, dependencyReadSet, dependencyChangeProtocol),
     coordination,
+    agentActivity,
     followUps,
     intentTargets,
     dependencyReadSet,
@@ -78,6 +80,42 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     },
     topAction,
     nextCommand: topAction?.command || decision.nextCommand
+  };
+}
+
+function agentActivitySummary(timeline = []) {
+  const lastHandoffAt = lastTime(timeline, (item) => item.type === "agent-handoff");
+  const envRecords = timeline
+    .filter((item) => isEnvironmentRecord(item))
+    .filter((item) => !lastHandoffAt || timeOf(item) > lastHandoffAt);
+  const byTarget = new Map();
+  for (const item of envRecords) {
+    const target = normalizeTarget(item.target || targetFromText(`${item.summary || ""} ${item.action || ""}`) || "environment") || "environment";
+    const summary = byTarget.get(target) || { target, count: 0, actors: [], latest: null, multiActor: false };
+    summary.count += 1;
+    if (item.actor && !summary.actors.includes(item.actor)) summary.actors.push(item.actor);
+    if (!summary.latest || timeOf(item) > timeOf(summary.latest)) summary.latest = item;
+    byTarget.set(target, summary);
+  }
+  const targets = [...byTarget.values()].map((item) => ({
+    target: item.target,
+    count: item.count,
+    actors: item.actors.slice(0, 5),
+    latestAt: item.latest?.at || "",
+    latestSummary: item.latest?.summary || item.latest?.action || item.latest?.type || "",
+    multiActor: item.actors.length > 1
+  }));
+  const multiActorTargets = targets.filter((item) => item.multiActor).map((item) => item.target);
+  return {
+    sinceLastHandoff: lastHandoffAt ? "after-last-handoff" : "all-recorded",
+    environmentRecordCount: envRecords.length,
+    targets,
+    multiActorTargets,
+    next: multiActorTargets.length
+      ? "Run handoff and review follow-ups before another environment change."
+      : envRecords.length
+        ? "Run handoff before another AI continues environment work."
+        : "No environment records need coordination."
   };
 }
 
@@ -109,6 +147,41 @@ function coordinationSummary(intents = []) {
         ? "Check open intents before environment changes."
         : "No open environment intents."
   };
+}
+
+function isEnvironmentRecord(item = {}) {
+  if (item.type === "detected-change") return false;
+  const text = `${item.type || ""} ${item.target || ""} ${item.summary || ""} ${item.action || ""} ${item.change?.scope || ""} ${item.change?.key || ""}`.toLowerCase();
+  return [
+    "dependency",
+    "dependencies",
+    "package",
+    "lockfile",
+    "vulnerability",
+    "runtime",
+    "node",
+    "python",
+    "docker",
+    "package manager",
+    "package-manager",
+    "npm",
+    "pnpm",
+    "yarn",
+    "uv",
+    "pip",
+    "pipx",
+    "global"
+  ].some((token) => text.includes(token));
+}
+
+function lastTime(items = [], predicate) {
+  const item = [...items].reverse().find(predicate);
+  return item ? timeOf(item) : 0;
+}
+
+function timeOf(item = {}) {
+  const value = new Date(item.at || 0).getTime();
+  return Number.isFinite(value) ? value : 0;
 }
 
 function nextAgentHint(state, dependencyReadSet = [], dependencyChangeProtocol = {}) {

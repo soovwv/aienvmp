@@ -46,6 +46,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: `record` timeline entries now include follow-up metadata, and status/context/dashboard surface unresolved follow-ups.
 - Verification: Windows and macOS candidate smoke checks confirmed `record --target dependency` appears in `status --json` followUps and the dashboard Follow-ups card.
 
+### Multi-agent records were less visible than open intents
+
+- Issue: open intents showed planning conflicts, but two agents could record changes to the same env target after a handoff without a compact coordination signal.
+- Fix: `doctor`, status/context, handoff, and the dashboard now expose same-target multi-agent records through advisory warnings and `agentActivity`.
+- Verification: tests cover multi-agent record detection, later handoff reset, status JSON, handoff text, dashboard HTML, and recommended actions.
+
 ## Template
 
 ### Title
