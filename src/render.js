@@ -170,6 +170,9 @@ export function renderContext(manifest, timeline = [], warnings = [], intents = 
     "Recommended actions:",
     ...(recommendedActions.length ? recommendedActions.map((item) => `- [${item.priority}] ${item.summary}${item.command ? ` (${item.command})` : ""}`) : ["- none"]),
     "",
+    "Enforcement gate:",
+    ...enforcementGateLines(manifest.preflight?.enforcementProfile?.gate),
+    "",
     "Open intents:",
     ...(intents.length ? intents.slice(-5).reverse().map((i) => `- ${i.actor}: ${i.action}`) : ["- none"]),
     "",
@@ -267,6 +270,9 @@ export function renderPlan(plan) {
     "Review gates:",
     ...plan.reviewGates.map((item) => `- ${item}`),
     "",
+    "Enforcement gate:",
+    ...enforcementGateLines(plan.preflight?.enforcementProfile?.gate),
+    "",
     "Dependency protocol:",
     ...dependencyProtocolPlanLines(plan.preflight?.dependencyChangeProtocol),
     "",
@@ -291,6 +297,15 @@ function dependencyProtocolPlanLines(protocol = {}) {
     `- Intent: ${protocol.commands.recordIntent}`,
     `- After change: ${protocol.commands.refreshAfterChange}; ${protocol.commands.recordAfterChange}`,
     ...(protocol.mustNotDo || []).slice(0, 3).map((item) => `- Must not: ${item}`)
+  ];
+}
+
+function enforcementGateLines(gate = {}) {
+  return [
+    `- Default: ${gate.defaultMode || "advisory"} (${gate.localDefault || "warn-only"})`,
+    `- Strict: ${gate.strictMode || "off"}`,
+    `- Fail condition: ${gate.failCondition || "never in default mode"}`,
+    `- Exit code: ${gate.exitCode || "0 unless the command itself errors"}`
   ];
 }
 
@@ -414,7 +429,8 @@ const ciHasFailure=ciReadiness.some(s=>s.status==='fail');
 const ciReadinessHtml=ciReadiness.length?'<table>'+ciReadiness.map(s=>\`<tr><th>\${esc(s.scope)}</th><td><code>\${esc(s.status)}</code>\${s.matchedWarningCodes?.length?\` \${esc(s.matchedWarningCodes.join(', '))}\`:''}</td></tr>\`).join('')+'</table>':'<div class="okline">Run <code>aienvmp doctor --strict security|policy|coordination|all</code> to choose CI enforcement scope.</div>';
 const enforcementProfile=manifest.preflight?.enforcementProfile||{};
 const strictCommands=enforcementProfile.strictCommands||[];
-const enforcementHtml=\`<table><tr><th>Default</th><td><code>\${esc(enforcementProfile.defaultMode||'advisory')}</code></td></tr><tr><th>Local</th><td>\${esc(enforcementProfile.localOperation||'non-blocking')}</td></tr><tr><th>Strict</th><td>\${esc(enforcementProfile.strictUse||'CI or explicit checks only')}</td></tr><tr><th>Recommended</th><td><code>\${esc(enforcementProfile.recommendedStrictCommand||'aienvmp doctor --strict all')}</code></td></tr></table><div class="timeline">\${strictCommands.slice(0,4).map(cmd=>\`<div class="event"><time>CI</time><div><code>\${esc(cmd)}</code></div></div>\`).join('')}</div><div class="path">\${esc(enforcementProfile.reason||'Warnings stay advisory unless strict mode is requested.')}</div>\`;
+const gate=enforcementProfile.gate||{};
+const enforcementHtml=\`<table><tr><th>Default</th><td><code>\${esc(gate.defaultMode||enforcementProfile.defaultMode||'advisory')}</code> \${esc(gate.localDefault||'warn-only')}</td></tr><tr><th>Strict</th><td><code>\${esc(gate.strictMode||'off')}</code></td></tr><tr><th>Fail</th><td>\${esc(gate.failCondition||'never in default mode')}</td></tr><tr><th>Exit</th><td>\${esc(gate.exitCode||'0 unless the command itself errors')}</td></tr><tr><th>Recommended</th><td><code>\${esc(enforcementProfile.recommendedStrictCommand||'aienvmp doctor --strict all')}</code></td></tr></table><div class="timeline">\${strictCommands.slice(0,4).map(cmd=>\`<div class="event"><time>CI</time><div><code>\${esc(cmd)}</code></div></div>\`).join('')}</div><div class="path">\${esc(gate.rule||enforcementProfile.reason||'Warnings stay advisory unless strict mode is requested.')}</div>\`;
 const contract=manifest.preflight?.contract||{};
 const contractHtml=contract.name?\`<table><tr><th>Name</th><td><code>\${esc(contract.name)}</code></td></tr><tr><th>Version</th><td><code>\${esc(contract.version||1)}</code></td></tr><tr><th>Stability</th><td><code>\${esc(contract.stability||'additive')}</code></td></tr><tr><th>AI fields</th><td>\${esc((contract.aiEntryFields||[]).join(', ')||'none')}</td></tr></table><div class="path">\${esc(contract.rule||'Ignore unknown fields.')}</div>\`:'<div class="okline">Run <code>aienvmp status --write</code> to include AI contract metadata.</div>';
 const intentTargets=manifest.preflight?.intentTargets||[];

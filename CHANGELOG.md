@@ -4,6 +4,7 @@
 
 - Added explicit enforcement gate metadata so AI and CI consumers know local checks are warn-only unless `--strict` or `--ci` is requested.
 - Added `doctor --json` exit behavior metadata to distinguish advisory warnings from strict failure conditions.
+- Surfaced enforcement gate details in context, plan, and dashboard outputs.
 
 ## 0.1.41
 

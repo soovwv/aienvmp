@@ -50,7 +50,7 @@ export async function contextWorkspace(args) {
     }, null, 2));
     return;
   }
-  console.log(renderContext(manifest, timeline, warnings, intents, policy, actions));
+  console.log(renderContext({ ...manifest, preflight }, timeline, warnings, intents, policy, actions));
 }
 
 function lightSbomSummary(lightSbom = {}) {

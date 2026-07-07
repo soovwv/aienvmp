@@ -178,6 +178,14 @@ test("renderDashboard includes the audit summary surface", () => {
         defaultMode: "advisory",
         localOperation: "non-blocking",
         strictUse: "CI or explicit human-requested checks only",
+        gate: {
+          defaultMode: "advisory",
+          strictMode: "off",
+          localDefault: "warn-only",
+          failCondition: "never in default mode",
+          exitCode: "0 unless the command itself errors",
+          rule: "Do not block local or shared machine operation unless --strict or --ci is explicitly requested."
+        },
         recommendedStrictCommand: "aienvmp doctor --strict policy",
         reason: "Avoid disrupting shared servers or developer machines while still making drift visible.",
         strictCommands: [
@@ -223,7 +231,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /CI Readiness/);
   assert.match(html, /Enforcement Mode/);
   assert.match(html, /advisory/);
-  assert.match(html, /non-blocking/);
+  assert.match(html, /warn-only/);
+  assert.match(html, /never in default mode/);
+  assert.match(html, /0 unless the command itself errors/);
   assert.match(html, /doctor --strict policy/);
   assert.match(html, /security/);
   assert.match(html, /policy/);

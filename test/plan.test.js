@@ -55,6 +55,8 @@ test("buildPlan creates a read-only action plan", () => {
   assert.match(renderPlan(plan), /priority high\/90/);
   assert.match(renderPlan(plan), /Remediation steps/);
   assert.match(renderPlan(plan), /Dependency protocol/);
+  assert.match(renderPlan(plan), /Enforcement gate/);
+  assert.match(renderPlan(plan), /never in default mode/);
   assert.match(renderPlan(plan), /dependency-change --target dependency/);
   assert.match(renderPlan(plan), /4\.17\.21/);
 });
