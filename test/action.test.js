@@ -7,7 +7,13 @@ test("GitHub Action writes compact status artifacts by default", async () => {
   const example = await fs.readFile("examples/github-action.yml", "utf8");
 
   assert.match(action, /write-status:/);
+  assert.match(action, /write-schema:/);
+  assert.match(action, /write-doctor-json:/);
   assert.match(action, /status --dir/);
   assert.match(action, /--write --quiet/);
+  assert.match(action, /schema --json >.*schema\.json/);
+  assert.match(action, /doctor --dir.*--json >.*doctor\.json/);
   assert.match(example, /\.aienvmp\/status\.json/);
+  assert.match(example, /\.aienvmp\/schema\.json/);
+  assert.match(example, /\.aienvmp\/doctor\.json/);
 });

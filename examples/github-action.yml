@@ -14,6 +14,8 @@ jobs:
         with:
           directory: "."
           write-plan: "true"
+          write-schema: "true"
+          write-doctor-json: "true"
           strict: "off" # security, policy, coordination, all, or off
 
       - uses: actions/upload-artifact@v4
@@ -24,6 +26,8 @@ jobs:
             AIENV.md
             .aienvmp/manifest.json
             .aienvmp/status.json
+            .aienvmp/schema.json
+            .aienvmp/doctor.json
             .aienvmp/plan.json
             .aienvmp/plan.md
             .aienvmp/dashboard.html

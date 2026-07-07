@@ -19,6 +19,14 @@ inputs:
     description: Write compact AI status artifact
     required: false
     default: "true"
+  write-schema:
+    description: Write stable AI output contract artifact
+    required: false
+    default: "true"
+  write-doctor-json:
+    description: Write doctor JSON with advisory/strict exit behavior
+    required: false
+    default: "true"
 
 runs:
   using: composite
@@ -39,6 +47,22 @@ runs:
       run: |
         if [ "${{ inputs.write-status }}" = "true" ]; then
           node "$GITHUB_ACTION_PATH/bin/aienvmp.js" status --dir "${{ inputs.directory }}" --write --quiet
+        fi
+
+    - name: Write AI schema
+      shell: bash
+      run: |
+        if [ "${{ inputs.write-schema }}" = "true" ]; then
+          mkdir -p "${{ inputs.directory }}/.aienvmp"
+          node "$GITHUB_ACTION_PATH/bin/aienvmp.js" schema --json > "${{ inputs.directory }}/.aienvmp/schema.json"
+        fi
+
+    - name: Write doctor advisory JSON
+      shell: bash
+      run: |
+        if [ "${{ inputs.write-doctor-json }}" = "true" ]; then
+          mkdir -p "${{ inputs.directory }}/.aienvmp"
+          node "$GITHUB_ACTION_PATH/bin/aienvmp.js" doctor --dir "${{ inputs.directory }}" --json > "${{ inputs.directory }}/.aienvmp/doctor.json"
         fi
 
     - name: Doctor
