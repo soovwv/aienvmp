@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.22
+
+- Reworked the README around Quick Start, AI Usage, CI Usage, and outputs.
+- Made the project positioning clearer: AI-first environment maps for shared coding machines.
+- Emphasized read-only planning and avoiding runtime/tool drift across agents.
+
 ## 0.1.21
 
 - Added a GitHub Actions artifact upload example for `AIENV.md`, plan outputs, manifest, and dashboard.

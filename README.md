@@ -6,27 +6,37 @@
 
 **AI Environment Map.**
 
-`aienvmp` is an AI environment coordination tool for shared coding machines.
+`aienvmp` is an AI-first environment map for shared coding machines.
 
-It helps Codex, Claude, Gemini, and other agents avoid silently using or installing different runtime and tool versions.
+It helps Codex, Claude, Gemini, and humans avoid silent Node, Python, package manager, Docker, and security drift.
 
-Core loop: scan the env, give AI a preflight context, and hand off safe next steps to the next agent.
+Core loop: scan once, give AI a preflight context, write a read-only action plan, and hand off safe next steps.
 
-## Use
+## Quick Start
 
 ```bash
 npx aienvmp sync
 npx aienvmp context
 npx aienvmp plan
 npx aienvmp handoff
-npx aienvmp handoff --record --actor agent:codex
 ```
 
-Optional read-only checks:
+Optional deeper read-only checks:
 
 ```bash
 npx aienvmp sync --deep
 npx aienvmp sync --security
+```
+
+## AI Usage
+
+Tell each agent to read `aienvmp context --json` before environment changes.
+
+```bash
+npx aienvmp context --json
+npx aienvmp intent --actor agent:codex --action "upgrade node" --target node
+npx aienvmp record --actor agent:codex --summary "updated .nvmrc" --target node
+npx aienvmp handoff --record --actor agent:codex
 ```
 
 ## Output
@@ -45,7 +55,7 @@ Trust states are machine-readable: `observed`, `planned`, `changed`, `review`, `
 
 AI agents can observe, plan, and record. Only a human or CI should mark environment facts as verified.
 
-## For AGENTS.md
+## Agent Files
 
 `aienvmp` does not replace AGENTS.md. It gives AGENTS.md a live environment source of truth.
 
@@ -53,9 +63,16 @@ AI agents can observe, plan, and record. Only a human or CI should mark environm
 npx aienvmp snippet agents
 ```
 
-## CI
+## CI Usage
 
 Use the GitHub Action to write the env map, plan, dashboard, and optional strict checks. See [examples/github-action.yml](examples/github-action.yml).
+
+```yaml
+- uses: soovwv/aienvmp@main
+  with:
+    write-plan: "true"
+    strict: "off" # security, policy, coordination, all, or off
+```
 
 ## Commands
 
@@ -76,6 +93,7 @@ aienvmp doctor --strict security  # fail only scoped warnings
 - simple by default
 - AI-first
 - lightweight
+- read-only planning, no automatic fixes
 - one advisory engine, optional enforcement with `doctor --ci`
 - scoped enforcement with `doctor --strict security|policy|coordination|all`
 - non-blocking unless strict mode is explicitly requested
