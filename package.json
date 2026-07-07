@@ -24,7 +24,8 @@
     "SECURITY.md",
     "ROADMAP.md",
     "action.yml",
-    "examples"
+    "examples",
+    ".agents"
   ],
   "scripts": {
     "test": "node --test",

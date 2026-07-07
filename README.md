@@ -109,6 +109,14 @@ Generated agent targets:
 - `CLAUDE.md`
 - `GEMINI.md`
 
+Codex can also use the repo-scoped skill:
+
+```text
+.agents/skills/aienvmp/SKILL.md
+```
+
+Invoke it explicitly as `$aienvmp`, or let Codex select it when the task involves runtime, package manager, Docker, global package, or environment policy changes.
+
 ## What AI Agents See
 
 `aienvmp context` returns a compact preflight brief:
