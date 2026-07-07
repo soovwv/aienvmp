@@ -6,124 +6,92 @@
 
 **AI Environment Map.**
 
-`aienvmp` is an AI-first environment map for shared coding machines.
+`aienvmp` is a lightweight env map and light SBOM for shared AI coding machines.
 
-It helps Codex, Claude, Gemini, and humans avoid silent Node, Python, package manager, dependency, Docker, and security drift.
+It helps Codex, Claude, Gemini, and humans avoid silent runtime, package manager, dependency, Docker, and security drift.
 
-Core loop: scan once, link runtime/dependency/security context, give AI a shared decision contract with a light SBOM summary, and hand off safe next steps.
-
-## Quick Start
+## 10-Second Use
 
 ```bash
 npx aienvmp sync
 npx aienvmp status
-npx aienvmp context
-npx aienvmp plan
-npx aienvmp handoff
-```
-
-10-second AI flow: `aienvmp status --write` -> `aienvmp context --json` -> intent before environment changes.
-Use `--dir <workspace>` before or after the command when an AI or CI process runs outside the target project.
-
-Optional deeper read-only checks:
-
-```bash
-npx aienvmp sync --deep
-npx aienvmp sync --security
-```
-
-## AI Usage
-
-Tell each agent to read `aienvmp context --json` before environment changes.
-
-```bash
 npx aienvmp context --json
-npx aienvmp intent --actor agent:codex --action "upgrade node" --target node
-npx aienvmp record --actor agent:codex --summary "updated .nvmrc" --target node
+```
+
+Before environment changes:
+
+```bash
+npx aienvmp intent --actor agent:codex --action "change dependency" --target dependency
+npx aienvmp record --actor agent:codex --summary "dependency-change" --target dependency
 npx aienvmp handoff --record --actor agent:codex
 ```
 
-## Output
+Use `--dir <workspace>` when AI or CI runs outside the target project.
+
+## What It Creates
 
 ```text
-AIENV.md
-.aienvmp/manifest.json
-.aienvmp/status.json       # first file for AI: clear/review, next command, strict advice
-.aienvmp/intents.jsonl
-.aienvmp/timeline.jsonl
-.aienvmp/plan.json
-.aienvmp/plan.md             # read-only plan with dependency protocol
-.aienvmp/dashboard.html     # includes dependencies, plan, remediation, and environment cards
+AIENV.md                 # Markdown env map for AI agents
+.aienvmp/status.json     # first AI read: clear/review, next command, nextAgent hint
+.aienvmp/manifest.json   # runtime map + light SBOM
+.aienvmp/intents.jsonl   # planned env changes
+.aienvmp/timeline.jsonl  # append-only change ledger
+.aienvmp/plan.md         # read-only action plan
+.aienvmp/dashboard.html  # human dashboard
 ```
 
-`AIENV.md` includes the 10-second AI flow and recommended intent targets for Markdown-first agents.
+## AI Contract
 
-Trust states are machine-readable: `observed`, `planned`, `changed`, `review`, `verified`, `stale`.
-`status.json` also lists AI read order, artifact paths, and safe commands.
-`status`, `context`, `plan`, and `handoff` share the same AI preflight contract.
-Preflight also recommends the intent target, so agents do not guess between runtime, package manager, dependency, Docker, or coordination changes.
-It also lists dependency manifests and lockfiles to read before package or security changes.
-Dependency and security changes stay advisory: record dependency intent, refresh with `sync`, then record what changed.
-Dependency records also trigger handoff/coordination warnings for the next agent.
-`handoff` includes the dependency read set and protocol, so the next AI can continue without guessing package files or change flow.
-The dashboard shows the same intent target guidance for human review.
-
-AI agents can observe, plan, and record. Only a human or CI should mark environment facts as verified.
+- `status`, `context`, `plan`, and `handoff` share one preflight contract.
+- `status.json.nextAgent` tells the next AI what to read and whether to review first.
+- `dependencyReadSet` lists manifests and lockfiles before package or security changes.
+- `coordination.conflictTargets` shows where multiple agents are planning changes.
+- `handoff` carries dependency read-set and protocol guidance for the next AI.
+- Everything is advisory by default; strict failure is opt-in with `doctor --strict`.
 
 ## Agent Files
 
-`aienvmp` does not replace AGENTS.md. It gives AGENTS.md a live environment source of truth.
+`aienvmp` does not replace AGENTS.md, CLAUDE.md, or GEMINI.md. It gives them a live environment source of truth.
 
 ```bash
 npx aienvmp snippet agents
+npx aienvmp snippet claude
+npx aienvmp snippet gemini
 ```
 
-## CI Usage
+## Commands
 
-Use the GitHub Action to write the env map, plan, dashboard, and optional strict checks. See [examples/github-action.yml](examples/github-action.yml).
-CI also writes `.aienvmp/status.json` for a compact AI-readable result.
-The dashboard shows which strict scopes are CI-ready before you enforce them.
+```bash
+aienvmp sync                    # update env map, status, ledger, dashboard
+aienvmp status --write          # refresh compact AI status
+aienvmp context --json          # AI decision contract
+aienvmp plan --write            # read-only action plan
+aienvmp handoff --record        # next-agent summary
+aienvmp intent                  # record planned env change
+aienvmp record                  # record what changed
+aienvmp doctor --strict security|policy|coordination|all
+```
+
+## CI
 
 ```yaml
 - uses: soovwv/aienvmp@main
   with:
     write-status: "true"
     write-plan: "true"
-    strict: "off" # security, policy, coordination, all, or off
+    strict: "off"
 ```
 
-## Commands
-
-```bash
-aienvmp sync              # update env map, light SBOM, status, ledger, dashboard
-aienvmp status --write    # refresh .aienvmp/status.json only
-aienvmp context           # AI preflight brief
-aienvmp context --json    # AI decision contract + actions + compact step summary
-aienvmp plan              # read-only AI action plan using the same decision contract
-aienvmp handoff           # next-agent handoff summary using the same decision contract
-aienvmp intent            # record a planned env change
-aienvmp record            # record what changed
-aienvmp doctor --ci       # strict CI check for all warnings
-aienvmp doctor --strict security  # fail only scoped warnings
-```
+See [examples/github-action.yml](examples/github-action.yml).
 
 ## Principles
 
-- simple by default
-- AI-first
-- lightweight
-- read-only planning, no automatic fixes
-- one advisory engine, optional enforcement with `doctor --ci`
-- scoped enforcement with `doctor --strict security|policy|coordination|all`
-- context and plan expose suggested strict scopes for CI
-- dashboard and preflight explain advisory default vs optional strict mode
-- non-blocking unless strict mode is explicitly requested
-- security checks are opt-in and read-only
-- light SBOM is generated from project files and optional scanner summaries
-- dependency change hints point AI agents to the relevant manifest before edits
-- lockfiles are detected read-only and shown before dependency edits
-- package manager policy is inferred from lockfiles to avoid accidental npm/pnpm/yarn drift
-- dashboard mirrors AI-facing SBOM hints so humans can review the same dependency context
+- simple commands
+- AI-first outputs
+- lightweight, read-only scanning
+- light SBOM from project files
+- advisory locally, strict only when requested
+- humans or CI verify; AI agents observe, plan, record, and hand off
 
 ## Development
 
@@ -132,8 +100,6 @@ node --test
 npm run smoke
 npm pack --dry-run
 ```
-
-## Links
 
 [Roadmap](ROADMAP.md) / [Security](SECURITY.md) / [Troubleshooting](TROUBLESHOOTING.md) / [Bugfix Log](BUGFIXES.md) / [Contributing](CONTRIBUTING.md)
 
