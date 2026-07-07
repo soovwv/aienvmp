@@ -4,8 +4,9 @@ import path from "node:path";
 import { commandOutput, commandVersion } from "./shell.js";
 import { exists } from "./fsutil.js";
 import { observedTrust } from "./trust.js";
+import { scanGlobalInventory } from "./inventory.js";
 
-export async function buildManifest(dir) {
+export async function buildManifest(dir, options = {}) {
   const now = new Date().toISOString();
   const manifest = {
     schemaName: "aienvmp.runtime-sbom",
@@ -13,7 +14,7 @@ export async function buildManifest(dir) {
     generatedAt: now,
     generatedBy: {
       name: "aienvmp",
-      command: "aienvmp sync"
+      command: options.deep ? "aienvmp sync --deep" : "aienvmp sync"
     },
     trust: observedTrust(new Date(now)),
     workspace: {
@@ -25,6 +26,7 @@ export async function buildManifest(dir) {
     packageManagers: await scanPackageManagers(),
     containers: await scanContainers(),
     projectHints: await scanProjectHints(dir),
+    inventory: await scanGlobalInventory({ deep: options.deep }),
     agentFiles: await scanAgentFiles(dir),
     agentProtocol: {
       sourceOfTruth: "AIENV.md",
@@ -68,6 +70,13 @@ export async function buildManifest(dir) {
       containers: {
         docker: "docker --version",
         compose: "docker compose version or docker-compose --version"
+      },
+      globalInventory: {
+        mode: "basic by default; deep only when requested",
+        npmGlobal: "npm list -g --depth=0 --json",
+        pipx: "pipx list --json",
+        uvTools: "uv tool list",
+        brew: "brew list --versions"
       },
       projectHints: [
         ".nvmrc",

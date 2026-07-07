@@ -17,9 +17,8 @@
   - pyenv, uv, conda
   - mise, asdf
 - Global tool inventory:
-  - `npm -g`
-  - `pipx list`
-  - `uv tool list`
+  - richer summaries for `npm -g`, `pipx list`, `uv tool list`, and Homebrew
+  - optional `--deep` scanners for more toolchains
 - Conflict detection:
   - stale unresolved intents
   - recent runtime changes without a fresh handoff

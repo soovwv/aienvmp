@@ -11,7 +11,7 @@ export async function scanWorkspace(args) {
   if (previous && await exists(currentPath)) {
     await fs.copyFile(currentPath, previousManifestPath(dir));
   }
-  const manifest = await buildManifest(dir);
+  const manifest = await buildManifest(dir, { deep: args.deep });
   await writeJson(currentPath, manifest);
   const changes = diffManifests(previous, manifest);
   for (const change of changes) {

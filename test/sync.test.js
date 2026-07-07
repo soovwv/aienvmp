@@ -16,7 +16,10 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.equal(manifest.schemaVersion, 1);
   assert.equal(manifest.trust.state, "observed");
   assert.equal(manifest.trust.verified, false);
+  assert.equal(manifest.inventory.mode, "basic");
+  assert.equal(manifest.inventory.enabled, false);
   assert.equal(manifest.generatedBy.name, "aienvmp");
+  assert.equal(manifest.generatedBy.command, "aienvmp sync");
   assert.deepEqual(manifest.agentProtocol.afterEnvironmentChange, ["aienvmp sync"]);
   assert.equal(manifest.agentProtocol.handoffCommand, "aienvmp handoff");
 

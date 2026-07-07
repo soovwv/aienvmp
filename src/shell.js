@@ -15,10 +15,11 @@ export async function commandVersion(command, args = ["--version"]) {
   }
 }
 
-export async function commandOutput(command, args = []) {
+export async function commandOutput(command, args = [], options = {}) {
   try {
     const { stdout } = await execFileAsync(command, args, {
-      timeout: 2500,
+      timeout: options.timeout || 2500,
+      maxBuffer: options.maxBuffer || 1024 * 1024,
       windowsHide: true
     });
     return stdout.trim();

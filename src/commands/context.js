@@ -24,6 +24,7 @@ export async function contextWorkspace(args) {
       runtimes: manifest.runtimes,
       packageManagers: manifest.packageManagers,
       containers: manifest.containers,
+      inventory: inventorySummary(manifest.inventory),
       projectHints: manifest.projectHints,
       warnings,
       policy,
@@ -34,6 +35,15 @@ export async function contextWorkspace(args) {
     return;
   }
   console.log(renderContext(manifest, timeline, warnings, intents, policy));
+}
+
+function inventorySummary(inventory = {}) {
+  const tools = inventory.tools || {};
+  return {
+    mode: inventory.mode || "basic",
+    enabled: inventory.enabled === true,
+    groups: Object.fromEntries(Object.entries(tools).map(([name, items]) => [name, items.length]))
+  };
 }
 
 function contextDecision(warnings, intents) {

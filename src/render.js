@@ -28,6 +28,8 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
   pushMap(lines, "Runtimes", manifest.runtimes);
   pushMap(lines, "Package Managers", manifest.packageManagers);
   pushMap(lines, "Containers", manifest.containers);
+  lines.push("## Global Tool Inventory", "");
+  lines.push(...inventoryLines(manifest.inventory), "");
   lines.push("## Project Requirements And Hints", "");
   pushMap(lines, "Detected", manifest.projectHints);
   lines.push("## Drift And Warnings", "");
@@ -91,6 +93,7 @@ export function renderContext(manifest, timeline = [], warnings = [], intents = 
     `Node: ${manifest.runtimes.node || "not detected"}`,
     `Python: ${manifest.runtimes.python || manifest.runtimes.python3 || "not detected"}`,
     `Docker: ${manifest.containers.docker ? "available" : "not detected"}`,
+    `Inventory: ${manifest.inventory?.mode || "basic"}${manifest.inventory?.enabled ? " enabled" : " disabled"}`,
     `Policy Node: ${policy.node || "not set"}`,
     `Policy Python: ${policy.python || "not set"}`,
     `Policy Package Manager: ${policy.packageManager || "not set"}`,
@@ -128,6 +131,7 @@ export function renderHandoff(handoff) {
     `- Node: ${handoff.safeRuntime.node}`,
     `- Python: ${handoff.safeRuntime.python}`,
     `- Docker: ${handoff.safeRuntime.docker}`,
+    `- Inventory: ${handoff.inventory?.mode || "basic"}${handoff.inventory?.enabled ? " enabled" : " disabled"}`,
     "",
     "Open intents:",
     ...(handoff.openIntents.length ? handoff.openIntents.map((i) => `- ${i.actor}: ${i.action}${i.target ? ` (${i.target})` : ""}`) : ["- none"]),
@@ -203,6 +207,9 @@ const {manifest,timeline,warnings,intents,policy}=JSON.parse(document.getElement
 function esc(s){return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
 const entries=o=>Object.entries(o||{});
 const rows=o=>entries(o).map(([k,v])=>\`<tr><th>\${esc(k)}</th><td><code>\${esc(String(v))}</code></td></tr>\`).join('')||'<tr><td colspan="2">None detected</td></tr>';
+const inventoryGroups=manifest.inventory?.tools||{};
+const inventoryCount=Object.values(inventoryGroups).reduce((sum,items)=>sum+(Array.isArray(items)?items.length:0),0);
+const inventoryHtml=manifest.inventory?.enabled?('<table>'+Object.entries(inventoryGroups).map(([k,v])=>\`<tr><th>\${esc(k)}</th><td><code>\${Array.isArray(v)?v.length:0} tools</code></td></tr>\`).join('')+'</table>'):'<div class="okline">Deep global inventory is off. Run <code>aienvmp sync --deep</code> when an AI needs global tool awareness.</div>';
 const change=c=>c.type==='changed'?\`\${c.scope} \${c.key}: \${c.before} -> \${c.after}\`:\`\${c.scope} \${c.key}: \${c.type} \${c.after||c.before}\`;
 const timelineLabel=t=>t.change?change(t.change):(t.summary||t.action||t.type||'recorded change');
 const agentNames={agents:'Codex',claude:'Claude',gemini:'Gemini'};
@@ -246,6 +253,7 @@ document.getElementById('app').innerHTML=\`
     \${card('Package Managers',\`<span class="pill">\${entries(manifest.packageManagers).length} found</span>\`,\`<table>\${rows(manifest.packageManagers)}</table>\`)}
     \${card('Containers',manifest.containers?.docker?'<span class="pill">available</span>':'<span class="pill off">not detected</span>',\`<table>\${rows(manifest.containers)}</table>\`)}
     \${card('Project Hints',\`<span class="pill">\${entries(manifest.projectHints).length} hints</span>\`,\`<table>\${rows(manifest.projectHints)}</table>\`)}
+    \${card('Global Inventory',manifest.inventory?.enabled?'<span class="pill">deep</span>':'<span class="pill off">basic</span>',inventoryHtml)}
   </div>
   <aside>
     \${card('Environment Health',warnings.length?'<span class="pill warn">attention</span>':'<span class="pill">clear</span>',warnHtml)}
@@ -302,6 +310,17 @@ function contextLines(manifest, warnings, intents) {
     `- Docker: ${manifest.containers.docker ? "available" : "not detected"}`,
     `- Open intents: ${intents.length}`
   ];
+}
+
+function inventoryLines(inventory = {}) {
+  if (!inventory.enabled) return ["- Mode: basic", "- Deep global inventory is disabled. Run `aienvmp sync --deep` when needed."];
+  const groups = Object.entries(inventory.tools || {});
+  if (!groups.length) return ["- Mode: deep", "- No global tools detected by optional scanners."];
+  const lines = ["- Mode: deep"];
+  for (const [name, items] of groups) {
+    lines.push(`- ${name}: ${items.length} tools`);
+  }
+  return lines;
 }
 
 function policyLines(policy) {

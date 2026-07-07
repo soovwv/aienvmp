@@ -20,6 +20,12 @@ npx aienvmp context
 npx aienvmp handoff
 ```
 
+Optional deeper read-only inventory:
+
+```bash
+npx aienvmp sync --deep
+```
+
 ## Output
 
 ```text

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.6
+
+- Added optional `sync --deep` / `scan --deep` read-only global tool inventory.
+- Kept the default scan lightweight while exposing deep inventory summaries to `AIENV.md`, `context`, `handoff`, and the dashboard.
+- Added parsers for npm global packages, pipx tools, uv tools, and Homebrew package versions.
+
 ## 0.1.5
 
 - Added machine-readable trust states for observed, planned, changed, review, verified, and stale environment facts.
