@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.40
 
 - Added dependency handoff summaries so the next AI receives dependency read-set and protocol guidance directly in `handoff`.
 - Added a compact `nextAgent` hint to status/preflight JSON for safer AI-to-AI continuation.
