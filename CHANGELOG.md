@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Added a dependency read set to preflight, `AIENV.md`, and the dashboard so agents know which manifests and lockfiles to read before package or security changes.
+- Added an advisory dependency change protocol so agents follow the same intent, refresh, record, and handoff flow for package/security edits.
 
 ## 0.1.38
 

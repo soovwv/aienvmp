@@ -101,6 +101,16 @@ function preflightLines(preflight = {}) {
       lines.push(`- ${files}: ${item.ecosystem}/${item.manager}${risk} - ${item.reason}`);
     }
   }
+  const dependencyProtocol = preflight.dependencyChangeProtocol;
+  if (dependencyProtocol) {
+    lines.push("", "## Dependency Change Protocol", "");
+    lines.push(`- Mode: ${dependencyProtocol.mode}`);
+    lines.push(`- Package manager policy: ${dependencyProtocol.packageManagerPolicy}`);
+    lines.push(`- Intent: \`${dependencyProtocol.commands.recordIntent}\``);
+    lines.push(`- After change: \`${dependencyProtocol.commands.refreshAfterChange}\` then \`${dependencyProtocol.commands.recordAfterChange}\``);
+    lines.push(`- Handoff: \`${dependencyProtocol.commands.handoff}\``);
+    for (const item of dependencyProtocol.mustNotDo.slice(0, 3)) lines.push(`- Must not: ${item}`);
+  }
   return lines;
 }
 
@@ -365,6 +375,8 @@ const intentTargets=manifest.preflight?.intentTargets||[];
 const intentTargetsHtml=intentTargets.length?'<div class="timeline">'+intentTargets.slice(0,5).map(t=>\`<div class="event"><time>\${esc(t.target)}</time><div><b>\${esc(t.target)}</b> \${esc(t.reason||'Record this target before environment changes.')}\${t.command?\`<div class="path">\${esc(t.command)}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No specific target recommendation. Use <code>aienvmp intent --actor agent:id --action planned-change</code>.</div>';
 const dependencyReadSet=manifest.preflight?.dependencyReadSet||[];
 const dependencyReadSetHtml=dependencyReadSet.length?'<div class="timeline">'+dependencyReadSet.slice(0,5).map(d=>\`<div class="event"><time>\${esc(d.ecosystem||'deps')}</time><div><b>\${esc(d.manifest||'dependency files')}</b> <code>\${esc(d.manager||'unknown')}</code><div class="path">\${esc([d.manifest,...(d.lockfiles||[])].filter(Boolean).join(', '))}</div>\${d.riskPackages?.length?\`<div class="path">risk: \${esc(d.riskPackages.join(', '))}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No dependency files detected.</div>';
+const dependencyProtocol=manifest.preflight?.dependencyChangeProtocol||{};
+const dependencyProtocolHtml=dependencyProtocol.commands?'<table><tr><th>Mode</th><td><code>'+esc(dependencyProtocol.mode||'advisory')+'</code></td></tr><tr><th>Policy</th><td><code>'+esc(dependencyProtocol.packageManagerPolicy||'not-detected')+'</code></td></tr><tr><th>Intent</th><td><code>'+esc(dependencyProtocol.commands.recordIntent)+'</code></td></tr><tr><th>After</th><td><code>'+esc(dependencyProtocol.commands.refreshAfterChange)+'</code> then <code>'+esc(dependencyProtocol.commands.recordAfterChange)+'</code></td></tr></table><div class="timeline">'+(dependencyProtocol.mustNotDo||[]).slice(0,3).map(item=>\`<div class="event"><time>avoid</time><div>\${esc(item)}</div></div>\`).join('')+'</div>':'<div class="okline">No dependency change protocol available.</div>';
 const card=(title,badge,body)=>\`<section class="card"><div class="card-head"><h2>\${title}</h2>\${badge||''}</div>\${body}</section>\`;
 const reviewRequired=warnings.length>0||intents.length>0;
 const recentChanges=timeline.slice(-8).length;
@@ -411,6 +423,8 @@ document.getElementById('app').innerHTML=\`
     \${card('AI Intent Targets','<span class="pill">'+intentTargets.length+' targets</span>',intentTargetsHtml)}
     <div style="height:14px"></div>
     \${card('Dependency Read Set','<span class="pill">'+dependencyReadSet.length+' files</span>',dependencyReadSetHtml)}
+    <div style="height:14px"></div>
+    \${card('Dependency Protocol','<span class="pill">'+(dependencyProtocol.mode||'advisory')+'</span>',dependencyProtocolHtml)}
     <div style="height:14px"></div>
     \${card('AI Plan Artifacts',plan.markdown||plan.json?'<span class="pill">written</span>':'<span class="pill off">not written</span>',planHtml)}
     <div style="height:14px"></div>

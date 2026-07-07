@@ -33,6 +33,8 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.intentTargets[0].target, "dependency");
   assert.equal(status.dependencyReadSet[0].manifest, "package.json");
   assert.deepEqual(status.dependencyReadSet[0].lockfiles, ["package-lock.json"]);
+  assert.equal(status.dependencyChangeProtocol.mode, "advisory");
+  assert.equal(status.dependencyChangeProtocol.commands.recordIntent, "aienvmp intent --actor agent:id --action planned-change --target dependency");
   assert.equal(status.commands.recordIntent, "aienvmp intent --actor agent:id --action planned-change --target dependency");
   assert.equal(status.enforcementProfile.defaultMode, "advisory");
   assert.equal(status.enforcementProfile.localOperation, "non-blocking");

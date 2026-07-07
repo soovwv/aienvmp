@@ -44,6 +44,7 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.match(aiEnv, /10-Second AI Flow/);
   assert.match(aiEnv, /Recommended Intent Targets/);
   assert.match(aiEnv, /Dependency Read Set/);
+  assert.match(aiEnv, /Dependency Change Protocol/);
   assert.match(aiEnv, /planned-change --target dependency/);
   const status = JSON.parse(await fs.readFile(path.join(dir, ".aienvmp", "status.json"), "utf8"));
   assert.equal(status.schemaVersion, 1);

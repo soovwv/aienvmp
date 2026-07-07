@@ -62,6 +62,7 @@ Trust states are machine-readable: `observed`, `planned`, `changed`, `review`, `
 `status`, `context`, `plan`, and `handoff` share the same AI preflight contract.
 Preflight also recommends the intent target, so agents do not guess between runtime, package manager, dependency, Docker, or coordination changes.
 It also lists dependency manifests and lockfiles to read before package or security changes.
+Dependency changes stay advisory: record intent, refresh with `sync`, then record what changed.
 The dashboard shows the same intent target guidance for human review.
 
 AI agents can observe, plan, and record. Only a human or CI should mark environment facts as verified.

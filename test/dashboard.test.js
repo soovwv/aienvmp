@@ -141,6 +141,16 @@ test("renderDashboard includes the audit summary surface", () => {
         riskPackages: ["express"],
         reason: "Read before dependency or security remediation; vulnerable packages are linked to this manifest."
       }],
+      dependencyChangeProtocol: {
+        mode: "advisory",
+        packageManagerPolicy: "clear",
+        commands: {
+          recordIntent: "aienvmp intent --actor agent:id --action planned-change --target dependency",
+          refreshAfterChange: "aienvmp sync",
+          recordAfterChange: "aienvmp record --actor agent:id --summary dependency-change --target dependency"
+        },
+        mustNotDo: ["Do not switch package managers because another lockfile exists without user approval."]
+      },
       enforcementProfile: {
         defaultMode: "advisory",
         localOperation: "non-blocking",
@@ -170,6 +180,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /planned-change --target dependency/);
   assert.match(html, /Dependency Read Set/);
   assert.match(html, /package-lock\.json/);
+  assert.match(html, /Dependency Protocol/);
+  assert.match(html, /dependency-change --target dependency/);
   assert.match(html, /AI Plan Artifacts/);
   assert.match(html, /plan\.md/);
   assert.match(html, /Remediation Steps/);
@@ -257,6 +269,7 @@ test("dashWorkspace links written plan artifacts", async () => {
   assert.match(html, /AI Intent Targets/);
   assert.match(html, /planned-change --target node/);
   assert.match(html, /Dependency Read Set/);
+  assert.match(html, /Dependency Protocol/);
   assert.match(html, /href="plan\.md"/);
   assert.match(html, /href="plan\.json"/);
   assert.match(html, /Remediation Steps/);

@@ -10,6 +10,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
   const topAction = actions[0] || null;
   const intentTargets = recommendedIntentTargets(manifest, warnings, intents);
   const dependencyReadSet = dependencyPreflightReadSet(manifest);
+  const dependencyChangeProtocol = dependencyProtocol(manifest, dependencyReadSet);
   return {
     schemaVersion: 1,
     state,
@@ -48,6 +49,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
     quickstart: agentQuickstart(decision.reviewRequired),
     intentTargets,
     dependencyReadSet,
+    dependencyChangeProtocol,
     artifacts: preflightArtifacts(),
     readOrder: [
       ".aienvmp/status.json",
@@ -67,6 +69,33 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
     },
     topAction,
     nextCommand: topAction?.command || decision.nextCommand
+  };
+}
+
+function dependencyProtocol(manifest = {}, dependencyReadSet = []) {
+  const pmPolicy = manifest.lightSbom?.packageManagerPolicy || {};
+  return {
+    mode: "advisory",
+    appliesWhen: "Before package, lockfile, or vulnerability remediation changes.",
+    packageManagerPolicy: pmPolicy.status || "not-detected",
+    beforeChange: [
+      "Read dependencyReadSet manifests and lockfiles.",
+      "Check lightSbom.packageManagerPolicy before choosing npm, pnpm, yarn, pip, uv, or another manager.",
+      "Record dependency intent before edits."
+    ],
+    commands: {
+      readContext: "aienvmp context --json",
+      recordIntent: "aienvmp intent --actor agent:id --action planned-change --target dependency",
+      refreshAfterChange: "aienvmp sync",
+      recordAfterChange: "aienvmp record --actor agent:id --summary dependency-change --target dependency",
+      handoff: "aienvmp handoff --record --actor agent:id"
+    },
+    mustNotDo: [
+      "Do not switch package managers because another lockfile exists without user approval.",
+      "Do not delete lockfiles or rewrite dependency manifests only to satisfy a tool preference.",
+      "Do not run automatic fix commands without reviewing the dependency read set first."
+    ],
+    readSetCount: dependencyReadSet.length
   };
 }
 
