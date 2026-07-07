@@ -126,6 +126,13 @@ test("renderDashboard includes the audit summary surface", () => {
       matchedWarningCodes: ["node-version-mismatch"]
     }],
     preflight: {
+      contract: {
+        name: "aienvmp-preflight",
+        version: 1,
+        stability: "additive",
+        aiEntryFields: ["state", "nextAgent", "coordination", "dependencyReadSet"],
+        rule: "Consumers should ignore unknown fields."
+      },
       intentTargets: [{
         target: "dependency",
         reason: "Security findings are dependency-related; record dependency intent before remediation.",
@@ -196,6 +203,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Recommended Actions/);
   assert.match(html, /Review express/);
   assert.match(html, /AI Intent Targets/);
+  assert.match(html, /AI Contract/);
+  assert.match(html, /aienvmp-preflight/);
+  assert.match(html, /nextAgent/);
   assert.match(html, /dependency/);
   assert.match(html, /planned-change --target dependency/);
   assert.match(html, /Dependency Read Set/);

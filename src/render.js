@@ -415,6 +415,8 @@ const ciReadinessHtml=ciReadiness.length?'<table>'+ciReadiness.map(s=>\`<tr><th>
 const enforcementProfile=manifest.preflight?.enforcementProfile||{};
 const strictCommands=enforcementProfile.strictCommands||[];
 const enforcementHtml=\`<table><tr><th>Default</th><td><code>\${esc(enforcementProfile.defaultMode||'advisory')}</code></td></tr><tr><th>Local</th><td>\${esc(enforcementProfile.localOperation||'non-blocking')}</td></tr><tr><th>Strict</th><td>\${esc(enforcementProfile.strictUse||'CI or explicit checks only')}</td></tr><tr><th>Recommended</th><td><code>\${esc(enforcementProfile.recommendedStrictCommand||'aienvmp doctor --strict all')}</code></td></tr></table><div class="timeline">\${strictCommands.slice(0,4).map(cmd=>\`<div class="event"><time>CI</time><div><code>\${esc(cmd)}</code></div></div>\`).join('')}</div><div class="path">\${esc(enforcementProfile.reason||'Warnings stay advisory unless strict mode is requested.')}</div>\`;
+const contract=manifest.preflight?.contract||{};
+const contractHtml=contract.name?\`<table><tr><th>Name</th><td><code>\${esc(contract.name)}</code></td></tr><tr><th>Version</th><td><code>\${esc(contract.version||1)}</code></td></tr><tr><th>Stability</th><td><code>\${esc(contract.stability||'additive')}</code></td></tr><tr><th>AI fields</th><td>\${esc((contract.aiEntryFields||[]).join(', ')||'none')}</td></tr></table><div class="path">\${esc(contract.rule||'Ignore unknown fields.')}</div>\`:'<div class="okline">Run <code>aienvmp status --write</code> to include AI contract metadata.</div>';
 const intentTargets=manifest.preflight?.intentTargets||[];
 const intentTargetsHtml=intentTargets.length?'<div class="timeline">'+intentTargets.slice(0,5).map(t=>\`<div class="event"><time>\${esc(t.target)}</time><div><b>\${esc(t.target)}</b> \${esc(t.reason||'Record this target before environment changes.')}\${t.command?\`<div class="path">\${esc(t.command)}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No specific target recommendation. Use <code>aienvmp intent --actor agent:id --action planned-change</code>.</div>';
 const dependencyReadSet=manifest.preflight?.dependencyReadSet||[];
@@ -470,6 +472,8 @@ document.getElementById('app').innerHTML=\`
     \${card('Recommended Actions','<span class="pill">'+actions.length+' actions</span>',actionsHtml)}
     <div style="height:14px"></div>
     \${card('AI Intent Targets','<span class="pill">'+intentTargets.length+' targets</span>',intentTargetsHtml)}
+    <div style="height:14px"></div>
+    \${card('AI Contract','<span class="pill">'+(contract.stability||'additive')+'</span>',contractHtml)}
     <div style="height:14px"></div>
     \${card('Dependency Read Set','<span class="pill">'+dependencyReadSet.length+' files</span>',dependencyReadSetHtml)}
     <div style="height:14px"></div>
