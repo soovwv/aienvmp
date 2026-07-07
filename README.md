@@ -70,6 +70,6 @@ npm pack --dry-run
 
 ## Links
 
-[Roadmap](ROADMAP.md) / [Security](SECURITY.md) / [Contributing](CONTRIBUTING.md)
+[Roadmap](ROADMAP.md) / [Security](SECURITY.md) / [Troubleshooting](TROUBLESHOOTING.md) / [Bugfix Log](BUGFIXES.md) / [Contributing](CONTRIBUTING.md)
 
 Apache-2.0

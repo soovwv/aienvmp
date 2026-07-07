@@ -8,6 +8,7 @@
 - Added machine-readable sync/context improvements for AI and CI integrations.
 - Simplified README for faster first-time understanding.
 - Kept AGENTS.md, CLAUDE.md, and GEMINI.md integration explicit through `aienvmp snippet`.
+- Added troubleshooting and bugfix logs for operational issue tracking.
 
 ## 0.1.1
 
