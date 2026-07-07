@@ -7,6 +7,13 @@ export async function doctorWorkspace(args) {
   const manifest = await readJson(manifestPath(dir));
   if (!manifest) throw new Error("missing manifest; run `aienvmp scan` first");
   const warnings = diagnose(manifest);
+  if (args.json) {
+    console.log(JSON.stringify({
+      status: warnings.length ? "warning" : "ok",
+      warnings
+    }, null, 2));
+    return;
+  }
   if (!warnings.length) {
     console.log("doctor: no blocking environment warnings detected");
     return;

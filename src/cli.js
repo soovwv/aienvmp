@@ -7,6 +7,7 @@ import { dashWorkspace } from "./commands/dash.js";
 import { contextWorkspace } from "./commands/context.js";
 import { recordWorkspace } from "./commands/record.js";
 import { intentWorkspace } from "./commands/intent.js";
+import { resolveWorkspace } from "./commands/resolve.js";
 
 const commands = new Map([
   ["init", initWorkspace],
@@ -17,11 +18,18 @@ const commands = new Map([
   ["dash", dashWorkspace],
   ["context", contextWorkspace],
   ["record", recordWorkspace],
-  ["intent", intentWorkspace]
+  ["intent", intentWorkspace],
+  ["resolve", resolveWorkspace]
 ]);
+
+const version = "0.1.0";
 
 export async function main(argv) {
   const [command, ...rest] = argv;
+  if (command === "-v" || command === "--version" || command === "version") {
+    console.log(version);
+    return;
+  }
   if (!command || command === "-h" || command === "--help") {
     printUsage();
     return;
@@ -61,12 +69,13 @@ function printUsage() {
 Usage:
   aienvmp init [--dir .]
   aienvmp scan [--dir .]
-  aienvmp context [--dir .]
+  aienvmp context [--dir .] [--json]
   aienvmp intent [--dir .] --actor agent:codex --action "install pnpm"
+  aienvmp resolve [--dir .] --actor human:you --id <intent-id> [--status resolved|cancelled]
   aienvmp record [--dir .] --actor agent:codex --summary "updated .nvmrc" [--target node] [--before 20] [--after 24]
   aienvmp compile [--dir .] [--agents all|codex,claude,gemini]
   aienvmp diff [--dir .]
-  aienvmp doctor [--dir .]
+  aienvmp doctor [--dir .] [--json]
   aienvmp dash [--dir .] [--open]
 `);
 }

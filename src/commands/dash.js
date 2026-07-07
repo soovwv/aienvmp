@@ -3,7 +3,7 @@ import { execFile } from "node:child_process";
 import path from "node:path";
 import { diagnose } from "../doctor.js";
 import { readJson } from "../fsutil.js";
-import { readJsonl, readTimeline } from "../timeline.js";
+import { openIntents, readJsonl, readTimeline } from "../timeline.js";
 import { dashboardPath, intentsPath, manifestPath, timelinePath, workspaceDir } from "../paths.js";
 import { renderDashboard } from "../render.js";
 
@@ -12,7 +12,7 @@ export async function dashWorkspace(args) {
   const manifest = await readJson(manifestPath(dir));
   if (!manifest) throw new Error("missing manifest; run `aienvmp scan` first");
   const timeline = await readTimeline(timelinePath(dir));
-  const intents = await readJsonl(intentsPath(dir));
+  const intents = openIntents(await readJsonl(intentsPath(dir)));
   const warnings = diagnose(manifest);
   const html = renderDashboard(manifest, timeline, warnings, intents);
   const out = dashboardPath(dir);

@@ -6,6 +6,14 @@
   "bin": {
     "aienvmp": "./bin/aienvmp.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/soovwv/aienvmp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/soovwv/aienvmp/issues"
+  },
+  "homepage": "https://github.com/soovwv/aienvmp#readme",
   "files": [
     "bin",
     "src",
@@ -15,7 +23,9 @@
     "CONTRIBUTING.md"
   ],
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "pack:dry": "npm pack --dry-run",
+    "smoke": "node bin/aienvmp.js --version && node bin/aienvmp.js --help"
   },
   "keywords": [
     "ai",
@@ -23,6 +33,9 @@
     "env-map",
     "sbom",
     "runtime",
+    "agent",
+    "agentic",
+    "devops",
     "codex",
     "claude",
     "gemini"

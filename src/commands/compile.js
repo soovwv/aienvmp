@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { diagnose } from "../doctor.js";
 import { readJson, replaceMarkerBlock } from "../fsutil.js";
-import { readJsonl, readTimeline } from "../timeline.js";
+import { openIntents, readJsonl, readTimeline } from "../timeline.js";
 import { aiEnvPath, intentsPath, manifestPath, timelinePath, workspaceDir } from "../paths.js";
 import { markerBegin, markerEnd, renderAgentBlock, renderAIEnv } from "../render.js";
 
@@ -17,7 +17,7 @@ export async function compileWorkspace(args) {
   const manifest = await readJson(manifestPath(dir));
   if (!manifest) throw new Error("missing manifest; run `aienvmp scan` first");
   const timeline = await readTimeline(timelinePath(dir));
-  const intents = await readJsonl(intentsPath(dir));
+  const intents = openIntents(await readJsonl(intentsPath(dir)));
   const warnings = diagnose(manifest);
   const rendered = renderAIEnv(manifest, timeline, warnings, intents);
   await fs.writeFile(aiEnvPath(dir), rendered, "utf8");
