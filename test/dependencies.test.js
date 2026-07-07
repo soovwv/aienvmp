@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { parsePyprojectDependencies, parseRequirementLine, scanDependencySnapshot } from "../src/dependencies.js";
+import { linkVulnerableDependencies, parsePyprojectDependencies, parseRequirementLine, scanDependencySnapshot } from "../src/dependencies.js";
 
 test("parseRequirementLine separates package name and version spec", () => {
   assert.deepEqual(parseRequirementLine("django==3.2.0"), { name: "django", version: "==3.2.0" });
@@ -35,4 +35,27 @@ test("scanDependencySnapshot reads node and python manifests without installing"
   assert.deepEqual(snapshot.summary.ecosystems, ["npm", "python"]);
   assert.deepEqual(snapshot.manifests, ["package.json", "requirements.txt"]);
   assert.deepEqual(snapshot.packages.map((pkg) => pkg.name), ["express", "vitest", "django"]);
+});
+
+test("linkVulnerableDependencies marks direct dependency matches", () => {
+  const security = linkVulnerableDependencies({
+    enabled: true,
+    topPackages: [
+      { name: "express", scanner: "npm-audit", severity: "high" },
+      { name: "transitive-only", scanner: "npm-audit", severity: "moderate" },
+      { name: "django", scanner: "pip-audit", severity: "unknown" }
+    ]
+  }, {
+    packages: [
+      { ecosystem: "npm", name: "express", version: "^4.18.0", manifest: "package.json", group: "dependencies" },
+      { ecosystem: "python", name: "django", version: "==3.2.0", manifest: "requirements.txt", group: "requirements" }
+    ]
+  });
+
+  assert.equal(security.topPackages[0].directDependency, true);
+  assert.equal(security.topPackages[0].dependency.manifest, "package.json");
+  assert.equal(security.topPackages[1].directDependency, false);
+  assert.equal(security.topPackages[1].dependency, null);
+  assert.equal(security.topPackages[2].directDependency, true);
+  assert.equal(security.topPackages[2].dependency.manifest, "requirements.txt");
 });

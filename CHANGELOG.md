@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.28
+
+- Linked vulnerable package summaries to the dependency snapshot when the package is directly declared.
+- Added direct dependency metadata to remediation steps and dashboard security rows.
+- Kept the linkage read-only and file-based so security context stays lightweight and non-disruptive.
+
 ## 0.1.27
 
 - Added a read-only dependency snapshot to the manifest, context, AIENV.md, and dashboard.

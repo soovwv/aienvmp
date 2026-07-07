@@ -28,13 +28,19 @@ test("renderDashboard includes the audit summary surface", () => {
       mode: "security",
       enabled: true,
       summary: { total: 1, critical: 0, high: 1, moderate: 0, low: 0, info: 0 },
-      topPackages: [{ name: "lodash", severity: "high", fixAvailable: true }]
+      topPackages: [{
+        name: "express",
+        severity: "high",
+        fixAvailable: true,
+        directDependency: true,
+        dependency: { ecosystem: "npm", manifest: "package.json", group: "dependencies", version: "^4.18.0" }
+      }]
     },
     recommendedActions: [{
       id: "review-security-remediation",
       priority: "high",
       category: "security",
-      summary: "Review lodash before dependency changes.",
+      summary: "Review express before dependency changes.",
       command: "aienvmp context --json"
     }],
     planArtifacts: {
@@ -42,11 +48,13 @@ test("renderDashboard includes the audit summary surface", () => {
       json: ".aienvmp/plan.json"
     },
     planRemediation: [{
-      package: "lodash",
+      package: "express",
       severity: "high",
       fixVersions: ["4.17.21"],
       fixAvailable: true,
-      advisories: ["GHSA-test"]
+      advisories: ["GHSA-test"],
+      directDependency: true,
+      dependency: { ecosystem: "npm", manifest: "package.json", group: "dependencies", version: "^4.18.0" }
     }],
     planEnvironment: [{
       code: "node-version-mismatch",
@@ -79,7 +87,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Trust/);
   assert.match(html, /AI Handoff/);
   assert.match(html, /Recommended Actions/);
-  assert.match(html, /Review lodash/);
+  assert.match(html, /Review express/);
   assert.match(html, /AI Plan Artifacts/);
   assert.match(html, /plan\.md/);
   assert.match(html, /Remediation Steps/);
@@ -93,7 +101,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Dependency Snapshot/);
   assert.match(html, /express/);
   assert.match(html, /Security Summary/);
-  assert.match(html, /lodash/);
+  assert.match(html, /package\.json/);
+  assert.match(html, /express/);
 });
 
 test("dashWorkspace links written plan artifacts", async () => {

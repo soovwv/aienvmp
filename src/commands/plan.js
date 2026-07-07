@@ -175,6 +175,8 @@ function remediationSteps(security = {}) {
       package: pkg.name,
       scanner: pkg.scanner || "unknown",
       severity: pkg.severity || "unknown",
+      directDependency: pkg.directDependency === true,
+      dependency: pkg.dependency || null,
       fixAvailable: pkg.fixAvailable === true,
       fixVersions,
       advisories,

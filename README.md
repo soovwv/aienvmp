@@ -10,7 +10,7 @@
 
 It helps Codex, Claude, Gemini, and humans avoid silent Node, Python, package manager, dependency, Docker, and security drift.
 
-Core loop: scan once, give AI a shared decision contract, write a read-only action plan, and hand off safe next steps.
+Core loop: scan once, link runtime/dependency/security context, give AI a shared decision contract, and hand off safe next steps.
 
 ## Quick Start
 

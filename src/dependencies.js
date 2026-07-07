@@ -23,6 +23,26 @@ export async function scanDependencySnapshot(dir) {
   };
 }
 
+export function linkVulnerableDependencies(security = {}, snapshot = {}) {
+  const dependencyIndex = new Map((snapshot.packages || []).map((pkg) => [dependencyKey(pkg.ecosystem, pkg.name), pkg]));
+  return {
+    ...security,
+    topPackages: (security.topPackages || []).map((pkg) => {
+      const dependency = dependencyIndex.get(dependencyKey(scannerEcosystem(pkg.scanner), pkg.name));
+      return {
+        ...pkg,
+        directDependency: Boolean(dependency),
+        dependency: dependency ? {
+          ecosystem: dependency.ecosystem,
+          manifest: dependency.manifest,
+          group: dependency.group,
+          version: dependency.version
+        } : null
+      };
+    })
+  };
+}
+
 async function scanNodeDependencies(dir) {
   const file = path.join(dir, "package.json");
   if (!(await exists(file))) return { manifests: [], packages: [] };
@@ -100,6 +120,15 @@ export function parseRequirementLine(line) {
     name: match?.[1] || cleaned,
     version: (match?.[2] || "unspecified").trim() || "unspecified"
   };
+}
+
+function scannerEcosystem(scanner = "") {
+  if (String(scanner).includes("pip")) return "python";
+  return "npm";
+}
+
+function dependencyKey(ecosystem = "", name = "") {
+  return `${String(ecosystem).toLowerCase()}:${String(name).toLowerCase()}`;
 }
 
 export function parsePyprojectDependencies(raw) {
