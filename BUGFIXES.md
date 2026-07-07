@@ -34,6 +34,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: npm and Python security summaries now include fix versions and advisory references when scanners provide them.
 - Verification: parser tests cover npm remediation objects and pip-audit advisory ids; Windows and macOS tarball tests completed `sync --security`.
 
+### Advisory doctor behavior needed clearer verification
+
+- Issue: `doctor` warnings can look like failures to AI/CI consumers even though local operation should stay non-blocking by default.
+- Fix: `doctor --json` now exposes `exitBehavior`, and enforcement gate metadata explains when strict mode sets a failure exit code.
+- Verification: Windows and macOS candidate smoke checks confirmed default `doctor --json` exits successfully while `doctor --strict policy --json` fails on matching policy warnings.
+
 ## Template
 
 ### Title

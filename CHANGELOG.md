@@ -7,6 +7,7 @@
 - Surfaced enforcement gate details in context, plan, and dashboard outputs.
 - Extended the GitHub Action to write `.aienvmp/schema.json` and `.aienvmp/doctor.json` artifacts by default.
 - Clarified README guidance for advisory-by-default behavior and opt-in strict/CI failure.
+- Documented advisory doctor exit behavior and strict verification steps in troubleshooting and bugfix notes.
 
 ## 0.1.41
 

@@ -101,3 +101,33 @@ Then retry:
 ```bash
 npx aienvmp context
 ```
+
+## Doctor shows warnings but exits successfully
+
+Symptom:
+
+```text
+npx aienvmp doctor --json
+# status: warning
+# exit code: 0
+```
+
+Cause:
+
+- Local checks are advisory by default so shared machines are not blocked unexpectedly.
+
+Fail CI explicitly:
+
+```bash
+npx aienvmp doctor --strict policy
+npx aienvmp doctor --strict security
+npx aienvmp doctor --strict coordination
+```
+
+Check the machine-readable rule:
+
+```bash
+npx aienvmp doctor --json
+```
+
+Read `exitBehavior` and `strict.gate` to see when a failure exit code will be set.
