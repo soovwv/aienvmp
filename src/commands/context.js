@@ -63,11 +63,19 @@ function inventorySummary(inventory = {}) {
 }
 
 function contextDecision(warnings, intents) {
+  const warningCodes = warnings.map((warning) => warning.code);
   const reviewRequired = warnings.length > 0 || intents.length > 0;
+  const canChangeEnvironmentWithoutReview = !reviewRequired;
+  const mode = reviewRequired ? "review-first" : "project-local-work";
   return {
+    schemaVersion: 1,
+    mode,
     canProceed: !reviewRequired,
+    canContinueProjectLocalWork: true,
+    canChangeEnvironmentWithoutReview,
     safeForProjectLocalWork: warnings.length === 0,
     reviewRequired,
+    warningCodes,
     environmentChangeRequiresIntent: true,
     globalEnvironmentChangesRequireUserApproval: true,
     pendingIntentCount: intents.length,
@@ -80,6 +88,13 @@ function contextDecision(warnings, intents) {
     recommendedNextActions: warnings.length
       ? ["review warnings", "ask the user before environment changes", "record intent before changes"]
       : ["continue with project-local work", "run aienvmp intent before environment changes"],
-    nextCommand: warnings.length ? "review warnings before changing environment" : "continue with project-local work"
+    requiredCommands: {
+      beforeEnvironmentChange: "aienvmp intent --actor agent:id --action planned-change --target <runtime|package-manager|docker>",
+      refreshAfterChange: "aienvmp sync",
+      recordAfterChange: "aienvmp record --actor agent:id --summary what-changed",
+      handoff: "aienvmp handoff --record --actor agent:id",
+      reviewPlan: "aienvmp plan"
+    },
+    nextCommand: reviewRequired ? "aienvmp plan" : "continue project-local work; use aienvmp intent before environment changes"
   };
 }

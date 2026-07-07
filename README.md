@@ -80,7 +80,7 @@ The dashboard shows which strict scopes are CI-ready before you enforce them.
 ```bash
 aienvmp sync              # update env map, light SBOM, ledger, dashboard
 aienvmp context           # AI preflight brief
-aienvmp context --json    # AI decision context + actions + compact step summary
+aienvmp context --json    # AI decision contract + actions + compact step summary
 aienvmp plan              # read-only AI action plan for drift and remediation
 aienvmp handoff           # next-agent handoff summary + recommended actions
 aienvmp intent            # record a planned env change

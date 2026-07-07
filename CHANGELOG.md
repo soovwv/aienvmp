@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.25
+
+- Added a more explicit AI decision contract to `context --json`.
+- Included project-local work allowance, environment-change review state, warning codes, and required follow-up commands.
+- Clarified that local project work can continue while environment changes remain intent-gated and review-oriented.
+
 ## 0.1.24
 
 - Added a dashboard CI Readiness card for `doctor --strict security|policy|coordination|all`.

@@ -32,6 +32,12 @@ test("contextWorkspace JSON includes compact step summary", async () => {
 
   const json = JSON.parse(output);
   assert.equal(json.status, "review-required");
+  assert.equal(json.decision.schemaVersion, 1);
+  assert.equal(json.decision.mode, "review-first");
+  assert.equal(json.decision.canContinueProjectLocalWork, true);
+  assert.equal(json.decision.canChangeEnvironmentWithoutReview, false);
+  assert.deepEqual(json.decision.warningCodes, ["node-version-mismatch"]);
+  assert.equal(json.decision.requiredCommands.reviewPlan, "aienvmp plan");
   assert.equal(json.stepSummary.environment[0].code, "node-version-mismatch");
   assert.deepEqual(json.stepSummary.remediation, []);
 });

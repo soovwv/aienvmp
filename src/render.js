@@ -92,6 +92,7 @@ export function renderContext(manifest, timeline = [], warnings = [], intents = 
     "",
     `Status: ${status}`,
     `Next: ${next}`,
+    "Project-local work: allowed; environment changes require intent and review when warnings or open intents exist.",
     `Trust: ${manifest.trust?.state || "observed"} (verified requires human or CI)`,
     `Workspace: ${manifest.workspace.path}`,
     `Node: ${manifest.runtimes.node || "not detected"}`,
