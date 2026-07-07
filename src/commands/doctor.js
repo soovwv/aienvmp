@@ -6,7 +6,7 @@ import { loadPolicy, policyWarnings } from "../policy.js";
 export async function doctorWorkspace(args) {
   const dir = workspaceDir(args);
   const manifest = await readJson(manifestPath(dir));
-  if (!manifest) throw new Error("missing manifest; run `aienvmp scan` first");
+  if (!manifest) throw new Error("missing manifest; run `aienvmp sync` first");
   const policy = await loadPolicy(dir);
   const warnings = [...diagnose(manifest), ...policyWarnings(manifest, policy)];
   if (args.json) {

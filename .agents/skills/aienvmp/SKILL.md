@@ -45,8 +45,7 @@ Use this for changes such as:
 Refresh the environment map:
 
 ```bash
-npx aienvmp scan
-npx aienvmp compile
+npx aienvmp sync
 ```
 
 Record what changed:

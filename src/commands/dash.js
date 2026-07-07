@@ -11,7 +11,7 @@ import { loadPolicy, policyWarnings } from "../policy.js";
 export async function dashWorkspace(args) {
   const dir = workspaceDir(args);
   const manifest = await readJson(manifestPath(dir));
-  if (!manifest) throw new Error("missing manifest; run `aienvmp scan` first");
+  if (!manifest) throw new Error("missing manifest; run `aienvmp sync` first");
   const timeline = await readTimeline(timelinePath(dir));
   const intents = openIntents(await readJsonl(intentsPath(dir)));
   const policy = await loadPolicy(dir);
@@ -20,8 +20,9 @@ export async function dashWorkspace(args) {
   const out = dashboardPath(dir);
   await fs.mkdir(path.dirname(out), { recursive: true });
   await fs.writeFile(out, html, "utf8");
-  console.log(`dashboard: ${out}`);
+  if (!args.quiet) console.log(`dashboard: ${out}`);
   if (args.open) openFile(out);
+  return { dashboard: out };
 }
 
 function openFile(file) {

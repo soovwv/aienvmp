@@ -6,7 +6,7 @@ export async function diffWorkspace(args) {
   const dir = workspaceDir(args);
   const previous = await readJson(previousManifestPath(dir));
   const current = await readJson(manifestPath(dir));
-  if (!current) throw new Error("missing manifest; run `aienvmp scan` first");
+  if (!current) throw new Error("missing manifest; run `aienvmp sync` first");
   const changes = diffManifests(previous, current);
   if (!changes.length) {
     console.log("no environment changes detected");

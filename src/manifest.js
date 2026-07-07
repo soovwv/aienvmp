@@ -7,8 +7,13 @@ import { exists } from "./fsutil.js";
 export async function buildManifest(dir) {
   const now = new Date().toISOString();
   const manifest = {
+    schemaName: "aienvmp.runtime-sbom",
     schemaVersion: 1,
     generatedAt: now,
+    generatedBy: {
+      name: "aienvmp",
+      command: "aienvmp sync"
+    },
     workspace: {
       path: dir,
       name: path.basename(dir)
@@ -24,10 +29,51 @@ export async function buildManifest(dir) {
       preflightCommand: "aienvmp context",
       intentCommand: "aienvmp intent --actor <agent:id> --action <planned-change>",
       recordCommand: "aienvmp record --actor <agent:id> --summary <what-changed>",
-      afterEnvironmentChange: ["aienvmp scan", "aienvmp compile"],
+      afterEnvironmentChange: ["aienvmp sync"],
       globalRuntimeChangeRequiresUserApproval: true,
       globalInstallPolicy: "ask-first",
       projectLocalChanges: "allowed-when-task-requires"
+    },
+    evidence: {
+      runtimes: {
+        node: "node --version",
+        python: "python --version",
+        python3: "python3 --version",
+        go: "go version",
+        java: "java -version",
+        rustc: "rustc --version"
+      },
+      packageManagers: {
+        npm: "npm --version",
+        pnpm: "pnpm --version",
+        yarn: "yarn --version",
+        uv: "uv --version",
+        pip: "pip --version",
+        pipx: "pipx --version",
+        mise: "mise --version",
+        asdf: "asdf --version",
+        pyenv: "pyenv --version",
+        nvm: "nvm --version",
+        fnm: "fnm --version",
+        volta: "volta --version"
+      },
+      containers: {
+        docker: "docker --version",
+        compose: "docker compose version or docker-compose --version"
+      },
+      projectHints: [
+        ".nvmrc",
+        ".python-version",
+        "mise.toml",
+        ".tool-versions",
+        "package.json",
+        "pyproject.toml",
+        "requirements.txt",
+        "Dockerfile",
+        "package-lock.json",
+        "pnpm-lock.yaml",
+        "yarn.lock"
+      ]
     }
   };
   return manifest;

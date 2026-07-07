@@ -22,7 +22,15 @@ export async function scanWorkspace(args) {
       change
     });
   }
-  console.log(`scanned ${dir}`);
-  console.log(`manifest: ${currentPath}`);
-  console.log(`changes: ${changes.length}`);
+  if (!args.quiet) {
+    console.log(`scanned ${dir}`);
+    console.log(`manifest: ${currentPath}`);
+    console.log(`changes: ${changes.length}`);
+  }
+  return {
+    dir,
+    manifest: currentPath,
+    timeline: timelinePath(dir),
+    changes: changes.length
+  };
 }

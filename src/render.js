@@ -13,7 +13,7 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
   lines.push("2. Prefer project-local version files such as `.nvmrc`, `.python-version`, `mise.toml`, and `.tool-versions`.");
   lines.push("3. Ask the user before changing global environment state.");
   lines.push("4. Record planned environment changes with `aienvmp intent --actor <agent:id> --action <planned-change>`.");
-  lines.push("5. After environment changes, run `aienvmp scan && aienvmp compile`.");
+  lines.push("5. After environment changes, run `aienvmp sync`.");
   lines.push("6. Record what changed with `aienvmp record --actor <agent:id> --summary <what-changed>`.", "");
   lines.push("## Current Policy", "");
   lines.push(...policyLines(policy));
@@ -57,31 +57,32 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
   return lines.join("\n");
 }
 
-export function renderAgentBlock(manifest) {
-  const node = manifest.runtimes.node || "not detected";
-  const python = manifest.runtimes.python || manifest.runtimes.python3 || "not detected";
-  const docker = manifest.containers.docker ? "available" : "not detected";
-  return `AI environment map is maintained by aienvmp.
+export function renderAgentPointer(target = "agents") {
+  const label = target === "claude" ? "Claude" : target === "gemini" ? "Gemini" : "AI agents";
+  return `## aienvmp Environment Map
 
-Before changing runtimes, package managers, Docker, or global packages:
-1. Read AIENV.md.
-2. Run \`aienvmp context\`.
-3. Ask the user before global environment changes.
-4. Record planned changes with \`aienvmp intent\`.
-5. After changes, run \`aienvmp scan && aienvmp compile\`.
+${label} should use \`aienvmp\` as the workspace environment source of truth.
+
+Before changing runtimes, package managers, Docker settings, global packages, or environment policy:
+
+1. Run \`aienvmp context\`.
+2. Read \`AIENV.md\`.
+3. If the context says \`review-required\`, ask the user before changing the environment.
+4. Record planned environment changes with \`aienvmp intent\`.
+5. After environment changes, run \`aienvmp sync\`.
 6. Record what changed with \`aienvmp record\`.
 
-Default detected tools:
-- Node.js: ${node}
-- Python: ${python}
-- Docker: ${docker}`;
+\`aienvmp\` does not replace this instruction file. It provides the live env map, lightweight runtime SBOM, intent log, timeline, and dashboard.`;
 }
 
 export function renderContext(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
+  const status = warnings.length ? "review-required" : "clear";
+  const next = warnings.length ? "Review warnings before changing the environment." : "Continue with project-local work. Record intent before environment changes.";
   return [
     "# AI Preflight Context",
     "",
-    `Status: ${warnings.length ? "review-required" : "clear"}`,
+    `Status: ${status}`,
+    `Next: ${next}`,
     `Workspace: ${manifest.workspace.path}`,
     `Node: ${manifest.runtimes.node || "not detected"}`,
     `Python: ${manifest.runtimes.python || manifest.runtimes.python3 || "not detected"}`,
@@ -95,7 +96,7 @@ export function renderContext(manifest, timeline = [], warnings = [], intents = 
     "- Treat policy mismatches as review-required, not as permission to break ongoing operations.",
     "- Prefer project-local version files and local environments.",
     "- Before planned env changes, run `aienvmp intent --actor <agent:id> --action <planned-change>`.",
-    "- After env changes, run `aienvmp scan && aienvmp compile`.",
+    "- After env changes, run `aienvmp sync`.",
     "- Then run `aienvmp record --actor <agent:id> --summary <what-changed>`.",
     "",
     "Warnings:",
@@ -159,9 +160,8 @@ const entries=o=>Object.entries(o||{});
 const rows=o=>entries(o).map(([k,v])=>\`<tr><th>\${esc(k)}</th><td><code>\${esc(String(v))}</code></td></tr>\`).join('')||'<tr><td colspan="2">None detected</td></tr>';
 const change=c=>c.type==='changed'?\`\${c.scope} \${c.key}: \${c.before} -> \${c.after}\`:\`\${c.scope} \${c.key}: \${c.type} \${c.after||c.before}\`;
 const timelineLabel=t=>t.change?change(t.change):(t.summary||t.action||t.type||'recorded change');
-const totalTools=entries(manifest.runtimes).length+entries(manifest.packageManagers).length+entries(manifest.containers).length;
 const agentNames={agents:'Codex',claude:'Claude',gemini:'Gemini'};
-const agentCards=Object.entries(agentNames).map(([key,label])=>\`<div class="agent"><strong>\${label}</strong><span>\${manifest.agentFiles?.[key]?'connected':'not connected'}</span></div>\`).join('');
+const agentCards=Object.entries(agentNames).map(([key,label])=>\`<div class="agent"><strong>\${label}</strong><span>\${manifest.agentFiles?.[key]?'instruction file detected':'not detected'}</span></div>\`).join('');
 const warnHtml=warnings.length?'<div class="warnings">'+warnings.map(w=>\`<div class="warning">\${esc(w.message)}</div>\`).join('')+'</div>':'<div class="okline">No blocking environment warnings detected.</div>';
 const timelineHtml=timeline.length?'<div class="timeline">'+timeline.slice(-8).reverse().map(t=>\`<div class="event"><time>\${esc(t.at.replace('T',' ').slice(0,16))}</time><div><b>\${esc(t.actor||'system')}</b> \${esc(timelineLabel(t))}</div></div>\`).join('')+'</div>':'<div class="okline">No previous environment changes recorded.</div>';
 const intentsHtml=intents.length?'<div class="timeline">'+intents.slice(-6).reverse().map(i=>\`<div class="event"><time>\${esc(i.at.replace('T',' ').slice(0,16))}</time><div><b>\${esc(i.actor)}</b> plans \${esc(i.action)}</div></div>\`).join('')+'</div>':'<div class="okline">No pending agent intents recorded.</div>';
@@ -196,7 +196,7 @@ document.getElementById('app').innerHTML=\`
     <div style="height:14px"></div>
     \${card('Agent Intents','<span class="pill">'+intents.length+' open</span>',intentsHtml)}
     <div style="height:14px"></div>
-    \${card('Agent Integration','<span class="pill">'+totalTools+' tools</span>','<div class="agents">'+agentCards+'</div>')}
+    \${card('Agent Pointers','<span class="pill">'+entries(manifest.agentFiles).filter(([,v])=>v).length+' detected</span>','<div class="agents">'+agentCards+'</div>')}
     <div style="height:14px"></div>
     \${card('Snapshot','',\`<table><tr><th>OS</th><td>\${esc(manifest.os.platform)} \${esc(manifest.os.release)} \${esc(manifest.os.arch)}</td></tr><tr><th>Shell</th><td>\${esc(manifest.os.shell||'unknown')}</td></tr><tr><th>Workspace</th><td><div class="path">\${esc(manifest.workspace.path)}</div></td></tr></table>\`)}
   </aside>
@@ -236,6 +236,7 @@ function formatTimeline(item) {
 function contextLines(manifest, warnings, intents) {
   return [
     `- Status: ${warnings.length ? "review-required" : "clear"}`,
+    `- Next: ${warnings.length ? "review warnings before environment changes" : "continue with project-local work"}`,
     `- Node: ${manifest.runtimes.node || "not detected"}`,
     `- Python: ${manifest.runtimes.python || manifest.runtimes.python3 || "not detected"}`,
     `- Docker: ${manifest.containers.docker ? "available" : "not detected"}`,

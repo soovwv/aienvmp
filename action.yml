@@ -7,10 +7,6 @@ inputs:
     description: Workspace directory to scan
     required: false
     default: "."
-  agents:
-    description: Agent files to inject during compile
-    required: false
-    default: ""
   strict:
     description: Fail when doctor reports warnings
     required: false
@@ -19,18 +15,9 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Scan environment
+    - name: Sync environment map
       shell: bash
-      run: node "$GITHUB_ACTION_PATH/bin/aienvmp.js" scan --dir "${{ inputs.directory }}"
-
-    - name: Compile agent context
-      shell: bash
-      run: |
-        if [ -n "${{ inputs.agents }}" ]; then
-          node "$GITHUB_ACTION_PATH/bin/aienvmp.js" compile --dir "${{ inputs.directory }}" --agents "${{ inputs.agents }}"
-        else
-          node "$GITHUB_ACTION_PATH/bin/aienvmp.js" compile --dir "${{ inputs.directory }}"
-        fi
+      run: node "$GITHUB_ACTION_PATH/bin/aienvmp.js" sync --dir "${{ inputs.directory }}" --quiet
 
     - name: Doctor
       shell: bash

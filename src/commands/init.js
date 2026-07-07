@@ -15,5 +15,6 @@ export async function initWorkspace(args) {
     "runtimeChanges: ask-first",
     ""
   ].join("\n"), { flag: "wx" }).catch(() => {});
-  console.log(`initialized ${stateDir(dir)}`);
+  if (!args.quiet) console.log(`initialized ${stateDir(dir)}`);
+  return { stateDir: stateDir(dir) };
 }
