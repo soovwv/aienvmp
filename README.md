@@ -1,10 +1,16 @@
 # aienvmp
 
+[![CI](https://github.com/soovwv/aienvmp/actions/workflows/ci.yml/badge.svg)](https://github.com/soovwv/aienvmp/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D18-339933.svg)](package.json)
+
 **aienvmp = AI Environment Map**
 
 `aienvmp` is an AI-first environment map and change ledger for shared AI coding workspaces.
 
 It helps multiple AI coding agents read the same runtime state, avoid installing or using conflicting software versions, declare environment-changing intent, record what changed, and keep humans informed through a lightweight dashboard.
+
+It is intentionally small: use it beside SBOM scanners, vulnerability scanners, version managers, and CI systems.
 
 ## Why
 
@@ -213,6 +219,22 @@ Open:
 .aienvmp/dashboard.html
 ```
 
+## GitHub Action
+
+Use `aienvmp` in CI without making it disruptive by default:
+
+```yaml
+- uses: soovwv/aienvmp@main
+  with:
+    directory: "."
+    agents: "codex,claude,gemini"
+    strict: "false"
+```
+
+Set `strict: "true"` only when you want policy warnings to fail automation.
+
+See [examples/github-action.yml](examples/github-action.yml).
+
 ## How This Differs From SBOM Tools
 
 `aienvmp` is not trying to replace full SBOM or security scanners.
@@ -228,6 +250,21 @@ Tools like Syft, Trivy, Dependency-Track, and osquery are excellent for componen
 - What should the next agent read before continuing?
 
 Think of it as an **AI coordination layer over a lightweight runtime SBOM**.
+
+## Why It Is Different
+
+- **AI-first**: the primary consumer is an AI coding agent, not only a human operator.
+- **Version drift prevention**: policy warnings are designed to stop agents from silently using different Node, Python, Docker, or package manager assumptions.
+- **Change intent before change**: agents can declare intent before touching shared environment state.
+- **Append-only ledger**: environment-impacting changes are recorded for the next agent.
+- **Non-blocking operations**: normal warnings do not lock or break the machine; strict mode is opt-in.
+- **Small surface area**: no daemon, no database, no hosted service required.
+
+## Project Links
+
+- [Roadmap](ROADMAP.md)
+- [Security policy](SECURITY.md)
+- [Contributing](CONTRIBUTING.md)
 
 ## Status
 
@@ -245,6 +282,8 @@ Planned next:
 - deeper policy enforcement
 - deeper nvm/fnm/volta/pyenv/mise/asdf scans
 - global npm, pipx, and uv tool inventory
+
+See [ROADMAP.md](ROADMAP.md) for the longer plan.
 
 ## Development
 

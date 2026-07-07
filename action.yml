@@ -1,0 +1,42 @@
+name: aienvmp
+description: AI-first environment map and policy check for coding workspaces
+author: soovwv
+
+inputs:
+  directory:
+    description: Workspace directory to scan
+    required: false
+    default: "."
+  agents:
+    description: Agent files to inject during compile
+    required: false
+    default: ""
+  strict:
+    description: Fail when doctor reports warnings
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Scan environment
+      shell: bash
+      run: node "$GITHUB_ACTION_PATH/bin/aienvmp.js" scan --dir "${{ inputs.directory }}"
+
+    - name: Compile agent context
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.agents }}" ]; then
+          node "$GITHUB_ACTION_PATH/bin/aienvmp.js" compile --dir "${{ inputs.directory }}" --agents "${{ inputs.agents }}"
+        else
+          node "$GITHUB_ACTION_PATH/bin/aienvmp.js" compile --dir "${{ inputs.directory }}"
+        fi
+
+    - name: Doctor
+      shell: bash
+      run: |
+        if [ "${{ inputs.strict }}" = "true" ]; then
+          node "$GITHUB_ACTION_PATH/bin/aienvmp.js" doctor --dir "${{ inputs.directory }}" --ci
+        else
+          node "$GITHUB_ACTION_PATH/bin/aienvmp.js" doctor --dir "${{ inputs.directory }}"
+        fi

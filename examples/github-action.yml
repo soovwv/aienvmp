@@ -1,0 +1,17 @@
+name: Environment Map
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  aienvmp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: soovwv/aienvmp@main
+        with:
+          directory: "."
+          agents: "codex,claude,gemini"
+          strict: "false"

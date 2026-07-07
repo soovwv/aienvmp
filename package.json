@@ -20,7 +20,11 @@
     "README.md",
     "LICENSE",
     "CHANGELOG.md",
-    "CONTRIBUTING.md"
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "ROADMAP.md",
+    "action.yml",
+    "examples"
   ],
   "scripts": {
     "test": "node --test",
