@@ -24,6 +24,8 @@ Before environment changes:
 ```bash
 npx aienvmp intent --actor agent:codex --action "change dependency" --target dependency
 npx aienvmp record --actor agent:codex --summary "dependency-change" --target dependency
+npx aienvmp sync
+npx aienvmp status --write
 npx aienvmp handoff --record --actor agent:codex
 ```
 
@@ -49,6 +51,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `status.json.nextAgent` tells the next AI what to read and whether to review first.
 - `dependencyReadSet` lists manifests and lockfiles before package or security changes.
 - `coordination.conflictTargets` shows where multiple agents are planning changes.
+- `followUps` shows records that still need `sync`, `status`, or `handoff`.
 - `handoff` carries dependency read-set and protocol guidance for the next AI.
 - Light SBOM includes source/confidence hints; verify security claims with dedicated scanners.
 - `enforcementProfile.gate` explains when checks warn, fail, and set exit codes.

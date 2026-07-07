@@ -6,6 +6,7 @@
 - Added timeline follow-up summarization so unresolved dependency/security records can be surfaced consistently.
 - Surfaced pending follow-ups in status/preflight and context outputs.
 - Added a dashboard Follow-ups card for unresolved env/SBOM record refresh work.
+- Updated the README change loop to show record, sync, status, and handoff as one simple continuation flow.
 
 ## 0.1.42
 
