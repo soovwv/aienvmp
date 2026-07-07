@@ -5,6 +5,7 @@ import { intentsPath, manifestPath, timelinePath, workspaceDir } from "../paths.
 import { renderContext } from "../render.js";
 import { loadPolicy, policyWarnings } from "../policy.js";
 import { recommendedActions } from "../actions.js";
+import { buildPlan, compactStepSummary } from "./plan.js";
 
 export async function contextWorkspace(args) {
   const dir = workspaceDir(args);
@@ -16,11 +17,13 @@ export async function contextWorkspace(args) {
   const warnings = [...diagnose(manifest, { timeline, intents }), ...policyWarnings(manifest, policy)];
   const decision = contextDecision(warnings, intents);
   const actions = recommendedActions(manifest, { warnings, intents });
+  const stepSummary = compactStepSummary(buildPlan(manifest, warnings, intents, policy));
   if (args.json) {
     console.log(JSON.stringify({
       status: warnings.length ? "review-required" : "clear",
       decision,
       recommendedActions: actions,
+      stepSummary,
       trust: manifest.trust || {},
       guidance: decision,
       workspace: manifest.workspace,

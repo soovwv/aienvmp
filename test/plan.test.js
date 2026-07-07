@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { buildPlan, planWorkspace } from "../src/commands/plan.js";
+import { buildPlan, compactStepSummary, planWorkspace } from "../src/commands/plan.js";
 import { renderPlan } from "../src/render.js";
 import { writeJson } from "../src/fsutil.js";
 
@@ -53,6 +53,30 @@ test("buildPlan creates environment steps for runtime and policy drift", () => {
   assert.match(plan.environmentSteps[0].steps.join(" "), /project-local/);
   assert.match(renderPlan(plan), /Environment steps/);
   assert.match(renderPlan(plan), /package-manager/);
+});
+
+test("compactStepSummary returns bounded AI-facing step summaries", () => {
+  const summary = compactStepSummary({
+    remediationSteps: [{
+      package: "lodash",
+      severity: "high",
+      fixVersions: ["4.17.21"],
+      advisories: [{ id: "GHSA-test" }]
+    }],
+    environmentSteps: [{
+      code: "node-version-mismatch",
+      category: "runtime",
+      summary: ".nvmrc requests 20, but detected node is 24.0.0."
+    }]
+  });
+
+  assert.deepEqual(summary.remediation[0], {
+    package: "lodash",
+    severity: "high",
+    fixVersions: ["4.17.21"],
+    advisoryIds: ["GHSA-test"]
+  });
+  assert.equal(summary.environment[0].code, "node-version-mismatch");
 });
 
 test("planWorkspace can write plan artifacts", async () => {

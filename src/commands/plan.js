@@ -66,6 +66,22 @@ export function buildPlan(manifest, warnings = [], intents = [], policy = {}) {
   };
 }
 
+export function compactStepSummary(plan = {}) {
+  return {
+    remediation: (plan.remediationSteps || []).slice(0, 3).map((item) => ({
+      package: item.package,
+      severity: item.severity,
+      fixVersions: (item.fixVersions || []).slice(0, 3),
+      advisoryIds: (item.advisories || []).map((advisory) => advisory.id || advisory.title).filter(Boolean).slice(0, 3)
+    })),
+    environment: (plan.environmentSteps || []).slice(0, 3).map((item) => ({
+      code: item.code,
+      category: item.category,
+      summary: item.summary
+    }))
+  };
+}
+
 function environmentSteps(warnings = []) {
   return warnings
     .filter((warning) => warning.code !== "security-vulnerabilities")

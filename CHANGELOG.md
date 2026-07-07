@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.23
+
+- Added compact `stepSummary` output to `context --json`.
+- Reused the AI plan step model so preflight context can show remediation and environment drift summaries.
+- Kept full step details in `aienvmp plan` while keeping context lightweight.
+
 ## 0.1.22
 
 - Reworked the README around Quick Start, AI Usage, CI Usage, and outputs.

@@ -79,7 +79,7 @@ Use the GitHub Action to write the env map, plan, dashboard, and optional strict
 ```bash
 aienvmp sync              # update env map, light SBOM, ledger, dashboard
 aienvmp context           # AI preflight brief
-aienvmp context --json    # machine-readable AI decision context + recommended actions
+aienvmp context --json    # AI decision context + actions + compact step summary
 aienvmp plan              # read-only AI action plan for drift and remediation
 aienvmp handoff           # next-agent handoff summary + recommended actions
 aienvmp intent            # record a planned env change
