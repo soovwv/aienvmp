@@ -131,6 +131,13 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(28px,4vw,46px);line-height:1.02;margin-to
 .sub{color:var(--muted);margin-top:12px;max-width:680px;line-height:1.55}
 .stamp{min-width:220px;border:1px solid var(--line2);background:#091310;border-radius:8px;padding:14px}
 .stamp b{display:block;color:var(--green);font-size:24px;margin-bottom:3px}.stamp span{display:block;color:var(--muted);font-size:12px;overflow-wrap:anywhere}
+.audit{display:grid;grid-template-columns:1.2fr repeat(3,minmax(0,.8fr));gap:12px;margin:14px 0}
+.audit-item{border:1px solid var(--line);background:rgba(13,24,21,.92);border-radius:8px;padding:14px;min-width:0}
+.audit-item.primary{background:linear-gradient(135deg,rgba(19,61,42,.88),rgba(9,19,16,.95))}
+.audit-item.review{background:linear-gradient(135deg,rgba(81,53,17,.88),rgba(9,19,16,.95));border-color:rgba(244,191,95,.42)}
+.audit-k{color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.audit-v{margin-top:7px;font-size:20px;font-weight:800;color:var(--text);overflow-wrap:anywhere}
+.audit-hint{margin-top:6px;color:var(--muted);font-size:12px;line-height:1.4}
 .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0 18px}
 .metric,.card{border:1px solid var(--line);background:rgba(13,24,21,.9);border-radius:8px}
 .metric{padding:14px}.metric .num{font-size:28px;font-weight:800;color:var(--green);line-height:1}.metric .label{margin-top:7px;color:var(--muted);font-size:12px}
@@ -147,7 +154,9 @@ code{color:var(--code);background:#0a2017;border:1px solid #17462f;padding:2px 6
 .timeline{display:grid;gap:10px}.event{display:grid;grid-template-columns:108px 1fr;gap:12px;border-top:1px solid var(--line2);padding-top:10px}.event time{color:var(--muted);font-size:12px}.event b{color:var(--green)}
 .path{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--muted);font-size:12px;overflow-wrap:anywhere}
 @media (max-width:860px){header,.layout{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.agents{grid-template-columns:1fr}}
+@media (max-width:860px){.audit{grid-template-columns:1fr 1fr}}
 @media (max-width:520px){.shell{padding:14px}.metrics{grid-template-columns:1fr}.event{grid-template-columns:1fr}h1{font-size:32px}}
+@media (max-width:520px){.audit{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -167,6 +176,10 @@ const timelineHtml=timeline.length?'<div class="timeline">'+timeline.slice(-8).r
 const intentsHtml=intents.length?'<div class="timeline">'+intents.slice(-6).reverse().map(i=>\`<div class="event"><time>\${esc(i.at.replace('T',' ').slice(0,16))}</time><div><b>\${esc(i.actor)}</b> plans \${esc(i.action)}</div></div>\`).join('')+'</div>':'<div class="okline">No pending agent intents recorded.</div>';
 const policyHtml=entries(policy).length?\`<table>\${rows(policy)}</table>\`:'<div class="okline">No explicit version policy set.</div>';
 const card=(title,badge,body)=>\`<section class="card"><div class="card-head"><h2>\${title}</h2>\${badge||''}</div>\${body}</section>\`;
+const reviewRequired=warnings.length>0||intents.length>0;
+const recentChanges=timeline.slice(-8).length;
+const nextAction=reviewRequired?'Review before environment changes':'Proceed with project-local work';
+const auditItem=(key,value,hint,klass='')=>\`<div class="audit-item \${klass}"><div class="audit-k">\${key}</div><div class="audit-v">\${value}</div><div class="audit-hint">\${hint}</div></div>\`;
 document.getElementById('app').innerHTML=\`
 <header>
   <div>
@@ -176,6 +189,12 @@ document.getElementById('app').innerHTML=\`
   </div>
   <div class="stamp"><b>\${warnings.length?'review':'clear'}</b><span>\${esc(manifest.workspace.name)}</span><span>\${esc(manifest.generatedAt)}</span></div>
 </header>
+<section class="audit" aria-label="Audit summary">
+  \${auditItem('AI decision',reviewRequired?'review required':'can proceed',nextAction,reviewRequired?'review':'primary')}
+  \${auditItem('Open intents',String(intents.length),intents.length?'Resolve or coordinate before changes':'No pending env changes')}
+  \${auditItem('Warnings',String(warnings.length),warnings.length?'Policy or drift needs attention':'No warnings detected')}
+  \${auditItem('Recent changes',String(recentChanges),recentChanges?'Check ledger before continuing':'No recent env ledger entries')}
+</section>
 <section class="metrics">
   <div class="metric"><div class="num">\${entries(manifest.runtimes).length}</div><div class="label">runtimes</div></div>
   <div class="metric"><div class="num">\${entries(manifest.packageManagers).length}</div><div class="label">package managers</div></div>

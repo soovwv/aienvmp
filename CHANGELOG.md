@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.3
+
+- Strengthened the dashboard audit summary with AI decision, open intents, warnings, and recent changes.
+- Added dashboard render coverage for the audit summary surface.
+
 ## 0.1.2
 
 - Added `aienvmp sync` as the simple one-step command for init, scan, `AIENV.md`, manifest, ledger, and dashboard generation.
