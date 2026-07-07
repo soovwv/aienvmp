@@ -35,6 +35,7 @@ Warnings are advisory by default. Use `doctor --strict <scope>` only when you wa
 AIENV.md                 # Markdown env map for AI agents
 .aienvmp/status.json     # first AI read: clear/review, next command, nextAgent hint
 .aienvmp/manifest.json   # runtime map + light SBOM
+.aienvmp/sbom.json       # standalone AI-readable light SBOM
 .aienvmp/intents.jsonl   # planned env changes
 .aienvmp/timeline.jsonl  # append-only change ledger
 .aienvmp/plan.md         # read-only action plan
@@ -72,6 +73,7 @@ npx aienvmp snippet gemini
 aienvmp sync                    # update env map, status, ledger, dashboard
 aienvmp status --write          # refresh compact AI status
 aienvmp context --json          # AI decision contract
+aienvmp sbom --json             # standalone light SBOM
 aienvmp schema --json           # stable output contract for AI/CI consumers
 aienvmp plan --write            # read-only action plan
 aienvmp handoff --record        # next-agent summary

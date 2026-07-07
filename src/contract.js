@@ -31,6 +31,11 @@ export function schemaContract() {
       manifest: {
         file: ".aienvmp/manifest.json",
         rootFields: ["schemaVersion", "workspace", "runtimes", "packageManagers", "dependencySnapshot", "lightSbom", "security", "trust"]
+      },
+      sbom: {
+        file: ".aienvmp/sbom.json",
+        command: "aienvmp sbom --json",
+        rootFields: ["schemaVersion", "schemaName", "workspace", "summary", "riskSummary", "topRisk", "packageManagerPolicy", "dependencyChangeHints"]
       }
     },
     compatibility: {

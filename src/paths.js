@@ -16,6 +16,10 @@ export function statusJsonPath(dir) {
   return path.join(stateDir(dir), "status.json");
 }
 
+export function sbomJsonPath(dir) {
+  return path.join(stateDir(dir), "sbom.json");
+}
+
 export function previousManifestPath(dir) {
   return path.join(stateDir(dir), "manifest.previous.json");
 }

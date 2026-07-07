@@ -3,6 +3,7 @@ import { scanWorkspace } from "./scan.js";
 import { compileWorkspace } from "./compile.js";
 import { dashWorkspace } from "./dash.js";
 import { statusWorkspace } from "./status.js";
+import { sbomWorkspace } from "./sbom.js";
 
 export async function syncWorkspace(args) {
   const quiet = args.quiet || args.json;
@@ -13,6 +14,7 @@ export async function syncWorkspace(args) {
   const compiled = await compileWorkspace(next);
   const dashboard = await dashWorkspace(next);
   const status = await statusWorkspace({ ...next, json: false, write: true, quiet: true });
+  const sbom = await sbomWorkspace({ ...next, json: false, write: true, quiet: true });
 
   const result = {
     status: "ok",
@@ -21,6 +23,7 @@ export async function syncWorkspace(args) {
       manifest: scanned.manifest,
       timeline: scanned.timeline,
       status: status.artifact,
+      sbom: sbom.artifact,
       dashboard: dashboard.dashboard
     },
     changes: scanned.changes,

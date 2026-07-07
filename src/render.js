@@ -442,6 +442,7 @@ const actions=manifest.recommendedActions||[];
 const actionsHtml=actions.length?'<div class="timeline">'+actions.slice(0,6).map(a=>\`<div class="event"><time>\${esc(a.priority)}</time><div><b>\${esc(a.category)}</b> \${esc(a.summary)}\${a.command?\`<div class="path">\${esc(a.command)}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No recommended actions. Continue project-local work.</div>';
 const plan=manifest.planArtifacts||{};
 const planHtml=plan.markdown||plan.json?\`<table><tr><th>Markdown</th><td>\${plan.markdown?'<a href="plan.md">plan.md</a>':'not written'}</td></tr><tr><th>JSON</th><td>\${plan.json?'<a href="plan.json">plan.json</a>':'not written'}</td></tr></table>\`:'<div class="okline">No plan artifacts yet. Run <code>aienvmp plan --write</code>.</div>';
+const sbomArtifactHtml='<table><tr><th>JSON</th><td><a href="sbom.json">sbom.json</a></td></tr><tr><th>Command</th><td><code>aienvmp sbom --write</code></td></tr></table>';
 const remediation=manifest.planRemediation||[];
 const remediationFix=r=>r.fixVersions?.length?\`fix \${r.fixVersions.join(', ')}\`:(r.fixAvailable?'fix available':'review required');
 const remediationRefs=r=>r.advisories?.length?\` - \${r.advisories.join(', ')}\`:'';
@@ -529,6 +530,8 @@ document.getElementById('app').innerHTML=\`
     \${card('Dependency Protocol','<span class="pill">'+(dependencyProtocol.mode||'advisory')+'</span>',dependencyProtocolHtml)}
     <div style="height:14px"></div>
     \${card('AI Plan Artifacts',plan.markdown||plan.json?'<span class="pill">written</span>':'<span class="pill off">not written</span>',planHtml)}
+    <div style="height:14px"></div>
+    \${card('Light SBOM Artifact','<span class="pill">json</span>',sbomArtifactHtml)}
     <div style="height:14px"></div>
     \${card('Remediation Steps',remediation.length?'<span class="pill warn">'+remediation.length+' items</span>':'<span class="pill off">none</span>',remediationHtml)}
     <div style="height:14px"></div>

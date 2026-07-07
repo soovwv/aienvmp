@@ -64,6 +64,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: `lightSbom.riskSummary` and preflight `sbomRisk` now provide a compact risk score, signals, review targets, and advisory next steps.
 - Verification: tests cover risk scoring, top-risk severity fallback, scanner-off guidance, status/context exposure, dashboard rendering, and recommended actions.
 
+### Light SBOM was only nested inside larger artifacts
+
+- Issue: CI tools and AI agents that only need dependency/SBOM context had to read the full manifest or context payload.
+- Fix: `aienvmp sbom --json` and `.aienvmp/sbom.json` now expose a standalone light SBOM artifact.
+- Verification: tests cover standalone SBOM construction, writing, sync output, schema metadata, and dashboard linking.
+
 ## Template
 
 ### Title

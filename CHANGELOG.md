@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.47
+
+- Added `aienvmp sbom` for standalone AI-readable light SBOM output without deep manifest parsing.
+- Added `.aienvmp/sbom.json` writing through `aienvmp sbom --write` and the default `sync` flow.
+- Added the SBOM artifact path to the shared preflight artifacts map.
+- Added SBOM output metadata to `aienvmp schema --json`.
+- Added a dashboard Light SBOM Artifact card linking to `sbom.json`.
+- Updated README outputs and commands with the standalone SBOM artifact.
+- Added regression tests for SBOM artifact building, writing, sync output, schema contract, and dashboard rendering.
+
 ## 0.1.46
 
 - Added `lightSbom.riskSummary` with compact risk level, score, scanner state, signals, review targets, and next commands.

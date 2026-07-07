@@ -15,6 +15,7 @@ import { planWorkspace } from "./commands/plan.js";
 import { statusWorkspace } from "./commands/status.js";
 import { schemaWorkspace } from "./commands/schema.js";
 import { checkpointWorkspace } from "./commands/checkpoint.js";
+import { sbomWorkspace } from "./commands/sbom.js";
 import { readFileSync } from "node:fs";
 
 const commands = new Map([
@@ -34,7 +35,8 @@ const commands = new Map([
   ["plan", planWorkspace],
   ["status", statusWorkspace],
   ["schema", schemaWorkspace],
-  ["checkpoint", checkpointWorkspace]
+  ["checkpoint", checkpointWorkspace],
+  ["sbom", sbomWorkspace]
 ]);
 
 const version = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version;
@@ -112,6 +114,7 @@ Usage:
   aienvmp handoff [--dir .] [--json] [--record --actor agent:id]
   aienvmp checkpoint [--dir .] --actor agent:id --summary "what changed" [--target dependency] [--json]
   aienvmp plan [--dir .] [--json] [--write]
+  aienvmp sbom [--dir .] [--json] [--write]
   aienvmp schema [--json]
 
 Common:
@@ -121,6 +124,7 @@ Common:
   aienvmp handoff   print the next-agent handoff summary
   aienvmp checkpoint record, sync, status, and handoff after an env change
   aienvmp plan      print a read-only AI environment action plan
+  aienvmp sbom      print/write standalone light SBOM artifact
   aienvmp schema    print the stable AI-readable output contract
   aienvmp snippet   print an AGENTS.md pointer snippet
   aienvmp dash      regenerate/open the lightweight dashboard
@@ -136,6 +140,7 @@ Advanced:
   aienvmp compile [--dir .]
   aienvmp diff [--dir .]
   aienvmp doctor [--dir .] [--json] [--ci] [--strict security|policy|coordination|all]
+  aienvmp sbom [--dir .] [--json] [--write]
   aienvmp dash [--dir .] [--open]
 `);
 }
