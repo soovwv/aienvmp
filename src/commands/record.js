@@ -22,7 +22,8 @@ export async function recordWorkspace(args) {
     trust: changedTrust(now, requiresReview)
   };
   await appendJsonLine(timelinePath(dir), entry);
-  console.log(`recorded ${entry.type} by ${actor}`);
+  if (!args.quiet) console.log(`recorded ${entry.type} by ${actor}`);
+  return entry;
 }
 
 export function followUpForRecord(record = {}) {
@@ -42,6 +43,7 @@ export function followUpForRecord(record = {}) {
       ? "Dependency or security records should refresh the env map and handoff context."
       : "Environment records should refresh the env map and handoff context.",
     commands: [
+      `aienvmp checkpoint --actor agent:id --summary ${isDependency ? "dependency-change" : "what-changed"} --target ${isDependency ? "dependency" : target || "environment"}`,
       "aienvmp sync",
       "aienvmp status --write",
       "aienvmp handoff --record --actor agent:id"

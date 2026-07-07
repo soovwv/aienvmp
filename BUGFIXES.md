@@ -52,6 +52,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: `doctor`, status/context, handoff, and the dashboard now expose same-target multi-agent records through advisory warnings and `agentActivity`.
 - Verification: tests cover multi-agent record detection, later handoff reset, status JSON, handoff text, dashboard HTML, and recommended actions.
 
+### Post-change loop was too many commands for routine AI handoff
+
+- Issue: after an environment change, agents had to remember separate record, sync, status, and handoff commands.
+- Fix: `aienvmp checkpoint` now performs the post-change loop and records an explicit sync ledger entry so follow-ups can be closed.
+- Verification: checkpoint tests cover text/JSON output, status artifact refresh, timeline entries, handoff recording, and cleared follow-ups.
+
 ## Template
 
 ### Title

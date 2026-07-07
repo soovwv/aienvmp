@@ -42,7 +42,8 @@ export async function buildManifest(dir, options = {}) {
       handoffCommand: "aienvmp handoff",
       intentCommand: "aienvmp intent --actor agent:id --action planned-change",
       recordCommand: "aienvmp record --actor agent:id --summary what-changed",
-      afterEnvironmentChange: ["aienvmp sync"],
+      checkpointCommand: "aienvmp checkpoint --actor agent:id --summary what-changed --target environment",
+      afterEnvironmentChange: ["aienvmp checkpoint --actor agent:id --summary what-changed --target environment"],
       trustModel: {
         agentWritable: ["observed", "planned", "changed", "review", "stale"],
         verifiedRequires: "human-or-ci",

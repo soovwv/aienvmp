@@ -54,13 +54,14 @@ test("buildHandoff summarizes next-agent environment state", () => {
   assert.equal(handoff.recommendedActions[0].id, "review-security-remediation");
   assert.equal(handoff.dependencyHandoff.readSet[0].manifest, "package.json");
   assert.equal(handoff.dependencyHandoff.protocol.mode, "advisory");
+  assert.equal(handoff.dependencyHandoff.protocol.checkpointAfterChange, "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency");
   assert.equal(handoff.agentActivity.environmentRecordCount, 1);
   assert.match(renderHandoff(handoff), /AI Handoff/);
   assert.match(renderHandoff(handoff), /Decision: project-local-work/);
   assert.match(renderHandoff(handoff), /Agent activity/);
   assert.match(renderHandoff(handoff), /Recommended actions/);
   assert.match(renderHandoff(handoff), /Dependency handoff/);
-  assert.match(renderHandoff(handoff), /dependency-change --target dependency/);
+  assert.match(renderHandoff(handoff), /checkpoint --actor agent:id --summary dependency-change --target dependency/);
   assert.match(renderHandoff(handoff), /Recommended next/);
 });
 

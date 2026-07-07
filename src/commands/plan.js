@@ -103,7 +103,7 @@ function environmentSteps(warnings = []) {
 }
 
 function environmentCategory(code = "") {
-  if (["conflicting-open-intents", "stale-open-intent", "handoff-stale"].includes(code)) return "coordination";
+  if (["conflicting-open-intents", "stale-open-intent", "handoff-stale", "multi-agent-records"].includes(code)) return "coordination";
   if (code.includes("docker")) return "container";
   if (code.includes("lockfile") || code.includes("package-manager")) return "package-manager";
   if (code.includes("node") || code.includes("python") || code.includes("version") || code.includes("runtime")) return "runtime";
@@ -115,13 +115,13 @@ function environmentStepLines(code = "") {
     "Read .nvmrc and the detected Node version before changing tools.",
     "Prefer project-local version managers such as nvm, mise, or asdf.",
     "Ask before changing global Node or npm installations.",
-    "Run aienvmp sync and record the change after alignment."
+    "Run aienvmp checkpoint --actor agent:id --summary what-changed --target node after alignment."
   ];
   if (code === "python-version-mismatch") return [
     "Read .python-version and the detected Python version before changing tools.",
     "Prefer project-local virtual environments or version managers.",
     "Ask before changing global Python installations.",
-    "Run aienvmp sync and record the change after alignment."
+    "Run aienvmp checkpoint --actor agent:id --summary what-changed --target python after alignment."
   ];
   if (code === "mixed-node-lockfiles" || code === "package-manager-policy-mismatch") return [
     "Identify the intended package manager from project policy and lockfiles.",
@@ -133,13 +133,13 @@ function environmentStepLines(code = "") {
     "Confirm whether the Python project is active.",
     "Prefer project-local Python setup before global installation.",
     "Ask before installing a global Python runtime.",
-    "Run aienvmp sync after setup."
+    "Run aienvmp checkpoint --actor agent:id --summary what-changed --target python after setup."
   ];
   if (code === "docker-missing") return [
     "Confirm whether Docker is required for the current task.",
     "Do not change Docker daemon or context without user approval.",
     "Document fallback commands if Docker is unavailable.",
-    "Run aienvmp sync after Docker availability changes."
+    "Run aienvmp checkpoint --actor agent:id --summary what-changed --target docker after Docker availability changes."
   ];
   if (code === "manifest-stale") return [
     "Run aienvmp sync before environment changes.",
@@ -158,10 +158,14 @@ function environmentStepLines(code = "") {
     "Run aienvmp handoff --record --actor agent:id before the next AI continues.",
     "Review recent changes before new environment work."
   ];
+  if (code === "multi-agent-records") return [
+    "Review agentActivity and recent timeline records for the shared target.",
+    "Run aienvmp checkpoint --actor agent:id --summary what-changed --target environment before more environment work."
+  ];
   return [
     "Review the warning before changing environment state.",
     "Ask before global environment changes.",
-    "Run aienvmp sync after any accepted change."
+    "Run aienvmp checkpoint --actor agent:id --summary what-changed --target environment after any accepted change."
   ];
 }
 

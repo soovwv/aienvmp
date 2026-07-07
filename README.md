@@ -23,10 +23,7 @@ Before environment changes:
 
 ```bash
 npx aienvmp intent --actor agent:codex --action "change dependency" --target dependency
-npx aienvmp record --actor agent:codex --summary "dependency-change" --target dependency
-npx aienvmp sync
-npx aienvmp status --write
-npx aienvmp handoff --record --actor agent:codex
+npx aienvmp checkpoint --actor agent:codex --summary "dependency-change" --target dependency
 ```
 
 Use `--dir <workspace>` when AI or CI runs outside the target project.
@@ -79,6 +76,7 @@ aienvmp plan --write            # read-only action plan
 aienvmp handoff --record        # next-agent summary
 aienvmp intent                  # record planned env change
 aienvmp record                  # record what changed
+aienvmp checkpoint              # record + sync + status + handoff after env change
 aienvmp doctor --strict security|policy|coordination|all
 ```
 

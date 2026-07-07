@@ -13,9 +13,7 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
   lines.push("2. Prefer project-local version files such as `.nvmrc`, `.python-version`, `mise.toml`, and `.tool-versions`.");
   lines.push("3. Ask the user before changing global environment state.");
   lines.push("4. Record planned environment changes with `aienvmp intent --actor agent:id --action planned-change`.");
-  lines.push("5. After environment changes, run `aienvmp sync`.");
-  lines.push("6. Record what changed with `aienvmp record --actor agent:id --summary what-changed`.");
-  lines.push("7. At handoff, run `aienvmp handoff --record --actor agent:id`.", "");
+  lines.push("5. After environment changes, run `aienvmp checkpoint --actor agent:id --summary what-changed --target environment`.", "");
   lines.push(...preflightLines(manifest.preflight), "");
   lines.push("## Current Policy", "");
   lines.push(...policyLines(policy));
@@ -107,7 +105,7 @@ function preflightLines(preflight = {}) {
     lines.push(`- Mode: ${dependencyProtocol.mode}`);
     lines.push(`- Package manager policy: ${dependencyProtocol.packageManagerPolicy}`);
     lines.push(`- Intent: \`${dependencyProtocol.commands.recordIntent}\``);
-    lines.push(`- After change: \`${dependencyProtocol.commands.refreshAfterChange}\` then \`${dependencyProtocol.commands.recordAfterChange}\``);
+    lines.push(`- After change: \`${dependencyProtocol.commands.checkpointAfterChange || dependencyProtocol.commands.recordAfterChange}\``);
     lines.push(`- Handoff: \`${dependencyProtocol.commands.handoff}\``);
     for (const item of dependencyProtocol.mustNotDo.slice(0, 3)) lines.push(`- Must not: ${item}`);
   }
@@ -127,8 +125,7 @@ Before changing runtimes, package managers, Docker settings, global packages, or
 3. Read \`AIENV.md\`.
 4. If status or context says \`review-required\`, ask the user before changing the environment.
 5. Record planned environment changes with the recommended target, for example \`aienvmp intent --actor agent:id --action planned-change --target dependency\`.
-6. After environment changes, run \`aienvmp sync\` and \`aienvmp record --actor agent:id --summary what-changed\`.
-7. At handoff, run \`aienvmp handoff --record --actor agent:id\`.
+6. After environment changes, run \`aienvmp checkpoint --actor agent:id --summary what-changed --target environment\`.
 
 \`aienvmp\` does not replace this instruction file. It provides the live env map, lightweight runtime SBOM, intent log, timeline, and dashboard.`;
 }
@@ -160,9 +157,7 @@ export function renderContext(manifest, timeline = [], warnings = [], intents = 
     "- Treat policy mismatches as review-required, not as permission to break ongoing operations.",
     "- Prefer project-local version files and local environments.",
     "- Before planned env changes, run `aienvmp intent --actor agent:id --action planned-change`.",
-    "- After env changes, run `aienvmp sync`.",
-    "- Then run `aienvmp record --actor agent:id --summary what-changed`.",
-    "- Before handing work to another AI, run `aienvmp handoff --record --actor agent:id`.",
+    "- After env changes, run `aienvmp checkpoint --actor agent:id --summary what-changed --target environment`.",
     "",
     "Warnings:",
     ...(warnings.length ? warnings.map((w) => `- ${w.message}`) : ["- none"]),
@@ -254,7 +249,7 @@ function dependencyHandoffLines(dependencyHandoff = {}) {
     lines.push("- Read: no dependency files detected");
   }
   lines.push(`- Intent: ${protocol.recordIntent || "aienvmp intent --actor agent:id --action planned-change --target dependency"}`);
-  lines.push(`- After change: ${protocol.recordAfterChange || "aienvmp record --actor agent:id --summary dependency-change --target dependency"}`);
+  lines.push(`- After change: ${protocol.checkpointAfterChange || protocol.recordAfterChange || "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"}`);
   lines.push(`- Handoff: ${protocol.handoff || "aienvmp handoff --record --actor agent:id"}`);
   return lines;
 }
@@ -304,7 +299,7 @@ function dependencyProtocolPlanLines(protocol = {}) {
     `- Mode: ${protocol.mode || "advisory"}`,
     `- Package manager policy: ${protocol.packageManagerPolicy || "not-detected"}`,
     `- Intent: ${protocol.commands.recordIntent}`,
-    `- After change: ${protocol.commands.refreshAfterChange}; ${protocol.commands.recordAfterChange}`,
+    `- After change: ${protocol.commands.checkpointAfterChange || `${protocol.commands.refreshAfterChange}; ${protocol.commands.recordAfterChange}`}`,
     ...(protocol.mustNotDo || []).slice(0, 3).map((item) => `- Must not: ${item}`)
   ];
 }
@@ -470,7 +465,7 @@ const activityHtml=activityTargets.length?'<div class="timeline">'+activityTarge
 const dependencyReadSet=manifest.preflight?.dependencyReadSet||[];
 const dependencyReadSetHtml=dependencyReadSet.length?'<div class="timeline">'+dependencyReadSet.slice(0,5).map(d=>\`<div class="event"><time>\${esc(d.ecosystem||'deps')}</time><div><b>\${esc(d.manifest||'dependency files')}</b> <code>\${esc(d.manager||'unknown')}</code><div class="path">\${esc([d.manifest,...(d.lockfiles||[])].filter(Boolean).join(', '))}</div>\${d.riskPackages?.length?\`<div class="path">risk: \${esc(d.riskPackages.join(', '))}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No dependency files detected.</div>';
 const dependencyProtocol=manifest.preflight?.dependencyChangeProtocol||{};
-const dependencyProtocolHtml=dependencyProtocol.commands?'<table><tr><th>Mode</th><td><code>'+esc(dependencyProtocol.mode||'advisory')+'</code></td></tr><tr><th>Policy</th><td><code>'+esc(dependencyProtocol.packageManagerPolicy||'not-detected')+'</code></td></tr><tr><th>Intent</th><td><code>'+esc(dependencyProtocol.commands.recordIntent)+'</code></td></tr><tr><th>After</th><td><code>'+esc(dependencyProtocol.commands.refreshAfterChange)+'</code> then <code>'+esc(dependencyProtocol.commands.recordAfterChange)+'</code></td></tr></table><div class="timeline">'+(dependencyProtocol.mustNotDo||[]).slice(0,3).map(item=>\`<div class="event"><time>avoid</time><div>\${esc(item)}</div></div>\`).join('')+'</div>':'<div class="okline">No dependency change protocol available.</div>';
+const dependencyProtocolHtml=dependencyProtocol.commands?'<table><tr><th>Mode</th><td><code>'+esc(dependencyProtocol.mode||'advisory')+'</code></td></tr><tr><th>Policy</th><td><code>'+esc(dependencyProtocol.packageManagerPolicy||'not-detected')+'</code></td></tr><tr><th>Intent</th><td><code>'+esc(dependencyProtocol.commands.recordIntent)+'</code></td></tr><tr><th>After</th><td><code>'+esc(dependencyProtocol.commands.checkpointAfterChange||dependencyProtocol.commands.recordAfterChange)+'</code></td></tr></table><div class="timeline">'+(dependencyProtocol.mustNotDo||[]).slice(0,3).map(item=>\`<div class="event"><time>avoid</time><div>\${esc(item)}</div></div>\`).join('')+'</div>':'<div class="okline">No dependency change protocol available.</div>';
 const card=(title,badge,body)=>\`<section class="card"><div class="card-head"><h2>\${title}</h2>\${badge||''}</div>\${body}</section>\`;
 const reviewRequired=warnings.length>0||intents.length>0;
 const recentChanges=timeline.slice(-8).length;

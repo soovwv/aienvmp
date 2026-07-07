@@ -94,6 +94,7 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   assert.equal(json.preflight.dependencyReadSet[0].manifest, "package.json");
   assert.deepEqual(json.preflight.dependencyReadSet[0].lockfiles, ["package-lock.json"]);
   assert.equal(json.preflight.dependencyChangeProtocol.commands.recordAfterChange, "aienvmp record --actor agent:id --summary dependency-change --target dependency");
+  assert.equal(json.preflight.dependencyChangeProtocol.commands.checkpointAfterChange, "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency");
   assert.equal(json.coordination.openIntentCount, 0);
   assert.deepEqual(json.coordination.conflictTargets, []);
   assert.equal(json.followUps[0].target, "dependency");
@@ -103,6 +104,7 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   assert.equal(json.decision.canContinueProjectLocalWork, true);
   assert.equal(json.decision.canChangeEnvironmentWithoutReview, false);
   assert.deepEqual(json.decision.warningCodes, ["node-version-mismatch", "handoff-stale"]);
+  assert.equal(json.decision.requiredCommands.checkpointAfterChange, "aienvmp checkpoint --actor agent:id --summary what-changed --target environment");
   assert.equal(json.decision.requiredCommands.reviewPlan, "aienvmp plan");
   assert.equal(json.enforcement.mode, "advisory-by-default");
   assert.equal(json.enforcement.localBehavior, "non-blocking");

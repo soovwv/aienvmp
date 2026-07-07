@@ -76,6 +76,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
       context: "aienvmp context --json",
       plan: "aienvmp plan --write",
       handoff: "aienvmp handoff --record --actor agent:id",
+      checkpoint: "aienvmp checkpoint --actor agent:id --summary what-changed --target environment",
       recordIntent: intentTargets[0]?.command || "aienvmp intent --actor agent:id --action planned-change"
     },
     topAction,
@@ -220,6 +221,7 @@ function dependencyProtocol(manifest = {}, dependencyReadSet = []) {
       recordIntent: "aienvmp intent --actor agent:id --action planned-change --target dependency",
       refreshAfterChange: "aienvmp sync",
       recordAfterChange: "aienvmp record --actor agent:id --summary dependency-change --target dependency",
+      checkpointAfterChange: "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency",
       handoff: "aienvmp handoff --record --actor agent:id"
     },
     mustNotDo: [
@@ -335,7 +337,8 @@ function agentQuickstart(reviewRequired) {
     readFirst: "aienvmp status --write",
     detailCommand: "aienvmp context --json",
     beforeEnvironmentChange: "aienvmp intent --actor agent:id --action planned-change --target <runtime|package-manager|docker|dependency>",
-    afterEnvironmentChange: "aienvmp sync && aienvmp record --actor agent:id --summary what-changed",
+    afterEnvironmentChange: "aienvmp checkpoint --actor agent:id --summary what-changed --target environment",
+    checkpointAfterChange: "aienvmp checkpoint --actor agent:id --summary what-changed --target environment",
     handoff: "aienvmp handoff --record --actor agent:id",
     rule: reviewRequired
       ? "Review warnings or open intents before environment changes; project-local work may continue."

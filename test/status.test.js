@@ -33,6 +33,7 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.agentUse.environmentChanges, "allowed");
   assert.equal(status.quickstart.label, "10-second AI flow");
   assert.equal(status.quickstart.detailCommand, "aienvmp context --json");
+  assert.equal(status.quickstart.afterEnvironmentChange, "aienvmp checkpoint --actor agent:id --summary what-changed --target environment");
   assert.match(status.quickstart.rule, /Continue project-local work/);
   assert.equal(status.nextAgent.readFirst, ".aienvmp/status.json");
   assert.equal(status.nextAgent.handoffCommand, "aienvmp handoff --record --actor agent:id");
@@ -44,6 +45,7 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.dependencyChangeProtocol.mode, "advisory");
   assert.equal(status.dependencyChangeProtocol.commands.recordIntent, "aienvmp intent --actor agent:id --action planned-change --target dependency");
   assert.equal(status.commands.recordIntent, "aienvmp intent --actor agent:id --action planned-change --target dependency");
+  assert.equal(status.commands.checkpoint, "aienvmp checkpoint --actor agent:id --summary what-changed --target environment");
   assert.equal(status.enforcementProfile.defaultMode, "advisory");
   assert.equal(status.enforcementProfile.localOperation, "non-blocking");
   assert.equal(status.enforcementProfile.gate.localDefault, "warn-only");
@@ -167,6 +169,7 @@ test("statusWorkspace text prints the next-agent handoff command", async () => {
   }
 
   assert.match(lines.join("\n"), /handoff: aienvmp handoff --record --actor agent:id/);
+  assert.match(lines.join("\n"), /checkpoint: aienvmp checkpoint/);
 });
 
 test("buildStatus summarizes open intent coordination by target", () => {

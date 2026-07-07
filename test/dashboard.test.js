@@ -190,7 +190,8 @@ test("renderDashboard includes the audit summary surface", () => {
         commands: {
           recordIntent: "aienvmp intent --actor agent:id --action planned-change --target dependency",
           refreshAfterChange: "aienvmp sync",
-          recordAfterChange: "aienvmp record --actor agent:id --summary dependency-change --target dependency"
+          recordAfterChange: "aienvmp record --actor agent:id --summary dependency-change --target dependency",
+          checkpointAfterChange: "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"
         },
         mustNotDo: ["Do not switch package managers because another lockfile exists without user approval."]
       },
@@ -245,7 +246,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Dependency Read Set/);
   assert.match(html, /package-lock\.json/);
   assert.match(html, /Dependency Protocol/);
-  assert.match(html, /dependency-change --target dependency/);
+  assert.match(html, /checkpoint --actor agent:id --summary dependency-change --target dependency/);
   assert.match(html, /AI Plan Artifacts/);
   assert.match(html, /plan\.md/);
   assert.match(html, /Remediation Steps/);

@@ -24,7 +24,7 @@ export async function handoffWorkspace(args) {
 
   if (args.json) {
     console.log(JSON.stringify(handoff, null, 2));
-  } else {
+  } else if (!args.quiet) {
     console.log(renderHandoff(handoff));
   }
   return handoff;
@@ -95,6 +95,7 @@ function dependencyHandoffSummary(preflight = {}) {
       packageManagerPolicy: protocol.packageManagerPolicy || "not-detected",
       recordIntent: protocol.commands?.recordIntent || "aienvmp intent --actor agent:id --action planned-change --target dependency",
       recordAfterChange: protocol.commands?.recordAfterChange || "aienvmp record --actor agent:id --summary dependency-change --target dependency",
+      checkpointAfterChange: protocol.commands?.checkpointAfterChange || "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency",
       handoff: protocol.commands?.handoff || "aienvmp handoff --record --actor agent:id"
     }
   };

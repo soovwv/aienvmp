@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.45
+
+- Added `aienvmp checkpoint` as a one-command post-environment-change flow for record, sync, status, and handoff.
+- Added quiet command support so checkpoint can compose existing commands without noisy intermediate output.
+- Added checkpoint sync ledger entries so follow-up detection can prove the refresh step happened.
+- Added checkpoint guidance to the shared preflight, decision, manifest, dependency protocol, and status outputs.
+- Updated AIENV, handoff, plan, dashboard, and agent pointer rendering to prefer checkpoint after environment changes.
+- Shortened the README environment-change flow to intent plus checkpoint.
+- Added checkpoint regression coverage for JSON output, ledger updates, follow-up closure, status artifacts, and rendered guidance.
+
 ## 0.1.44
 
 - Added multi-agent record warnings when multiple agents record environment changes for the same target after the last handoff.

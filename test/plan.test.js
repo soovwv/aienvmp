@@ -34,6 +34,7 @@ test("buildPlan creates a read-only action plan", () => {
   assert.equal(plan.preflight.commands.recordIntent, "aienvmp intent --actor agent:id --action planned-change --target dependency");
   assert.equal(plan.preflight.intentTargets[0].target, "dependency");
   assert.equal(plan.preflight.dependencyChangeProtocol.mode, "advisory");
+  assert.equal(plan.preflight.dependencyChangeProtocol.commands.checkpointAfterChange, "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency");
   assert.equal(plan.preflight.quickstart.handoff, "aienvmp handoff --record --actor agent:id");
   assert.equal(plan.decision.mode, "review-first");
   assert.equal(plan.enforcement.mode, "advisory-by-default");
@@ -57,7 +58,7 @@ test("buildPlan creates a read-only action plan", () => {
   assert.match(renderPlan(plan), /Dependency protocol/);
   assert.match(renderPlan(plan), /Enforcement gate/);
   assert.match(renderPlan(plan), /never in default mode/);
-  assert.match(renderPlan(plan), /dependency-change --target dependency/);
+  assert.match(renderPlan(plan), /checkpoint --actor agent:id --summary dependency-change --target dependency/);
   assert.match(renderPlan(plan), /4\.17\.21/);
 });
 
@@ -76,6 +77,7 @@ test("buildPlan creates environment steps for runtime and policy drift", () => {
 
   assert.deepEqual(plan.environmentSteps.map((step) => step.category), ["runtime", "package-manager"]);
   assert.match(plan.environmentSteps[0].steps.join(" "), /project-local/);
+  assert.match(plan.environmentSteps[0].steps.join(" "), /checkpoint/);
   assert.match(renderPlan(plan), /Environment steps/);
   assert.match(renderPlan(plan), /package-manager/);
 });
@@ -128,6 +130,7 @@ test("planWorkspace can write plan artifacts", async () => {
     assert.equal(plan.recommendedActions[0].id, "continue-project-local");
     assert.equal(plan.preflight.state, "clear");
     assert.equal(plan.preflight.commands.handoff, "aienvmp handoff --record --actor agent:id");
+    assert.equal(plan.preflight.commands.checkpoint, "aienvmp checkpoint --actor agent:id --summary what-changed --target environment");
     assert.equal(plan.decision.mode, "project-local-work");
     assert.deepEqual(plan.enforcement.suggestedStrictScopes, []);
   } finally {
@@ -140,4 +143,5 @@ test("planWorkspace can write plan artifacts", async () => {
   assert.equal(planJson.schemaVersion, 1);
   assert.equal(planJson.preflight.readOrder[0], ".aienvmp/status.json");
   assert.equal(planJson.decision.requiredCommands.handoff, "aienvmp handoff --record --actor agent:id");
+  assert.equal(planJson.decision.requiredCommands.checkpointAfterChange, "aienvmp checkpoint --actor agent:id --summary what-changed --target environment");
 });

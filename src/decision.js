@@ -25,6 +25,7 @@ export function aiDecision(warnings = [], intents = []) {
       : ["continue with project-local work", "run aienvmp intent before environment changes"],
     requiredCommands: {
       beforeEnvironmentChange: "aienvmp intent --actor agent:id --action planned-change --target <runtime|package-manager|docker>",
+      checkpointAfterChange: "aienvmp checkpoint --actor agent:id --summary what-changed --target environment",
       refreshAfterChange: "aienvmp sync",
       recordAfterChange: "aienvmp record --actor agent:id --summary what-changed",
       handoff: "aienvmp handoff --record --actor agent:id",

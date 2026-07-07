@@ -14,6 +14,7 @@ test("followUpForRecord recommends refresh and handoff for dependency records", 
   assert.equal(followUp.required, true);
   assert.equal(followUp.target, "dependency");
   assert.deepEqual(followUp.commands, [
+    "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency",
     "aienvmp sync",
     "aienvmp status --write",
     "aienvmp handoff --record --actor agent:id"
@@ -49,5 +50,5 @@ test("recordWorkspace stores follow-up metadata in timeline", async () => {
   const entry = JSON.parse(raw.trim());
   assert.equal(entry.followUp.required, true);
   assert.equal(entry.followUp.target, "dependency");
-  assert.equal(entry.followUp.commands[0], "aienvmp sync");
+  assert.equal(entry.followUp.commands[0], "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency");
 });

@@ -14,6 +14,7 @@ import { handoffWorkspace } from "./commands/handoff.js";
 import { planWorkspace } from "./commands/plan.js";
 import { statusWorkspace } from "./commands/status.js";
 import { schemaWorkspace } from "./commands/schema.js";
+import { checkpointWorkspace } from "./commands/checkpoint.js";
 import { readFileSync } from "node:fs";
 
 const commands = new Map([
@@ -32,7 +33,8 @@ const commands = new Map([
   ["handoff", handoffWorkspace],
   ["plan", planWorkspace],
   ["status", statusWorkspace],
-  ["schema", schemaWorkspace]
+  ["schema", schemaWorkspace],
+  ["checkpoint", checkpointWorkspace]
 ]);
 
 const version = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version;
@@ -108,6 +110,7 @@ Usage:
   aienvmp context [--dir .] [--json]
   aienvmp status [--dir .] [--json] [--write] [--quiet]
   aienvmp handoff [--dir .] [--json] [--record --actor agent:id]
+  aienvmp checkpoint [--dir .] --actor agent:id --summary "what changed" [--target dependency] [--json]
   aienvmp plan [--dir .] [--json] [--write]
   aienvmp schema [--json]
 
@@ -116,6 +119,7 @@ Common:
   aienvmp status    print one simple environment decision; --write saves .aienvmp/status.json
   aienvmp context   print the AI preflight brief
   aienvmp handoff   print the next-agent handoff summary
+  aienvmp checkpoint record, sync, status, and handoff after an env change
   aienvmp plan      print a read-only AI environment action plan
   aienvmp schema    print the stable AI-readable output contract
   aienvmp snippet   print an AGENTS.md pointer snippet
@@ -127,6 +131,7 @@ Advanced:
   aienvmp intent [--dir .] --actor agent:codex --action "install pnpm"
   aienvmp resolve [--dir .] --actor human:you --id <intent-id> [--status resolved|cancelled]
   aienvmp record [--dir .] --actor agent:codex --summary "updated .nvmrc" [--target node] [--before 20] [--after 24]
+  aienvmp checkpoint [--dir .] --actor agent:codex --summary "updated dependency" [--target dependency]
   aienvmp snippet [agents|claude|gemini] [--write AGENTS.md]
   aienvmp compile [--dir .]
   aienvmp diff [--dir .]

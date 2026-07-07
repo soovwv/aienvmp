@@ -38,7 +38,8 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.equal(manifest.lightSbom.dependencyChangeHints[0].lockfiles[0].file, "package-lock.json");
   assert.equal(manifest.generatedBy.name, "aienvmp");
   assert.equal(manifest.generatedBy.command, "aienvmp sync");
-  assert.deepEqual(manifest.agentProtocol.afterEnvironmentChange, ["aienvmp sync"]);
+  assert.equal(manifest.agentProtocol.checkpointCommand, "aienvmp checkpoint --actor agent:id --summary what-changed --target environment");
+  assert.deepEqual(manifest.agentProtocol.afterEnvironmentChange, ["aienvmp checkpoint --actor agent:id --summary what-changed --target environment"]);
   assert.equal(manifest.agentProtocol.handoffCommand, "aienvmp handoff");
   assert.equal(manifest.agentProtocol.intentCommand, "aienvmp intent --actor agent:id --action planned-change");
 
