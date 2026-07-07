@@ -1,12 +1,13 @@
 import { readJson, writeJson } from "../fsutil.js";
-import { manifestPath, sbomJsonPath, workspaceDir } from "../paths.js";
+import { cyclonedxSbomPath, manifestPath, sbomJsonPath, workspaceDir } from "../paths.js";
 
 export async function sbomWorkspace(args = {}) {
   const dir = workspaceDir(args);
   const manifest = await readJson(manifestPath(dir));
   if (!manifest) throw new Error("missing manifest; run `aienvmp sync` first");
-  const sbom = buildSbomArtifact(manifest);
-  const artifact = args.write ? await writeSbomArtifact(dir, sbom) : "";
+  const format = normalizeFormat(args.format);
+  const sbom = format === "cyclonedx-lite" ? buildCycloneDxLite(manifest) : buildSbomArtifact(manifest);
+  const artifact = args.write ? await writeSbomArtifact(dir, sbom, format) : "";
   const output = artifact ? { ...sbom, artifact } : sbom;
   if (args.json || args.write || args.quiet) {
     if (args.json) console.log(JSON.stringify(output, null, 2));
@@ -45,7 +46,98 @@ export function buildSbomArtifact(manifest = {}) {
 }
 
 export async function writeSbomArtifact(dir, sbom) {
-  const out = sbomJsonPath(dir);
+  const out = sbom.bomFormat === "CycloneDX" ? cyclonedxSbomPath(dir) : sbomJsonPath(dir);
   await writeJson(out, sbom);
   return out;
+}
+
+export function buildCycloneDxLite(manifest = {}) {
+  const snapshot = manifest.dependencySnapshot || {};
+  const packages = snapshot.packages || [];
+  const lightSbom = manifest.lightSbom || {};
+  return {
+    bomFormat: "CycloneDX",
+    specVersion: "1.6",
+    serialNumber: `urn:uuid:aienvmp-${hashText(`${manifest.workspace?.path || ""}:${manifest.generatedAt || ""}`)}`,
+    version: 1,
+    metadata: {
+      timestamp: manifest.generatedAt || "",
+      tools: {
+        components: [{
+          type: "application",
+          name: "aienvmp",
+          version: manifest.generatedBy?.version || "unknown"
+        }]
+      },
+      component: {
+        type: "application",
+        name: manifest.workspace?.name || "workspace",
+        bomRef: "workspace"
+      },
+      properties: [
+        { name: "aienvmp:format", value: "cyclonedx-lite" },
+        { name: "aienvmp:source", value: lightSbom.source?.dependencies || "project manifests" },
+        { name: "aienvmp:confidence:transitiveDependencies", value: lightSbom.confidence?.transitiveDependencies || "not-resolved" },
+        { name: "aienvmp:risk:level", value: lightSbom.riskSummary?.level || "clear" },
+        { name: "aienvmp:risk:score", value: String(lightSbom.riskSummary?.score || 0) }
+      ]
+    },
+    components: packages.slice(0, 200).map(cycloneComponent),
+    vulnerabilities: (lightSbom.topRisk || []).slice(0, 50).map(cycloneVulnerability),
+    properties: [
+      { name: "aienvmp:limitation", value: "Light SBOM from project manifests only; no install or dependency resolver was run." },
+      { name: "aienvmp:verifyWith", value: "CycloneDX, Syft, Trivy, npm audit, pip-audit, or another dedicated scanner before security claims." }
+    ]
+  };
+}
+
+function cycloneComponent(pkg = {}) {
+  const version = String(pkg.version || "unspecified");
+  return {
+    type: "library",
+    name: pkg.name || "unknown",
+    version,
+    purl: packageUrl(pkg, version),
+    bomRef: `${pkg.ecosystem || "pkg"}:${pkg.name || "unknown"}@${version}`,
+    properties: [
+      { name: "aienvmp:ecosystem", value: pkg.ecosystem || "unknown" },
+      { name: "aienvmp:manager", value: pkg.manager || "unknown" },
+      { name: "aienvmp:manifest", value: pkg.manifest || "" },
+      { name: "aienvmp:group", value: pkg.group || "" }
+    ]
+  };
+}
+
+function cycloneVulnerability(pkg = {}) {
+  return {
+    id: pkg.name || "unknown",
+    source: { name: "aienvmp-light-sbom" },
+    ratings: [{ severity: pkg.severity || "unknown" }],
+    affects: [{
+      ref: `${pkg.ecosystem || "pkg"}:${pkg.name || "unknown"}@${pkg.version || "unspecified"}`
+    }],
+    properties: [
+      { name: "aienvmp:priority", value: pkg.priority || "low" },
+      { name: "aienvmp:score", value: String(pkg.score || 0) },
+      { name: "aienvmp:directDependency", value: String(pkg.directDependency === true) },
+      { name: "aienvmp:manifest", value: pkg.manifest || "" }
+    ]
+  };
+}
+
+function packageUrl(pkg = {}, version = "") {
+  const type = pkg.ecosystem === "python" ? "pypi" : "npm";
+  return `pkg:${type}/${encodeURIComponent(pkg.name || "unknown")}@${encodeURIComponent(version)}`;
+}
+
+function normalizeFormat(format = "") {
+  const value = String(format || "aienvmp").toLowerCase();
+  if (["cyclonedx", "cyclonedx-lite", "cdx"].includes(value)) return "cyclonedx-lite";
+  return "aienvmp";
+}
+
+function hashText(text = "") {
+  let hash = 0;
+  for (const ch of String(text)) hash = ((hash << 5) - hash + ch.charCodeAt(0)) >>> 0;
+  return `${hash.toString(16).padStart(8, "0")}-0000-4000-8000-000000000000`;
 }

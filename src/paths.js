@@ -20,6 +20,10 @@ export function sbomJsonPath(dir) {
   return path.join(stateDir(dir), "sbom.json");
 }
 
+export function cyclonedxSbomPath(dir) {
+  return path.join(stateDir(dir), "sbom.cdx.json");
+}
+
 export function previousManifestPath(dir) {
   return path.join(stateDir(dir), "manifest.previous.json");
 }

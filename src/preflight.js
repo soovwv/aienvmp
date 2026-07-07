@@ -354,6 +354,7 @@ export function preflightArtifacts() {
     envMap: "AIENV.md",
     manifest: ".aienvmp/manifest.json",
     sbom: ".aienvmp/sbom.json",
+    cyclonedx: ".aienvmp/sbom.cdx.json",
     dashboard: ".aienvmp/dashboard.html",
     planJson: ".aienvmp/plan.json",
     planMarkdown: ".aienvmp/plan.md",

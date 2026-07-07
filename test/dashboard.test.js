@@ -277,6 +277,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Light SBOM/);
   assert.match(html, /Light SBOM Artifact/);
   assert.match(html, /sbom\.json/);
+  assert.match(html, /sbom\.cdx\.json/);
   assert.match(html, /Risk summary/);
   assert.match(html, /vulnerable direct dependency/);
   assert.match(html, /Direct vulnerable/);

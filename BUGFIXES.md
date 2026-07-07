@@ -70,6 +70,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: `aienvmp sbom --json` and `.aienvmp/sbom.json` now expose a standalone light SBOM artifact.
 - Verification: tests cover standalone SBOM construction, writing, sync output, schema metadata, and dashboard linking.
 
+### Light SBOM needed a lightweight standard export
+
+- Issue: the standalone SBOM was AI-friendly, but less convenient for tools expecting CycloneDX-shaped data.
+- Fix: `aienvmp sbom --format cyclonedx-lite` and `.aienvmp/sbom.cdx.json` now export project-manifest packages in a CycloneDX-compatible shape with explicit limitations.
+- Verification: tests cover component mapping, vulnerability hints, sync output, schema metadata, and dashboard links.
+
 ## Template
 
 ### Title

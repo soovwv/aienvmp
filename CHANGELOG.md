@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.48
+
+- Added `aienvmp sbom --format cyclonedx-lite` for a lightweight CycloneDX-compatible export.
+- Added `.aienvmp/sbom.cdx.json` writing through the default `sync` flow.
+- Added CycloneDX-lite artifact paths to status/preflight outputs and schema metadata.
+- Added dashboard links for `sbom.cdx.json` beside the native light SBOM artifact.
+- Added README guidance for the CycloneDX-lite command and output.
+- Included explicit metadata limitations so consumers know no install or dependency resolver was run.
+- Added regression tests for CycloneDX-lite component mapping, vulnerability hints, sync output, schema contract, and dashboard rendering.
+
 ## 0.1.47
 
 - Added `aienvmp sbom` for standalone AI-readable light SBOM output without deep manifest parsing.

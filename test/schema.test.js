@@ -15,6 +15,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.handoff.rootFields.includes("coordination"));
   assert.equal(schema.outputs.sbom.command, "aienvmp sbom --json");
   assert.ok(schema.outputs.sbom.rootFields.includes("riskSummary"));
+  assert.equal(schema.outputs.cyclonedxLite.command, "aienvmp sbom --format cyclonedx-lite --json");
   assert.equal(schema.compatibility.stability, "additive");
 });
 
@@ -31,5 +32,6 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   const schema = JSON.parse(output);
   assert.equal(schema.outputs.context.command, "aienvmp context --json");
   assert.equal(schema.outputs.sbom.file, ".aienvmp/sbom.json");
+  assert.equal(schema.outputs.cyclonedxLite.file, ".aienvmp/sbom.cdx.json");
   assert.match(schema.compatibility.localBehavior, /read-only/);
 });

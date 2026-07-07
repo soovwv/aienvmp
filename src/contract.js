@@ -36,6 +36,11 @@ export function schemaContract() {
         file: ".aienvmp/sbom.json",
         command: "aienvmp sbom --json",
         rootFields: ["schemaVersion", "schemaName", "workspace", "summary", "riskSummary", "topRisk", "packageManagerPolicy", "dependencyChangeHints"]
+      },
+      cyclonedxLite: {
+        file: ".aienvmp/sbom.cdx.json",
+        command: "aienvmp sbom --format cyclonedx-lite --json",
+        rootFields: ["bomFormat", "specVersion", "metadata", "components", "vulnerabilities", "properties"]
       }
     },
     compatibility: {

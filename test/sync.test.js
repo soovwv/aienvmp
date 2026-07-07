@@ -58,7 +58,9 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.equal(status.agentUse.purpose, "First AI-readable environment preflight for this workspace.");
   assert.equal(status.artifacts.dashboard, ".aienvmp/dashboard.html");
   assert.equal(status.artifacts.sbom, ".aienvmp/sbom.json");
+  assert.equal(status.artifacts.cyclonedx, ".aienvmp/sbom.cdx.json");
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "sbom.json")));
+  await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "sbom.cdx.json")));
   const sbom = JSON.parse(await fs.readFile(path.join(dir, ".aienvmp", "sbom.json"), "utf8"));
   assert.equal(sbom.schemaName, "aienvmp.light-sbom");
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "dashboard.html")));
@@ -74,4 +76,5 @@ test("sync can return a quiet machine-readable result", async () => {
   assert.match(result.outputs.aiEnv, /AIENV\.md$/);
   assert.match(result.outputs.status, /\.aienvmp[\\\/]status\.json$/);
   assert.match(result.outputs.sbom, /\.aienvmp[\\\/]sbom\.json$/);
+  assert.match(result.outputs.cyclonedx, /\.aienvmp[\\\/]sbom\.cdx\.json$/);
 });

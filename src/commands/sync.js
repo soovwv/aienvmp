@@ -15,6 +15,7 @@ export async function syncWorkspace(args) {
   const dashboard = await dashWorkspace(next);
   const status = await statusWorkspace({ ...next, json: false, write: true, quiet: true });
   const sbom = await sbomWorkspace({ ...next, json: false, write: true, quiet: true });
+  const cyclonedx = await sbomWorkspace({ ...next, json: false, write: true, quiet: true, format: "cyclonedx-lite" });
 
   const result = {
     status: "ok",
@@ -24,6 +25,7 @@ export async function syncWorkspace(args) {
       timeline: scanned.timeline,
       status: status.artifact,
       sbom: sbom.artifact,
+      cyclonedx: cyclonedx.artifact,
       dashboard: dashboard.dashboard
     },
     changes: scanned.changes,
