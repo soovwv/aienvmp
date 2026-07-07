@@ -6,6 +6,7 @@
 - Added `aienvmp schema --json` to print the stable AI-readable output contract without scanning a workspace.
 - Exposed coordination summaries at the root of `context --json` and `handoff --json`, with a human-readable handoff section.
 - Added light SBOM source, confidence, and limitation hints so agents know what the lightweight snapshot does and does not prove.
+- Updated the README with the schema command and light SBOM verification boundary while keeping the quick-start compact.
 
 ## 0.1.40
 

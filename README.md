@@ -16,6 +16,7 @@ It helps Codex, Claude, Gemini, and humans avoid silent runtime, package manager
 npx aienvmp sync
 npx aienvmp status
 npx aienvmp context --json
+npx aienvmp schema --json
 ```
 
 Before environment changes:
@@ -43,10 +44,12 @@ AIENV.md                 # Markdown env map for AI agents
 ## AI Contract
 
 - `status`, `context`, `plan`, and `handoff` share one preflight contract.
+- `schema --json` prints the stable AI-readable output contract without scanning.
 - `status.json.nextAgent` tells the next AI what to read and whether to review first.
 - `dependencyReadSet` lists manifests and lockfiles before package or security changes.
 - `coordination.conflictTargets` shows where multiple agents are planning changes.
 - `handoff` carries dependency read-set and protocol guidance for the next AI.
+- Light SBOM includes source/confidence hints; verify security claims with dedicated scanners.
 - Everything is advisory by default; strict failure is opt-in with `doctor --strict`.
 
 ## Agent Files
@@ -65,6 +68,7 @@ npx aienvmp snippet gemini
 aienvmp sync                    # update env map, status, ledger, dashboard
 aienvmp status --write          # refresh compact AI status
 aienvmp context --json          # AI decision contract
+aienvmp schema --json           # stable output contract for AI/CI consumers
 aienvmp plan --write            # read-only action plan
 aienvmp handoff --record        # next-agent summary
 aienvmp intent                  # record planned env change
