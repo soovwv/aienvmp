@@ -446,6 +446,8 @@ const contract=manifest.preflight?.contract||{};
 const contractHtml=contract.name?\`<table><tr><th>Name</th><td><code>\${esc(contract.name)}</code></td></tr><tr><th>Version</th><td><code>\${esc(contract.version||1)}</code></td></tr><tr><th>Stability</th><td><code>\${esc(contract.stability||'additive')}</code></td></tr><tr><th>AI fields</th><td>\${esc((contract.aiEntryFields||[]).join(', ')||'none')}</td></tr></table><div class="path">\${esc(contract.rule||'Ignore unknown fields.')}</div>\`:'<div class="okline">Run <code>aienvmp status --write</code> to include AI contract metadata.</div>';
 const intentTargets=manifest.preflight?.intentTargets||[];
 const intentTargetsHtml=intentTargets.length?'<div class="timeline">'+intentTargets.slice(0,5).map(t=>\`<div class="event"><time>\${esc(t.target)}</time><div><b>\${esc(t.target)}</b> \${esc(t.reason||'Record this target before environment changes.')}\${t.command?\`<div class="path">\${esc(t.command)}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No specific target recommendation. Use <code>aienvmp intent --actor agent:id --action planned-change</code>.</div>';
+const followUps=manifest.preflight?.followUps||[];
+const followUpsHtml=followUps.length?'<div class="timeline">'+followUps.slice(0,5).map(f=>\`<div class="event"><time>\${esc(f.target||'env')}</time><div><b>\${esc(f.summary||'follow-up')}</b> \${esc(f.reason||'Refresh shared context.')}\${f.commands?.length?\`<div class="path">\${esc(f.commands.join(' -> '))}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No pending follow-ups after environment records.</div>';
 const dependencyReadSet=manifest.preflight?.dependencyReadSet||[];
 const dependencyReadSetHtml=dependencyReadSet.length?'<div class="timeline">'+dependencyReadSet.slice(0,5).map(d=>\`<div class="event"><time>\${esc(d.ecosystem||'deps')}</time><div><b>\${esc(d.manifest||'dependency files')}</b> <code>\${esc(d.manager||'unknown')}</code><div class="path">\${esc([d.manifest,...(d.lockfiles||[])].filter(Boolean).join(', '))}</div>\${d.riskPackages?.length?\`<div class="path">risk: \${esc(d.riskPackages.join(', '))}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No dependency files detected.</div>';
 const dependencyProtocol=manifest.preflight?.dependencyChangeProtocol||{};
@@ -499,6 +501,8 @@ document.getElementById('app').innerHTML=\`
     \${card('Recommended Actions','<span class="pill">'+actions.length+' actions</span>',actionsHtml)}
     <div style="height:14px"></div>
     \${card('AI Intent Targets','<span class="pill">'+intentTargets.length+' targets</span>',intentTargetsHtml)}
+    <div style="height:14px"></div>
+    \${card('Follow-ups',followUps.length?'<span class="pill warn">'+followUps.length+' pending</span>':'<span class="pill">clear</span>',followUpsHtml)}
     <div style="height:14px"></div>
     \${card('AI Contract','<span class="pill">'+(contract.stability||'additive')+'</span>',contractHtml)}
     <div style="height:14px"></div>

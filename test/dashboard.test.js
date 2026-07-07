@@ -155,6 +155,14 @@ test("renderDashboard includes the audit summary surface", () => {
           conflict: true
         }]
       },
+      followUps: [{
+        at: "2026-07-08T00:00:00.000Z",
+        actor: "agent:codex",
+        target: "dependency",
+        summary: "dependency-change",
+        reason: "Dependency or security records should refresh the env map and handoff context.",
+        commands: ["aienvmp sync", "aienvmp status --write", "aienvmp handoff --record --actor agent:id"]
+      }],
       dependencyReadSet: [{
         manifest: "package.json",
         ecosystem: "npm",
@@ -211,6 +219,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Recommended Actions/);
   assert.match(html, /Review express/);
   assert.match(html, /AI Intent Targets/);
+  assert.match(html, /Follow-ups/);
+  assert.match(html, /dependency-change/);
+  assert.match(html, /aienvmp status --write/);
   assert.match(html, /AI Contract/);
   assert.match(html, /aienvmp-preflight/);
   assert.match(html, /nextAgent/);

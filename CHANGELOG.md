@@ -5,6 +5,7 @@
 - Added follow-up metadata to `record` timeline entries so dependency/security changes point agents back to sync, status, and handoff.
 - Added timeline follow-up summarization so unresolved dependency/security records can be surfaced consistently.
 - Surfaced pending follow-ups in status/preflight and context outputs.
+- Added a dashboard Follow-ups card for unresolved env/SBOM record refresh work.
 
 ## 0.1.42
 
