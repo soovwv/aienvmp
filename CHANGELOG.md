@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.21
+
+- Added a GitHub Actions artifact upload example for `AIENV.md`, plan outputs, manifest, and dashboard.
+- Added a short README CI pointer to the example workflow.
+- Kept the core composite action lightweight and read-only by default.
+
 ## 0.1.20
 
 - Added a dashboard Environment Steps card backed by `.aienvmp/plan.json`.

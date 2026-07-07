@@ -53,6 +53,10 @@ AI agents can observe, plan, and record. Only a human or CI should mark environm
 npx aienvmp snippet agents
 ```
 
+## CI
+
+Use the GitHub Action to write the env map, plan, dashboard, and optional strict checks. See [examples/github-action.yml](examples/github-action.yml).
+
 ## Commands
 
 ```bash

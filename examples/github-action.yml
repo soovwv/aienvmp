@@ -15,3 +15,15 @@ jobs:
           directory: "."
           write-plan: "true"
           strict: "off" # security, policy, coordination, all, or off
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aienvmp
+          path: |
+            AIENV.md
+            .aienvmp/manifest.json
+            .aienvmp/plan.json
+            .aienvmp/plan.md
+            .aienvmp/dashboard.html
+          if-no-files-found: ignore
