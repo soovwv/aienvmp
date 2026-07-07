@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.43
 
 - Added follow-up metadata to `record` timeline entries so dependency/security changes point agents back to sync, status, and handoff.
 - Added timeline follow-up summarization so unresolved dependency/security records can be surfaced consistently.
