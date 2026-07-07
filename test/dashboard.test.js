@@ -132,6 +132,22 @@ test("renderDashboard includes the audit summary surface", () => {
         sources: ["security"],
         command: "aienvmp intent --actor agent:id --action planned-change --target dependency"
       }],
+      nextAgent: {
+        readFirst: ".aienvmp/status.json",
+        dependencyFiles: ["package.json", "package-lock.json"],
+        rule: "Next AI may continue project-local work; record intent before environment changes."
+      },
+      coordination: {
+        openIntentCount: 2,
+        conflictTargets: ["dependency"],
+        targets: [{
+          target: "dependency",
+          count: 2,
+          actors: ["agent:codex", "agent:claude"],
+          actions: ["update dependency", "fix vulnerable package"],
+          conflict: true
+        }]
+      },
       dependencyReadSet: [{
         manifest: "package.json",
         ecosystem: "npm",
@@ -173,6 +189,10 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Open env changes/);
   assert.match(html, /Trust/);
   assert.match(html, /AI Handoff/);
+  assert.match(html, /Read first/);
+  assert.match(html, /\.aienvmp\/status\.json/);
+  assert.match(html, /Dependency files/);
+  assert.match(html, /Conflicts/);
   assert.match(html, /Recommended Actions/);
   assert.match(html, /Review express/);
   assert.match(html, /AI Intent Targets/);

@@ -6,6 +6,7 @@
 - Added a compact `nextAgent` hint to status/preflight JSON for safer AI-to-AI continuation.
 - Added target-level open intent coordination summaries so agents can detect dependency conflicts without parsing logs.
 - Shortened the README around the 10-second AI flow, generated outputs, and advisory contract.
+- Updated the dashboard handoff card with next-agent read hints, dependency files, and conflict targets.
 
 ## 0.1.39
 

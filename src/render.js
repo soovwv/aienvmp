@@ -419,7 +419,12 @@ const trustState=manifest.trust?.state||'observed';
 const nextAction=reviewRequired?'Review before environment changes':'Proceed with project-local work';
 const auditItem=(key,value,hint,klass='')=>\`<div class="audit-item \${klass}"><div class="audit-k">\${key}</div><div class="audit-v">\${value}</div><div class="audit-hint">\${hint}</div></div>\`;
 const driftLabel=warnings.length?'detected':'none';
-const handoffHtml=\`<table><tr><th>Status</th><td>\${reviewRequired?'review-required':'clear'}</td></tr><tr><th>Trust</th><td><code>\${esc(trustState)}</code></td></tr><tr><th>Node</th><td><code>\${esc(manifest.runtimes.node||'not detected')}</code></td></tr><tr><th>Python</th><td><code>\${esc(manifest.runtimes.python||manifest.runtimes.python3||'not detected')}</code></td></tr><tr><th>Docker</th><td>\${manifest.containers?.docker?'available':'not detected'}</td></tr><tr><th>Next</th><td>\${reviewRequired?'Review warnings and open intents':'Continue project-local work'}</td></tr></table>\`;
+const nextAgent=manifest.preflight?.nextAgent||{};
+const coordination=manifest.preflight?.coordination||{};
+const conflictTargets=coordination.conflictTargets||[];
+const handoffFiles=nextAgent.dependencyFiles?.length?nextAgent.dependencyFiles:(dependencyReadSet[0]?[dependencyReadSet[0].manifest,...(dependencyReadSet[0].lockfiles||[])].filter(Boolean):[]);
+const handoffNext=nextAgent.rule||(reviewRequired?'Review warnings and open intents':'Continue project-local work');
+const handoffHtml=\`<table><tr><th>Status</th><td>\${reviewRequired?'review-required':'clear'}</td></tr><tr><th>Trust</th><td><code>\${esc(trustState)}</code></td></tr><tr><th>Read first</th><td><code>\${esc(nextAgent.readFirst||'.aienvmp/status.json')}</code></td></tr><tr><th>Dependency files</th><td>\${handoffFiles.length?'<code>'+esc(handoffFiles.join(', '))+'</code>':'none'}</td></tr><tr><th>Conflicts</th><td>\${conflictTargets.length?'<code>'+esc(conflictTargets.join(', '))+'</code>':'none'}</td></tr><tr><th>Next</th><td>\${esc(handoffNext)}</td></tr></table>\`;
 document.getElementById('app').innerHTML=\`
 <header>
   <div>
