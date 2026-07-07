@@ -18,6 +18,12 @@ test("contextWorkspace JSON includes compact step summary", async () => {
     packageManagers: {},
     containers: {},
     projectHints: { nvmrc: "20" },
+    dependencySnapshot: {
+      mode: "snapshot",
+      enabled: true,
+      summary: { ecosystems: ["npm"], manifests: 1, packages: 1 },
+      packages: [{ ecosystem: "npm", name: "express", version: "^4.18.0", manifest: "package.json", group: "dependencies" }]
+    },
     security: { enabled: false }
   });
 
@@ -38,6 +44,8 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   assert.equal(json.decision.canChangeEnvironmentWithoutReview, false);
   assert.deepEqual(json.decision.warningCodes, ["node-version-mismatch"]);
   assert.equal(json.decision.requiredCommands.reviewPlan, "aienvmp plan");
+  assert.equal(json.dependencySnapshot.summary.packages, 1);
+  assert.equal(json.dependencySnapshot.packages[0].name, "express");
   assert.equal(json.stepSummary.environment[0].code, "node-version-mismatch");
   assert.deepEqual(json.stepSummary.remediation, []);
 });

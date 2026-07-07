@@ -8,7 +8,7 @@
 
 `aienvmp` is an AI-first environment map for shared coding machines.
 
-It helps Codex, Claude, Gemini, and humans avoid silent Node, Python, package manager, Docker, and security drift.
+It helps Codex, Claude, Gemini, and humans avoid silent Node, Python, package manager, dependency, Docker, and security drift.
 
 Core loop: scan once, give AI a shared decision contract, write a read-only action plan, and hand off safe next steps.
 
@@ -48,7 +48,7 @@ AIENV.md
 .aienvmp/timeline.jsonl
 .aienvmp/plan.json
 .aienvmp/plan.md
-.aienvmp/dashboard.html     # includes plan, remediation, and environment cards
+.aienvmp/dashboard.html     # includes dependencies, plan, remediation, and environment cards
 ```
 
 Trust states are machine-readable: `observed`, `planned`, `changed`, `review`, `verified`, `stale`.

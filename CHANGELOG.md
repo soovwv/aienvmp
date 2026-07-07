@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.27
+
+- Added a read-only dependency snapshot to the manifest, context, AIENV.md, and dashboard.
+- Captured npm and Python project dependencies from `package.json`, `requirements.txt`, and `pyproject.toml` without installing or resolving packages.
+- Linked the env map and light SBOM story so AI agents can see runtime, dependency, and vulnerability context together.
+
 ## 0.1.26
 
 - Shared one AI decision contract across `context --json`, `plan`, and `handoff`.

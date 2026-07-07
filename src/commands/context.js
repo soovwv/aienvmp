@@ -32,6 +32,7 @@ export async function contextWorkspace(args) {
       packageManagers: manifest.packageManagers,
       containers: manifest.containers,
       inventory: inventorySummary(manifest.inventory),
+      dependencySnapshot: dependencySummary(manifest.dependencySnapshot),
       security: securitySummary(manifest.security),
       projectHints: manifest.projectHints,
       warnings,
@@ -43,6 +44,15 @@ export async function contextWorkspace(args) {
     return;
   }
   console.log(renderContext(manifest, timeline, warnings, intents, policy, actions));
+}
+
+function dependencySummary(snapshot = {}) {
+  return {
+    mode: snapshot.mode || "snapshot",
+    enabled: snapshot.enabled === true,
+    summary: snapshot.summary || { ecosystems: [], manifests: 0, packages: 0 },
+    packages: (snapshot.packages || []).slice(0, 12)
+  };
 }
 
 function securitySummary(security = {}) {

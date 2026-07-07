@@ -17,6 +17,13 @@ test("renderDashboard includes the audit summary surface", () => {
     containers: {},
     projectHints: {},
     agentFiles: {},
+    dependencySnapshot: {
+      mode: "snapshot",
+      enabled: true,
+      manifests: ["package.json"],
+      summary: { ecosystems: ["npm"], manifests: 1, packages: 1 },
+      packages: [{ ecosystem: "npm", name: "express", version: "^4.18.0", manifest: "package.json", group: "dependencies" }]
+    },
     security: {
       mode: "security",
       enabled: true,
@@ -83,6 +90,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /security/);
   assert.match(html, /policy/);
   assert.match(html, /Global Inventory/);
+  assert.match(html, /Dependency Snapshot/);
+  assert.match(html, /express/);
   assert.match(html, /Security Summary/);
   assert.match(html, /lodash/);
 });
@@ -100,6 +109,13 @@ test("dashWorkspace links written plan artifacts", async () => {
     packageManagers: {},
     containers: {},
     projectHints: { nvmrc: "20" },
+    dependencySnapshot: {
+      mode: "snapshot",
+      enabled: true,
+      manifests: ["requirements.txt"],
+      summary: { ecosystems: ["python"], manifests: 1, packages: 1 },
+      packages: [{ ecosystem: "python", name: "django", version: "==3.2.0", manifest: "requirements.txt", group: "requirements" }]
+    },
     agentFiles: {}
   });
   await fs.writeFile(path.join(dir, ".aienvmp", "plan.md"), "# plan\n", "utf8");
@@ -131,4 +147,6 @@ test("dashWorkspace links written plan artifacts", async () => {
   assert.match(html, /mixed-node-lockfiles/);
   assert.match(html, /CI Readiness/);
   assert.match(html, /node-version-mismatch/);
+  assert.match(html, /Dependency Snapshot/);
+  assert.match(html, /django/);
 });

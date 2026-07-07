@@ -31,6 +31,8 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
   pushMap(lines, "Containers", manifest.containers);
   lines.push("## Global Tool Inventory", "");
   lines.push(...inventoryLines(manifest.inventory), "");
+  lines.push("## Dependency Snapshot", "");
+  lines.push(...dependencyLines(manifest.dependencySnapshot), "");
   lines.push("## Security Summary", "");
   lines.push(...securityLines(manifest.security), "");
   lines.push("## Project Requirements And Hints", "");
@@ -99,6 +101,7 @@ export function renderContext(manifest, timeline = [], warnings = [], intents = 
     `Python: ${manifest.runtimes.python || manifest.runtimes.python3 || "not detected"}`,
     `Docker: ${manifest.containers.docker ? "available" : "not detected"}`,
     `Inventory: ${manifest.inventory?.mode || "basic"}${manifest.inventory?.enabled ? " enabled" : " disabled"}`,
+    `Dependencies: ${manifest.dependencySnapshot?.summary?.packages || 0} packages across ${(manifest.dependencySnapshot?.summary?.ecosystems || []).join(", ") || "no ecosystems"}`,
     `Security: ${manifest.security?.mode || "basic"}${manifest.security?.enabled ? ` enabled (${manifest.security.summary?.total || 0} vulnerabilities)` : " disabled"}`,
     `Policy Node: ${policy.node || "not set"}`,
     `Policy Python: ${policy.python || "not set"}`,
@@ -273,6 +276,10 @@ const rows=o=>entries(o).map(([k,v])=>\`<tr><th>\${esc(k)}</th><td><code>\${esc(
 const inventoryGroups=manifest.inventory?.tools||{};
 const inventoryCount=Object.values(inventoryGroups).reduce((sum,items)=>sum+(Array.isArray(items)?items.length:0),0);
 const inventoryHtml=manifest.inventory?.enabled?('<table>'+Object.entries(inventoryGroups).map(([k,v])=>\`<tr><th>\${esc(k)}</th><td><code>\${Array.isArray(v)?v.length:0} tools</code></td></tr>\`).join('')+'</table>'):'<div class="okline">Deep global inventory is off. Run <code>aienvmp sync --deep</code> when an AI needs global tool awareness.</div>';
+const deps=manifest.dependencySnapshot||{};
+const depSummary=deps.summary||{ecosystems:[],manifests:0,packages:0};
+const depPackages=deps.packages||[];
+const depHtml=depPackages.length?'<table><tr><th>Packages</th><td><code>'+esc(depSummary.packages||0)+'</code></td></tr><tr><th>Ecosystems</th><td><code>'+esc((depSummary.ecosystems||[]).join(', ')||'none')+'</code></td></tr><tr><th>Manifests</th><td><code>'+esc((deps.manifests||[]).join(', ')||'none')+'</code></td></tr></table><div class="timeline">'+depPackages.slice(0,8).map(p=>\`<div class="event"><time>\${esc(p.ecosystem)}</time><div><b>\${esc(p.name)}</b> <code>\${esc(p.version)}</code><div class="path">\${esc(p.manifest)} / \${esc(p.group)}</div></div></div>\`).join('')+'</div>':'<div class="okline">No project dependency manifests detected.</div>';
 const sec=manifest.security||{};
 const secSummary=sec.summary||{total:0,critical:0,high:0,moderate:0,low:0,info:0};
 const secPackages=sec.topPackages||[];
@@ -336,6 +343,7 @@ document.getElementById('app').innerHTML=\`
     \${card('Containers',manifest.containers?.docker?'<span class="pill">available</span>':'<span class="pill off">not detected</span>',\`<table>\${rows(manifest.containers)}</table>\`)}
     \${card('Project Hints',\`<span class="pill">\${entries(manifest.projectHints).length} hints</span>\`,\`<table>\${rows(manifest.projectHints)}</table>\`)}
     \${card('Global Inventory',manifest.inventory?.enabled?'<span class="pill">deep</span>':'<span class="pill off">basic</span>',inventoryHtml)}
+    \${card('Dependency Snapshot','<span class="pill">'+(depSummary.packages||0)+' packages</span>',depHtml)}
     \${card('Security Summary',sec.enabled?'<span class="pill warn">security</span>':'<span class="pill off">basic</span>',securityHtml)}
   </div>
   <aside>
@@ -412,6 +420,22 @@ function inventoryLines(inventory = {}) {
   const lines = ["- Mode: deep"];
   for (const [name, items] of groups) {
     lines.push(`- ${name}: ${items.length} tools`);
+  }
+  return lines;
+}
+
+function dependencyLines(snapshot = {}) {
+  const summary = snapshot.summary || {};
+  const packages = snapshot.packages || [];
+  const ecosystems = summary.ecosystems?.length ? summary.ecosystems.join(", ") : "none";
+  const lines = [
+    `- Mode: ${snapshot.mode || "snapshot"}`,
+    `- Manifests: ${(snapshot.manifests || []).join(", ") || "none"}`,
+    `- Ecosystems: ${ecosystems}`,
+    `- Packages: ${summary.packages || 0}`
+  ];
+  for (const pkg of packages.slice(0, 10)) {
+    lines.push(`- ${pkg.ecosystem}/${pkg.name}: ${pkg.version} (${pkg.manifest})`);
   }
   return lines;
 }

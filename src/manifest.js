@@ -6,6 +6,7 @@ import { exists } from "./fsutil.js";
 import { observedTrust } from "./trust.js";
 import { scanGlobalInventory } from "./inventory.js";
 import { scanSecurity } from "./security.js";
+import { scanDependencySnapshot } from "./dependencies.js";
 
 export async function buildManifest(dir, options = {}) {
   const now = new Date().toISOString();
@@ -27,6 +28,7 @@ export async function buildManifest(dir, options = {}) {
     packageManagers: await scanPackageManagers(),
     containers: await scanContainers(),
     projectHints: await scanProjectHints(dir),
+    dependencySnapshot: await scanDependencySnapshot(dir),
     inventory: await scanGlobalInventory({ deep: options.deep }),
     security: await scanSecurity(dir, { security: options.security }),
     agentFiles: await scanAgentFiles(dir),
@@ -83,6 +85,11 @@ export async function buildManifest(dir, options = {}) {
       security: {
         mode: "basic by default; vulnerability summaries only when requested",
         npmAudit: "npm audit --json"
+      },
+      dependencySnapshot: {
+        mode: "read-only project file snapshot",
+        node: "package.json dependencies",
+        python: "requirements.txt and pyproject.toml dependencies"
       },
       projectHints: [
         ".nvmrc",

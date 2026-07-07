@@ -7,7 +7,7 @@ import { syncWorkspace } from "../src/commands/sync.js";
 
 test("sync creates the AI-facing env map outputs with simple defaults", async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-sync-"));
-  await fs.writeFile(path.join(dir, "package.json"), "{}\n", "utf8");
+  await fs.writeFile(path.join(dir, "package.json"), JSON.stringify({ dependencies: { express: "^4.18.0" } }), "utf8");
 
   await syncWorkspace({ dir });
 
@@ -20,6 +20,9 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.equal(manifest.inventory.enabled, false);
   assert.equal(manifest.security.mode, "basic");
   assert.equal(manifest.security.enabled, false);
+  assert.equal(manifest.dependencySnapshot.mode, "snapshot");
+  assert.equal(manifest.dependencySnapshot.summary.packages, 1);
+  assert.equal(manifest.dependencySnapshot.packages[0].name, "express");
   assert.equal(manifest.generatedBy.name, "aienvmp");
   assert.equal(manifest.generatedBy.command, "aienvmp sync");
   assert.deepEqual(manifest.agentProtocol.afterEnvironmentChange, ["aienvmp sync"]);
