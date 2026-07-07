@@ -63,6 +63,8 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   const json = JSON.parse(output);
   assert.equal(json.status, "review-required");
   assert.equal(json.preflight.state, "review-required");
+  assert.equal(json.preflight.contract.name, "aienvmp-preflight");
+  assert.ok(json.preflight.contract.requiredFields.includes("decision"));
   assert.equal(json.preflight.artifacts.status, ".aienvmp/status.json");
   assert.equal(json.preflight.commands.context, "aienvmp context --json");
   assert.equal(json.preflight.quickstart.beforeEnvironmentChange, "aienvmp intent --actor agent:id --action planned-change --target <runtime|package-manager|docker|dependency>");

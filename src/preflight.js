@@ -14,6 +14,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
   const coordination = coordinationSummary(intents);
   return {
     schemaVersion: 1,
+    contract: preflightContract(),
     state,
     summary: state === "clear"
       ? "Project-local work can continue. Record intent before environment changes."
@@ -72,6 +73,17 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
     },
     topAction,
     nextCommand: topAction?.command || decision.nextCommand
+  };
+}
+
+function preflightContract() {
+  return {
+    name: "aienvmp-preflight",
+    version: 1,
+    stability: "additive",
+    requiredFields: ["schemaVersion", "state", "decision", "quickstart", "commands", "artifacts"],
+    aiEntryFields: ["state", "summary", "nextAgent", "coordination", "dependencyReadSet", "dependencyChangeProtocol"],
+    rule: "Consumers should ignore unknown fields and treat missing optional fields as unavailable."
   };
 }
 

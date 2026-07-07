@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Added preflight contract metadata so AI and CI consumers can rely on stable entry fields while ignoring additive changes.
+
 ## 0.1.40
 
 - Added dependency handoff summaries so the next AI receives dependency read-set and protocol guidance directly in `handoff`.

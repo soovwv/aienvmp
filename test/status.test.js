@@ -24,6 +24,10 @@ test("buildStatus returns a compact clear state", () => {
   }, [], []);
 
   assert.equal(status.state, "clear");
+  assert.equal(status.contract.name, "aienvmp-preflight");
+  assert.equal(status.contract.stability, "additive");
+  assert.ok(status.contract.aiEntryFields.includes("nextAgent"));
+  assert.ok(status.contract.aiEntryFields.includes("dependencyReadSet"));
   assert.equal(status.counts.runtimes, 1);
   assert.equal(status.counts.dependencies, 2);
   assert.equal(status.agentUse.environmentChanges, "allowed");
@@ -75,6 +79,7 @@ test("statusWorkspace JSON reports review-required and strict suggestion", async
 
   const json = JSON.parse(output);
   assert.equal(json.state, "review-required");
+  assert.equal(json.contract.version, 1);
   assert.equal(json.enforcement.suggestedStrictScopes[0], "policy");
   assert.equal(json.counts.warnings, 1);
   assert.equal(json.counts.dependencies, 1);
