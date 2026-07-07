@@ -220,7 +220,9 @@ const inventoryHtml=manifest.inventory?.enabled?('<table>'+Object.entries(invent
 const sec=manifest.security||{};
 const secSummary=sec.summary||{total:0,critical:0,high:0,moderate:0,low:0,info:0};
 const secPackages=sec.topPackages||[];
-const securityHtml=sec.enabled?\`<table><tr><th>Total</th><td><code>\${esc(secSummary.total||0)}</code></td></tr><tr><th>Critical</th><td><code>\${esc(secSummary.critical||0)}</code></td></tr><tr><th>High</th><td><code>\${esc(secSummary.high||0)}</code></td></tr><tr><th>Moderate</th><td><code>\${esc(secSummary.moderate||0)}</code></td></tr><tr><th>Low</th><td><code>\${esc(secSummary.low||0)}</code></td></tr></table>\${secPackages.length?'<div class="timeline">'+secPackages.slice(0,5).map(p=>\`<div class="event"><time>\${esc(p.severity)}</time><div><b>\${esc(p.name)}</b> \${p.fixAvailable?'fix available':'review required'}</div></div>\`).join('')+'</div>':'<div class="okline" style="margin-top:10px">No vulnerable packages reported.</div>'}\`:'<div class="okline">Security scan is off. Run <code>aienvmp sync --security</code> for read-only vulnerability summary.</div>';
+const securityFix=p=>p.fixVersions?.length?\`fix \${p.fixVersions.slice(0,3).join(', ')}\`:(p.fixAvailable?'fix available':'review required');
+const securityRefs=p=>p.advisories?.length?\` · \${p.advisories.map(a=>a.id||a.title).filter(Boolean).slice(0,2).join(', ')}\`:'';
+const securityHtml=sec.enabled?\`<table><tr><th>Total</th><td><code>\${esc(secSummary.total||0)}</code></td></tr><tr><th>Critical</th><td><code>\${esc(secSummary.critical||0)}</code></td></tr><tr><th>High</th><td><code>\${esc(secSummary.high||0)}</code></td></tr><tr><th>Moderate</th><td><code>\${esc(secSummary.moderate||0)}</code></td></tr><tr><th>Low</th><td><code>\${esc(secSummary.low||0)}</code></td></tr></table>\${secPackages.length?'<div class="timeline">'+secPackages.slice(0,5).map(p=>\`<div class="event"><time>\${esc(p.severity)}</time><div><b>\${esc(p.name)}</b> \${esc(securityFix(p))}\${esc(securityRefs(p))}</div></div>\`).join('')+'</div>':'<div class="okline" style="margin-top:10px">No vulnerable packages reported.</div>'}\`:'<div class="okline">Security scan is off. Run <code>aienvmp sync --security</code> for read-only vulnerability summary.</div>';
 const change=c=>c.type==='changed'?\`\${c.scope} \${c.key}: \${c.before} -> \${c.after}\`:\`\${c.scope} \${c.key}: \${c.type} \${c.after||c.before}\`;
 const timelineLabel=t=>t.change?change(t.change):(t.summary||t.action||t.type||'recorded change');
 const agentNames={agents:'Codex',claude:'Claude',gemini:'Gemini'};
@@ -350,10 +352,19 @@ function securityLines(security = {}) {
   if (packages.length) {
     lines.push("- Top vulnerable packages:");
     for (const pkg of packages.slice(0, 8)) {
-      lines.push(`  - ${pkg.name}: ${pkg.severity}; ${pkg.fixAvailable ? "fix available" : "review required"}`);
+      lines.push(`  - ${pkg.name}: ${pkg.severity}; ${securityPackageNote(pkg)}`);
     }
   }
   return lines;
+}
+
+function securityPackageNote(pkg) {
+  const fix = pkg.fixVersions?.length ? `fix ${pkg.fixVersions.slice(0, 3).join(", ")}` : pkg.fixAvailable ? "fix available" : "review required";
+  const advisories = (pkg.advisories || [])
+    .map((item) => item.id || item.title)
+    .filter(Boolean)
+    .slice(0, 2);
+  return advisories.length ? `${fix}; advisories ${advisories.join(", ")}` : fix;
 }
 
 function policyLines(policy) {

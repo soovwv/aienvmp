@@ -23,7 +23,16 @@ test("parseNpmAudit returns severity counts and package summaries", () => {
       }
     },
     vulnerabilities: {
-      lodash: { severity: "high", via: ["CVE-1"], fixAvailable: true },
+      lodash: {
+        severity: "high",
+        via: [{
+          source: 1100,
+          title: "Prototype Pollution",
+          url: "https://github.com/advisories/GHSA-test",
+          severity: "high"
+        }],
+        fixAvailable: { name: "lodash", version: "4.17.21", isSemVerMajor: false }
+      },
       minimist: { severity: "critical", via: ["CVE-2", "CVE-3"], fixAvailable: false }
     }
   }));
@@ -33,8 +42,20 @@ test("parseNpmAudit returns severity counts and package summaries", () => {
   assert.equal(parsed.summary.critical, 1);
   assert.equal(parsed.summary.high, 1);
   assert.deepEqual(parsed.vulnerablePackages, [
-    { name: "lodash", severity: "high", viaCount: 1, fixAvailable: true },
-    { name: "minimist", severity: "critical", viaCount: 2, fixAvailable: false }
+    {
+      name: "lodash",
+      severity: "high",
+      viaCount: 1,
+      fixAvailable: true,
+      fixVersions: ["4.17.21"],
+      advisories: [{
+        id: "1100",
+        title: "Prototype Pollution",
+        url: "https://github.com/advisories/GHSA-test",
+        severity: "high"
+      }]
+    },
+    { name: "minimist", severity: "critical", viaCount: 2, fixAvailable: false, fixVersions: [], advisories: [] }
   ]);
 });
 
@@ -57,6 +78,7 @@ test("parsePipAudit returns Python package vulnerability summaries", () => {
       version: "3.2.0",
       vulns: [{
         id: "PYSEC-1",
+        aliases: ["GHSA-pytest"],
         fix_versions: ["3.2.25"]
       }, {
         id: "PYSEC-2",
@@ -77,7 +99,16 @@ test("parsePipAudit returns Python package vulnerability summaries", () => {
     severity: "unknown",
     viaCount: 2,
     fixAvailable: true,
-    fixVersions: ["3.2.25"]
+    fixVersions: ["3.2.25"],
+    advisories: [{
+      id: "PYSEC-1",
+      aliases: ["GHSA-pytest"],
+      fixVersions: ["3.2.25"]
+    }, {
+      id: "PYSEC-2",
+      aliases: [],
+      fixVersions: []
+    }]
   }]);
 });
 

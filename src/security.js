@@ -80,12 +80,18 @@ export function parseNpmAudit(raw) {
     const vulnerabilities = parsed.vulnerabilities || {};
     const severityCounts = Object.fromEntries(SEVERITIES.map((severity) => [severity, Number(metadata.vulnerabilities?.[severity] || 0)]));
     const total = Number(metadata.vulnerabilities?.total || Object.values(severityCounts).reduce((sum, value) => sum + value, 0));
-    const vulnerablePackages = Object.entries(vulnerabilities).slice(0, 20).map(([name, value]) => ({
-      name,
-      severity: value.severity || "unknown",
-      viaCount: Array.isArray(value.via) ? value.via.length : 0,
-      fixAvailable: Boolean(value.fixAvailable)
-    }));
+    const vulnerablePackages = Object.entries(vulnerabilities).slice(0, 20).map(([name, value]) => {
+      const fixVersions = npmFixVersions(value.fixAvailable);
+      const advisories = npmAdvisories(value.via);
+      return {
+        name,
+        severity: value.severity || "unknown",
+        viaCount: Array.isArray(value.via) ? value.via.length : 0,
+        fixAvailable: hasFixAvailable(value.fixAvailable),
+        fixVersions,
+        advisories
+      };
+    });
     return {
       available: true,
       summary: { total, ...severityCounts },
@@ -109,7 +115,8 @@ export function parsePipAudit(raw) {
         severity: "unknown",
         viaCount: dependency.vulns.length,
         fixAvailable: dependency.vulns.some((vuln) => Array.isArray(vuln.fix_versions) && vuln.fix_versions.length),
-        fixVersions: unique(dependency.vulns.flatMap((vuln) => vuln.fix_versions || [])).slice(0, 5)
+        fixVersions: unique(dependency.vulns.flatMap((vuln) => vuln.fix_versions || [])).slice(0, 5),
+        advisories: pipAdvisories(dependency.vulns)
       }));
     const total = vulnerablePackages.reduce((sum, pkg) => sum + pkg.viaCount, 0);
     return {
@@ -150,4 +157,39 @@ function unavailable(scanner, reason) {
 
 function unique(items) {
   return [...new Set(items.filter(Boolean))];
+}
+
+function hasFixAvailable(value) {
+  if (typeof value === "boolean") return value;
+  return Boolean(value && typeof value === "object");
+}
+
+function npmFixVersions(value) {
+  if (!value || typeof value !== "object") return [];
+  return unique([value.version]).slice(0, 5);
+}
+
+function npmAdvisories(via = []) {
+  if (!Array.isArray(via)) return [];
+  return via
+    .filter((item) => item && typeof item === "object")
+    .map((item) => ({
+      id: String(item.source || item.id || item.cve || item.name || "").trim(),
+      title: String(item.title || "").trim(),
+      url: String(item.url || "").trim(),
+      severity: item.severity || "unknown"
+    }))
+    .filter((item) => item.id || item.title || item.url)
+    .slice(0, 5);
+}
+
+function pipAdvisories(vulns = []) {
+  return vulns
+    .map((vuln) => ({
+      id: String(vuln.id || vuln.aliases?.[0] || "").trim(),
+      aliases: Array.isArray(vuln.aliases) ? vuln.aliases.slice(0, 5) : [],
+      fixVersions: Array.isArray(vuln.fix_versions) ? vuln.fix_versions.slice(0, 5) : []
+    }))
+    .filter((item) => item.id || item.aliases.length || item.fixVersions.length)
+    .slice(0, 5);
 }

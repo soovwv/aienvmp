@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.11
+
+- Added bounded remediation details to security summaries, including fix versions and advisory references.
+- Surfaced remediation hints in `AIENV.md` and the dashboard so AI agents can plan safer dependency updates.
+- Kept security scanning read-only and opt-in.
+
 ## 0.1.10
 
 - Added optional `pip-audit` JSON parsing for Python security summaries.

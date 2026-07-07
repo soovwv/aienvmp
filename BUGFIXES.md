@@ -28,6 +28,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: test command used `/bin/zsh -lc` to load login shell PATH.
 - Verification: remote test detected Node `v25.3.0`, npm `11.11.0`, and completed `aienvmp sync`.
 
+### Security summaries lacked remediation hints
+
+- Issue: AI agents could see vulnerable package names but not enough bounded detail to plan the next dependency update.
+- Fix: npm and Python security summaries now include fix versions and advisory references when scanners provide them.
+- Verification: parser tests cover npm remediation objects and pip-audit advisory ids; Windows and macOS tarball tests completed `sync --security`.
+
 ## Template
 
 ### Title
