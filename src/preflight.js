@@ -9,6 +9,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
   const state = decision.reviewRequired ? "review-required" : "clear";
   const topAction = actions[0] || null;
   const intentTargets = recommendedIntentTargets(manifest, warnings, intents);
+  const dependencyReadSet = dependencyPreflightReadSet(manifest);
   return {
     schemaVersion: 1,
     state,
@@ -46,6 +47,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
     },
     quickstart: agentQuickstart(decision.reviewRequired),
     intentTargets,
+    dependencyReadSet,
     artifacts: preflightArtifacts(),
     readOrder: [
       ".aienvmp/status.json",
@@ -66,6 +68,37 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
     topAction,
     nextCommand: topAction?.command || decision.nextCommand
   };
+}
+
+function dependencyPreflightReadSet(manifest = {}) {
+  const hints = manifest.lightSbom?.dependencyChangeHints || [];
+  const readSet = hints.map((hint) => ({
+    manifest: hint.manifest,
+    ecosystem: hint.ecosystem || "unknown",
+    manager: hint.manager || "unknown",
+    groups: hint.groups || [],
+    lockfiles: (hint.lockfiles || []).map((item) => item.file).filter(Boolean),
+    riskPackages: (hint.riskPackages || []).map((item) => item.name).filter(Boolean).slice(0, 5),
+    reason: hint.riskPackages?.length
+      ? "Read before dependency or security remediation; vulnerable packages are linked to this manifest."
+      : "Read before dependency changes; this manifest defines project packages."
+  }));
+  if (readSet.length) return readSet.slice(0, 8);
+
+  const manifests = manifest.lightSbom?.summary?.manifests || manifest.dependencySnapshot?.manifests || [];
+  const lockfiles = (manifest.lightSbom?.summary?.lockfiles || manifest.dependencySnapshot?.lockfiles || [])
+    .map((item) => item.file || item)
+    .filter(Boolean);
+  if (!manifests.length && !lockfiles.length) return [];
+  return [{
+    manifest: manifests[0] || "",
+    ecosystem: "unknown",
+    manager: "unknown",
+    groups: [],
+    lockfiles,
+    riskPackages: [],
+    reason: "Read detected dependency files before package changes."
+  }];
 }
 
 function recommendedIntentTargets(manifest = {}, warnings = [], intents = []) {

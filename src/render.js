@@ -92,6 +92,15 @@ function preflightLines(preflight = {}) {
   } else {
     lines.push("- environment: `aienvmp intent --actor agent:id --action planned-change --target environment`");
   }
+  const dependencyReadSet = preflight.dependencyReadSet || [];
+  if (dependencyReadSet.length) {
+    lines.push("", "## Dependency Read Set", "");
+    for (const item of dependencyReadSet.slice(0, 5)) {
+      const files = [item.manifest, ...(item.lockfiles || [])].filter(Boolean).join(", ");
+      const risk = item.riskPackages?.length ? `; risk: ${item.riskPackages.join(", ")}` : "";
+      lines.push(`- ${files}: ${item.ecosystem}/${item.manager}${risk} - ${item.reason}`);
+    }
+  }
   return lines;
 }
 
@@ -354,6 +363,8 @@ const strictCommands=enforcementProfile.strictCommands||[];
 const enforcementHtml=\`<table><tr><th>Default</th><td><code>\${esc(enforcementProfile.defaultMode||'advisory')}</code></td></tr><tr><th>Local</th><td>\${esc(enforcementProfile.localOperation||'non-blocking')}</td></tr><tr><th>Strict</th><td>\${esc(enforcementProfile.strictUse||'CI or explicit checks only')}</td></tr><tr><th>Recommended</th><td><code>\${esc(enforcementProfile.recommendedStrictCommand||'aienvmp doctor --strict all')}</code></td></tr></table><div class="timeline">\${strictCommands.slice(0,4).map(cmd=>\`<div class="event"><time>CI</time><div><code>\${esc(cmd)}</code></div></div>\`).join('')}</div><div class="path">\${esc(enforcementProfile.reason||'Warnings stay advisory unless strict mode is requested.')}</div>\`;
 const intentTargets=manifest.preflight?.intentTargets||[];
 const intentTargetsHtml=intentTargets.length?'<div class="timeline">'+intentTargets.slice(0,5).map(t=>\`<div class="event"><time>\${esc(t.target)}</time><div><b>\${esc(t.target)}</b> \${esc(t.reason||'Record this target before environment changes.')}\${t.command?\`<div class="path">\${esc(t.command)}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No specific target recommendation. Use <code>aienvmp intent --actor agent:id --action planned-change</code>.</div>';
+const dependencyReadSet=manifest.preflight?.dependencyReadSet||[];
+const dependencyReadSetHtml=dependencyReadSet.length?'<div class="timeline">'+dependencyReadSet.slice(0,5).map(d=>\`<div class="event"><time>\${esc(d.ecosystem||'deps')}</time><div><b>\${esc(d.manifest||'dependency files')}</b> <code>\${esc(d.manager||'unknown')}</code><div class="path">\${esc([d.manifest,...(d.lockfiles||[])].filter(Boolean).join(', '))}</div>\${d.riskPackages?.length?\`<div class="path">risk: \${esc(d.riskPackages.join(', '))}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No dependency files detected.</div>';
 const card=(title,badge,body)=>\`<section class="card"><div class="card-head"><h2>\${title}</h2>\${badge||''}</div>\${body}</section>\`;
 const reviewRequired=warnings.length>0||intents.length>0;
 const recentChanges=timeline.slice(-8).length;
@@ -398,6 +409,8 @@ document.getElementById('app').innerHTML=\`
     \${card('Recommended Actions','<span class="pill">'+actions.length+' actions</span>',actionsHtml)}
     <div style="height:14px"></div>
     \${card('AI Intent Targets','<span class="pill">'+intentTargets.length+' targets</span>',intentTargetsHtml)}
+    <div style="height:14px"></div>
+    \${card('Dependency Read Set','<span class="pill">'+dependencyReadSet.length+' files</span>',dependencyReadSetHtml)}
     <div style="height:14px"></div>
     \${card('AI Plan Artifacts',plan.markdown||plan.json?'<span class="pill">written</span>':'<span class="pill off">not written</span>',planHtml)}
     <div style="height:14px"></div>

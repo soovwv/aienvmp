@@ -9,7 +9,17 @@ import { writeJson } from "../src/fsutil.js";
 test("buildStatus returns a compact clear state", () => {
   const status = buildStatus({
     runtimes: { node: "24.0.0" },
-    dependencySnapshot: { summary: { packages: 2 } },
+    dependencySnapshot: { summary: { packages: 2 }, manifests: ["package.json"] },
+    lightSbom: {
+      dependencyChangeHints: [{
+        manifest: "package.json",
+        ecosystem: "npm",
+        manager: "npm",
+        groups: ["dependencies"],
+        lockfiles: [{ file: "package-lock.json" }],
+        riskPackages: []
+      }]
+    },
     security: { summary: { total: 0 } }
   }, [], []);
 
@@ -21,6 +31,8 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.quickstart.detailCommand, "aienvmp context --json");
   assert.match(status.quickstart.rule, /Continue project-local work/);
   assert.equal(status.intentTargets[0].target, "dependency");
+  assert.equal(status.dependencyReadSet[0].manifest, "package.json");
+  assert.deepEqual(status.dependencyReadSet[0].lockfiles, ["package-lock.json"]);
   assert.equal(status.commands.recordIntent, "aienvmp intent --actor agent:id --action planned-change --target dependency");
   assert.equal(status.enforcementProfile.defaultMode, "advisory");
   assert.equal(status.enforcementProfile.localOperation, "non-blocking");

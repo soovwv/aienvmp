@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Added a dependency read set to preflight, `AIENV.md`, and the dashboard so agents know which manifests and lockfiles to read before package or security changes.
+
 ## 0.1.38
 
 - Added a 10-second AI quickstart flow to the shared preflight contract and status output.
