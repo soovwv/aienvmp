@@ -44,3 +44,26 @@ export function newIntentID(now = new Date()) {
   const entropy = Math.random().toString(36).slice(2, 8);
   return `int_${time}_${entropy}`;
 }
+
+export function pendingFollowUps(timeline = []) {
+  const lastSync = [...timeline].reverse().find((item) => item.type === "sync" || item.type === "detected-change");
+  const lastHandoff = [...timeline].reverse().find((item) => item.type === "agent-handoff");
+  const lastSyncAt = lastSync ? new Date(lastSync.at).getTime() : 0;
+  const lastHandoffAt = lastHandoff ? new Date(lastHandoff.at).getTime() : 0;
+  return timeline
+    .filter((item) => item.followUp?.required)
+    .filter((item) => {
+      const at = new Date(item.at).getTime();
+      return at > lastSyncAt || at > lastHandoffAt;
+    })
+    .slice(-5)
+    .reverse()
+    .map((item) => ({
+      at: item.at,
+      actor: item.actor || "unknown",
+      target: item.followUp.target || item.target || "environment",
+      summary: item.summary || item.type || "environment record",
+      reason: item.followUp.reason || "Follow-up is required.",
+      commands: item.followUp.commands || []
+    }));
+}
