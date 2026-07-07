@@ -2,15 +2,21 @@
 
 **aienvmp = AI Environment Map**
 
-`aienvmp` is an AI-first environment map and change ledger for shared development machines.
+`aienvmp` is an AI-first environment map and change ledger for shared AI coding workspaces.
 
-It helps multiple AI coding agents read the same runtime state, declare environment-changing intent, record what changed, and keep humans informed through a lightweight dashboard.
+It helps multiple AI coding agents read the same runtime state, avoid installing or using conflicting software versions, declare environment-changing intent, record what changed, and keep humans informed through a lightweight dashboard.
 
 ## Why
 
 Shared development machines drift.
 
-One person upgrades Node. Another AI agent installs a global Python tool. A different agent assumes Docker is available. After a few sessions, nobody is quite sure which runtime is safe to use.
+One person upgrades Node. Another AI agent installs a global Python tool. A different agent assumes Docker is available. A third agent uses the wrong package manager because it did not see the project lockfile.
+
+After a few sessions, nobody is quite sure which runtime is safe to use.
+
+`aienvmp` is designed to prevent that kind of AI-driven version drift.
+
+It is also designed to stay out of the operator's way. By default, `aienvmp` reports warnings and review-required states instead of taking locks, blocking commands, or changing the machine.
 
 `aienvmp` turns that machine state into:
 
@@ -23,6 +29,10 @@ One person upgrades Node. Another AI agent installs a global Python tool. A diff
 ## Core Idea
 
 Before an AI changes the environment, it should know the environment.
+
+Before an AI installs or uses a runtime, it should check the shared policy.
+
+The policy is advisory by default. It should guide AI agents and humans, not unexpectedly interrupt production or shared workspace operations.
 
 ```bash
 aienvmp context
@@ -74,11 +84,12 @@ node bin/aienvmp.js dash --dir sample-app
 
 1. Read `AIENV.md` or run `aienvmp context`.
 2. Prefer project-local version files such as `.nvmrc`, `.python-version`, `mise.toml`, and `.tool-versions`.
-3. Ask the user before changing global runtimes, global packages, Docker settings, or package managers.
-4. Record planned environment changes with `aienvmp intent`.
-5. After changes, run `aienvmp scan && aienvmp compile`.
-6. Record what changed with `aienvmp record`.
-7. Resolve the intent with `aienvmp resolve`.
+3. Do not install or switch to a different runtime version when it conflicts with `.aienvmp/policy.yml`.
+4. Ask the user before changing global runtimes, global packages, Docker settings, or package managers.
+5. Record planned environment changes with `aienvmp intent`.
+6. After changes, run `aienvmp scan && aienvmp compile`.
+7. Record what changed with `aienvmp record`.
+8. Resolve the intent with `aienvmp resolve`.
 
 Agent files can be injected automatically:
 
@@ -117,7 +128,10 @@ For tool integrations:
 ```bash
 aienvmp context --json
 aienvmp doctor --json
+aienvmp doctor --ci
 ```
+
+`doctor --ci` is the explicit strict path. Normal `doctor` output is advisory and exits successfully so it does not disrupt shared operations.
 
 ## Commands
 
@@ -144,6 +158,32 @@ Intent IDs are short and prefix-matchable, so `aienvmp resolve --id int_mabc` wo
 - Containers: Docker and Docker Compose
 - Project hints: `.nvmrc`, `.python-version`, `mise.toml`, `.tool-versions`, lockfiles, `package.json`, `pyproject.toml`, `Dockerfile`
 - Agent integration files: Codex, Claude, Gemini, Cursor, Copilot targets
+
+## Version Drift Prevention
+
+The highest-priority use case is preventing multiple AI agents from installing or using different software versions in the same workspace.
+
+`aienvmp` checks project hints and policy against the currently detected environment.
+
+Example `.aienvmp/policy.yml`:
+
+```yaml
+node: 24
+python: 3.11
+packageManager: npm
+globalInstalls: ask-first
+runtimeChanges: ask-first
+```
+
+If an AI tries to use Node 22 when policy requires Node 24, `aienvmp doctor` and `aienvmp context` should surface that mismatch before work continues.
+
+Example warning:
+
+```text
+.aienvmp/policy.yml requires node 24, but detected 22.11.0.
+```
+
+Normal commands remain non-blocking. Use CI/strict mode only when you explicitly want a warning to fail automation.
 
 ## Output Layout
 
@@ -202,11 +242,9 @@ Good fit today:
 
 Planned next:
 
-- intent resolve/close workflow
-- `policy.yml` enforcement
+- deeper policy enforcement
 - deeper nvm/fnm/volta/pyenv/mise/asdf scans
 - global npm, pipx, and uv tool inventory
-- CI mode with non-zero exit codes
 
 ## Development
 

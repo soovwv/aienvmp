@@ -3,7 +3,7 @@ const markerEnd = "<!-- aienvmp:end -->";
 
 export { markerBegin, markerEnd };
 
-export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []) {
+export function renderAIEnv(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const lines = [];
   lines.push("# AI Environment Protocol", "");
   lines.push("This workspace uses `aienvmp` as the shared environment source of truth for humans and AI agents.", "");
@@ -16,10 +16,8 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
   lines.push("5. After environment changes, run `aienvmp scan && aienvmp compile`.");
   lines.push("6. Record what changed with `aienvmp record --actor <agent:id> --summary <what-changed>`.", "");
   lines.push("## Current Policy", "");
-  lines.push("- Global Python installs: ask first; prefer `.venv`, `uv venv`, or project-local environments.");
-  lines.push("- Global npm/pnpm/yarn installs: ask first.");
-  lines.push("- Runtime version changes: ask first unless explicitly requested.");
-  lines.push("- Docker daemon/context changes: ask first.");
+  lines.push(...policyLines(policy));
+  lines.push("- Enforcement: non-blocking by default; warnings require review but do not lock the machine.");
   lines.push("- Project-local dependency installs: allowed when required by the user task.", "");
   lines.push("## AI Preflight Summary", "");
   lines.push(...contextLines(manifest, warnings, intents), "");
@@ -79,7 +77,7 @@ Default detected tools:
 - Docker: ${docker}`;
 }
 
-export function renderContext(manifest, timeline = [], warnings = [], intents = []) {
+export function renderContext(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   return [
     "# AI Preflight Context",
     "",
@@ -88,9 +86,13 @@ export function renderContext(manifest, timeline = [], warnings = [], intents = 
     `Node: ${manifest.runtimes.node || "not detected"}`,
     `Python: ${manifest.runtimes.python || manifest.runtimes.python3 || "not detected"}`,
     `Docker: ${manifest.containers.docker ? "available" : "not detected"}`,
+    `Policy Node: ${policy.node || "not set"}`,
+    `Policy Python: ${policy.python || "not set"}`,
+    `Policy Package Manager: ${policy.packageManager || "not set"}`,
     "",
     "Must follow:",
     "- Ask the user before global runtime, package manager, Docker, or global package changes.",
+    "- Treat policy mismatches as review-required, not as permission to break ongoing operations.",
     "- Prefer project-local version files and local environments.",
     "- Before planned env changes, run `aienvmp intent --actor <agent:id> --action <planned-change>`.",
     "- After env changes, run `aienvmp scan && aienvmp compile`.",
@@ -108,8 +110,8 @@ export function renderContext(manifest, timeline = [], warnings = [], intents = 
   ].join("\n");
 }
 
-export function renderDashboard(manifest, timeline = [], warnings = [], intents = []) {
-  const data = JSON.stringify({ manifest, timeline, warnings, intents });
+export function renderDashboard(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
+  const data = JSON.stringify({ manifest, timeline, warnings, intents, policy });
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -151,7 +153,7 @@ code{color:var(--code);background:#0a2017;border:1px solid #17462f;padding:2px 6
 <main class="shell" id="app"></main>
 <script type="application/json" id="data">${escapeHtml(data)}</script>
 <script>
-const {manifest,timeline,warnings,intents}=JSON.parse(document.getElementById('data').textContent);
+const {manifest,timeline,warnings,intents,policy}=JSON.parse(document.getElementById('data').textContent);
 function esc(s){return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
 const entries=o=>Object.entries(o||{});
 const rows=o=>entries(o).map(([k,v])=>\`<tr><th>\${esc(k)}</th><td><code>\${esc(String(v))}</code></td></tr>\`).join('')||'<tr><td colspan="2">None detected</td></tr>';
@@ -163,6 +165,7 @@ const agentCards=Object.entries(agentNames).map(([key,label])=>\`<div class="age
 const warnHtml=warnings.length?'<div class="warnings">'+warnings.map(w=>\`<div class="warning">\${esc(w.message)}</div>\`).join('')+'</div>':'<div class="okline">No blocking environment warnings detected.</div>';
 const timelineHtml=timeline.length?'<div class="timeline">'+timeline.slice(-8).reverse().map(t=>\`<div class="event"><time>\${esc(t.at.replace('T',' ').slice(0,16))}</time><div><b>\${esc(t.actor||'system')}</b> \${esc(timelineLabel(t))}</div></div>\`).join('')+'</div>':'<div class="okline">No previous environment changes recorded.</div>';
 const intentsHtml=intents.length?'<div class="timeline">'+intents.slice(-6).reverse().map(i=>\`<div class="event"><time>\${esc(i.at.replace('T',' ').slice(0,16))}</time><div><b>\${esc(i.actor)}</b> plans \${esc(i.action)}</div></div>\`).join('')+'</div>':'<div class="okline">No pending agent intents recorded.</div>';
+const policyHtml=entries(policy).length?\`<table>\${rows(policy)}</table>\`:'<div class="okline">No explicit version policy set.</div>';
 const card=(title,badge,body)=>\`<section class="card"><div class="card-head"><h2>\${title}</h2>\${badge||''}</div>\${body}</section>\`;
 document.getElementById('app').innerHTML=\`
 <header>
@@ -188,6 +191,8 @@ document.getElementById('app').innerHTML=\`
   </div>
   <aside>
     \${card('Environment Health',warnings.length?'<span class="pill warn">attention</span>':'<span class="pill">clear</span>',warnHtml)}
+    <div style="height:14px"></div>
+    \${card('Version Policy','<span class="pill">'+entries(policy).length+' rules</span>',policyHtml)}
     <div style="height:14px"></div>
     \${card('Agent Intents','<span class="pill">'+intents.length+' open</span>',intentsHtml)}
     <div style="height:14px"></div>
@@ -236,6 +241,17 @@ function contextLines(manifest, warnings, intents) {
     `- Docker: ${manifest.containers.docker ? "available" : "not detected"}`,
     `- Open intents: ${intents.length}`
   ];
+}
+
+function policyLines(policy) {
+  const lines = [];
+  if (policy.node) lines.push(`- Node version policy: ${policy.node}`);
+  if (policy.python) lines.push(`- Python version policy: ${policy.python}`);
+  if (policy.packageManager) lines.push(`- Package manager policy: ${policy.packageManager}`);
+  lines.push(`- Global installs: ${policy.globalInstalls || "ask-first"}`);
+  lines.push(`- Runtime changes: ${policy.runtimeChanges || "ask-first"}`);
+  lines.push("- Docker daemon/context changes: ask first.");
+  return lines;
 }
 
 function escapeHtml(value) {

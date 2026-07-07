@@ -6,6 +6,7 @@ import { readJson } from "../fsutil.js";
 import { openIntents, readJsonl, readTimeline } from "../timeline.js";
 import { dashboardPath, intentsPath, manifestPath, timelinePath, workspaceDir } from "../paths.js";
 import { renderDashboard } from "../render.js";
+import { loadPolicy, policyWarnings } from "../policy.js";
 
 export async function dashWorkspace(args) {
   const dir = workspaceDir(args);
@@ -13,8 +14,9 @@ export async function dashWorkspace(args) {
   if (!manifest) throw new Error("missing manifest; run `aienvmp scan` first");
   const timeline = await readTimeline(timelinePath(dir));
   const intents = openIntents(await readJsonl(intentsPath(dir)));
-  const warnings = diagnose(manifest);
-  const html = renderDashboard(manifest, timeline, warnings, intents);
+  const policy = await loadPolicy(dir);
+  const warnings = [...diagnose(manifest), ...policyWarnings(manifest, policy)];
+  const html = renderDashboard(manifest, timeline, warnings, intents, policy);
   const out = dashboardPath(dir);
   await fs.mkdir(path.dirname(out), { recursive: true });
   await fs.writeFile(out, html, "utf8");

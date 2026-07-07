@@ -75,7 +75,7 @@ Usage:
   aienvmp record [--dir .] --actor agent:codex --summary "updated .nvmrc" [--target node] [--before 20] [--after 24]
   aienvmp compile [--dir .] [--agents all|codex,claude,gemini]
   aienvmp diff [--dir .]
-  aienvmp doctor [--dir .] [--json]
+  aienvmp doctor [--dir .] [--json] [--ci]
   aienvmp dash [--dir .] [--open]
 `);
 }

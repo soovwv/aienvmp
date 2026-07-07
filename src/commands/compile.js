@@ -5,6 +5,7 @@ import { readJson, replaceMarkerBlock } from "../fsutil.js";
 import { openIntents, readJsonl, readTimeline } from "../timeline.js";
 import { aiEnvPath, intentsPath, manifestPath, timelinePath, workspaceDir } from "../paths.js";
 import { markerBegin, markerEnd, renderAgentBlock, renderAIEnv } from "../render.js";
+import { loadPolicy, policyWarnings } from "../policy.js";
 
 const agentFiles = {
   codex: "AGENTS.md",
@@ -18,8 +19,9 @@ export async function compileWorkspace(args) {
   if (!manifest) throw new Error("missing manifest; run `aienvmp scan` first");
   const timeline = await readTimeline(timelinePath(dir));
   const intents = openIntents(await readJsonl(intentsPath(dir)));
-  const warnings = diagnose(manifest);
-  const rendered = renderAIEnv(manifest, timeline, warnings, intents);
+  const policy = await loadPolicy(dir);
+  const warnings = [...diagnose(manifest), ...policyWarnings(manifest, policy)];
+  const rendered = renderAIEnv(manifest, timeline, warnings, intents, policy);
   await fs.writeFile(aiEnvPath(dir), rendered, "utf8");
   const agents = parseAgents(args.agents);
   const block = renderAgentBlock(manifest);
