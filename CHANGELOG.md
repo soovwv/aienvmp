@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.10
+
+- Added optional `pip-audit` JSON parsing for Python security summaries.
+- Combined npm and Python vulnerable package summaries into the same AI-facing security context.
+- Kept missing Python scanners non-blocking with explicit scanner availability metadata.
+
 ## 0.1.9
 
 - Added top vulnerable package summaries for AI context, handoff, `AIENV.md`, and the dashboard.

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { parseNpmAudit, scanSecurity, summarizeScanners, topVulnerablePackages } from "../src/security.js";
+import { parseNpmAudit, parsePipAudit, scanSecurity, summarizeScanners, topVulnerablePackages } from "../src/security.js";
 
 test("scanSecurity is disabled by default", async () => {
   const security = await scanSecurity(process.cwd());
@@ -50,6 +50,37 @@ test("summarizeScanners combines available scanner totals", () => {
   assert.deepEqual(summary, { total: 2, critical: 1, high: 1, moderate: 0, low: 0, info: 0 });
 });
 
+test("parsePipAudit returns Python package vulnerability summaries", () => {
+  const parsed = parsePipAudit(JSON.stringify({
+    dependencies: [{
+      name: "django",
+      version: "3.2.0",
+      vulns: [{
+        id: "PYSEC-1",
+        fix_versions: ["3.2.25"]
+      }, {
+        id: "PYSEC-2",
+        fix_versions: []
+      }]
+    }, {
+      name: "safe",
+      version: "1.0.0",
+      vulns: []
+    }]
+  }));
+
+  assert.equal(parsed.available, true);
+  assert.equal(parsed.summary.total, 2);
+  assert.deepEqual(parsed.vulnerablePackages, [{
+    name: "django",
+    version: "3.2.0",
+    severity: "unknown",
+    viaCount: 2,
+    fixAvailable: true,
+    fixVersions: ["3.2.25"]
+  }]);
+});
+
 test("topVulnerablePackages ranks packages by severity", () => {
   const packages = topVulnerablePackages({
     npmAudit: {
@@ -60,9 +91,17 @@ test("topVulnerablePackages ranks packages by severity", () => {
         { name: "critical-pkg", severity: "critical", viaCount: 1, fixAvailable: false },
         { name: "high-pkg", severity: "high", viaCount: 1, fixAvailable: true }
       ]
+    },
+    pipAudit: {
+      scanner: "pip-audit",
+      available: true,
+      vulnerablePackages: [
+        { name: "python-pkg", severity: "unknown", viaCount: 1, fixAvailable: false }
+      ]
     }
   });
 
-  assert.deepEqual(packages.map((pkg) => pkg.name), ["critical-pkg", "high-pkg", "low-pkg"]);
+  assert.deepEqual(packages.map((pkg) => pkg.name), ["critical-pkg", "high-pkg", "low-pkg", "python-pkg"]);
   assert.equal(packages[0].scanner, "npm-audit");
+  assert.equal(packages[3].scanner, "pip-audit");
 });

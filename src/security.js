@@ -14,15 +14,15 @@ export async function scanSecurity(dir, options = {}) {
   }
 
   const npmAudit = await scanNpmAudit(dir);
+  const pipAudit = await scanPipAudit(dir);
+  const scanners = { npmAudit, pipAudit };
   return {
     mode: "security",
     enabled: true,
     note: "Read-only vulnerability summary. Use for review and CI policy, not automatic fixes.",
-    scanners: {
-      npmAudit
-    },
-    summary: summarizeScanners({ npmAudit }),
-    topPackages: topVulnerablePackages({ npmAudit })
+    scanners,
+    summary: summarizeScanners(scanners),
+    topPackages: topVulnerablePackages(scanners)
   };
 }
 
@@ -42,6 +42,29 @@ export async function scanNpmAudit(dir) {
   }
   return {
     scanner: "npm-audit",
+    available: true,
+    ok: result.ok,
+    exitCode: result.code,
+    summary: parsed.summary,
+    vulnerablePackages: parsed.vulnerablePackages
+  };
+}
+
+export async function scanPipAudit(dir) {
+  const hasPythonHints = await exists(path.join(dir, "pyproject.toml")) || await exists(path.join(dir, "requirements.txt"));
+  if (!hasPythonHints) return unavailable("pip-audit", "Python project hints not found");
+
+  const result = await commandResult("pip-audit", ["-f", "json"], {
+    cwd: dir,
+    timeout: 15000,
+    maxBuffer: 4 * 1024 * 1024
+  });
+  const parsed = parsePipAudit(result.stdout);
+  if (!parsed.available) {
+    return unavailable("pip-audit", result.stderr || "pip-audit did not return parseable JSON");
+  }
+  return {
+    scanner: "pip-audit",
     available: true,
     ok: result.ok,
     exitCode: result.code,
@@ -73,6 +96,32 @@ export function parseNpmAudit(raw) {
   }
 }
 
+export function parsePipAudit(raw) {
+  try {
+    const parsed = JSON.parse(raw || "{}");
+    const dependencies = Array.isArray(parsed.dependencies) ? parsed.dependencies : [];
+    const vulnerablePackages = dependencies
+      .filter((dependency) => Array.isArray(dependency.vulns) && dependency.vulns.length)
+      .slice(0, 20)
+      .map((dependency) => ({
+        name: dependency.name || "unknown",
+        version: dependency.version || "unknown",
+        severity: "unknown",
+        viaCount: dependency.vulns.length,
+        fixAvailable: dependency.vulns.some((vuln) => Array.isArray(vuln.fix_versions) && vuln.fix_versions.length),
+        fixVersions: unique(dependency.vulns.flatMap((vuln) => vuln.fix_versions || [])).slice(0, 5)
+      }));
+    const total = vulnerablePackages.reduce((sum, pkg) => sum + pkg.viaCount, 0);
+    return {
+      available: true,
+      summary: { total, critical: 0, high: 0, moderate: 0, low: 0, info: 0 },
+      vulnerablePackages
+    };
+  } catch {
+    return { available: false };
+  }
+}
+
 export function summarizeScanners(scanners = {}) {
   const summary = { total: 0, critical: 0, high: 0, moderate: 0, low: 0, info: 0 };
   for (const scanner of Object.values(scanners)) {
@@ -97,4 +146,8 @@ function unavailable(scanner, reason) {
     available: false,
     reason
   };
+}
+
+function unique(items) {
+  return [...new Set(items.filter(Boolean))];
 }
