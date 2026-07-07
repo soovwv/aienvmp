@@ -278,6 +278,10 @@ const actions=manifest.recommendedActions||[];
 const actionsHtml=actions.length?'<div class="timeline">'+actions.slice(0,6).map(a=>\`<div class="event"><time>\${esc(a.priority)}</time><div><b>\${esc(a.category)}</b> \${esc(a.summary)}\${a.command?\`<div class="path">\${esc(a.command)}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No recommended actions. Continue project-local work.</div>';
 const plan=manifest.planArtifacts||{};
 const planHtml=plan.markdown||plan.json?\`<table><tr><th>Markdown</th><td>\${plan.markdown?'<a href="plan.md">plan.md</a>':'not written'}</td></tr><tr><th>JSON</th><td>\${plan.json?'<a href="plan.json">plan.json</a>':'not written'}</td></tr></table>\`:'<div class="okline">No plan artifacts yet. Run <code>aienvmp plan --write</code>.</div>';
+const remediation=manifest.planRemediation||[];
+const remediationFix=r=>r.fixVersions?.length?\`fix \${r.fixVersions.join(', ')}\`:(r.fixAvailable?'fix available':'review required');
+const remediationRefs=r=>r.advisories?.length?\` - \${r.advisories.join(', ')}\`:'';
+const remediationHtml=remediation.length?'<div class="timeline">'+remediation.map(r=>\`<div class="event"><time>\${esc(r.severity)}</time><div><b>\${esc(r.package)}</b> \${esc(remediationFix(r))}\${esc(remediationRefs(r))}</div></div>\`).join('')+'</div>':'<div class="okline">No remediation steps in the current plan.</div>';
 const card=(title,badge,body)=>\`<section class="card"><div class="card-head"><h2>\${title}</h2>\${badge||''}</div>\${body}</section>\`;
 const reviewRequired=warnings.length>0||intents.length>0;
 const recentChanges=timeline.slice(-8).length;
@@ -320,6 +324,8 @@ document.getElementById('app').innerHTML=\`
     \${card('Recommended Actions','<span class="pill">'+actions.length+' actions</span>',actionsHtml)}
     <div style="height:14px"></div>
     \${card('AI Plan Artifacts',plan.markdown||plan.json?'<span class="pill">written</span>':'<span class="pill off">not written</span>',planHtml)}
+    <div style="height:14px"></div>
+    \${card('Remediation Steps',remediation.length?'<span class="pill warn">'+remediation.length+' items</span>':'<span class="pill off">none</span>',remediationHtml)}
     <div style="height:14px"></div>
     \${card('Environment Health',warnings.length?'<span class="pill warn">attention</span>':'<span class="pill">clear</span>',warnHtml)}
     <div style="height:14px"></div>

@@ -38,7 +38,7 @@ AIENV.md
 .aienvmp/timeline.jsonl
 .aienvmp/plan.json
 .aienvmp/plan.md
-.aienvmp/dashboard.html
+.aienvmp/dashboard.html     # includes plan and remediation cards
 ```
 
 Trust states are machine-readable: `observed`, `planned`, `changed`, `review`, `verified`, `stale`.

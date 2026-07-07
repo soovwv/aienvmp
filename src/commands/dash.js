@@ -18,7 +18,8 @@ export async function dashWorkspace(args) {
   const policy = await loadPolicy(dir);
   const warnings = [...diagnose(manifest, { timeline, intents }), ...policyWarnings(manifest, policy)];
   const planArtifacts = await detectedPlanArtifacts(dir);
-  const html = renderDashboard({ ...manifest, recommendedActions: recommendedActions(manifest, { warnings, intents }), planArtifacts }, timeline, warnings, intents, policy);
+  const planRemediation = await detectedPlanRemediation(dir);
+  const html = renderDashboard({ ...manifest, recommendedActions: recommendedActions(manifest, { warnings, intents }), planArtifacts, planRemediation }, timeline, warnings, intents, policy);
   const out = dashboardPath(dir);
   await fs.mkdir(path.dirname(out), { recursive: true });
   await fs.writeFile(out, html, "utf8");
@@ -34,6 +35,17 @@ async function detectedPlanArtifacts(dir) {
     json: await exists(json) ? ".aienvmp/plan.json" : "",
     markdown: await exists(markdown) ? ".aienvmp/plan.md" : ""
   };
+}
+
+async function detectedPlanRemediation(dir) {
+  const plan = await readJson(planJsonPath(dir), {});
+  return (plan.remediationSteps || []).slice(0, 5).map((item) => ({
+    package: item.package || "unknown",
+    severity: item.severity || "unknown",
+    fixVersions: Array.isArray(item.fixVersions) ? item.fixVersions.slice(0, 3) : [],
+    fixAvailable: item.fixAvailable === true,
+    advisories: Array.isArray(item.advisories) ? item.advisories.map((advisory) => advisory.id || advisory.title).filter(Boolean).slice(0, 2) : []
+  }));
 }
 
 function openFile(file) {

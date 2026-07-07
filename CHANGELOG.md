@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.18
+
+- Added a dashboard remediation steps card backed by `.aienvmp/plan.json`.
+- Kept dashboard remediation details bounded to package, severity, fix version, and advisory references.
+- Improved human visibility for AI-generated read-only security plans.
+
 ## 0.1.17
 
 - Added bounded security remediation steps to `aienvmp plan`.

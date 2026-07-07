@@ -33,7 +33,14 @@ test("renderDashboard includes the audit summary surface", () => {
     planArtifacts: {
       markdown: ".aienvmp/plan.md",
       json: ".aienvmp/plan.json"
-    }
+    },
+    planRemediation: [{
+      package: "lodash",
+      severity: "high",
+      fixVersions: ["4.17.21"],
+      fixAvailable: true,
+      advisories: ["GHSA-test"]
+    }]
   }, [], [], [], {});
 
   assert.match(html, /Audit summary/);
@@ -46,6 +53,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Review lodash/);
   assert.match(html, /AI Plan Artifacts/);
   assert.match(html, /plan\.md/);
+  assert.match(html, /Remediation Steps/);
+  assert.match(html, /4\.17\.21/);
   assert.match(html, /Global Inventory/);
   assert.match(html, /Security Summary/);
   assert.match(html, /lodash/);
@@ -67,7 +76,15 @@ test("dashWorkspace links written plan artifacts", async () => {
     agentFiles: {}
   });
   await fs.writeFile(path.join(dir, ".aienvmp", "plan.md"), "# plan\n", "utf8");
-  await fs.writeFile(path.join(dir, ".aienvmp", "plan.json"), "{}\n", "utf8");
+  await fs.writeFile(path.join(dir, ".aienvmp", "plan.json"), JSON.stringify({
+    remediationSteps: [{
+      package: "django",
+      severity: "unknown",
+      fixAvailable: true,
+      fixVersions: ["3.2.25"],
+      advisories: [{ id: "PYSEC-1" }]
+    }]
+  }), "utf8");
 
   await dashWorkspace({ dir, quiet: true });
   const html = await fs.readFile(path.join(dir, ".aienvmp", "dashboard.html"), "utf8");
@@ -75,4 +92,7 @@ test("dashWorkspace links written plan artifacts", async () => {
   assert.match(html, /AI Plan Artifacts/);
   assert.match(html, /href="plan\.md"/);
   assert.match(html, /href="plan\.json"/);
+  assert.match(html, /Remediation Steps/);
+  assert.match(html, /django/);
+  assert.match(html, /3\.2\.25/);
 });
