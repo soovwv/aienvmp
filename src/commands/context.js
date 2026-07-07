@@ -66,6 +66,7 @@ function lightSbomSummary(lightSbom = {}) {
       transitiveOrUnmatchedVulnerablePackages: 0
     },
     topRisk: (lightSbom.topRisk || []).slice(0, 8),
+    dependencyChangeHints: (lightSbom.dependencyChangeHints || []).slice(0, 8),
     aiUse: lightSbom.aiUse || {}
   };
 }

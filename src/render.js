@@ -474,6 +474,14 @@ function lightSbomLines(lightSbom = {}) {
       lines.push(`  - ${item.name}: ${item.severity}; ${item.priority}/${item.score}; ${item.directDependency ? "direct" : "transitive-or-unmatched"}${item.version ? `; ${item.version}` : ""}`);
     }
   }
+  const hints = lightSbom.dependencyChangeHints || [];
+  if (hints.length) {
+    lines.push("- Dependency change hints:");
+    for (const hint of hints.slice(0, 6)) {
+      const risk = hint.riskPackages?.length ? `; risk: ${hint.riskPackages.map((pkg) => pkg.name).join(", ")}` : "";
+      lines.push(`  - ${hint.manifest}: ${hint.ecosystem}/${hint.manager}; ${hint.packages} packages${risk}`);
+    }
+  }
   return lines;
 }
 

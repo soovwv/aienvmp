@@ -109,6 +109,7 @@ aienvmp doctor --strict security  # fail only scoped warnings
 - non-blocking unless strict mode is explicitly requested
 - security checks are opt-in and read-only
 - light SBOM is generated from project files and optional scanner summaries
+- dependency change hints point AI agents to the relevant manifest before edits
 
 ## Development
 

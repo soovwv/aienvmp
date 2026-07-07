@@ -5,6 +5,7 @@
 - Added `lightSbom` to the manifest as an AI-ready package and vulnerability summary.
 - Linked dependency manifests, ecosystem/group counts, vulnerable direct dependencies, and top risk packages into one compact SBOM view.
 - Surfaced the light SBOM in context JSON, AIENV.md, and the dashboard without installing or resolving packages.
+- Added dependency change hints so AI agents can identify relevant manifests and follow safe before/after steps.
 
 ## 0.1.36
 

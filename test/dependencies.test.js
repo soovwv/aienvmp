@@ -103,6 +103,10 @@ test("buildLightSbom creates an AI-ready package and risk summary", () => {
   assert.equal(sbom.summary.transitiveOrUnmatchedVulnerablePackages, 1);
   assert.equal(sbom.topRisk[0].name, "express");
   assert.equal(sbom.topRisk[0].directDependency, true);
+  assert.equal(sbom.dependencyChangeHints[0].manifest, "package.json");
+  assert.deepEqual(sbom.dependencyChangeHints[0].groups, ["dependencies"]);
+  assert.equal(sbom.dependencyChangeHints[0].riskPackages[0].name, "express");
+  assert.match(sbom.dependencyChangeHints[0].beforeChange[0], /package\.json/);
   assert.equal(sbom.aiUse.dependencySource, "project manifests only; no install or resolver is run");
 });
 

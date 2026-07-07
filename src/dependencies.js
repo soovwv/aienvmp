@@ -50,6 +50,18 @@ export function buildLightSbom(snapshot = {}, security = {}) {
   const vulnerable = security.topPackages || [];
   const directVulnerable = vulnerable.filter((pkg) => pkg.directDependency === true);
   const transitiveOrUnmatched = vulnerable.filter((pkg) => pkg.directDependency !== true);
+  const topRisk = vulnerable.slice(0, 8).map((pkg) => ({
+    name: pkg.name,
+    ecosystem: scannerEcosystem(pkg.scanner),
+    severity: pkg.severity || "unknown",
+    directDependency: pkg.directDependency === true,
+    manifest: pkg.dependency?.manifest || "",
+    version: pkg.dependency?.version || pkg.version || "",
+    priority: pkg.remediationPriority?.level || "low",
+    score: pkg.remediationPriority?.score || 0,
+    fixAvailable: pkg.fixAvailable === true || Boolean(pkg.fixVersions?.length),
+    fixVersions: (pkg.fixVersions || []).slice(0, 3)
+  }));
   return {
     schemaVersion: 1,
     mode: "light-sbom",
@@ -64,24 +76,59 @@ export function buildLightSbom(snapshot = {}, security = {}) {
       directVulnerablePackages: directVulnerable.length,
       transitiveOrUnmatchedVulnerablePackages: transitiveOrUnmatched.length
     },
-    topRisk: vulnerable.slice(0, 8).map((pkg) => ({
-      name: pkg.name,
-      ecosystem: scannerEcosystem(pkg.scanner),
-      severity: pkg.severity || "unknown",
-      directDependency: pkg.directDependency === true,
-      manifest: pkg.dependency?.manifest || "",
-      version: pkg.dependency?.version || pkg.version || "",
-      priority: pkg.remediationPriority?.level || "low",
-      score: pkg.remediationPriority?.score || 0,
-      fixAvailable: pkg.fixAvailable === true || Boolean(pkg.fixVersions?.length),
-      fixVersions: (pkg.fixVersions || []).slice(0, 3)
-    })),
+    topRisk,
+    dependencyChangeHints: dependencyChangeHints(packages, topRisk),
     aiUse: {
       beforeDependencyChanges: "Read lightSbom.summary and lightSbom.topRisk before changing dependencies.",
       securityMode: security.enabled ? "scanner-summary" : "scanner-off",
       dependencySource: "project manifests only; no install or resolver is run"
     }
   };
+}
+
+function dependencyChangeHints(packages = [], topRisk = []) {
+  const byManifest = new Map();
+  for (const pkg of packages) {
+    const key = pkg.manifest || "unknown";
+    const entry = byManifest.get(key) || {
+      manifest: key,
+      ecosystem: pkg.ecosystem || "unknown",
+      manager: pkg.manager || "unknown",
+      groups: new Set(),
+      packages: 0,
+      riskPackages: []
+    };
+    entry.groups.add(pkg.group || "unknown");
+    entry.packages += 1;
+    byManifest.set(key, entry);
+  }
+  for (const risk of topRisk) {
+    if (!risk.manifest || !byManifest.has(risk.manifest)) continue;
+    byManifest.get(risk.manifest).riskPackages.push({
+      name: risk.name,
+      severity: risk.severity,
+      priority: risk.priority,
+      fixAvailable: risk.fixAvailable
+    });
+  }
+  return [...byManifest.values()].map((entry) => ({
+    manifest: entry.manifest,
+    ecosystem: entry.ecosystem,
+    manager: entry.manager,
+    groups: [...entry.groups].sort(),
+    packages: entry.packages,
+    riskPackages: entry.riskPackages.slice(0, 5),
+    beforeChange: [
+      `Read ${entry.manifest} and the active package manager policy before editing dependencies.`,
+      "Record an intent before dependency or lockfile changes when another AI may be working.",
+      "Avoid switching package managers or deleting lockfiles without user approval."
+    ],
+    afterChange: [
+      "Run project tests or the narrowest relevant validation.",
+      "Run aienvmp sync.",
+      "Record the dependency change with aienvmp record."
+    ]
+  }));
 }
 
 export function remediationPriority(pkg = {}, context = {}) {
