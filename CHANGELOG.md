@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Added dependency handoff summaries so the next AI receives dependency read-set and protocol guidance directly in `handoff`.
+
 ## 0.1.39
 
 - Added a dependency read set to preflight, `AIENV.md`, and the dashboard so agents know which manifests and lockfiles to read before package or security changes.

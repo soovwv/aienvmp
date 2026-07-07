@@ -65,6 +65,7 @@ Preflight also recommends the intent target, so agents do not guess between runt
 It also lists dependency manifests and lockfiles to read before package or security changes.
 Dependency and security changes stay advisory: record dependency intent, refresh with `sync`, then record what changed.
 Dependency records also trigger handoff/coordination warnings for the next agent.
+`handoff` includes the dependency read set and protocol, so the next AI can continue without guessing package files or change flow.
 The dashboard shows the same intent target guidance for human review.
 
 AI agents can observe, plan, and record. Only a human or CI should mark environment facts as verified.

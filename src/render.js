@@ -205,6 +205,9 @@ export function renderHandoff(handoff) {
     "Recommended actions:",
     ...(handoff.recommendedActions?.length ? handoff.recommendedActions.map((item) => `- [${item.priority}] ${item.summary}${item.command ? ` (${item.command})` : ""}`) : ["- none"]),
     "",
+    "Dependency handoff:",
+    ...dependencyHandoffLines(handoff.dependencyHandoff),
+    "",
     "Recent changes:",
     ...(handoff.recentChanges.length ? handoff.recentChanges.map((t) => `- ${formatTimeline(t)}`) : ["- none"]),
     "",
@@ -215,6 +218,24 @@ export function renderHandoff(handoff) {
     ""
   ];
   return lines.join("\n");
+}
+
+function dependencyHandoffLines(dependencyHandoff = {}) {
+  const readSet = dependencyHandoff.readSet || [];
+  const protocol = dependencyHandoff.protocol || {};
+  const lines = [];
+  if (readSet.length) {
+    for (const item of readSet.slice(0, 3)) {
+      const files = [item.manifest, ...(item.lockfiles || [])].filter(Boolean).join(", ");
+      lines.push(`- Read: ${files || "dependency files"} (${item.ecosystem || "deps"}/${item.manager || "unknown"})`);
+    }
+  } else {
+    lines.push("- Read: no dependency files detected");
+  }
+  lines.push(`- Intent: ${protocol.recordIntent || "aienvmp intent --actor agent:id --action planned-change --target dependency"}`);
+  lines.push(`- After change: ${protocol.recordAfterChange || "aienvmp record --actor agent:id --summary dependency-change --target dependency"}`);
+  lines.push(`- Handoff: ${protocol.handoff || "aienvmp handoff --record --actor agent:id"}`);
+  return lines;
 }
 
 export function renderPlan(plan) {

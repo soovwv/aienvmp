@@ -46,11 +46,12 @@ async function recordHandoff(file, handoff, actor) {
 export function buildHandoff(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const reviewRequired = warnings.length > 0 || intents.length > 0;
   const actions = recommendedActions(manifest, { warnings, intents });
+  const preflight = buildPreflight(manifest, warnings, intents);
   return {
     status: reviewRequired ? "review-required" : "clear",
     trust: manifest.trust || {},
     schemaVersion: manifest.schemaVersion || 1,
-    preflight: buildPreflight(manifest, warnings, intents),
+    preflight,
     decision: aiDecision(warnings, intents),
     workspace: manifest.workspace,
     safeRuntime: {
@@ -60,6 +61,7 @@ export function buildHandoff(manifest, timeline = [], warnings = [], intents = [
     },
     inventory: inventorySummary(manifest.inventory),
     security: securitySummary(manifest.security),
+    dependencyHandoff: dependencyHandoffSummary(preflight),
     policy: {
       node: policy.node || "not set",
       python: policy.python || "not set",
@@ -79,6 +81,20 @@ export function buildHandoff(manifest, timeline = [], warnings = [], intents = [
     recommendedNext: reviewRequired
       ? "review warnings and open intents before environment changes"
       : "continue with project-local work; record intent before environment changes"
+  };
+}
+
+function dependencyHandoffSummary(preflight = {}) {
+  const protocol = preflight.dependencyChangeProtocol || {};
+  return {
+    readSet: (preflight.dependencyReadSet || []).slice(0, 5),
+    protocol: {
+      mode: protocol.mode || "advisory",
+      packageManagerPolicy: protocol.packageManagerPolicy || "not-detected",
+      recordIntent: protocol.commands?.recordIntent || "aienvmp intent --actor agent:id --action planned-change --target dependency",
+      recordAfterChange: protocol.commands?.recordAfterChange || "aienvmp record --actor agent:id --summary dependency-change --target dependency",
+      handoff: protocol.commands?.handoff || "aienvmp handoff --record --actor agent:id"
+    }
   };
 }
 

@@ -19,6 +19,21 @@ test("buildHandoff summarizes next-agent environment state", () => {
       enabled: true,
       summary: { total: 1, critical: 0, high: 1, moderate: 0, low: 0, info: 0 },
       topPackages: [{ name: "lodash", severity: "high", fixAvailable: true }]
+    },
+    dependencySnapshot: {
+      summary: { packages: 1, ecosystems: ["npm"] },
+      manifests: ["package.json"]
+    },
+    lightSbom: {
+      dependencyChangeHints: [{
+        manifest: "package.json",
+        ecosystem: "npm",
+        manager: "npm",
+        groups: ["dependencies"],
+        lockfiles: [{ file: "package-lock.json" }],
+        packages: 1,
+        riskPackages: [{ name: "lodash" }]
+      }]
     }
   }, [{
     at: "2026-07-08T00:00:00.000Z",
@@ -37,9 +52,13 @@ test("buildHandoff summarizes next-agent environment state", () => {
   assert.equal(handoff.security.topPackages[0].name, "lodash");
   assert.equal(handoff.policy.node, "24");
   assert.equal(handoff.recommendedActions[0].id, "review-security-remediation");
+  assert.equal(handoff.dependencyHandoff.readSet[0].manifest, "package.json");
+  assert.equal(handoff.dependencyHandoff.protocol.mode, "advisory");
   assert.match(renderHandoff(handoff), /AI Handoff/);
   assert.match(renderHandoff(handoff), /Decision: project-local-work/);
   assert.match(renderHandoff(handoff), /Recommended actions/);
+  assert.match(renderHandoff(handoff), /Dependency handoff/);
+  assert.match(renderHandoff(handoff), /dependency-change --target dependency/);
   assert.match(renderHandoff(handoff), /Recommended next/);
 });
 
