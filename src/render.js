@@ -237,6 +237,9 @@ export function renderPlan(plan) {
     "Review gates:",
     ...plan.reviewGates.map((item) => `- ${item}`),
     "",
+    "Dependency protocol:",
+    ...dependencyProtocolPlanLines(plan.preflight?.dependencyChangeProtocol),
+    "",
     "Remediation steps:",
     ...(plan.remediationSteps?.length ? plan.remediationSteps.slice(0, 5).flatMap(remediationLines) : ["- none"]),
     "",
@@ -248,6 +251,17 @@ export function renderPlan(plan) {
     ""
   ];
   return lines.join("\n");
+}
+
+function dependencyProtocolPlanLines(protocol = {}) {
+  if (!protocol.commands) return ["- none"];
+  return [
+    `- Mode: ${protocol.mode || "advisory"}`,
+    `- Package manager policy: ${protocol.packageManagerPolicy || "not-detected"}`,
+    `- Intent: ${protocol.commands.recordIntent}`,
+    `- After change: ${protocol.commands.refreshAfterChange}; ${protocol.commands.recordAfterChange}`,
+    ...(protocol.mustNotDo || []).slice(0, 3).map((item) => `- Must not: ${item}`)
+  ];
 }
 
 function environmentLines(item) {

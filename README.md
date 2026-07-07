@@ -51,7 +51,7 @@ AIENV.md
 .aienvmp/intents.jsonl
 .aienvmp/timeline.jsonl
 .aienvmp/plan.json
-.aienvmp/plan.md
+.aienvmp/plan.md             # read-only plan with dependency protocol
 .aienvmp/dashboard.html     # includes dependencies, plan, remediation, and environment cards
 ```
 

@@ -33,6 +33,7 @@ test("buildPlan creates a read-only action plan", () => {
   assert.equal(plan.preflight.artifacts.planJson, ".aienvmp/plan.json");
   assert.equal(plan.preflight.commands.recordIntent, "aienvmp intent --actor agent:id --action planned-change --target dependency");
   assert.equal(plan.preflight.intentTargets[0].target, "dependency");
+  assert.equal(plan.preflight.dependencyChangeProtocol.mode, "advisory");
   assert.equal(plan.preflight.quickstart.handoff, "aienvmp handoff --record --actor agent:id");
   assert.equal(plan.decision.mode, "review-first");
   assert.equal(plan.enforcement.mode, "advisory-by-default");
@@ -53,6 +54,8 @@ test("buildPlan creates a read-only action plan", () => {
   assert.match(renderPlan(plan), /declared in package\.json/);
   assert.match(renderPlan(plan), /priority high\/90/);
   assert.match(renderPlan(plan), /Remediation steps/);
+  assert.match(renderPlan(plan), /Dependency protocol/);
+  assert.match(renderPlan(plan), /dependency-change --target dependency/);
   assert.match(renderPlan(plan), /4\.17\.21/);
 });
 
@@ -130,6 +133,7 @@ test("planWorkspace can write plan artifacts", async () => {
   }
 
   assert.match(await fs.readFile(path.join(dir, ".aienvmp", "plan.md"), "utf8"), /AI Environment Plan/);
+  assert.match(await fs.readFile(path.join(dir, ".aienvmp", "plan.md"), "utf8"), /Dependency protocol/);
   const planJson = JSON.parse(await fs.readFile(path.join(dir, ".aienvmp", "plan.json"), "utf8"));
   assert.equal(planJson.schemaVersion, 1);
   assert.equal(planJson.preflight.readOrder[0], ".aienvmp/status.json");
