@@ -16,6 +16,20 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
       : "Review warnings or open intents before environment changes.",
     decision,
     enforcement,
+    enforcementProfile: {
+      defaultMode: "advisory",
+      localOperation: "non-blocking",
+      strictMode: "optional",
+      strictUse: "CI or explicit human-requested checks only",
+      reason: "Avoid disrupting shared servers or developer machines while still making drift visible.",
+      recommendedStrictCommand: enforcement.recommendedCommand,
+      strictCommands: [
+        "aienvmp doctor --strict security",
+        "aienvmp doctor --strict policy",
+        "aienvmp doctor --strict coordination",
+        "aienvmp doctor --strict all"
+      ]
+    },
     counts: {
       warnings: warnings.length,
       openIntents: intents.length,

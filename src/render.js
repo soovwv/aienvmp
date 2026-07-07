@@ -313,6 +313,9 @@ const envStepsHtml=envSteps.length?'<div class="timeline">'+envSteps.map(s=>\`<d
 const ciReadiness=manifest.ciReadiness||[];
 const ciHasFailure=ciReadiness.some(s=>s.status==='fail');
 const ciReadinessHtml=ciReadiness.length?'<table>'+ciReadiness.map(s=>\`<tr><th>\${esc(s.scope)}</th><td><code>\${esc(s.status)}</code>\${s.matchedWarningCodes?.length?\` \${esc(s.matchedWarningCodes.join(', '))}\`:''}</td></tr>\`).join('')+'</table>':'<div class="okline">Run <code>aienvmp doctor --strict security|policy|coordination|all</code> to choose CI enforcement scope.</div>';
+const enforcementProfile=manifest.preflight?.enforcementProfile||{};
+const strictCommands=enforcementProfile.strictCommands||[];
+const enforcementHtml=\`<table><tr><th>Default</th><td><code>\${esc(enforcementProfile.defaultMode||'advisory')}</code></td></tr><tr><th>Local</th><td>\${esc(enforcementProfile.localOperation||'non-blocking')}</td></tr><tr><th>Strict</th><td>\${esc(enforcementProfile.strictUse||'CI or explicit checks only')}</td></tr><tr><th>Recommended</th><td><code>\${esc(enforcementProfile.recommendedStrictCommand||'aienvmp doctor --strict all')}</code></td></tr></table><div class="timeline">\${strictCommands.slice(0,4).map(cmd=>\`<div class="event"><time>CI</time><div><code>\${esc(cmd)}</code></div></div>\`).join('')}</div><div class="path">\${esc(enforcementProfile.reason||'Warnings stay advisory unless strict mode is requested.')}</div>\`;
 const card=(title,badge,body)=>\`<section class="card"><div class="card-head"><h2>\${title}</h2>\${badge||''}</div>\${body}</section>\`;
 const reviewRequired=warnings.length>0||intents.length>0;
 const recentChanges=timeline.slice(-8).length;
@@ -360,6 +363,8 @@ document.getElementById('app').innerHTML=\`
     \${card('Remediation Steps',remediation.length?'<span class="pill warn">'+remediation.length+' items</span>':'<span class="pill off">none</span>',remediationHtml)}
     <div style="height:14px"></div>
     \${card('Environment Steps',envSteps.length?'<span class="pill warn">'+envSteps.length+' items</span>':'<span class="pill off">none</span>',envStepsHtml)}
+    <div style="height:14px"></div>
+    \${card('Enforcement Mode','<span class="pill">advisory</span>',enforcementHtml)}
     <div style="height:14px"></div>
     \${card('CI Readiness',ciHasFailure?'<span class="pill warn">review</span>':'<span class="pill">ready</span>',ciReadinessHtml)}
     <div style="height:14px"></div>

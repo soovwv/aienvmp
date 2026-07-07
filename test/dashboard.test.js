@@ -79,7 +79,22 @@ test("renderDashboard includes the audit summary surface", () => {
       scope: "all",
       status: "fail",
       matchedWarningCodes: ["node-version-mismatch"]
-    }]
+    }],
+    preflight: {
+      enforcementProfile: {
+        defaultMode: "advisory",
+        localOperation: "non-blocking",
+        strictUse: "CI or explicit human-requested checks only",
+        recommendedStrictCommand: "aienvmp doctor --strict policy",
+        reason: "Avoid disrupting shared servers or developer machines while still making drift visible.",
+        strictCommands: [
+          "aienvmp doctor --strict security",
+          "aienvmp doctor --strict policy",
+          "aienvmp doctor --strict coordination",
+          "aienvmp doctor --strict all"
+        ]
+      }
+    }
   }, [], [], [], {});
 
   assert.match(html, /Audit summary/);
@@ -99,6 +114,10 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Environment Steps/);
   assert.match(html, /node-version-mismatch/);
   assert.match(html, /CI Readiness/);
+  assert.match(html, /Enforcement Mode/);
+  assert.match(html, /advisory/);
+  assert.match(html, /non-blocking/);
+  assert.match(html, /doctor --strict policy/);
   assert.match(html, /security/);
   assert.match(html, /policy/);
   assert.match(html, /Global Inventory/);
@@ -159,6 +178,8 @@ test("dashWorkspace links written plan artifacts", async () => {
   assert.match(html, /Environment Steps/);
   assert.match(html, /mixed-node-lockfiles/);
   assert.match(html, /CI Readiness/);
+  assert.match(html, /Enforcement Mode/);
+  assert.match(html, /doctor --strict policy/);
   assert.match(html, /node-version-mismatch/);
   assert.match(html, /Dependency Snapshot/);
   assert.match(html, /django/);

@@ -17,6 +17,8 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.counts.runtimes, 1);
   assert.equal(status.counts.dependencies, 2);
   assert.equal(status.agentUse.environmentChanges, "allowed");
+  assert.equal(status.enforcementProfile.defaultMode, "advisory");
+  assert.equal(status.enforcementProfile.localOperation, "non-blocking");
   assert.equal(status.artifacts.status, ".aienvmp/status.json");
   assert.equal(status.readOrder[0], ".aienvmp/status.json");
   assert.equal(status.commands.context, "aienvmp context --json");

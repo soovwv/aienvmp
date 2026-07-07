@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.36
+
+- Added an explicit enforcement profile to the shared AI preflight contract.
+- Surfaced advisory-by-default vs optional strict mode in the dashboard.
+- Clarified that strict checks are intended for CI or explicit human-requested gates, not default local blocking.
+
 ## 0.1.35
 
 - Added a shared AI preflight contract across status, context, plan, and handoff outputs.

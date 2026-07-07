@@ -9,6 +9,7 @@ import { renderDashboard } from "../render.js";
 import { loadPolicy, policyWarnings } from "../policy.js";
 import { recommendedActions } from "../actions.js";
 import { strictResult } from "../enforcement.js";
+import { buildPreflight } from "../preflight.js";
 
 export async function dashWorkspace(args) {
   const dir = workspaceDir(args);
@@ -23,6 +24,7 @@ export async function dashWorkspace(args) {
   const planEnvironment = await detectedPlanEnvironment(dir);
   const html = renderDashboard({
     ...manifest,
+    preflight: buildPreflight(manifest, warnings, intents),
     recommendedActions: recommendedActions(manifest, { warnings, intents }),
     planArtifacts,
     planRemediation,

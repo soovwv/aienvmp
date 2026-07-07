@@ -105,6 +105,7 @@ aienvmp doctor --strict security  # fail only scoped warnings
 - one advisory engine, optional enforcement with `doctor --ci`
 - scoped enforcement with `doctor --strict security|policy|coordination|all`
 - context and plan expose suggested strict scopes for CI
+- dashboard and preflight explain advisory default vs optional strict mode
 - non-blocking unless strict mode is explicitly requested
 - security checks are opt-in and read-only
 
