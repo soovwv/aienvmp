@@ -7,6 +7,7 @@
 - Surfaced the dependency change protocol in `plan.md` so human-readable plans match the AI preflight contract.
 - Pointed security remediation recommendations at the dependency intent workflow instead of a generic context read.
 - Treated dependency records and package/security intents as coordination signals for stale handoff and multi-agent conflict warnings.
+- Added CLI regression coverage for `context --dir <workspace> --json` so remote and CI agents can safely inspect another workspace.
 
 ## 0.1.38
 
