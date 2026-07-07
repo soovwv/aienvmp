@@ -46,6 +46,8 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.commands.recordIntent, "aienvmp intent --actor agent:id --action planned-change --target dependency");
   assert.equal(status.enforcementProfile.defaultMode, "advisory");
   assert.equal(status.enforcementProfile.localOperation, "non-blocking");
+  assert.equal(status.enforcementProfile.gate.localDefault, "warn-only");
+  assert.equal(status.enforcementProfile.gate.failCondition, "never in default mode");
   assert.equal(status.artifacts.status, ".aienvmp/status.json");
   assert.equal(status.readOrder[0], ".aienvmp/status.json");
   assert.equal(status.commands.context, "aienvmp context --json");

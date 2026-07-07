@@ -3,12 +3,14 @@ const STRICT_SCOPES = ["security", "policy", "coordination", "all"];
 export function strictResult(warnings = [], args = {}) {
   const scope = normalizeStrictScope(args.strict || (args.ci ? "all" : ""));
   const matchedWarnings = scope ? warnings.filter((warning) => warningMatchesScope(warning, scope)) : [];
+  const gate = enforcementGate(scope);
   return {
     enabled: Boolean(scope),
     scope: scope || "off",
     fail: matchedWarnings.length > 0,
     matchedWarningCodes: matchedWarnings.map((warning) => warning.code),
-    availableScopes: STRICT_SCOPES
+    availableScopes: STRICT_SCOPES,
+    gate
   };
 }
 
@@ -28,12 +30,25 @@ export function enforcementAdvice(warnings = []) {
     mode: "advisory-by-default",
     localBehavior: "non-blocking",
     ciBehavior: "strict-only-when-requested",
+    gate: enforcementGate(""),
     suggestedStrictScopes,
     scopes: scopeResults,
     recommendedCommand: suggestedStrictScopes.length
       ? `aienvmp doctor --strict ${suggestedStrictScopes[0]}`
       : "aienvmp doctor --strict all",
     note: "Use strict mode in CI or explicit checks; do not block local operation unless the user requests it."
+  };
+}
+
+export function enforcementGate(scope = "") {
+  const strictScope = normalizeStrictScope(scope);
+  return {
+    defaultMode: "advisory",
+    strictMode: strictScope || "off",
+    localDefault: "warn-only",
+    failCondition: strictScope ? `matching warnings in ${strictScope}` : "never in default mode",
+    exitCode: strictScope ? "1 when matching warnings exist" : "0 unless the command itself errors",
+    rule: "Do not block local or shared machine operation unless --strict or --ci is explicitly requested."
   };
 }
 

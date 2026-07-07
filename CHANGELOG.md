@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Added explicit enforcement gate metadata so AI and CI consumers know local checks are warn-only unless `--strict` or `--ci` is requested.
+
 ## 0.1.41
 
 - Added preflight contract metadata so AI and CI consumers can rely on stable entry fields while ignoring additive changes.

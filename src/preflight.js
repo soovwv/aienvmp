@@ -1,6 +1,6 @@
 import { recommendedActions } from "./actions.js";
 import { aiDecision } from "./decision.js";
-import { enforcementAdvice } from "./enforcement.js";
+import { enforcementAdvice, enforcementGate } from "./enforcement.js";
 import { preflightContract } from "./contract.js";
 
 export function buildPreflight(manifest = {}, warnings = [], intents = []) {
@@ -27,6 +27,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
       localOperation: "non-blocking",
       strictMode: "optional",
       strictUse: "CI or explicit human-requested checks only",
+      gate: enforcementGate(""),
       reason: "Avoid disrupting shared servers or developer machines while still making drift visible.",
       recommendedStrictCommand: enforcement.recommendedCommand,
       strictCommands: [

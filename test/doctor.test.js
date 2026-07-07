@@ -117,7 +117,9 @@ test("strictResult filters failures by strict scope", () => {
   ];
 
   assert.equal(strictResult(warnings, {}).fail, false);
+  assert.equal(strictResult(warnings, {}).gate.strictMode, "off");
   assert.deepEqual(strictResult(warnings, { strict: "security" }).matchedWarningCodes, ["security-vulnerabilities"]);
+  assert.equal(strictResult(warnings, { strict: "security" }).gate.exitCode, "1 when matching warnings exist");
   assert.deepEqual(strictResult(warnings, { strict: "policy" }).matchedWarningCodes, ["policy-version-mismatch"]);
   assert.deepEqual(strictResult(warnings, { strict: "coordination" }).matchedWarningCodes, ["conflicting-open-intents"]);
   assert.equal(strictResult(warnings, { ci: true }).scope, "all");
