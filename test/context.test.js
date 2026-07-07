@@ -72,6 +72,8 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   assert.equal(json.preflight.dependencyReadSet[0].manifest, "package.json");
   assert.deepEqual(json.preflight.dependencyReadSet[0].lockfiles, ["package-lock.json"]);
   assert.equal(json.preflight.dependencyChangeProtocol.commands.recordAfterChange, "aienvmp record --actor agent:id --summary dependency-change --target dependency");
+  assert.equal(json.coordination.openIntentCount, 0);
+  assert.deepEqual(json.coordination.conflictTargets, []);
   assert.equal(json.decision.schemaVersion, 1);
   assert.equal(json.decision.mode, "review-first");
   assert.equal(json.decision.canContinueProjectLocalWork, true);

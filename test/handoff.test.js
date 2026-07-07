@@ -108,3 +108,20 @@ test("buildHandoff requires review when open intents exist", () => {
   assert.equal(handoff.openIntents.length, 1);
   assert.equal(handoff.recommendedActions[0].id, "review-open-intents");
 });
+
+test("buildHandoff exposes coordination summary for next agents", () => {
+  const handoff = buildHandoff({
+    trust: { state: "observed", verified: false },
+    workspace: { path: "/tmp/work", name: "work" },
+    runtimes: {},
+    containers: {},
+    dependencySnapshot: { summary: { packages: 1 } }
+  }, [], [], [
+    { actor: "agent:codex", action: "update dependency", target: "dependency" },
+    { actor: "agent:gemini", action: "fix vulnerable package" }
+  ], {});
+
+  assert.deepEqual(handoff.coordination.conflictTargets, ["dependency"]);
+  assert.match(renderHandoff(handoff), /Coordination/);
+  assert.match(renderHandoff(handoff), /Conflicts: dependency/);
+});

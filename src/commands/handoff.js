@@ -62,6 +62,7 @@ export function buildHandoff(manifest, timeline = [], warnings = [], intents = [
     inventory: inventorySummary(manifest.inventory),
     security: securitySummary(manifest.security),
     dependencyHandoff: dependencyHandoffSummary(preflight),
+    coordination: preflight.coordination,
     policy: {
       node: policy.node || "not set",
       python: policy.python || "not set",

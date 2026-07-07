@@ -22,11 +22,11 @@ export function schemaContract() {
       },
       context: {
         command: "aienvmp context --json",
-        rootFields: ["status", "preflight", "decision", "recommendedActions", "workspace", "dependencySnapshot", "lightSbom", "warnings"]
+        rootFields: ["status", "preflight", "coordination", "decision", "recommendedActions", "workspace", "dependencySnapshot", "lightSbom", "warnings"]
       },
       handoff: {
         command: "aienvmp handoff --json",
-        rootFields: ["status", "decision", "preflight", "dependencyHandoff", "openIntents", "warnings", "recommendedActions", "recentChanges"]
+        rootFields: ["status", "decision", "preflight", "coordination", "dependencyHandoff", "openIntents", "warnings", "recommendedActions", "recentChanges"]
       },
       manifest: {
         file: ".aienvmp/manifest.json",

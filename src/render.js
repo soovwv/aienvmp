@@ -199,6 +199,9 @@ export function renderHandoff(handoff) {
     "Open intents:",
     ...(handoff.openIntents.length ? handoff.openIntents.map((i) => `- ${i.actor}: ${i.action}${i.target ? ` (${i.target})` : ""}`) : ["- none"]),
     "",
+    "Coordination:",
+    ...coordinationHandoffLines(handoff.coordination),
+    "",
     "Warnings:",
     ...(handoff.warnings.length ? handoff.warnings.map((w) => `- ${w.message}`) : ["- none"]),
     "",
@@ -218,6 +221,12 @@ export function renderHandoff(handoff) {
     ""
   ];
   return lines.join("\n");
+}
+
+function coordinationHandoffLines(coordination = {}) {
+  const conflicts = coordination.conflictTargets || [];
+  if (conflicts.length) return [`- Conflicts: ${conflicts.join(", ")}`, `- Next: ${coordination.next || "review open intents"}`];
+  return [`- Open intents: ${coordination.openIntentCount || 0}`, `- Next: ${coordination.next || "no open environment intents"}`];
 }
 
 function dependencyHandoffLines(dependencyHandoff = {}) {
