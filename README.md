@@ -111,6 +111,7 @@ aienvmp doctor --strict security  # fail only scoped warnings
 - light SBOM is generated from project files and optional scanner summaries
 - dependency change hints point AI agents to the relevant manifest before edits
 - lockfiles are detected read-only and shown before dependency edits
+- package manager policy is inferred from lockfiles to avoid accidental npm/pnpm/yarn drift
 - dashboard mirrors AI-facing SBOM hints so humans can review the same dependency context
 
 ## Development

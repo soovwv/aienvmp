@@ -67,6 +67,11 @@ function lightSbomSummary(lightSbom = {}) {
       transitiveOrUnmatchedVulnerablePackages: 0
     },
     topRisk: (lightSbom.topRisk || []).slice(0, 8),
+    packageManagerPolicy: lightSbom.packageManagerPolicy || {
+      status: "no-lockfile",
+      ecosystems: {},
+      guidance: "No lockfile policy detected."
+    },
     dependencyChangeHints: (lightSbom.dependencyChangeHints || []).slice(0, 8),
     aiUse: lightSbom.aiUse || {}
   };

@@ -68,7 +68,10 @@ test("linkVulnerableDependencies marks direct dependency matches", () => {
 test("buildLightSbom creates an AI-ready package and risk summary", () => {
   const snapshot = {
     manifests: ["package.json", "requirements.txt"],
-    lockfiles: [{ file: "package-lock.json", ecosystem: "npm", manager: "npm" }],
+    lockfiles: [
+      { file: "package-lock.json", ecosystem: "npm", manager: "npm" },
+      { file: "pnpm-lock.yaml", ecosystem: "npm", manager: "pnpm" }
+    ],
     packages: [
       { ecosystem: "npm", manager: "npm", group: "dependencies", name: "express", version: "^4.18.0", manifest: "package.json" },
       { ecosystem: "python", manager: "pip", group: "requirements", name: "django", version: "==3.2.0", manifest: "requirements.txt" }
@@ -102,14 +105,16 @@ test("buildLightSbom creates an AI-ready package and risk summary", () => {
   assert.equal(sbom.mode, "light-sbom");
   assert.equal(sbom.summary.packages, 2);
   assert.deepEqual(sbom.summary.ecosystems, { npm: 1, python: 1 });
-  assert.deepEqual(sbom.summary.lockfiles.map((item) => item.file), ["package-lock.json"]);
+  assert.deepEqual(sbom.summary.lockfiles.map((item) => item.file), ["package-lock.json", "pnpm-lock.yaml"]);
+  assert.equal(sbom.packageManagerPolicy.status, "review-required");
+  assert.equal(sbom.packageManagerPolicy.ecosystems.npm.status, "mixed-lockfiles");
   assert.equal(sbom.summary.vulnerabilities, 2);
   assert.equal(sbom.summary.directVulnerablePackages, 1);
   assert.equal(sbom.summary.transitiveOrUnmatchedVulnerablePackages, 1);
   assert.equal(sbom.topRisk[0].name, "express");
   assert.equal(sbom.topRisk[0].directDependency, true);
   assert.equal(sbom.dependencyChangeHints[0].manifest, "package.json");
-  assert.deepEqual(sbom.dependencyChangeHints[0].lockfiles.map((item) => item.file), ["package-lock.json"]);
+  assert.deepEqual(sbom.dependencyChangeHints[0].lockfiles.map((item) => item.file), ["package-lock.json", "pnpm-lock.yaml"]);
   assert.deepEqual(sbom.dependencyChangeHints[0].groups, ["dependencies"]);
   assert.equal(sbom.dependencyChangeHints[0].riskPackages[0].name, "express");
   assert.match(sbom.dependencyChangeHints[0].beforeChange[1], /package-lock\.json/);

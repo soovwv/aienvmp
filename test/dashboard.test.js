@@ -46,6 +46,19 @@ test("renderDashboard includes the audit summary surface", () => {
         fixAvailable: true,
         fixVersions: ["4.18.3"]
       }],
+      packageManagerPolicy: {
+        status: "clear",
+        ecosystems: {
+          npm: {
+            managers: ["npm"],
+            lockfiles: ["package-lock.json"],
+            status: "single-manager",
+            recommendedManager: "npm",
+            guidance: "Use the detected package manager for dependency changes unless the user says otherwise."
+          }
+        },
+        guidance: "Preserve existing lockfile and package manager choices during dependency changes."
+      },
       dependencyChangeHints: [{
         manifest: "package.json",
         ecosystem: "npm",
@@ -157,6 +170,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Light SBOM/);
   assert.match(html, /Direct vulnerable/);
   assert.match(html, /Dependency change hints/);
+  assert.match(html, /Package manager policy/);
   assert.match(html, /package-lock\.json/);
   assert.match(html, /express/);
   assert.match(html, /Security Summary/);

@@ -29,6 +29,7 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.equal(manifest.lightSbom.mode, "light-sbom");
   assert.equal(manifest.lightSbom.summary.packages, 1);
   assert.equal(manifest.lightSbom.summary.lockfiles[0].file, "package-lock.json");
+  assert.equal(manifest.lightSbom.packageManagerPolicy.status, "clear");
   assert.equal(manifest.lightSbom.summary.vulnerabilities, 0);
   assert.equal(manifest.lightSbom.dependencyChangeHints[0].manifest, "package.json");
   assert.equal(manifest.lightSbom.dependencyChangeHints[0].lockfiles[0].file, "package-lock.json");

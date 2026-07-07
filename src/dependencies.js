@@ -91,12 +91,48 @@ export function buildLightSbom(snapshot = {}, security = {}) {
       transitiveOrUnmatchedVulnerablePackages: transitiveOrUnmatched.length
     },
     topRisk,
+    packageManagerPolicy: packageManagerPolicy(snapshot.lockfiles || []),
     dependencyChangeHints: dependencyChangeHints(packages, topRisk, snapshot.lockfiles || []),
     aiUse: {
       beforeDependencyChanges: "Read lightSbom.summary and lightSbom.topRisk before changing dependencies.",
       securityMode: security.enabled ? "scanner-summary" : "scanner-off",
       dependencySource: "project manifests only; no install or resolver is run"
     }
+  };
+}
+
+function packageManagerPolicy(lockfiles = []) {
+  const byEcosystem = {};
+  for (const lockfile of lockfiles) {
+    const ecosystem = lockfile.ecosystem || "unknown";
+    const managers = byEcosystem[ecosystem]?.managers || new Set();
+    managers.add(lockfile.manager || "unknown");
+    byEcosystem[ecosystem] = {
+      ecosystem,
+      managers,
+      lockfiles: [...(byEcosystem[ecosystem]?.lockfiles || []), lockfile.file]
+    };
+  }
+  const ecosystems = Object.fromEntries(Object.entries(byEcosystem).map(([name, value]) => {
+    const managers = [...value.managers].sort();
+    return [name, {
+      managers,
+      lockfiles: value.lockfiles.sort(),
+      status: managers.length > 1 ? "mixed-lockfiles" : "single-manager",
+      recommendedManager: managers[0] || "not-detected",
+      guidance: managers.length > 1
+        ? "Review with the user before dependency changes; multiple package manager lockfiles are present."
+        : "Use the detected package manager for dependency changes unless the user says otherwise."
+    }];
+  }));
+  return {
+    status: Object.keys(ecosystems).length === 0
+      ? "no-lockfile"
+      : Object.values(ecosystems).some((item) => item.status === "mixed-lockfiles") ? "review-required" : "clear",
+    ecosystems,
+    guidance: Object.keys(ecosystems).length === 0
+      ? "No lockfile detected; avoid creating one with an unexpected package manager without user approval."
+      : "Preserve existing lockfile and package manager choices during dependency changes."
   };
 }
 
