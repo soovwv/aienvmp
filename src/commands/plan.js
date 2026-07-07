@@ -6,6 +6,7 @@ import { intentsPath, manifestPath, planJsonPath, planMdPath, timelinePath, work
 import { renderPlan } from "../render.js";
 import { recommendedActions } from "../actions.js";
 import { openIntents, readJsonl, readTimeline } from "../timeline.js";
+import { aiDecision } from "../decision.js";
 
 export async function planWorkspace(args) {
   const dir = workspaceDir(args);
@@ -39,6 +40,7 @@ export function buildPlan(manifest, warnings = [], intents = [], policy = {}) {
     status,
     workspace: manifest.workspace || {},
     trust: manifest.trust || {},
+    decision: aiDecision(warnings, intents),
     policy: {
       node: policy.node || "not set",
       python: policy.python || "not set",

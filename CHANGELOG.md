@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.26
+
+- Shared one AI decision contract across `context --json`, `plan`, and `handoff`.
+- Added decision mode and required command guidance to plan and handoff outputs.
+- Reduced duplicated guidance so multiple AI agents receive the same environment-change rules.
+
 ## 0.1.25
 
 - Added a more explicit AI decision contract to `context --json`.

@@ -6,6 +6,7 @@ import { renderContext } from "../render.js";
 import { loadPolicy, policyWarnings } from "../policy.js";
 import { recommendedActions } from "../actions.js";
 import { buildPlan, compactStepSummary } from "./plan.js";
+import { aiDecision } from "../decision.js";
 
 export async function contextWorkspace(args) {
   const dir = workspaceDir(args);
@@ -15,7 +16,7 @@ export async function contextWorkspace(args) {
   const intents = openIntents(await readJsonl(intentsPath(dir)));
   const policy = await loadPolicy(dir);
   const warnings = [...diagnose(manifest, { timeline, intents }), ...policyWarnings(manifest, policy)];
-  const decision = contextDecision(warnings, intents);
+  const decision = aiDecision(warnings, intents);
   const actions = recommendedActions(manifest, { warnings, intents });
   const stepSummary = compactStepSummary(buildPlan(manifest, warnings, intents, policy));
   if (args.json) {
@@ -59,42 +60,5 @@ function inventorySummary(inventory = {}) {
     mode: inventory.mode || "basic",
     enabled: inventory.enabled === true,
     groups: Object.fromEntries(Object.entries(tools).map(([name, items]) => [name, items.length]))
-  };
-}
-
-function contextDecision(warnings, intents) {
-  const warningCodes = warnings.map((warning) => warning.code);
-  const reviewRequired = warnings.length > 0 || intents.length > 0;
-  const canChangeEnvironmentWithoutReview = !reviewRequired;
-  const mode = reviewRequired ? "review-first" : "project-local-work";
-  return {
-    schemaVersion: 1,
-    mode,
-    canProceed: !reviewRequired,
-    canContinueProjectLocalWork: true,
-    canChangeEnvironmentWithoutReview,
-    safeForProjectLocalWork: warnings.length === 0,
-    reviewRequired,
-    warningCodes,
-    environmentChangeRequiresIntent: true,
-    globalEnvironmentChangesRequireUserApproval: true,
-    pendingIntentCount: intents.length,
-    mustNotDo: [
-      "do not change global runtimes without user approval",
-      "do not install or remove global package managers without user approval",
-      "do not change Docker daemon/context assumptions without user approval",
-      "do not ignore open intents or review-required warnings"
-    ],
-    recommendedNextActions: warnings.length
-      ? ["review warnings", "ask the user before environment changes", "record intent before changes"]
-      : ["continue with project-local work", "run aienvmp intent before environment changes"],
-    requiredCommands: {
-      beforeEnvironmentChange: "aienvmp intent --actor agent:id --action planned-change --target <runtime|package-manager|docker>",
-      refreshAfterChange: "aienvmp sync",
-      recordAfterChange: "aienvmp record --actor agent:id --summary what-changed",
-      handoff: "aienvmp handoff --record --actor agent:id",
-      reviewPlan: "aienvmp plan"
-    },
-    nextCommand: reviewRequired ? "aienvmp plan" : "continue project-local work; use aienvmp intent before environment changes"
   };
 }

@@ -27,6 +27,8 @@ test("buildHandoff summarizes next-agent environment state", () => {
   }], [], [], { node: "24" });
 
   assert.equal(handoff.status, "clear");
+  assert.equal(handoff.decision.mode, "project-local-work");
+  assert.equal(handoff.decision.canChangeEnvironmentWithoutReview, true);
   assert.equal(handoff.trust.state, "observed");
   assert.equal(handoff.schemaVersion, 1);
   assert.equal(handoff.safeRuntime.node, "24.0.0");
@@ -34,6 +36,7 @@ test("buildHandoff summarizes next-agent environment state", () => {
   assert.equal(handoff.policy.node, "24");
   assert.equal(handoff.recommendedActions[0].id, "review-security-remediation");
   assert.match(renderHandoff(handoff), /AI Handoff/);
+  assert.match(renderHandoff(handoff), /Decision: project-local-work/);
   assert.match(renderHandoff(handoff), /Recommended actions/);
   assert.match(renderHandoff(handoff), /Recommended next/);
 });
@@ -77,6 +80,8 @@ test("buildHandoff requires review when open intents exist", () => {
   }], {});
 
   assert.equal(handoff.status, "review-required");
+  assert.equal(handoff.decision.mode, "review-first");
+  assert.equal(handoff.decision.pendingIntentCount, 1);
   assert.equal(handoff.openIntents.length, 1);
   assert.equal(handoff.recommendedActions[0].id, "review-open-intents");
 });

@@ -10,7 +10,7 @@
 
 It helps Codex, Claude, Gemini, and humans avoid silent Node, Python, package manager, Docker, and security drift.
 
-Core loop: scan once, give AI a preflight context, write a read-only action plan, and hand off safe next steps.
+Core loop: scan once, give AI a shared decision contract, write a read-only action plan, and hand off safe next steps.
 
 ## Quick Start
 
@@ -81,8 +81,8 @@ The dashboard shows which strict scopes are CI-ready before you enforce them.
 aienvmp sync              # update env map, light SBOM, ledger, dashboard
 aienvmp context           # AI preflight brief
 aienvmp context --json    # AI decision contract + actions + compact step summary
-aienvmp plan              # read-only AI action plan for drift and remediation
-aienvmp handoff           # next-agent handoff summary + recommended actions
+aienvmp plan              # read-only AI action plan using the same decision contract
+aienvmp handoff           # next-agent handoff summary using the same decision contract
 aienvmp intent            # record a planned env change
 aienvmp record            # record what changed
 aienvmp doctor --ci       # strict CI check for all warnings
