@@ -4,6 +4,9 @@ import { openIntents, readJsonl, readTimeline } from "../timeline.js";
 import { intentsPath, manifestPath, timelinePath, workspaceDir } from "../paths.js";
 import { loadPolicy, policyWarnings } from "../policy.js";
 import { recommendedActions } from "../actions.js";
+import { enforcementAdvice, strictResult } from "../enforcement.js";
+
+export { strictResult } from "../enforcement.js";
 
 export async function doctorWorkspace(args) {
   const dir = workspaceDir(args);
@@ -23,6 +26,7 @@ export async function doctorWorkspace(args) {
       openIntentCount: intents.length,
       warnings,
       recommendedActions: actions,
+      enforcement: enforcementAdvice(warnings),
       strict
     }, null, 2));
     if (strict.fail) {
@@ -45,35 +49,4 @@ export async function doctorWorkspace(args) {
   if (strict.fail) {
     process.exitCode = 1;
   }
-}
-
-export function strictResult(warnings = [], args = {}) {
-  const scope = normalizeStrictScope(args.strict || (args.ci ? "all" : ""));
-  const matchedWarnings = scope ? warnings.filter((warning) => warningMatchesScope(warning, scope)) : [];
-  return {
-    enabled: Boolean(scope),
-    scope: scope || "off",
-    fail: matchedWarnings.length > 0,
-    matchedWarningCodes: matchedWarnings.map((warning) => warning.code),
-    availableScopes: ["security", "policy", "coordination", "all"]
-  };
-}
-
-function normalizeStrictScope(value) {
-  if (value === true) return "all";
-  const scope = String(value || "").trim().toLowerCase();
-  if (!scope || scope === "false" || scope === "off") return "";
-  if (["security", "policy", "coordination", "all"].includes(scope)) return scope;
-  return "all";
-}
-
-function warningMatchesScope(warning, scope) {
-  if (scope === "all") return true;
-  return warningScope(warning.code) === scope;
-}
-
-function warningScope(code = "") {
-  if (code === "security-vulnerabilities") return "security";
-  if (["conflicting-open-intents", "stale-open-intent", "handoff-stale"].includes(code)) return "coordination";
-  return "policy";
 }

@@ -30,6 +30,8 @@ test("buildPlan creates a read-only action plan", () => {
 
   assert.equal(plan.status, "review-required");
   assert.equal(plan.decision.mode, "review-first");
+  assert.equal(plan.enforcement.mode, "advisory-by-default");
+  assert.deepEqual(plan.enforcement.suggestedStrictScopes, ["security"]);
   assert.equal(plan.decision.canContinueProjectLocalWork, true);
   assert.deepEqual(plan.decision.warningCodes, ["security-vulnerabilities"]);
   assert.equal(plan.recommendedActions[0].id, "review-security-remediation");
@@ -41,6 +43,7 @@ test("buildPlan creates a read-only action plan", () => {
   assert.equal(plan.remediationSteps[0].advisories[0].id, "GHSA-test");
   assert.match(renderPlan(plan), /read-only/);
   assert.match(renderPlan(plan), /Decision: review-first/);
+  assert.match(renderPlan(plan), /Enforcement: advisory-by-default/);
   assert.match(renderPlan(plan), /lodash/);
   assert.match(renderPlan(plan), /declared in package\.json/);
   assert.match(renderPlan(plan), /priority high\/90/);
@@ -114,6 +117,7 @@ test("planWorkspace can write plan artifacts", async () => {
     const plan = await planWorkspace({ dir, write: true, json: true });
     assert.equal(plan.recommendedActions[0].id, "continue-project-local");
     assert.equal(plan.decision.mode, "project-local-work");
+    assert.deepEqual(plan.enforcement.suggestedStrictScopes, []);
   } finally {
     console.log = originalLog;
   }

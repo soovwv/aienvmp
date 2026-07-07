@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.30
+
+- Added shared enforcement advice for AI and CI surfaces.
+- Exposed advisory-by-default behavior, suggested strict scopes, and scoped CI commands in context and plan outputs.
+- Moved strict scope logic into a reusable enforcement module while keeping existing `doctor --strict` behavior compatible.
+
 ## 0.1.29
 
 - Added lightweight remediation priority scoring for vulnerable packages.

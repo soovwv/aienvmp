@@ -7,6 +7,7 @@ import { loadPolicy, policyWarnings } from "../policy.js";
 import { recommendedActions } from "../actions.js";
 import { buildPlan, compactStepSummary } from "./plan.js";
 import { aiDecision } from "../decision.js";
+import { enforcementAdvice } from "../enforcement.js";
 
 export async function contextWorkspace(args) {
   const dir = workspaceDir(args);
@@ -23,6 +24,7 @@ export async function contextWorkspace(args) {
     console.log(JSON.stringify({
       status: warnings.length ? "review-required" : "clear",
       decision,
+      enforcement: enforcementAdvice(warnings),
       recommendedActions: actions,
       stepSummary,
       trust: manifest.trust || {},

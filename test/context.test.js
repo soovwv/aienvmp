@@ -44,6 +44,9 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   assert.equal(json.decision.canChangeEnvironmentWithoutReview, false);
   assert.deepEqual(json.decision.warningCodes, ["node-version-mismatch"]);
   assert.equal(json.decision.requiredCommands.reviewPlan, "aienvmp plan");
+  assert.equal(json.enforcement.mode, "advisory-by-default");
+  assert.equal(json.enforcement.localBehavior, "non-blocking");
+  assert.deepEqual(json.enforcement.suggestedStrictScopes, ["policy"]);
   assert.equal(json.dependencySnapshot.summary.packages, 1);
   assert.equal(json.dependencySnapshot.packages[0].name, "express");
   assert.equal(json.stepSummary.environment[0].code, "node-version-mismatch");

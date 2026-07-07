@@ -1,0 +1,57 @@
+const STRICT_SCOPES = ["security", "policy", "coordination", "all"];
+
+export function strictResult(warnings = [], args = {}) {
+  const scope = normalizeStrictScope(args.strict || (args.ci ? "all" : ""));
+  const matchedWarnings = scope ? warnings.filter((warning) => warningMatchesScope(warning, scope)) : [];
+  return {
+    enabled: Boolean(scope),
+    scope: scope || "off",
+    fail: matchedWarnings.length > 0,
+    matchedWarningCodes: matchedWarnings.map((warning) => warning.code),
+    availableScopes: STRICT_SCOPES
+  };
+}
+
+export function enforcementAdvice(warnings = []) {
+  const scopeResults = STRICT_SCOPES.map((scope) => {
+    const result = strictResult(warnings, { strict: scope });
+    return {
+      scope,
+      status: result.fail ? "fail" : "pass",
+      matchedWarningCodes: result.matchedWarningCodes
+    };
+  });
+  const suggestedStrictScopes = scopeResults
+    .filter((item) => item.scope !== "all" && item.status === "fail")
+    .map((item) => item.scope);
+  return {
+    mode: "advisory-by-default",
+    localBehavior: "non-blocking",
+    ciBehavior: "strict-only-when-requested",
+    suggestedStrictScopes,
+    scopes: scopeResults,
+    recommendedCommand: suggestedStrictScopes.length
+      ? `aienvmp doctor --strict ${suggestedStrictScopes[0]}`
+      : "aienvmp doctor --strict all",
+    note: "Use strict mode in CI or explicit checks; do not block local operation unless the user requests it."
+  };
+}
+
+function normalizeStrictScope(value) {
+  if (value === true) return "all";
+  const scope = String(value || "").trim().toLowerCase();
+  if (!scope || scope === "false" || scope === "off") return "";
+  if (STRICT_SCOPES.includes(scope)) return scope;
+  return "all";
+}
+
+function warningMatchesScope(warning, scope) {
+  if (scope === "all") return true;
+  return warningScope(warning.code) === scope;
+}
+
+function warningScope(code = "") {
+  if (code === "security-vulnerabilities") return "security";
+  if (["conflicting-open-intents", "stale-open-intent", "handoff-stale"].includes(code)) return "coordination";
+  return "policy";
+}

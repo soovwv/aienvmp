@@ -8,7 +8,7 @@ import { dashboardPath, intentsPath, manifestPath, planJsonPath, planMdPath, tim
 import { renderDashboard } from "../render.js";
 import { loadPolicy, policyWarnings } from "../policy.js";
 import { recommendedActions } from "../actions.js";
-import { strictResult } from "./doctor.js";
+import { strictResult } from "../enforcement.js";
 
 export async function dashWorkspace(args) {
   const dir = workspaceDir(args);
