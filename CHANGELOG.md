@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.20
+
+- Added a dashboard Environment Steps card backed by `.aienvmp/plan.json`.
+- Surfaced runtime, package manager, Docker, and coordination plan summaries for humans.
+- Kept detailed step lists in `plan.md` while keeping the dashboard bounded.
+
 ## 0.1.19
 
 - Added runtime, package manager, Docker, and coordination environment steps to `aienvmp plan`.

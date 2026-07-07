@@ -292,6 +292,8 @@ const remediation=manifest.planRemediation||[];
 const remediationFix=r=>r.fixVersions?.length?\`fix \${r.fixVersions.join(', ')}\`:(r.fixAvailable?'fix available':'review required');
 const remediationRefs=r=>r.advisories?.length?\` - \${r.advisories.join(', ')}\`:'';
 const remediationHtml=remediation.length?'<div class="timeline">'+remediation.map(r=>\`<div class="event"><time>\${esc(r.severity)}</time><div><b>\${esc(r.package)}</b> \${esc(remediationFix(r))}\${esc(remediationRefs(r))}</div></div>\`).join('')+'</div>':'<div class="okline">No remediation steps in the current plan.</div>';
+const envSteps=manifest.planEnvironment||[];
+const envStepsHtml=envSteps.length?'<div class="timeline">'+envSteps.map(s=>\`<div class="event"><time>\${esc(s.category)}</time><div><b>\${esc(s.code)}</b> \${esc(s.summary)}</div></div>\`).join('')+'</div>':'<div class="okline">No environment steps in the current plan.</div>';
 const card=(title,badge,body)=>\`<section class="card"><div class="card-head"><h2>\${title}</h2>\${badge||''}</div>\${body}</section>\`;
 const reviewRequired=warnings.length>0||intents.length>0;
 const recentChanges=timeline.slice(-8).length;
@@ -336,6 +338,8 @@ document.getElementById('app').innerHTML=\`
     \${card('AI Plan Artifacts',plan.markdown||plan.json?'<span class="pill">written</span>':'<span class="pill off">not written</span>',planHtml)}
     <div style="height:14px"></div>
     \${card('Remediation Steps',remediation.length?'<span class="pill warn">'+remediation.length+' items</span>':'<span class="pill off">none</span>',remediationHtml)}
+    <div style="height:14px"></div>
+    \${card('Environment Steps',envSteps.length?'<span class="pill warn">'+envSteps.length+' items</span>':'<span class="pill off">none</span>',envStepsHtml)}
     <div style="height:14px"></div>
     \${card('Environment Health',warnings.length?'<span class="pill warn">attention</span>':'<span class="pill">clear</span>',warnHtml)}
     <div style="height:14px"></div>

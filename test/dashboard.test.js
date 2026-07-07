@@ -40,6 +40,11 @@ test("renderDashboard includes the audit summary surface", () => {
       fixVersions: ["4.17.21"],
       fixAvailable: true,
       advisories: ["GHSA-test"]
+    }],
+    planEnvironment: [{
+      code: "node-version-mismatch",
+      category: "runtime",
+      summary: ".nvmrc requests 20, but detected node is 24.0.0."
     }]
   }, [], [], [], {});
 
@@ -55,6 +60,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /plan\.md/);
   assert.match(html, /Remediation Steps/);
   assert.match(html, /4\.17\.21/);
+  assert.match(html, /Environment Steps/);
+  assert.match(html, /node-version-mismatch/);
   assert.match(html, /Global Inventory/);
   assert.match(html, /Security Summary/);
   assert.match(html, /lodash/);
@@ -83,6 +90,11 @@ test("dashWorkspace links written plan artifacts", async () => {
       fixAvailable: true,
       fixVersions: ["3.2.25"],
       advisories: [{ id: "PYSEC-1" }]
+    }],
+    environmentSteps: [{
+      code: "mixed-node-lockfiles",
+      category: "package-manager",
+      summary: "Multiple Node lockfiles detected."
     }]
   }), "utf8");
 
@@ -95,4 +107,6 @@ test("dashWorkspace links written plan artifacts", async () => {
   assert.match(html, /Remediation Steps/);
   assert.match(html, /django/);
   assert.match(html, /3\.2\.25/);
+  assert.match(html, /Environment Steps/);
+  assert.match(html, /mixed-node-lockfiles/);
 });
