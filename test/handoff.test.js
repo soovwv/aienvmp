@@ -13,7 +13,13 @@ test("buildHandoff summarizes next-agent environment state", () => {
     trust: { state: "observed", verified: false },
     workspace: { path: "/tmp/work", name: "work" },
     runtimes: { node: "24.0.0", python: "3.11.0" },
-    containers: { docker: "29.0.0" }
+    containers: { docker: "29.0.0" },
+    security: {
+      mode: "security",
+      enabled: true,
+      summary: { total: 1, critical: 0, high: 1, moderate: 0, low: 0, info: 0 },
+      topPackages: [{ name: "lodash", severity: "high", fixAvailable: true }]
+    }
   }, [{
     at: "2026-07-08T00:00:00.000Z",
     actor: "agent:codex",
@@ -24,6 +30,7 @@ test("buildHandoff summarizes next-agent environment state", () => {
   assert.equal(handoff.trust.state, "observed");
   assert.equal(handoff.schemaVersion, 1);
   assert.equal(handoff.safeRuntime.node, "24.0.0");
+  assert.equal(handoff.security.topPackages[0].name, "lodash");
   assert.equal(handoff.policy.node, "24");
   assert.match(renderHandoff(handoff), /AI Handoff/);
   assert.match(renderHandoff(handoff), /Recommended next/);

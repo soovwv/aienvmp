@@ -79,7 +79,8 @@ function securitySummary(security = {}) {
   return {
     mode: security.mode || "basic",
     enabled: security.enabled === true,
-    summary: security.summary || { total: 0, critical: 0, high: 0, moderate: 0, low: 0, info: 0 }
+    summary: security.summary || { total: 0, critical: 0, high: 0, moderate: 0, low: 0, info: 0 },
+    topPackages: security.topPackages || []
   };
 }
 

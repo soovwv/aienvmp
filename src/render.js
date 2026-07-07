@@ -219,7 +219,8 @@ const inventoryCount=Object.values(inventoryGroups).reduce((sum,items)=>sum+(Arr
 const inventoryHtml=manifest.inventory?.enabled?('<table>'+Object.entries(inventoryGroups).map(([k,v])=>\`<tr><th>\${esc(k)}</th><td><code>\${Array.isArray(v)?v.length:0} tools</code></td></tr>\`).join('')+'</table>'):'<div class="okline">Deep global inventory is off. Run <code>aienvmp sync --deep</code> when an AI needs global tool awareness.</div>';
 const sec=manifest.security||{};
 const secSummary=sec.summary||{total:0,critical:0,high:0,moderate:0,low:0,info:0};
-const securityHtml=sec.enabled?\`<table><tr><th>Total</th><td><code>\${esc(secSummary.total||0)}</code></td></tr><tr><th>Critical</th><td><code>\${esc(secSummary.critical||0)}</code></td></tr><tr><th>High</th><td><code>\${esc(secSummary.high||0)}</code></td></tr><tr><th>Moderate</th><td><code>\${esc(secSummary.moderate||0)}</code></td></tr><tr><th>Low</th><td><code>\${esc(secSummary.low||0)}</code></td></tr></table>\`:'<div class="okline">Security scan is off. Run <code>aienvmp sync --security</code> for read-only vulnerability summary.</div>';
+const secPackages=sec.topPackages||[];
+const securityHtml=sec.enabled?\`<table><tr><th>Total</th><td><code>\${esc(secSummary.total||0)}</code></td></tr><tr><th>Critical</th><td><code>\${esc(secSummary.critical||0)}</code></td></tr><tr><th>High</th><td><code>\${esc(secSummary.high||0)}</code></td></tr><tr><th>Moderate</th><td><code>\${esc(secSummary.moderate||0)}</code></td></tr><tr><th>Low</th><td><code>\${esc(secSummary.low||0)}</code></td></tr></table>\${secPackages.length?'<div class="timeline">'+secPackages.slice(0,5).map(p=>\`<div class="event"><time>\${esc(p.severity)}</time><div><b>\${esc(p.name)}</b> \${p.fixAvailable?'fix available':'review required'}</div></div>\`).join('')+'</div>':'<div class="okline" style="margin-top:10px">No vulnerable packages reported.</div>'}\`:'<div class="okline">Security scan is off. Run <code>aienvmp sync --security</code> for read-only vulnerability summary.</div>';
 const change=c=>c.type==='changed'?\`\${c.scope} \${c.key}: \${c.before} -> \${c.after}\`:\`\${c.scope} \${c.key}: \${c.type} \${c.after||c.before}\`;
 const timelineLabel=t=>t.change?change(t.change):(t.summary||t.action||t.type||'recorded change');
 const agentNames={agents:'Codex',claude:'Claude',gemini:'Gemini'};
@@ -337,7 +338,7 @@ function inventoryLines(inventory = {}) {
 function securityLines(security = {}) {
   if (!security.enabled) return ["- Mode: basic", "- Security scan is disabled. Run `aienvmp sync --security` when vulnerability context is needed."];
   const summary = security.summary || {};
-  return [
+  const lines = [
     "- Mode: security",
     `- Total vulnerabilities: ${summary.total || 0}`,
     `- Critical: ${summary.critical || 0}`,
@@ -345,6 +346,14 @@ function securityLines(security = {}) {
     `- Moderate: ${summary.moderate || 0}`,
     `- Low: ${summary.low || 0}`
   ];
+  const packages = security.topPackages || [];
+  if (packages.length) {
+    lines.push("- Top vulnerable packages:");
+    for (const pkg of packages.slice(0, 8)) {
+      lines.push(`  - ${pkg.name}: ${pkg.severity}; ${pkg.fixAvailable ? "fix available" : "review required"}`);
+    }
+  }
+  return lines;
 }
 
 function policyLines(policy) {

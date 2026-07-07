@@ -11,7 +11,13 @@ test("renderDashboard includes the audit summary surface", () => {
     packageManagers: { npm: "11.0.0" },
     containers: {},
     projectHints: {},
-    agentFiles: {}
+    agentFiles: {},
+    security: {
+      mode: "security",
+      enabled: true,
+      summary: { total: 1, critical: 0, high: 1, moderate: 0, low: 0, info: 0 },
+      topPackages: [{ name: "lodash", severity: "high", fixAvailable: true }]
+    }
   }, [], [], [], {});
 
   assert.match(html, /Audit summary/);
@@ -22,4 +28,5 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /AI Handoff/);
   assert.match(html, /Global Inventory/);
   assert.match(html, /Security Summary/);
+  assert.match(html, /lodash/);
 });

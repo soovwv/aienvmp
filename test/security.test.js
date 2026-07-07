@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { parseNpmAudit, scanSecurity, summarizeScanners } from "../src/security.js";
+import { parseNpmAudit, scanSecurity, summarizeScanners, topVulnerablePackages } from "../src/security.js";
 
 test("scanSecurity is disabled by default", async () => {
   const security = await scanSecurity(process.cwd());
@@ -48,4 +48,21 @@ test("summarizeScanners combines available scanner totals", () => {
   });
 
   assert.deepEqual(summary, { total: 2, critical: 1, high: 1, moderate: 0, low: 0, info: 0 });
+});
+
+test("topVulnerablePackages ranks packages by severity", () => {
+  const packages = topVulnerablePackages({
+    npmAudit: {
+      scanner: "npm-audit",
+      available: true,
+      vulnerablePackages: [
+        { name: "low-pkg", severity: "low", viaCount: 1, fixAvailable: true },
+        { name: "critical-pkg", severity: "critical", viaCount: 1, fixAvailable: false },
+        { name: "high-pkg", severity: "high", viaCount: 1, fixAvailable: true }
+      ]
+    }
+  });
+
+  assert.deepEqual(packages.map((pkg) => pkg.name), ["critical-pkg", "high-pkg", "low-pkg"]);
+  assert.equal(packages[0].scanner, "npm-audit");
 });

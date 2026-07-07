@@ -21,7 +21,8 @@ export async function scanSecurity(dir, options = {}) {
     scanners: {
       npmAudit
     },
-    summary: summarizeScanners({ npmAudit })
+    summary: summarizeScanners({ npmAudit }),
+    topPackages: topVulnerablePackages({ npmAudit })
   };
 }
 
@@ -79,6 +80,15 @@ export function summarizeScanners(scanners = {}) {
     for (const key of Object.keys(summary)) summary[key] += Number(scanner.summary?.[key] || 0);
   }
   return summary;
+}
+
+export function topVulnerablePackages(scanners = {}, limit = 8) {
+  const rank = { critical: 0, high: 1, moderate: 2, low: 3, info: 4, unknown: 5 };
+  return Object.values(scanners)
+    .filter((scanner) => scanner?.available)
+    .flatMap((scanner) => (scanner.vulnerablePackages || []).map((pkg) => ({ ...pkg, scanner: scanner.scanner })))
+    .sort((a, b) => (rank[a.severity] ?? rank.unknown) - (rank[b.severity] ?? rank.unknown) || a.name.localeCompare(b.name))
+    .slice(0, limit);
 }
 
 function unavailable(scanner, reason) {

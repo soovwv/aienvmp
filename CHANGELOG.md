@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.9
+
+- Added top vulnerable package summaries for AI context, handoff, `AIENV.md`, and the dashboard.
+- Ranked vulnerable packages by severity so agents can prioritize review without reading full audit output.
+- Kept security package details bounded to preserve lightweight output.
+
 ## 0.1.8
 
 - Added optional `sync --security` / `scan --security` vulnerability summary collection.
