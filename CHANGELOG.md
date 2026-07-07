@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.31
+
+- Added `aienvmp status` as a compact human and AI entrypoint.
+- Summarized clear/review state, next command, counts, top action, and enforcement advice in one output.
+- Kept `context --json` as the richer preflight while making first checks simpler.
+
 ## 0.1.30
 
 - Added shared enforcement advice for AI and CI surfaces.

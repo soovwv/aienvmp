@@ -16,6 +16,7 @@ Core loop: scan once, link runtime/dependency/security context, give AI a shared
 
 ```bash
 npx aienvmp sync
+npx aienvmp status
 npx aienvmp context
 npx aienvmp plan
 npx aienvmp handoff
@@ -79,6 +80,7 @@ The dashboard shows which strict scopes are CI-ready before you enforce them.
 
 ```bash
 aienvmp sync              # update env map, light SBOM, ledger, dashboard
+aienvmp status            # one compact clear/review decision
 aienvmp context           # AI preflight brief
 aienvmp context --json    # AI decision contract + actions + compact step summary
 aienvmp plan              # read-only AI action plan using the same decision contract
