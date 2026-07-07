@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.12
+
+- Added AI-readable `recommendedActions` to `context --json` and `doctor --json`.
+- Added concise recommended actions to text context and doctor output.
+- Kept recommendations advisory-only; strict failure still requires `doctor --ci`.
+
 ## 0.1.11
 
 - Added bounded remediation details to security summaries, including fix versions and advisory references.

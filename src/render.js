@@ -84,7 +84,7 @@ Before changing runtimes, package managers, Docker settings, global packages, or
 \`aienvmp\` does not replace this instruction file. It provides the live env map, lightweight runtime SBOM, intent log, timeline, and dashboard.`;
 }
 
-export function renderContext(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
+export function renderContext(manifest, timeline = [], warnings = [], intents = [], policy = {}, recommendedActions = []) {
   const status = warnings.length ? "review-required" : "clear";
   const next = warnings.length ? "Review warnings before changing the environment." : "Continue with project-local work. Record intent before environment changes.";
   return [
@@ -114,6 +114,9 @@ export function renderContext(manifest, timeline = [], warnings = [], intents = 
     "",
     "Warnings:",
     ...(warnings.length ? warnings.map((w) => `- ${w.message}`) : ["- none"]),
+    "",
+    "Recommended actions:",
+    ...(recommendedActions.length ? recommendedActions.map((item) => `- [${item.priority}] ${item.summary}${item.command ? ` (${item.command})` : ""}`) : ["- none"]),
     "",
     "Open intents:",
     ...(intents.length ? intents.slice(-5).reverse().map((i) => `- ${i.actor}: ${i.action}`) : ["- none"]),

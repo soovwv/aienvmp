@@ -55,7 +55,7 @@ npx aienvmp snippet agents
 ```bash
 aienvmp sync              # update env map, light SBOM, ledger, dashboard
 aienvmp context           # AI preflight brief
-aienvmp context --json    # machine-readable AI decision context
+aienvmp context --json    # machine-readable AI decision context + recommended actions
 aienvmp handoff           # next-agent handoff summary
 aienvmp intent            # record a planned env change
 aienvmp record            # record what changed

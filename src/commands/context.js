@@ -4,6 +4,7 @@ import { openIntents, readJsonl, readTimeline } from "../timeline.js";
 import { intentsPath, manifestPath, timelinePath, workspaceDir } from "../paths.js";
 import { renderContext } from "../render.js";
 import { loadPolicy, policyWarnings } from "../policy.js";
+import { recommendedActions } from "../actions.js";
 
 export async function contextWorkspace(args) {
   const dir = workspaceDir(args);
@@ -14,10 +15,12 @@ export async function contextWorkspace(args) {
   const policy = await loadPolicy(dir);
   const warnings = [...diagnose(manifest, { timeline, intents }), ...policyWarnings(manifest, policy)];
   const decision = contextDecision(warnings, intents);
+  const actions = recommendedActions(manifest, { warnings, intents });
   if (args.json) {
     console.log(JSON.stringify({
       status: warnings.length ? "review-required" : "clear",
       decision,
+      recommendedActions: actions,
       trust: manifest.trust || {},
       guidance: decision,
       workspace: manifest.workspace,
@@ -35,7 +38,7 @@ export async function contextWorkspace(args) {
     }, null, 2));
     return;
   }
-  console.log(renderContext(manifest, timeline, warnings, intents, policy));
+  console.log(renderContext(manifest, timeline, warnings, intents, policy, actions));
 }
 
 function securitySummary(security = {}) {
