@@ -1,7 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { doctorWorkspace } from "../src/commands/doctor.js";
 import { strictResult } from "../src/commands/doctor.js";
 import { coordinationWarnings, diagnose, handoffWarnings, securityWarnings, staleIntentWarnings } from "../src/doctor.js";
+import { writeJson } from "../src/fsutil.js";
 
 test("diagnose reports mixed lockfiles and version mismatches", () => {
   const warnings = diagnose({
@@ -124,4 +129,39 @@ test("strictResult filters failures by strict scope", () => {
   assert.deepEqual(strictResult(warnings, { strict: "coordination" }).matchedWarningCodes, ["conflicting-open-intents"]);
   assert.equal(strictResult(warnings, { ci: true }).scope, "all");
   assert.equal(strictResult(warnings, { ci: true }).fail, true);
+});
+
+test("doctorWorkspace JSON explains advisory exit behavior", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-doctor-exit-"));
+  await fs.mkdir(path.join(dir, ".aienvmp"), { recursive: true });
+  await writeJson(path.join(dir, ".aienvmp", "manifest.json"), {
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    trust: { state: "observed", verified: false },
+    workspace: { path: dir, name: path.basename(dir) },
+    runtimes: { node: "24.0.0" },
+    packageManagers: {},
+    containers: {},
+    projectHints: { nvmrc: "20" },
+    dependencySnapshot: { summary: { packages: 0 } },
+    security: { enabled: false, summary: { total: 0 } }
+  });
+
+  const originalLog = console.log;
+  const originalExitCode = process.exitCode;
+  let output = "";
+  console.log = (value) => { output = value; };
+  process.exitCode = undefined;
+  try {
+    await doctorWorkspace({ dir, json: true });
+  } finally {
+    console.log = originalLog;
+    process.exitCode = originalExitCode;
+  }
+
+  const json = JSON.parse(output);
+  assert.equal(json.status, "warning");
+  assert.equal(json.exitBehavior.mode, "advisory");
+  assert.equal(json.exitBehavior.willSetFailureExitCode, false);
+  assert.match(json.exitBehavior.reason, /strict mode is off/);
 });

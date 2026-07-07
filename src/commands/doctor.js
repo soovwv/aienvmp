@@ -18,9 +18,18 @@ export async function doctorWorkspace(args) {
   const warnings = [...diagnose(manifest, { timeline, intents }), ...policyWarnings(manifest, policy)];
   const actions = recommendedActions(manifest, { warnings, intents });
   const strict = strictResult(warnings, args);
+  const exitBehavior = {
+    mode: strict.enabled ? "strict" : "advisory",
+    willSetFailureExitCode: strict.fail,
+    reason: strict.enabled
+      ? `strict scope ${strict.scope} is enabled`
+      : "strict mode is off; warnings are reported without failing local operation",
+    gate: strict.gate
+  };
   if (args.json) {
     console.log(JSON.stringify({
       status: strict.fail ? "fail" : warnings.length ? "warning" : "ok",
+      exitBehavior,
       trust: manifest.trust || {},
       policy,
       openIntentCount: intents.length,
