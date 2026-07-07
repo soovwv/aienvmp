@@ -23,7 +23,7 @@ npx aienvmp handoff
 ```
 
 10-second AI flow: `aienvmp status --write` -> `aienvmp context --json` -> intent before environment changes.
-Use `--dir <workspace>` when an AI or CI process runs outside the target project.
+Use `--dir <workspace>` before or after the command when an AI or CI process runs outside the target project.
 
 Optional deeper read-only checks:
 

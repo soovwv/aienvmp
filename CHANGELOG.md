@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.39
 
 - Added a dependency read set to preflight, `AIENV.md`, and the dashboard so agents know which manifests and lockfiles to read before package or security changes.
 - Added an advisory dependency change protocol so agents follow the same intent, refresh, record, and handoff flow for package/security edits.
@@ -8,6 +8,7 @@
 - Pointed security remediation recommendations at the dependency intent workflow instead of a generic context read.
 - Treated dependency records and package/security intents as coordination signals for stale handoff and multi-agent conflict warnings.
 - Added CLI regression coverage for `context --dir <workspace> --json` so remote and CI agents can safely inspect another workspace.
+- Allowed `--dir <workspace>` before the command, so AI and CI agents can use either global-style or command-style workspace targeting.
 
 ## 0.1.38
 

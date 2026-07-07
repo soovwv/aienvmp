@@ -34,9 +34,10 @@ const commands = new Map([
 ]);
 
 const version = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version;
+const globalValueOptions = new Set(["--dir"]);
 
 export async function main(argv) {
-  const [command, ...rest] = argv;
+  const { command, rest, globalArgs } = splitCommand(argv);
   if (command === "-v" || command === "--version" || command === "version") {
     console.log(version);
     return;
@@ -50,7 +51,30 @@ export async function main(argv) {
     printUsage();
     throw new Error(`unknown command "${command}"`);
   }
-  await run(parseArgs(rest));
+  await run({ ...globalArgs, ...parseArgs(rest) });
+}
+
+function splitCommand(argv) {
+  const leading = [];
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (!arg.startsWith("--")) {
+      return {
+        command: arg,
+        rest: argv.slice(i + 1),
+        globalArgs: parseArgs(leading)
+      };
+    }
+    leading.push(arg);
+    if (!arg.includes("=") && globalValueOptions.has(arg) && argv[i + 1] && !argv[i + 1].startsWith("--")) {
+      leading.push(argv[++i]);
+    }
+  }
+  return {
+    command: argv[0],
+    rest: [],
+    globalArgs: parseArgs(leading)
+  };
 }
 
 export function parseArgs(argv) {
