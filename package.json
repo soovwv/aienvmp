@@ -4,7 +4,7 @@
   "description": "AI-first environment maps and lightweight runtime SBOMs for shared development machines.",
   "type": "module",
   "bin": {
-    "aienvmp": "./bin/aienvmp.js"
+    "aienvmp": "bin/aienvmp.js"
   },
   "repository": {
     "type": "git",
