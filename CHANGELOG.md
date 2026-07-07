@@ -7,6 +7,7 @@
 - Added target-level open intent coordination summaries so agents can detect dependency conflicts without parsing logs.
 - Shortened the README around the 10-second AI flow, generated outputs, and advisory contract.
 - Updated the dashboard handoff card with next-agent read hints, dependency files, and conflict targets.
+- Printed the next-agent handoff command in the plain `status` output.
 
 ## 0.1.39
 

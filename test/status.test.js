@@ -85,6 +85,34 @@ test("statusWorkspace JSON reports review-required and strict suggestion", async
   assert.equal(json.artifacts.envMap, "AIENV.md");
 });
 
+test("statusWorkspace text prints the next-agent handoff command", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-status-text-"));
+  await fs.mkdir(path.join(dir, ".aienvmp"), { recursive: true });
+  await writeJson(path.join(dir, ".aienvmp", "manifest.json"), {
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    trust: { state: "observed", verified: false },
+    workspace: { path: dir, name: path.basename(dir) },
+    runtimes: {},
+    packageManagers: {},
+    containers: {},
+    projectHints: {},
+    dependencySnapshot: { summary: { packages: 0 } },
+    security: { enabled: false, summary: { total: 0 } }
+  });
+
+  const originalLog = console.log;
+  const lines = [];
+  console.log = (value) => { lines.push(value); };
+  try {
+    await statusWorkspace({ dir });
+  } finally {
+    console.log = originalLog;
+  }
+
+  assert.match(lines.join("\n"), /handoff: aienvmp handoff --record --actor agent:id/);
+});
+
 test("buildStatus summarizes open intent coordination by target", () => {
   const status = buildStatus({
     runtimes: {},

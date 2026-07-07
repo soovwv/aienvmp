@@ -25,6 +25,7 @@ export async function statusWorkspace(args) {
     console.log(`next: ${output.nextCommand}`);
     console.log(`ai: ${output.quickstart.readFirst} -> ${output.quickstart.detailCommand}`);
     console.log(`intent: ${output.intentTargets[0]?.command || output.commands.recordIntent}`);
+    console.log(`handoff: ${output.nextAgent.handoffCommand}`);
     console.log(`strict: ${output.enforcement.recommendedCommand}`);
     if (artifact) console.log(`status: ${artifact}`);
   }
