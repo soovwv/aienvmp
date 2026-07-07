@@ -38,8 +38,7 @@ runs:
       shell: bash
       run: |
         if [ "${{ inputs.write-status }}" = "true" ]; then
-          mkdir -p "${{ inputs.directory }}/.aienvmp"
-          node "$GITHUB_ACTION_PATH/bin/aienvmp.js" status --dir "${{ inputs.directory }}" --json > "${{ inputs.directory }}/.aienvmp/status.json"
+          node "$GITHUB_ACTION_PATH/bin/aienvmp.js" status --dir "${{ inputs.directory }}" --write --quiet
         fi
 
     - name: Doctor

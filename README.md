@@ -45,6 +45,7 @@ npx aienvmp handoff --record --actor agent:codex
 ```text
 AIENV.md
 .aienvmp/manifest.json
+.aienvmp/status.json       # first file for AI: clear/review, next command, strict advice
 .aienvmp/intents.jsonl
 .aienvmp/timeline.jsonl
 .aienvmp/plan.json
@@ -81,8 +82,8 @@ The dashboard shows which strict scopes are CI-ready before you enforce them.
 ## Commands
 
 ```bash
-aienvmp sync              # update env map, light SBOM, ledger, dashboard
-aienvmp status            # one compact clear/review decision
+aienvmp sync              # update env map, light SBOM, status, ledger, dashboard
+aienvmp status --write    # refresh .aienvmp/status.json only
 aienvmp context           # AI preflight brief
 aienvmp context --json    # AI decision contract + actions + compact step summary
 aienvmp plan              # read-only AI action plan using the same decision contract

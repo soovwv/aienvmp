@@ -12,6 +12,10 @@ export function manifestPath(dir) {
   return path.join(stateDir(dir), "manifest.json");
 }
 
+export function statusJsonPath(dir) {
+  return path.join(stateDir(dir), "status.json");
+}
+
 export function previousManifestPath(dir) {
   return path.join(stateDir(dir), "manifest.previous.json");
 }

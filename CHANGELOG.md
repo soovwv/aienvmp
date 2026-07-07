@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.33
+
+- Made `.aienvmp/status.json` a first-class artifact written by `aienvmp sync`.
+- Added `aienvmp status --write` so AI agents and CI can refresh the compact state file directly.
+- Updated the GitHub Action to use the built-in status writer instead of shell redirection.
+
 ## 0.1.32
 
 - Added GitHub Action support for writing `.aienvmp/status.json` by default.

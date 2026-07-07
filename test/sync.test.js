@@ -30,6 +30,9 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.equal(manifest.agentProtocol.intentCommand, "aienvmp intent --actor agent:id --action planned-change");
 
   await assert.doesNotReject(fs.access(path.join(dir, "AIENV.md")));
+  const status = JSON.parse(await fs.readFile(path.join(dir, ".aienvmp", "status.json"), "utf8"));
+  assert.equal(status.schemaVersion, 1);
+  assert.ok(["clear", "review-required"].includes(status.state));
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "dashboard.html")));
   await assert.rejects(fs.access(path.join(dir, "AGENTS.md")));
 });
@@ -41,4 +44,5 @@ test("sync can return a quiet machine-readable result", async () => {
   assert.equal(result.status, "ok");
   assert.equal(result.changes, 0);
   assert.match(result.outputs.aiEnv, /AIENV\.md$/);
+  assert.match(result.outputs.status, /\.aienvmp[\\\/]status\.json$/);
 });

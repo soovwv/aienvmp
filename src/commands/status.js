@@ -1,7 +1,9 @@
+import fs from "node:fs/promises";
+import path from "node:path";
 import { diagnose } from "../doctor.js";
 import { readJson } from "../fsutil.js";
 import { loadPolicy, policyWarnings } from "../policy.js";
-import { intentsPath, manifestPath, timelinePath, workspaceDir } from "../paths.js";
+import { intentsPath, manifestPath, statusJsonPath, timelinePath, workspaceDir } from "../paths.js";
 import { openIntents, readJsonl, readTimeline } from "../timeline.js";
 import { recommendedActions } from "../actions.js";
 import { aiDecision } from "../decision.js";
@@ -16,14 +18,24 @@ export async function statusWorkspace(args) {
   const intents = openIntents(await readJsonl(intentsPath(dir)));
   const warnings = [...diagnose(manifest, { timeline, intents }), ...policyWarnings(manifest, policy)];
   const status = buildStatus(manifest, warnings, intents);
+  const artifact = args.write ? await writeStatusArtifact(dir, status) : "";
+  const output = artifact ? { ...status, artifact } : status;
   if (args.json) {
-    console.log(JSON.stringify(status, null, 2));
-  } else {
-    console.log(`${status.state}: ${status.summary}`);
-    console.log(`next: ${status.nextCommand}`);
-    console.log(`strict: ${status.enforcement.recommendedCommand}`);
+    console.log(JSON.stringify(output, null, 2));
+  } else if (!args.quiet) {
+    console.log(`${output.state}: ${output.summary}`);
+    console.log(`next: ${output.nextCommand}`);
+    console.log(`strict: ${output.enforcement.recommendedCommand}`);
+    if (artifact) console.log(`status: ${artifact}`);
   }
-  return status;
+  return output;
+}
+
+export async function writeStatusArtifact(dir, status) {
+  const out = statusJsonPath(dir);
+  await fs.mkdir(path.dirname(out), { recursive: true });
+  await fs.writeFile(out, JSON.stringify(status, null, 2), "utf8");
+  return out;
 }
 
 export function buildStatus(manifest = {}, warnings = [], intents = []) {

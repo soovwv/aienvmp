@@ -50,3 +50,27 @@ test("statusWorkspace JSON reports review-required and strict suggestion", async
   assert.equal(json.counts.warnings, 1);
   assert.equal(json.counts.dependencies, 1);
 });
+
+test("statusWorkspace can write the compact AI status artifact", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-status-write-"));
+  await fs.mkdir(path.join(dir, ".aienvmp"), { recursive: true });
+  await writeJson(path.join(dir, ".aienvmp", "manifest.json"), {
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    trust: { state: "observed", verified: false },
+    workspace: { path: dir, name: path.basename(dir) },
+    runtimes: {},
+    packageManagers: {},
+    containers: {},
+    projectHints: {},
+    dependencySnapshot: { summary: { packages: 0 } },
+    security: { enabled: false, summary: { total: 0 } }
+  });
+
+  const result = await statusWorkspace({ dir, write: true, quiet: true });
+  assert.match(result.artifact, /\.aienvmp[\\\/]status\.json$/);
+
+  const written = JSON.parse(await fs.readFile(result.artifact, "utf8"));
+  assert.equal(written.schemaVersion, 1);
+  assert.equal(written.state, "clear");
+});

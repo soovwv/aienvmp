@@ -8,6 +8,6 @@ test("GitHub Action writes compact status artifacts by default", async () => {
 
   assert.match(action, /write-status:/);
   assert.match(action, /status --dir/);
-  assert.match(action, /\.aienvmp\/status\.json/);
+  assert.match(action, /--write --quiet/);
   assert.match(example, /\.aienvmp\/status\.json/);
 });
