@@ -5,6 +5,7 @@
 - Added `lightSbom` to the manifest as an AI-ready package and vulnerability summary.
 - Linked dependency manifests, ecosystem/group counts, vulnerable direct dependencies, and top risk packages into one compact SBOM view.
 - Surfaced dependency change hints in AI-facing outputs and the dashboard so agents and humans can identify relevant manifests before edits.
+- Added read-only lockfile awareness to dependency snapshots and light SBOM hints.
 
 ## 0.1.36
 

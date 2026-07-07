@@ -290,8 +290,8 @@ const lightSbom=manifest.lightSbom||{};
 const lightSbomSummary=lightSbom.summary||{};
 const topRisk=lightSbom.topRisk||[];
 const dependencyHints=lightSbom.dependencyChangeHints||[];
-const dependencyHintsHtml=dependencyHints.length?'<div class="timeline">'+dependencyHints.slice(0,5).map(h=>\`<div class="event"><time>\${esc(h.ecosystem||'deps')}</time><div><b>\${esc(h.manifest)}</b> <code>\${esc(h.manager||'unknown')}</code> \${esc(h.packages||0)} packages\${h.riskPackages?.length?\`<div class="path">risk: \${esc(h.riskPackages.map(p=>p.name).join(', '))}</div>\`:''}<div class="path">\${esc((h.groups||[]).join(', ')||'no groups')}</div></div></div>\`).join('')+'</div>':'<div class="okline">No dependency change hints available.</div>';
-const lightSbomHtml=\`<table><tr><th>Packages</th><td><code>\${esc(lightSbomSummary.packages||0)}</code></td></tr><tr><th>Vulnerabilities</th><td><code>\${esc(lightSbomSummary.vulnerabilities||0)}</code></td></tr><tr><th>Direct vulnerable</th><td><code>\${esc(lightSbomSummary.directVulnerablePackages||0)}</code></td></tr><tr><th>Manifests</th><td><code>\${esc((lightSbomSummary.manifests||[]).join(', ')||'none')}</code></td></tr></table>\${topRisk.length?'<div class="timeline">'+topRisk.slice(0,5).map(p=>\`<div class="event"><time>\${esc(p.priority)}</time><div><b>\${esc(p.name)}</b> \${esc(p.severity)} \${p.directDependency?'<code>direct</code>':'<code>transitive</code>'}<div class="path">\${esc(p.manifest||p.ecosystem)} \${esc(p.version||'')}</div></div></div>\`).join('')+'</div>':'<div class="okline">No high-risk package summary in the current light SBOM.</div>'}<h3 style="margin-top:12px">Dependency change hints</h3>\${dependencyHintsHtml}\`;
+const dependencyHintsHtml=dependencyHints.length?'<div class="timeline">'+dependencyHints.slice(0,5).map(h=>\`<div class="event"><time>\${esc(h.ecosystem||'deps')}</time><div><b>\${esc(h.manifest)}</b> <code>\${esc(h.manager||'unknown')}</code> \${esc(h.packages||0)} packages\${h.riskPackages?.length?\`<div class="path">risk: \${esc(h.riskPackages.map(p=>p.name).join(', '))}</div>\`:''}<div class="path">\${esc((h.groups||[]).join(', ')||'no groups')}\${h.lockfiles?.length?\` / lockfiles: \${esc(h.lockfiles.map(l=>l.file).join(', '))}\`:''}</div></div></div>\`).join('')+'</div>':'<div class="okline">No dependency change hints available.</div>';
+const lightSbomHtml=\`<table><tr><th>Packages</th><td><code>\${esc(lightSbomSummary.packages||0)}</code></td></tr><tr><th>Vulnerabilities</th><td><code>\${esc(lightSbomSummary.vulnerabilities||0)}</code></td></tr><tr><th>Direct vulnerable</th><td><code>\${esc(lightSbomSummary.directVulnerablePackages||0)}</code></td></tr><tr><th>Manifests</th><td><code>\${esc((lightSbomSummary.manifests||[]).join(', ')||'none')}</code></td></tr><tr><th>Lockfiles</th><td><code>\${esc((lightSbomSummary.lockfiles||[]).map(l=>l.file).join(', ')||'none')}</code></td></tr></table>\${topRisk.length?'<div class="timeline">'+topRisk.slice(0,5).map(p=>\`<div class="event"><time>\${esc(p.priority)}</time><div><b>\${esc(p.name)}</b> \${esc(p.severity)} \${p.directDependency?'<code>direct</code>':'<code>transitive</code>'}<div class="path">\${esc(p.manifest||p.ecosystem)} \${esc(p.version||'')}</div></div></div>\`).join('')+'</div>':'<div class="okline">No high-risk package summary in the current light SBOM.</div>'}<h3 style="margin-top:12px">Dependency change hints</h3>\${dependencyHintsHtml}\`;
 const sec=manifest.security||{};
 const secSummary=sec.summary||{total:0,critical:0,high:0,moderate:0,low:0,info:0};
 const secPackages=sec.topPackages||[];
@@ -467,7 +467,8 @@ function lightSbomLines(lightSbom = {}) {
     `- Packages: ${summary.packages || 0}`,
     `- Vulnerabilities: ${summary.vulnerabilities || 0}`,
     `- Direct vulnerable packages: ${summary.directVulnerablePackages || 0}`,
-    `- Transitive or unmatched vulnerable packages: ${summary.transitiveOrUnmatchedVulnerablePackages || 0}`
+    `- Transitive or unmatched vulnerable packages: ${summary.transitiveOrUnmatchedVulnerablePackages || 0}`,
+    `- Lockfiles: ${(summary.lockfiles || []).map((item) => item.file).join(", ") || "none"}`
   ];
   const risks = lightSbom.topRisk || [];
   if (risks.length) {
@@ -481,7 +482,8 @@ function lightSbomLines(lightSbom = {}) {
     lines.push("- Dependency change hints:");
     for (const hint of hints.slice(0, 6)) {
       const risk = hint.riskPackages?.length ? `; risk: ${hint.riskPackages.map((pkg) => pkg.name).join(", ")}` : "";
-      lines.push(`  - ${hint.manifest}: ${hint.ecosystem}/${hint.manager}; ${hint.packages} packages${risk}`);
+      const lockfiles = hint.lockfiles?.length ? `; lockfiles: ${hint.lockfiles.map((item) => item.file).join(", ")}` : "";
+      lines.push(`  - ${hint.manifest}: ${hint.ecosystem}/${hint.manager}; ${hint.packages} packages${risk}${lockfiles}`);
     }
   }
   return lines;

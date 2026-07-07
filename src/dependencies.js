@@ -3,20 +3,33 @@ import path from "node:path";
 import { exists, readJson } from "./fsutil.js";
 
 const NODE_GROUPS = ["dependencies", "devDependencies", "optionalDependencies", "peerDependencies"];
+const LOCKFILE_CANDIDATES = [
+  { file: "package-lock.json", ecosystem: "npm", manager: "npm" },
+  { file: "npm-shrinkwrap.json", ecosystem: "npm", manager: "npm" },
+  { file: "pnpm-lock.yaml", ecosystem: "npm", manager: "pnpm" },
+  { file: "yarn.lock", ecosystem: "npm", manager: "yarn" },
+  { file: "bun.lockb", ecosystem: "npm", manager: "bun" },
+  { file: "uv.lock", ecosystem: "python", manager: "uv" },
+  { file: "poetry.lock", ecosystem: "python", manager: "poetry" },
+  { file: "Pipfile.lock", ecosystem: "python", manager: "pipenv" }
+];
 
 export async function scanDependencySnapshot(dir) {
   const node = await scanNodeDependencies(dir);
   const python = await scanPythonDependencies(dir);
   const packages = [...node.packages, ...python.packages];
   const manifests = [...node.manifests, ...python.manifests];
+  const lockfiles = await scanDependencyLockfiles(dir);
   return {
     mode: "snapshot",
     enabled: true,
     note: "Read-only dependency snapshot from project files. It does not install, update, or resolve packages.",
     manifests,
+    lockfiles,
     summary: {
       ecosystems: [...new Set(packages.map((pkg) => pkg.ecosystem))],
       manifests: manifests.length,
+      lockfiles: lockfiles.length,
       packages: packages.length
     },
     packages: packages.slice(0, 80)
@@ -71,13 +84,14 @@ export function buildLightSbom(snapshot = {}, security = {}) {
       managers: countBy(packages, "manager"),
       groups: countBy(packages, "group"),
       manifests: snapshot.manifests || [],
+      lockfiles: snapshot.lockfiles || [],
       packages: packages.length,
       vulnerabilities: Number(security.summary?.total || 0),
       directVulnerablePackages: directVulnerable.length,
       transitiveOrUnmatchedVulnerablePackages: transitiveOrUnmatched.length
     },
     topRisk,
-    dependencyChangeHints: dependencyChangeHints(packages, topRisk),
+    dependencyChangeHints: dependencyChangeHints(packages, topRisk, snapshot.lockfiles || []),
     aiUse: {
       beforeDependencyChanges: "Read lightSbom.summary and lightSbom.topRisk before changing dependencies.",
       securityMode: security.enabled ? "scanner-summary" : "scanner-off",
@@ -86,7 +100,7 @@ export function buildLightSbom(snapshot = {}, security = {}) {
   };
 }
 
-function dependencyChangeHints(packages = [], topRisk = []) {
+function dependencyChangeHints(packages = [], topRisk = [], lockfiles = []) {
   const byManifest = new Map();
   for (const pkg of packages) {
     const key = pkg.manifest || "unknown";
@@ -118,10 +132,13 @@ function dependencyChangeHints(packages = [], topRisk = []) {
     groups: [...entry.groups].sort(),
     packages: entry.packages,
     riskPackages: entry.riskPackages.slice(0, 5),
+    lockfiles: lockfilesForEntry(entry, lockfiles),
     beforeChange: [
       `Read ${entry.manifest} and the active package manager policy before editing dependencies.`,
-      "Record an intent before dependency or lockfile changes when another AI may be working.",
-      "Avoid switching package managers or deleting lockfiles without user approval."
+      lockfilesForEntry(entry, lockfiles).length
+        ? `Preserve related lockfiles: ${lockfilesForEntry(entry, lockfiles).map((item) => item.file).join(", ")}.`
+        : "No related lockfile was detected; do not create one with a different package manager without approval.",
+      "Record an intent before dependency or lockfile changes when another AI may be working."
     ],
     afterChange: [
       "Run project tests or the narrowest relevant validation.",
@@ -129,6 +146,18 @@ function dependencyChangeHints(packages = [], topRisk = []) {
       "Record the dependency change with aienvmp record."
     ]
   }));
+}
+
+async function scanDependencyLockfiles(dir) {
+  const found = [];
+  for (const item of LOCKFILE_CANDIDATES) {
+    if (await exists(path.join(dir, item.file))) found.push(item);
+  }
+  return found;
+}
+
+function lockfilesForEntry(entry, lockfiles = []) {
+  return lockfiles.filter((lockfile) => lockfile.ecosystem === entry.ecosystem);
 }
 
 export function remediationPriority(pkg = {}, context = {}) {

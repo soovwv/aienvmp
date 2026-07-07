@@ -28,6 +28,7 @@ test("renderDashboard includes the audit summary surface", () => {
       mode: "light-sbom",
       summary: {
         manifests: ["package.json"],
+        lockfiles: [{ file: "package-lock.json", ecosystem: "npm", manager: "npm" }],
         packages: 1,
         vulnerabilities: 1,
         directVulnerablePackages: 1,
@@ -50,6 +51,7 @@ test("renderDashboard includes the audit summary surface", () => {
         ecosystem: "npm",
         manager: "npm",
         groups: ["dependencies"],
+        lockfiles: [{ file: "package-lock.json", ecosystem: "npm", manager: "npm" }],
         packages: 1,
         riskPackages: [{ name: "express", severity: "high", priority: "high", fixAvailable: true }]
       }]
@@ -155,6 +157,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Light SBOM/);
   assert.match(html, /Direct vulnerable/);
   assert.match(html, /Dependency change hints/);
+  assert.match(html, /package-lock\.json/);
   assert.match(html, /express/);
   assert.match(html, /Security Summary/);
   assert.match(html, /package\.json/);
@@ -183,13 +186,14 @@ test("dashWorkspace links written plan artifacts", async () => {
     },
     lightSbom: {
       mode: "light-sbom",
-      summary: { manifests: ["requirements.txt"], packages: 1, vulnerabilities: 0, directVulnerablePackages: 0, transitiveOrUnmatchedVulnerablePackages: 0 },
+      summary: { manifests: ["requirements.txt"], lockfiles: [{ file: "uv.lock", ecosystem: "python", manager: "uv" }], packages: 1, vulnerabilities: 0, directVulnerablePackages: 0, transitiveOrUnmatchedVulnerablePackages: 0 },
       topRisk: [],
       dependencyChangeHints: [{
         manifest: "requirements.txt",
         ecosystem: "python",
         manager: "pip",
         groups: ["requirements"],
+        lockfiles: [{ file: "uv.lock", ecosystem: "python", manager: "uv" }],
         packages: 1,
         riskPackages: []
       }]
@@ -231,5 +235,6 @@ test("dashWorkspace links written plan artifacts", async () => {
   assert.match(html, /Light SBOM/);
   assert.match(html, /Dependency change hints/);
   assert.match(html, /requirements\.txt/);
+  assert.match(html, /uv\.lock/);
   assert.match(html, /django/);
 });

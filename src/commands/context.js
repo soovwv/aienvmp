@@ -60,6 +60,7 @@ function lightSbomSummary(lightSbom = {}) {
       managers: {},
       groups: {},
       manifests: [],
+      lockfiles: [],
       packages: 0,
       vulnerabilities: 0,
       directVulnerablePackages: 0,

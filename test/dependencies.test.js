@@ -26,14 +26,17 @@ test("scanDependencySnapshot reads node and python manifests without installing"
     dependencies: { express: "^4.18.0" },
     devDependencies: { vitest: "^2.0.0" }
   }), "utf8");
+  await fs.writeFile(path.join(dir, "package-lock.json"), "{}", "utf8");
   await fs.writeFile(path.join(dir, "requirements.txt"), "django==3.2.0\n# ignored\n-r other.txt\n", "utf8");
 
   const snapshot = await scanDependencySnapshot(dir);
 
   assert.equal(snapshot.mode, "snapshot");
   assert.equal(snapshot.summary.packages, 3);
+  assert.equal(snapshot.summary.lockfiles, 1);
   assert.deepEqual(snapshot.summary.ecosystems, ["npm", "python"]);
   assert.deepEqual(snapshot.manifests, ["package.json", "requirements.txt"]);
+  assert.deepEqual(snapshot.lockfiles.map((item) => item.file), ["package-lock.json"]);
   assert.deepEqual(snapshot.packages.map((pkg) => pkg.name), ["express", "vitest", "django"]);
 });
 
@@ -65,6 +68,7 @@ test("linkVulnerableDependencies marks direct dependency matches", () => {
 test("buildLightSbom creates an AI-ready package and risk summary", () => {
   const snapshot = {
     manifests: ["package.json", "requirements.txt"],
+    lockfiles: [{ file: "package-lock.json", ecosystem: "npm", manager: "npm" }],
     packages: [
       { ecosystem: "npm", manager: "npm", group: "dependencies", name: "express", version: "^4.18.0", manifest: "package.json" },
       { ecosystem: "python", manager: "pip", group: "requirements", name: "django", version: "==3.2.0", manifest: "requirements.txt" }
@@ -98,14 +102,17 @@ test("buildLightSbom creates an AI-ready package and risk summary", () => {
   assert.equal(sbom.mode, "light-sbom");
   assert.equal(sbom.summary.packages, 2);
   assert.deepEqual(sbom.summary.ecosystems, { npm: 1, python: 1 });
+  assert.deepEqual(sbom.summary.lockfiles.map((item) => item.file), ["package-lock.json"]);
   assert.equal(sbom.summary.vulnerabilities, 2);
   assert.equal(sbom.summary.directVulnerablePackages, 1);
   assert.equal(sbom.summary.transitiveOrUnmatchedVulnerablePackages, 1);
   assert.equal(sbom.topRisk[0].name, "express");
   assert.equal(sbom.topRisk[0].directDependency, true);
   assert.equal(sbom.dependencyChangeHints[0].manifest, "package.json");
+  assert.deepEqual(sbom.dependencyChangeHints[0].lockfiles.map((item) => item.file), ["package-lock.json"]);
   assert.deepEqual(sbom.dependencyChangeHints[0].groups, ["dependencies"]);
   assert.equal(sbom.dependencyChangeHints[0].riskPackages[0].name, "express");
+  assert.match(sbom.dependencyChangeHints[0].beforeChange[1], /package-lock\.json/);
   assert.match(sbom.dependencyChangeHints[0].beforeChange[0], /package\.json/);
   assert.equal(sbom.aiUse.dependencySource, "project manifests only; no install or resolver is run");
 });
