@@ -1,12 +1,15 @@
 import { appendJsonLine } from "../fsutil.js";
 import { timelinePath, workspaceDir } from "../paths.js";
+import { changedTrust } from "../trust.js";
 
 export async function recordWorkspace(args) {
   const dir = workspaceDir(args);
   const actor = required(args.actor, "actor");
   const summary = required(args.summary || args.change, "summary");
+  const now = new Date();
+  const requiresReview = args.review === true || args.review === "true";
   const entry = {
-    at: new Date().toISOString(),
+    at: now.toISOString(),
     actor,
     type: args.type || "agent-record",
     summary,
@@ -14,7 +17,8 @@ export async function recordWorkspace(args) {
     before: args.before || "",
     after: args.after || "",
     evidence: args.evidence || "",
-    requiresReview: args.review === true || args.review === "true"
+    requiresReview,
+    trust: changedTrust(now, requiresReview)
   };
   await appendJsonLine(timelinePath(dir), entry);
   console.log(`recorded ${entry.type} by ${actor}`);

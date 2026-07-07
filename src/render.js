@@ -19,6 +19,9 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
   lines.push(...policyLines(policy));
   lines.push("- Enforcement: non-blocking by default; warnings require review but do not lock the machine.");
   lines.push("- Project-local dependency installs: allowed when required by the user task.", "");
+  lines.push("## Trust State", "");
+  lines.push(`- State: ${manifest.trust?.state || "observed"}`);
+  lines.push("- Rule: AI agents may observe, plan, and record changes, but verified requires human or CI review.", "");
   lines.push("## AI Preflight Summary", "");
   lines.push(...contextLines(manifest, warnings, intents), "");
   lines.push("## Runtime Map", "");
@@ -83,6 +86,7 @@ export function renderContext(manifest, timeline = [], warnings = [], intents = 
     "",
     `Status: ${status}`,
     `Next: ${next}`,
+    `Trust: ${manifest.trust?.state || "observed"} (verified requires human or CI)`,
     `Workspace: ${manifest.workspace.path}`,
     `Node: ${manifest.runtimes.node || "not detected"}`,
     `Python: ${manifest.runtimes.python || manifest.runtimes.python3 || "not detected"}`,
@@ -116,6 +120,8 @@ export function renderHandoff(handoff) {
     "# AI Handoff",
     "",
     `Status: ${handoff.status}`,
+    `Trust: ${handoff.trust?.state || "observed"} (not AI-verified)`,
+    `Schema: ${handoff.schemaVersion}`,
     `Workspace: ${handoff.workspace?.path || "unknown"}`,
     "",
     "Safe runtime:",
@@ -208,9 +214,11 @@ const policyHtml=entries(policy).length?\`<table>\${rows(policy)}</table>\`:'<di
 const card=(title,badge,body)=>\`<section class="card"><div class="card-head"><h2>\${title}</h2>\${badge||''}</div>\${body}</section>\`;
 const reviewRequired=warnings.length>0||intents.length>0;
 const recentChanges=timeline.slice(-8).length;
+const trustState=manifest.trust?.state||'observed';
 const nextAction=reviewRequired?'Review before environment changes':'Proceed with project-local work';
 const auditItem=(key,value,hint,klass='')=>\`<div class="audit-item \${klass}"><div class="audit-k">\${key}</div><div class="audit-v">\${value}</div><div class="audit-hint">\${hint}</div></div>\`;
-const handoffHtml=\`<table><tr><th>Status</th><td>\${reviewRequired?'review-required':'clear'}</td></tr><tr><th>Node</th><td><code>\${esc(manifest.runtimes.node||'not detected')}</code></td></tr><tr><th>Python</th><td><code>\${esc(manifest.runtimes.python||manifest.runtimes.python3||'not detected')}</code></td></tr><tr><th>Docker</th><td>\${manifest.containers?.docker?'available':'not detected'}</td></tr><tr><th>Next</th><td>\${reviewRequired?'Review warnings and open intents':'Continue project-local work'}</td></tr></table>\`;
+const driftLabel=warnings.length?'detected':'none';
+const handoffHtml=\`<table><tr><th>Status</th><td>\${reviewRequired?'review-required':'clear'}</td></tr><tr><th>Trust</th><td><code>\${esc(trustState)}</code></td></tr><tr><th>Node</th><td><code>\${esc(manifest.runtimes.node||'not detected')}</code></td></tr><tr><th>Python</th><td><code>\${esc(manifest.runtimes.python||manifest.runtimes.python3||'not detected')}</code></td></tr><tr><th>Docker</th><td>\${manifest.containers?.docker?'available':'not detected'}</td></tr><tr><th>Next</th><td>\${reviewRequired?'Review warnings and open intents':'Continue project-local work'}</td></tr></table>\`;
 document.getElementById('app').innerHTML=\`
 <header>
   <div>
@@ -222,9 +230,9 @@ document.getElementById('app').innerHTML=\`
 </header>
 <section class="audit" aria-label="Audit summary">
   \${auditItem('AI decision',reviewRequired?'review required':'can proceed',nextAction,reviewRequired?'review':'primary')}
-  \${auditItem('Open intents',String(intents.length),intents.length?'Resolve or coordinate before changes':'No pending env changes')}
-  \${auditItem('Warnings',String(warnings.length),warnings.length?'Policy or drift needs attention':'No warnings detected')}
-  \${auditItem('Recent changes',String(recentChanges),recentChanges?'Check ledger before continuing':'No recent env ledger entries')}
+  \${auditItem('Runtime drift',driftLabel,warnings.length?'Policy, runtime, or coordination warning detected':'No drift warnings detected',warnings.length?'review':'')}
+  \${auditItem('Open env changes',String(intents.length),intents.length?'Resolve or coordinate before changes':'No pending env changes')}
+  \${auditItem('Trust',trustState,trustState==='verified'?'Human or CI verified':'Machine observed; not AI-verified')}
 </section>
 <section class="metrics">
   <div class="metric"><div class="num">\${entries(manifest.runtimes).length}</div><div class="label">runtimes</div></div>

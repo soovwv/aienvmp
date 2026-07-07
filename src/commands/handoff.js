@@ -12,7 +12,7 @@ export async function handoffWorkspace(args) {
   const timeline = await readTimeline(timelinePath(dir));
   const intents = openIntents(await readJsonl(intentsPath(dir)));
   const policy = await loadPolicy(dir);
-  const warnings = [...diagnose(manifest), ...policyWarnings(manifest, policy)];
+  const warnings = [...diagnose(manifest, { timeline, intents }), ...policyWarnings(manifest, policy)];
   const handoff = buildHandoff(manifest, timeline, warnings, intents, policy);
 
   if (args.json) {
@@ -27,6 +27,8 @@ export function buildHandoff(manifest, timeline = [], warnings = [], intents = [
   const reviewRequired = warnings.length > 0 || intents.length > 0;
   return {
     status: reviewRequired ? "review-required" : "clear",
+    trust: manifest.trust || {},
+    schemaVersion: manifest.schemaVersion || 1,
     workspace: manifest.workspace,
     safeRuntime: {
       node: manifest.runtimes?.node || "not detected",

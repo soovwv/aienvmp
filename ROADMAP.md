@@ -4,11 +4,11 @@
 
 ## Near Term
 
-- Policy checks for Node, Python, and package manager drift
-- Intent lifecycle: open, resolve, cancel
-- JSON output for AI/tool integrations
-- Non-blocking by default, strict only with `--ci`
-- Dashboard improvements for policy and agent coordination
+- Strengthen trust states: observed, planned, changed, review, verified, stale
+- Detect multi-agent environment intent conflicts
+- Stabilize `.aienvmp/manifest.json` and JSON command schemas
+- Keep `sync`, `context`, and `handoff` as the simple core flow
+- Improve the dashboard for 10-second human review
 
 ## Next
 
@@ -21,8 +21,8 @@
   - `pipx list`
   - `uv tool list`
 - Conflict detection:
-  - multiple open intents for the same target
   - stale unresolved intents
+  - recent runtime changes without a fresh handoff
   - package manager policy vs lockfile mismatch
 - CI mode:
   - stable exit codes

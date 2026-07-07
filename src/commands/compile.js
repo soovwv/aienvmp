@@ -13,7 +13,7 @@ export async function compileWorkspace(args) {
   const timeline = await readTimeline(timelinePath(dir));
   const intents = openIntents(await readJsonl(intentsPath(dir)));
   const policy = await loadPolicy(dir);
-  const warnings = [...diagnose(manifest), ...policyWarnings(manifest, policy)];
+  const warnings = [...diagnose(manifest, { timeline, intents }), ...policyWarnings(manifest, policy)];
   const rendered = renderAIEnv(manifest, timeline, warnings, intents, policy);
   await fs.writeFile(aiEnvPath(dir), rendered, "utf8");
   if (!args.quiet) {

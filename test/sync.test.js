@@ -13,8 +13,12 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
 
   const manifest = JSON.parse(await fs.readFile(path.join(dir, ".aienvmp", "manifest.json"), "utf8"));
   assert.equal(manifest.schemaName, "aienvmp.runtime-sbom");
+  assert.equal(manifest.schemaVersion, 1);
+  assert.equal(manifest.trust.state, "observed");
+  assert.equal(manifest.trust.verified, false);
   assert.equal(manifest.generatedBy.name, "aienvmp");
   assert.deepEqual(manifest.agentProtocol.afterEnvironmentChange, ["aienvmp sync"]);
+  assert.equal(manifest.agentProtocol.handoffCommand, "aienvmp handoff");
 
   await assert.doesNotReject(fs.access(path.join(dir, "AIENV.md")));
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "dashboard.html")));

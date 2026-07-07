@@ -1,4 +1,6 @@
-export function diagnose(manifest) {
+import { isStaleTimestamp } from "./trust.js";
+
+export function diagnose(manifest, context = {}) {
   const warnings = [];
   const hints = manifest.projectHints || {};
   const runtimes = manifest.runtimes || {};
@@ -34,5 +36,43 @@ export function diagnose(manifest) {
       message: "Dockerfile detected, but Docker CLI was not found."
     });
   }
+  if (isStaleTimestamp(manifest.generatedAt)) {
+    warnings.push({
+      code: "manifest-stale",
+      message: "Environment snapshot is older than 24 hours. Run `aienvmp sync` before changing the environment."
+    });
+  }
+  warnings.push(...coordinationWarnings(context.intents || []));
   return warnings;
+}
+
+export function coordinationWarnings(intents = []) {
+  const warnings = [];
+  const byTarget = new Map();
+  for (const intent of intents) {
+    const target = String(intent.target || inferTarget(intent.action) || "").trim().toLowerCase();
+    if (!target) continue;
+    const list = byTarget.get(target) || [];
+    list.push(intent);
+    byTarget.set(target, list);
+  }
+  for (const [target, list] of byTarget) {
+    const actors = new Set(list.map((intent) => intent.actor).filter(Boolean));
+    if (list.length > 1 && actors.size > 1) {
+      warnings.push({
+        code: "conflicting-open-intents",
+        target,
+        message: `Multiple agents have open environment intents for ${target}. Resolve or coordinate before changing it.`
+      });
+    }
+  }
+  return warnings;
+}
+
+function inferTarget(action = "") {
+  const normalized = String(action).toLowerCase();
+  for (const target of ["node", "python", "docker", "npm", "pnpm", "yarn", "uv", "pip", "pipx"]) {
+    if (normalized.includes(target)) return target;
+  }
+  return "";
 }

@@ -5,6 +5,8 @@ import { renderHandoff } from "../src/render.js";
 
 test("buildHandoff summarizes next-agent environment state", () => {
   const handoff = buildHandoff({
+    schemaVersion: 1,
+    trust: { state: "observed", verified: false },
     workspace: { path: "/tmp/work", name: "work" },
     runtimes: { node: "24.0.0", python: "3.11.0" },
     containers: { docker: "29.0.0" }
@@ -15,6 +17,8 @@ test("buildHandoff summarizes next-agent environment state", () => {
   }], [], [], { node: "24" });
 
   assert.equal(handoff.status, "clear");
+  assert.equal(handoff.trust.state, "observed");
+  assert.equal(handoff.schemaVersion, 1);
   assert.equal(handoff.safeRuntime.node, "24.0.0");
   assert.equal(handoff.policy.node, "24");
   assert.match(renderHandoff(handoff), /AI Handoff/);
@@ -23,6 +27,7 @@ test("buildHandoff summarizes next-agent environment state", () => {
 
 test("buildHandoff requires review when open intents exist", () => {
   const handoff = buildHandoff({
+    trust: { state: "observed", verified: false },
     workspace: { path: "/tmp/work", name: "work" },
     runtimes: {},
     containers: {}

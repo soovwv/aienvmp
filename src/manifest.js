@@ -3,6 +3,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { commandOutput, commandVersion } from "./shell.js";
 import { exists } from "./fsutil.js";
+import { observedTrust } from "./trust.js";
 
 export async function buildManifest(dir) {
   const now = new Date().toISOString();
@@ -14,6 +15,7 @@ export async function buildManifest(dir) {
       name: "aienvmp",
       command: "aienvmp sync"
     },
+    trust: observedTrust(new Date(now)),
     workspace: {
       path: dir,
       name: path.basename(dir)
@@ -27,9 +29,15 @@ export async function buildManifest(dir) {
     agentProtocol: {
       sourceOfTruth: "AIENV.md",
       preflightCommand: "aienvmp context",
+      handoffCommand: "aienvmp handoff",
       intentCommand: "aienvmp intent --actor <agent:id> --action <planned-change>",
       recordCommand: "aienvmp record --actor <agent:id> --summary <what-changed>",
       afterEnvironmentChange: ["aienvmp sync"],
+      trustModel: {
+        agentWritable: ["observed", "planned", "changed", "review", "stale"],
+        verifiedRequires: "human-or-ci",
+        rule: "AI agents may report observations and plans, but must not mark environment facts as verified."
+      },
       globalRuntimeChangeRequiresUserApproval: true,
       globalInstallPolicy: "ask-first",
       projectLocalChanges: "allowed-when-task-requires"

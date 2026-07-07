@@ -12,12 +12,13 @@ export async function contextWorkspace(args) {
   const timeline = await readTimeline(timelinePath(dir));
   const intents = openIntents(await readJsonl(intentsPath(dir)));
   const policy = await loadPolicy(dir);
-  const warnings = [...diagnose(manifest), ...policyWarnings(manifest, policy)];
+  const warnings = [...diagnose(manifest, { timeline, intents }), ...policyWarnings(manifest, policy)];
   const decision = contextDecision(warnings, intents);
   if (args.json) {
     console.log(JSON.stringify({
       status: warnings.length ? "review-required" : "clear",
       decision,
+      trust: manifest.trust || {},
       guidance: decision,
       workspace: manifest.workspace,
       runtimes: manifest.runtimes,

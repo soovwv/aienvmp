@@ -6,22 +6,18 @@
 
 **AI Environment Map.**
 
-`aienvmp` gives AI agents a shared view of the current dev environment:
+`aienvmp` is an AI environment coordination tool for shared coding machines.
 
-- runtime versions
-- package managers
-- Docker state
-- project version hints
-- planned env changes
-- recent env changes
+It helps Codex, Claude, Gemini, and other agents avoid silently using or installing different runtime and tool versions.
 
-So multiple AI agents do not silently use or install different software versions.
+Core loop: scan the env, give AI a preflight context, and hand off safe next steps to the next agent.
 
 ## Use
 
 ```bash
 npx aienvmp sync
 npx aienvmp context
+npx aienvmp handoff
 ```
 
 ## Output
@@ -33,6 +29,10 @@ AIENV.md
 .aienvmp/timeline.jsonl
 .aienvmp/dashboard.html
 ```
+
+Trust states are machine-readable: `observed`, `planned`, `changed`, `review`, `verified`, `stale`.
+
+AI agents can observe, plan, and record. Only a human or CI should mark environment facts as verified.
 
 ## For AGENTS.md
 

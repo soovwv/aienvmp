@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.5
+
+- Added machine-readable trust states for observed, planned, changed, review, verified, and stale environment facts.
+- Added multi-agent intent conflict warnings for shared runtime/package manager targets.
+- Added trust and schema context to `context`, `handoff`, `doctor`, `AIENV.md`, and the dashboard.
+- Repositioned the docs around AI environment coordination instead of general AI project memory.
+
 ## 0.1.4
 
 - Added `aienvmp handoff` for next-agent environment handoff summaries.

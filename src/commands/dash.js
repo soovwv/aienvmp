@@ -15,7 +15,7 @@ export async function dashWorkspace(args) {
   const timeline = await readTimeline(timelinePath(dir));
   const intents = openIntents(await readJsonl(intentsPath(dir)));
   const policy = await loadPolicy(dir);
-  const warnings = [...diagnose(manifest), ...policyWarnings(manifest, policy)];
+  const warnings = [...diagnose(manifest, { timeline, intents }), ...policyWarnings(manifest, policy)];
   const html = renderDashboard(manifest, timeline, warnings, intents, policy);
   const out = dashboardPath(dir);
   await fs.mkdir(path.dirname(out), { recursive: true });

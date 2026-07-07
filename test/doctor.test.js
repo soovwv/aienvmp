@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { diagnose } from "../src/doctor.js";
+import { coordinationWarnings, diagnose } from "../src/doctor.js";
 
 test("diagnose reports mixed lockfiles and version mismatches", () => {
   const warnings = diagnose({
@@ -18,4 +18,15 @@ test("diagnose reports mixed lockfiles and version mismatches", () => {
     "python-version-mismatch",
     "mixed-node-lockfiles"
   ]);
+});
+
+test("coordinationWarnings reports multiple agents changing the same target", () => {
+  const warnings = coordinationWarnings([
+    { actor: "agent:codex", action: "upgrade node", target: "node" },
+    { actor: "agent:claude", action: "downgrade node", target: "node" }
+  ]);
+
+  assert.equal(warnings.length, 1);
+  assert.equal(warnings[0].code, "conflicting-open-intents");
+  assert.equal(warnings[0].target, "node");
 });
