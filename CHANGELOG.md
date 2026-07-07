@@ -4,6 +4,7 @@
 
 - Added dependency handoff summaries so the next AI receives dependency read-set and protocol guidance directly in `handoff`.
 - Added a compact `nextAgent` hint to status/preflight JSON for safer AI-to-AI continuation.
+- Added target-level open intent coordination summaries so agents can detect dependency conflicts without parsing logs.
 
 ## 0.1.39
 

@@ -85,6 +85,23 @@ test("statusWorkspace JSON reports review-required and strict suggestion", async
   assert.equal(json.artifacts.envMap, "AIENV.md");
 });
 
+test("buildStatus summarizes open intent coordination by target", () => {
+  const status = buildStatus({
+    runtimes: {},
+    dependencySnapshot: { summary: { packages: 1 } },
+    security: { summary: { total: 0 } }
+  }, [], [
+    { actor: "agent:codex", action: "update dependency", target: "dependency" },
+    { actor: "agent:claude", action: "fix vulnerable package" }
+  ]);
+
+  assert.equal(status.coordination.openIntentCount, 2);
+  assert.equal(status.coordination.targets[0].target, "dependency");
+  assert.deepEqual(status.coordination.targets[0].actors, ["agent:codex", "agent:claude"]);
+  assert.deepEqual(status.coordination.conflictTargets, ["dependency"]);
+  assert.match(status.coordination.next, /conflicting intents/);
+});
+
 test("statusWorkspace can write the compact AI status artifact", async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-status-write-"));
   await fs.mkdir(path.join(dir, ".aienvmp"), { recursive: true });

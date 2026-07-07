@@ -11,6 +11,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
   const intentTargets = recommendedIntentTargets(manifest, warnings, intents);
   const dependencyReadSet = dependencyPreflightReadSet(manifest);
   const dependencyChangeProtocol = dependencyProtocol(manifest, dependencyReadSet);
+  const coordination = coordinationSummary(intents);
   return {
     schemaVersion: 1,
     state,
@@ -48,6 +49,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
     },
     quickstart: agentQuickstart(decision.reviewRequired),
     nextAgent: nextAgentHint(state, dependencyReadSet, dependencyChangeProtocol),
+    coordination,
     intentTargets,
     dependencyReadSet,
     dependencyChangeProtocol,
@@ -70,6 +72,36 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
     },
     topAction,
     nextCommand: topAction?.command || decision.nextCommand
+  };
+}
+
+function coordinationSummary(intents = []) {
+  const byTarget = new Map();
+  for (const intent of intents) {
+    const target = normalizeTarget(intent.target || targetFromText(intent.action) || "environment") || "environment";
+    const item = byTarget.get(target) || { target, count: 0, actors: [], actions: [], conflict: false };
+    item.count += 1;
+    if (intent.actor && !item.actors.includes(intent.actor)) item.actors.push(intent.actor);
+    if (intent.action) item.actions.push(intent.action);
+    byTarget.set(target, item);
+  }
+  const targets = [...byTarget.values()].map((item) => ({
+    target: item.target,
+    count: item.count,
+    actors: item.actors.slice(0, 5),
+    actions: item.actions.slice(-3),
+    conflict: item.count > 1 && item.actors.length > 1
+  }));
+  const conflictTargets = targets.filter((item) => item.conflict).map((item) => item.target);
+  return {
+    openIntentCount: intents.length,
+    targets,
+    conflictTargets,
+    next: conflictTargets.length
+      ? "Review or resolve conflicting intents before environment changes."
+      : intents.length
+        ? "Check open intents before environment changes."
+        : "No open environment intents."
   };
 }
 
