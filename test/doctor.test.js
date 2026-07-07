@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { coordinationWarnings, diagnose } from "../src/doctor.js";
+import { coordinationWarnings, diagnose, handoffWarnings, staleIntentWarnings } from "../src/doctor.js";
 
 test("diagnose reports mixed lockfiles and version mismatches", () => {
   const warnings = diagnose({
@@ -18,6 +18,49 @@ test("diagnose reports mixed lockfiles and version mismatches", () => {
     "python-version-mismatch",
     "mixed-node-lockfiles"
   ]);
+});
+
+test("staleIntentWarnings reports old open intents", () => {
+  const warnings = staleIntentWarnings([{
+    id: "int_old",
+    at: "2026-07-08T00:00:00.000Z",
+    actor: "agent:codex",
+    action: "upgrade node",
+    target: "node"
+  }], new Date("2026-07-08T05:00:00.000Z"));
+
+  assert.equal(warnings.length, 1);
+  assert.equal(warnings[0].code, "stale-open-intent");
+});
+
+test("handoffWarnings reports env changes without a later handoff", () => {
+  const warnings = handoffWarnings([{
+    at: "2026-07-08T00:00:00.000Z",
+    actor: "agent:codex",
+    type: "agent-record",
+    target: "node",
+    summary: "updated node"
+  }]);
+
+  assert.equal(warnings.length, 1);
+  assert.equal(warnings[0].code, "handoff-stale");
+});
+
+test("handoffWarnings accepts a later recorded handoff", () => {
+  const warnings = handoffWarnings([{
+    at: "2026-07-08T00:00:00.000Z",
+    actor: "agent:codex",
+    type: "agent-record",
+    target: "node",
+    summary: "updated node"
+  }, {
+    at: "2026-07-08T00:01:00.000Z",
+    actor: "agent:codex",
+    type: "agent-handoff",
+    summary: "handoff clear"
+  }]);
+
+  assert.equal(warnings.length, 0);
 });
 
 test("coordinationWarnings reports multiple agents changing the same target", () => {

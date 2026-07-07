@@ -12,9 +12,10 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
   lines.push("1. Run `aienvmp context`.");
   lines.push("2. Prefer project-local version files such as `.nvmrc`, `.python-version`, `mise.toml`, and `.tool-versions`.");
   lines.push("3. Ask the user before changing global environment state.");
-  lines.push("4. Record planned environment changes with `aienvmp intent --actor <agent:id> --action <planned-change>`.");
+  lines.push("4. Record planned environment changes with `aienvmp intent --actor agent:id --action planned-change`.");
   lines.push("5. After environment changes, run `aienvmp sync`.");
-  lines.push("6. Record what changed with `aienvmp record --actor <agent:id> --summary <what-changed>`.", "");
+  lines.push("6. Record what changed with `aienvmp record --actor agent:id --summary what-changed`.");
+  lines.push("7. At handoff, run `aienvmp handoff --record --actor agent:id`.", "");
   lines.push("## Current Policy", "");
   lines.push(...policyLines(policy));
   lines.push("- Enforcement: non-blocking by default; warnings require review but do not lock the machine.");
@@ -76,6 +77,7 @@ Before changing runtimes, package managers, Docker settings, global packages, or
 4. Record planned environment changes with \`aienvmp intent\`.
 5. After environment changes, run \`aienvmp sync\`.
 6. Record what changed with \`aienvmp record\`.
+7. At handoff, run \`aienvmp handoff --record --actor agent:id\`.
 
 \`aienvmp\` does not replace this instruction file. It provides the live env map, lightweight runtime SBOM, intent log, timeline, and dashboard.`;
 }
@@ -102,9 +104,10 @@ export function renderContext(manifest, timeline = [], warnings = [], intents = 
     "- Ask the user before global runtime, package manager, Docker, or global package changes.",
     "- Treat policy mismatches as review-required, not as permission to break ongoing operations.",
     "- Prefer project-local version files and local environments.",
-    "- Before planned env changes, run `aienvmp intent --actor <agent:id> --action <planned-change>`.",
+    "- Before planned env changes, run `aienvmp intent --actor agent:id --action planned-change`.",
     "- After env changes, run `aienvmp sync`.",
-    "- Then run `aienvmp record --actor <agent:id> --summary <what-changed>`.",
+    "- Then run `aienvmp record --actor agent:id --summary what-changed`.",
+    "- Before handing work to another AI, run `aienvmp handoff --record --actor agent:id`.",
     "",
     "Warnings:",
     ...(warnings.length ? warnings.map((w) => `- ${w.message}`) : ["- none"]),

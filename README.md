@@ -18,6 +18,7 @@ Core loop: scan the env, give AI a preflight context, and hand off safe next ste
 npx aienvmp sync
 npx aienvmp context
 npx aienvmp handoff
+npx aienvmp handoff --record --actor agent:codex
 ```
 
 Optional deeper read-only inventory:
@@ -65,7 +66,8 @@ aienvmp doctor --ci       # strict CI check
 - simple by default
 - AI-first
 - lightweight
-- non-blocking unless strict mode is requested
+- one advisory engine, optional enforcement with `doctor --ci`
+- non-blocking unless strict mode is explicitly requested
 
 ## Development
 

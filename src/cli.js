@@ -76,7 +76,7 @@ function printUsage() {
 Usage:
   aienvmp sync [--dir .] [--json] [--quiet] [--deep]
   aienvmp context [--dir .] [--json]
-  aienvmp handoff [--dir .] [--json]
+  aienvmp handoff [--dir .] [--json] [--record --actor agent:id]
 
 Common:
   aienvmp sync      update AIENV.md, manifest, ledger, intents, and dashboard

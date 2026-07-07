@@ -6,6 +6,7 @@
 
 - Strengthen trust states: observed, planned, changed, review, verified, stale
 - Detect multi-agent environment intent conflicts
+- Keep one advisory decision engine with optional strict enforcement
 - Stabilize `.aienvmp/manifest.json` and JSON command schemas
 - Keep `sync`, `context`, and `handoff` as the simple core flow
 - Improve the dashboard for 10-second human review
@@ -20,9 +21,8 @@
   - richer summaries for `npm -g`, `pipx list`, `uv tool list`, and Homebrew
   - optional `--deep` scanners for more toolchains
 - Conflict detection:
-  - stale unresolved intents
-  - recent runtime changes without a fresh handoff
   - package manager policy vs lockfile mismatch
+  - monorepo/project boundary aware intent targets
 - CI mode:
   - stable exit codes
   - GitHub Action example

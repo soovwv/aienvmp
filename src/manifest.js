@@ -32,8 +32,8 @@ export async function buildManifest(dir, options = {}) {
       sourceOfTruth: "AIENV.md",
       preflightCommand: "aienvmp context",
       handoffCommand: "aienvmp handoff",
-      intentCommand: "aienvmp intent --actor <agent:id> --action <planned-change>",
-      recordCommand: "aienvmp record --actor <agent:id> --summary <what-changed>",
+      intentCommand: "aienvmp intent --actor agent:id --action planned-change",
+      recordCommand: "aienvmp record --actor agent:id --summary what-changed",
       afterEnvironmentChange: ["aienvmp sync"],
       trustModel: {
         agentWritable: ["observed", "planned", "changed", "review", "stale"],

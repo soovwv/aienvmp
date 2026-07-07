@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.7
+
+- Added stale open intent warnings for long-running environment change plans.
+- Added stale handoff warnings when environment changes happen after the last recorded AI handoff.
+- Added optional `aienvmp handoff --record --actor <agent:id>` timeline entries.
+
 ## 0.1.6
 
 - Added optional `sync --deep` / `scan --deep` read-only global tool inventory.

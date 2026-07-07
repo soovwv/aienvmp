@@ -1,7 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildHandoff } from "../src/commands/handoff.js";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { buildHandoff, handoffWorkspace } from "../src/commands/handoff.js";
 import { renderHandoff } from "../src/render.js";
+import { writeJson } from "../src/fsutil.js";
 
 test("buildHandoff summarizes next-agent environment state", () => {
   const handoff = buildHandoff({
@@ -23,6 +27,32 @@ test("buildHandoff summarizes next-agent environment state", () => {
   assert.equal(handoff.policy.node, "24");
   assert.match(renderHandoff(handoff), /AI Handoff/);
   assert.match(renderHandoff(handoff), /Recommended next/);
+});
+
+test("handoffWorkspace can record handoff timeline entries", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-handoff-record-"));
+  await fs.mkdir(path.join(dir, ".aienvmp"), { recursive: true });
+  await writeJson(path.join(dir, ".aienvmp", "manifest.json"), {
+    schemaVersion: 1,
+    trust: { state: "observed", verified: false },
+    workspace: { path: dir, name: path.basename(dir) },
+    runtimes: {},
+    packageManagers: {},
+    containers: {},
+    projectHints: {}
+  });
+
+  const originalLog = console.log;
+  console.log = () => {};
+  try {
+    await handoffWorkspace({ dir, record: true, actor: "agent:codex", json: true });
+  } finally {
+    console.log = originalLog;
+  }
+  const timeline = await fs.readFile(path.join(dir, ".aienvmp", "timeline.jsonl"), "utf8");
+
+  assert.match(timeline, /agent-handoff/);
+  assert.match(timeline, /agent:codex/);
 });
 
 test("buildHandoff requires review when open intents exist", () => {

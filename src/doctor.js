@@ -43,6 +43,8 @@ export function diagnose(manifest, context = {}) {
     });
   }
   warnings.push(...coordinationWarnings(context.intents || []));
+  warnings.push(...staleIntentWarnings(context.intents || []));
+  warnings.push(...handoffWarnings(context.timeline || []));
   return warnings;
 }
 
@@ -69,10 +71,55 @@ export function coordinationWarnings(intents = []) {
   return warnings;
 }
 
+export function staleIntentWarnings(intents = [], now = new Date(), maxAgeHours = 4) {
+  const warnings = [];
+  for (const intent of intents) {
+    if (!isStaleTimestamp(intent.at, now, maxAgeHours)) continue;
+    warnings.push({
+      code: "stale-open-intent",
+      target: intent.target || inferTarget(intent.action) || "",
+      message: `Open intent ${intent.id || ""} from ${intent.actor || "unknown"} is older than ${maxAgeHours} hours. Resolve it or confirm it before environment changes.`.replace(/\s+/g, " ").trim()
+    });
+  }
+  return warnings;
+}
+
+export function handoffWarnings(timeline = []) {
+  const lastEnvChange = [...timeline].reverse().find(isEnvironmentChange);
+  if (!lastEnvChange) return [];
+  const lastHandoff = [...timeline].reverse().find((item) => item.type === "agent-handoff");
+  if (lastHandoff && new Date(lastHandoff.at).getTime() >= new Date(lastEnvChange.at).getTime()) return [];
+  return [{
+    code: "handoff-stale",
+    message: "Environment changes were recorded after the last AI handoff. Run `aienvmp handoff --record --actor agent:id` before the next agent continues."
+  }];
+}
+
 function inferTarget(action = "") {
   const normalized = String(action).toLowerCase();
   for (const target of ["node", "python", "docker", "npm", "pnpm", "yarn", "uv", "pip", "pipx"]) {
     if (normalized.includes(target)) return target;
   }
   return "";
+}
+
+function isEnvironmentChange(item = {}) {
+  if (["runtime", "package-manager", "container"].includes(item.change?.scope)) return true;
+  if (item.type === "detected-change") return false;
+  const text = `${item.type || ""} ${item.target || ""} ${item.summary || ""} ${item.action || ""} ${item.change?.scope || ""} ${item.change?.key || ""}`.toLowerCase();
+  return [
+    "runtime",
+    "node",
+    "python",
+    "docker",
+    "package manager",
+    "package-manager",
+    "npm",
+    "pnpm",
+    "yarn",
+    "uv",
+    "pip",
+    "pipx",
+    "global"
+  ].some((token) => text.includes(token));
 }

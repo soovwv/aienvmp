@@ -22,6 +22,7 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.equal(manifest.generatedBy.command, "aienvmp sync");
   assert.deepEqual(manifest.agentProtocol.afterEnvironmentChange, ["aienvmp sync"]);
   assert.equal(manifest.agentProtocol.handoffCommand, "aienvmp handoff");
+  assert.equal(manifest.agentProtocol.intentCommand, "aienvmp intent --actor agent:id --action planned-change");
 
   await assert.doesNotReject(fs.access(path.join(dir, "AIENV.md")));
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "dashboard.html")));

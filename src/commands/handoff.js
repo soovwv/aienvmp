@@ -1,9 +1,10 @@
 import { diagnose } from "../doctor.js";
-import { readJson } from "../fsutil.js";
+import { appendJsonLine, readJson } from "../fsutil.js";
 import { loadPolicy, policyWarnings } from "../policy.js";
 import { intentsPath, manifestPath, timelinePath, workspaceDir } from "../paths.js";
 import { renderHandoff } from "../render.js";
 import { openIntents, readJsonl, readTimeline } from "../timeline.js";
+import { changedTrust } from "../trust.js";
 
 export async function handoffWorkspace(args) {
   const dir = workspaceDir(args);
@@ -14,6 +15,9 @@ export async function handoffWorkspace(args) {
   const policy = await loadPolicy(dir);
   const warnings = [...diagnose(manifest, { timeline, intents }), ...policyWarnings(manifest, policy)];
   const handoff = buildHandoff(manifest, timeline, warnings, intents, policy);
+  if (args.record) {
+    await recordHandoff(timelinePath(dir), handoff, args.actor || "agent:unknown");
+  }
 
   if (args.json) {
     console.log(JSON.stringify(handoff, null, 2));
@@ -21,6 +25,19 @@ export async function handoffWorkspace(args) {
     console.log(renderHandoff(handoff));
   }
   return handoff;
+}
+
+async function recordHandoff(file, handoff, actor) {
+  const now = new Date();
+  await appendJsonLine(file, {
+    at: now.toISOString(),
+    actor,
+    type: "agent-handoff",
+    summary: `handoff ${handoff.status}`,
+    status: handoff.status,
+    warnings: handoff.warnings.map((warning) => warning.code),
+    trust: changedTrust(now, handoff.status !== "clear")
+  });
 }
 
 export function buildHandoff(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
