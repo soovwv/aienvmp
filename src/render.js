@@ -16,6 +16,7 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
   lines.push("5. After environment changes, run `aienvmp sync`.");
   lines.push("6. Record what changed with `aienvmp record --actor agent:id --summary what-changed`.");
   lines.push("7. At handoff, run `aienvmp handoff --record --actor agent:id`.", "");
+  lines.push(...preflightLines(manifest.preflight), "");
   lines.push("## Current Policy", "");
   lines.push(...policyLines(policy));
   lines.push("- Enforcement: non-blocking by default; warnings require review but do not lock the machine.");
@@ -67,6 +68,31 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
   lines.push(`- OS: ${manifest.os.platform} ${manifest.os.release} ${manifest.os.arch}`);
   lines.push("");
   return lines.join("\n");
+}
+
+function preflightLines(preflight = {}) {
+  const quickstart = preflight.quickstart;
+  const targets = preflight.intentTargets || [];
+  const lines = ["## 10-Second AI Flow", ""];
+  if (quickstart) {
+    lines.push(`- Read first: \`${quickstart.readFirst}\``);
+    lines.push(`- Detail: \`${quickstart.detailCommand}\``);
+    lines.push(`- Before env change: \`${quickstart.beforeEnvironmentChange}\``);
+    lines.push(`- After env change: \`${quickstart.afterEnvironmentChange}\``);
+    lines.push(`- Handoff: \`${quickstart.handoff}\``);
+    lines.push(`- Rule: ${quickstart.rule}`);
+  } else {
+    lines.push("- Run `aienvmp status --write`, then `aienvmp context --json` before environment changes.");
+  }
+  lines.push("", "## Recommended Intent Targets", "");
+  if (targets.length) {
+    for (const target of targets.slice(0, 5)) {
+      lines.push(`- ${target.target}: \`${target.command}\` - ${target.reason}`);
+    }
+  } else {
+    lines.push("- environment: `aienvmp intent --actor agent:id --action planned-change --target environment`");
+  }
+  return lines;
 }
 
 export function renderAgentPointer(target = "agents") {

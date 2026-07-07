@@ -55,6 +55,8 @@ AIENV.md
 .aienvmp/dashboard.html     # includes dependencies, plan, remediation, and environment cards
 ```
 
+`AIENV.md` includes the 10-second AI flow and recommended intent targets for Markdown-first agents.
+
 Trust states are machine-readable: `observed`, `planned`, `changed`, `review`, `verified`, `stale`.
 `status.json` also lists AI read order, artifact paths, and safe commands.
 `status`, `context`, `plan`, and `handoff` share the same AI preflight contract.
