@@ -48,6 +48,7 @@ npx aienvmp snippet agents
 aienvmp sync              # update env map, light SBOM, ledger, dashboard
 aienvmp context           # AI preflight brief
 aienvmp context --json    # machine-readable AI decision context
+aienvmp handoff           # next-agent handoff summary
 aienvmp intent            # record a planned env change
 aienvmp record            # record what changed
 aienvmp doctor --ci       # strict CI check

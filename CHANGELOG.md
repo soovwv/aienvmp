@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.4
+
+- Added `aienvmp handoff` for next-agent environment handoff summaries.
+- Added an AI Handoff card to the dashboard.
+- Added handoff test coverage.
+
 ## 0.1.3
 
 - Strengthened the dashboard audit summary with AI decision, open intents, warnings, and recent changes.

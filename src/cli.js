@@ -10,6 +10,7 @@ import { intentWorkspace } from "./commands/intent.js";
 import { resolveWorkspace } from "./commands/resolve.js";
 import { syncWorkspace } from "./commands/sync.js";
 import { snippetWorkspace } from "./commands/snippet.js";
+import { handoffWorkspace } from "./commands/handoff.js";
 import { readFileSync } from "node:fs";
 
 const commands = new Map([
@@ -24,7 +25,8 @@ const commands = new Map([
   ["intent", intentWorkspace],
   ["resolve", resolveWorkspace],
   ["sync", syncWorkspace],
-  ["snippet", snippetWorkspace]
+  ["snippet", snippetWorkspace],
+  ["handoff", handoffWorkspace]
 ]);
 
 const version = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version;
@@ -74,10 +76,12 @@ function printUsage() {
 Usage:
   aienvmp sync [--dir .] [--json] [--quiet]
   aienvmp context [--dir .] [--json]
+  aienvmp handoff [--dir .] [--json]
 
 Common:
   aienvmp sync      update AIENV.md, manifest, ledger, intents, and dashboard
   aienvmp context   print the AI preflight brief
+  aienvmp handoff   print the next-agent handoff summary
   aienvmp snippet   print an AGENTS.md pointer snippet
   aienvmp dash      regenerate/open the lightweight dashboard
 

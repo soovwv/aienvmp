@@ -111,6 +111,36 @@ export function renderContext(manifest, timeline = [], warnings = [], intents = 
   ].join("\n");
 }
 
+export function renderHandoff(handoff) {
+  const lines = [
+    "# AI Handoff",
+    "",
+    `Status: ${handoff.status}`,
+    `Workspace: ${handoff.workspace?.path || "unknown"}`,
+    "",
+    "Safe runtime:",
+    `- Node: ${handoff.safeRuntime.node}`,
+    `- Python: ${handoff.safeRuntime.python}`,
+    `- Docker: ${handoff.safeRuntime.docker}`,
+    "",
+    "Open intents:",
+    ...(handoff.openIntents.length ? handoff.openIntents.map((i) => `- ${i.actor}: ${i.action}${i.target ? ` (${i.target})` : ""}`) : ["- none"]),
+    "",
+    "Warnings:",
+    ...(handoff.warnings.length ? handoff.warnings.map((w) => `- ${w.message}`) : ["- none"]),
+    "",
+    "Recent changes:",
+    ...(handoff.recentChanges.length ? handoff.recentChanges.map((t) => `- ${formatTimeline(t)}`) : ["- none"]),
+    "",
+    "Must not do:",
+    ...handoff.mustNotDo.map((item) => `- ${item}`),
+    "",
+    `Recommended next: ${handoff.recommendedNext}`,
+    ""
+  ];
+  return lines.join("\n");
+}
+
 export function renderDashboard(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const data = JSON.stringify({ manifest, timeline, warnings, intents, policy });
   return `<!doctype html>
@@ -180,6 +210,7 @@ const reviewRequired=warnings.length>0||intents.length>0;
 const recentChanges=timeline.slice(-8).length;
 const nextAction=reviewRequired?'Review before environment changes':'Proceed with project-local work';
 const auditItem=(key,value,hint,klass='')=>\`<div class="audit-item \${klass}"><div class="audit-k">\${key}</div><div class="audit-v">\${value}</div><div class="audit-hint">\${hint}</div></div>\`;
+const handoffHtml=\`<table><tr><th>Status</th><td>\${reviewRequired?'review-required':'clear'}</td></tr><tr><th>Node</th><td><code>\${esc(manifest.runtimes.node||'not detected')}</code></td></tr><tr><th>Python</th><td><code>\${esc(manifest.runtimes.python||manifest.runtimes.python3||'not detected')}</code></td></tr><tr><th>Docker</th><td>\${manifest.containers?.docker?'available':'not detected'}</td></tr><tr><th>Next</th><td>\${reviewRequired?'Review warnings and open intents':'Continue project-local work'}</td></tr></table>\`;
 document.getElementById('app').innerHTML=\`
 <header>
   <div>
@@ -214,6 +245,8 @@ document.getElementById('app').innerHTML=\`
     \${card('Version Policy','<span class="pill">'+entries(policy).length+' rules</span>',policyHtml)}
     <div style="height:14px"></div>
     \${card('Agent Intents','<span class="pill">'+intents.length+' open</span>',intentsHtml)}
+    <div style="height:14px"></div>
+    \${card('AI Handoff',reviewRequired?'<span class="pill warn">review</span>':'<span class="pill">ready</span>',handoffHtml)}
     <div style="height:14px"></div>
     \${card('Agent Pointers','<span class="pill">'+entries(manifest.agentFiles).filter(([,v])=>v).length+' detected</span>','<div class="agents">'+agentCards+'</div>')}
     <div style="height:14px"></div>
