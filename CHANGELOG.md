@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Added follow-up metadata to `record` timeline entries so dependency/security changes point agents back to sync, status, and handoff.
+
 ## 0.1.42
 
 - Added explicit enforcement gate metadata so AI and CI consumers know local checks are warn-only unless `--strict` or `--ci` is requested.
