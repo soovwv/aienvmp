@@ -15,6 +15,10 @@ inputs:
     description: Write read-only AI plan artifacts
     required: false
     default: "true"
+  write-status:
+    description: Write compact AI status artifact
+    required: false
+    default: "true"
 
 runs:
   using: composite
@@ -28,6 +32,14 @@ runs:
       run: |
         if [ "${{ inputs.write-plan }}" = "true" ]; then
           node "$GITHUB_ACTION_PATH/bin/aienvmp.js" plan --dir "${{ inputs.directory }}" --write --json
+        fi
+
+    - name: Write AI status
+      shell: bash
+      run: |
+        if [ "${{ inputs.write-status }}" = "true" ]; then
+          mkdir -p "${{ inputs.directory }}/.aienvmp"
+          node "$GITHUB_ACTION_PATH/bin/aienvmp.js" status --dir "${{ inputs.directory }}" --json > "${{ inputs.directory }}/.aienvmp/status.json"
         fi
 
     - name: Doctor

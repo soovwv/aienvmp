@@ -23,6 +23,7 @@ jobs:
           path: |
             AIENV.md
             .aienvmp/manifest.json
+            .aienvmp/status.json
             .aienvmp/plan.json
             .aienvmp/plan.md
             .aienvmp/dashboard.html

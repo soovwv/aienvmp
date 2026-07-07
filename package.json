@@ -1,6 +1,6 @@
 {
   "name": "aienvmp",
-  "version": "0.1.31",
+  "version": "0.1.32",
   "description": "AI-first environment maps and lightweight runtime SBOMs for shared development machines.",
   "type": "module",
   "bin": {

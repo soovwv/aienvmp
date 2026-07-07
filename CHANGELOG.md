@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.32
+
+- Added GitHub Action support for writing `.aienvmp/status.json` by default.
+- Added a `write-status` action input so CI can keep compact AI status artifacts optional.
+- Updated the GitHub Action example artifact list to include the status output.
+
 ## 0.1.31
 
 - Added `aienvmp status` as a compact human and AI entrypoint.
