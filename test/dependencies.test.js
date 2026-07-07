@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { linkVulnerableDependencies, parsePyprojectDependencies, parseRequirementLine, scanDependencySnapshot } from "../src/dependencies.js";
+import { linkVulnerableDependencies, parsePyprojectDependencies, parseRequirementLine, remediationPriority, scanDependencySnapshot } from "../src/dependencies.js";
 
 test("parseRequirementLine separates package name and version spec", () => {
   assert.deepEqual(parseRequirementLine("django==3.2.0"), { name: "django", version: "==3.2.0" });
@@ -54,8 +54,19 @@ test("linkVulnerableDependencies marks direct dependency matches", () => {
 
   assert.equal(security.topPackages[0].directDependency, true);
   assert.equal(security.topPackages[0].dependency.manifest, "package.json");
+  assert.equal(security.topPackages[0].remediationPriority.level, "high");
+  assert.deepEqual(security.topPackages[0].remediationPriority.reasons.slice(0, 2), ["severity:high", "direct-dependency"]);
   assert.equal(security.topPackages[1].directDependency, false);
   assert.equal(security.topPackages[1].dependency, null);
   assert.equal(security.topPackages[2].directDependency, true);
   assert.equal(security.topPackages[2].dependency.manifest, "requirements.txt");
+});
+
+test("remediationPriority scores severity, direct dependency, and fix availability", () => {
+  assert.deepEqual(remediationPriority({ severity: "critical", fixAvailable: true }, { directDependency: true }), {
+    level: "urgent",
+    score: 110,
+    reasons: ["severity:critical", "direct-dependency", "fix-available"]
+  });
+  assert.equal(remediationPriority({ severity: "low" }, { directDependency: false }).level, "low");
 });

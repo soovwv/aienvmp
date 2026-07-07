@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.29
+
+- Added lightweight remediation priority scoring for vulnerable packages.
+- Exposed priority level, score, and reasons in security summaries, plans, compact context, and dashboard rows.
+- Kept scoring advisory-only so AI agents can choose safer next steps without blocking local operation.
+
 ## 0.1.28
 
 - Linked vulnerable package summaries to the dependency snapshot when the package is directly declared.

@@ -73,6 +73,8 @@ export function compactStepSummary(plan = {}) {
     remediation: (plan.remediationSteps || []).slice(0, 3).map((item) => ({
       package: item.package,
       severity: item.severity,
+      priority: item.remediationPriority?.level || "low",
+      score: item.remediationPriority?.score || 0,
       fixVersions: (item.fixVersions || []).slice(0, 3),
       advisoryIds: (item.advisories || []).map((advisory) => advisory.id || advisory.title).filter(Boolean).slice(0, 3)
     })),
@@ -175,6 +177,7 @@ function remediationSteps(security = {}) {
       package: pkg.name,
       scanner: pkg.scanner || "unknown",
       severity: pkg.severity || "unknown",
+      remediationPriority: pkg.remediationPriority || { level: "low", score: 0, reasons: [] },
       directDependency: pkg.directDependency === true,
       dependency: pkg.dependency || null,
       fixAvailable: pkg.fixAvailable === true,

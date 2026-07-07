@@ -29,18 +29,41 @@ export function linkVulnerableDependencies(security = {}, snapshot = {}) {
     ...security,
     topPackages: (security.topPackages || []).map((pkg) => {
       const dependency = dependencyIndex.get(dependencyKey(scannerEcosystem(pkg.scanner), pkg.name));
+      const directDependency = Boolean(dependency);
       return {
         ...pkg,
-        directDependency: Boolean(dependency),
+        directDependency,
         dependency: dependency ? {
           ecosystem: dependency.ecosystem,
           manifest: dependency.manifest,
           group: dependency.group,
           version: dependency.version
-        } : null
+        } : null,
+        remediationPriority: remediationPriority(pkg, { directDependency })
       };
     })
   };
+}
+
+export function remediationPriority(pkg = {}, context = {}) {
+  const severityScore = { critical: 90, high: 70, moderate: 45, low: 20, info: 5, unknown: 30 };
+  const severity = String(pkg.severity || "unknown").toLowerCase();
+  const reasons = [`severity:${severity}`];
+  let score = severityScore[severity] ?? severityScore.unknown;
+  if (context.directDependency) {
+    score += 15;
+    reasons.push("direct-dependency");
+  } else {
+    reasons.push("not-direct-in-snapshot");
+  }
+  if (pkg.fixAvailable === true || (Array.isArray(pkg.fixVersions) && pkg.fixVersions.length)) {
+    score += 5;
+    reasons.push("fix-available");
+  } else {
+    reasons.push("fix-review-needed");
+  }
+  const level = score >= 95 ? "urgent" : score >= 75 ? "high" : score >= 50 ? "medium" : "low";
+  return { level, score, reasons };
 }
 
 async function scanNodeDependencies(dir) {

@@ -31,6 +31,7 @@ test("renderDashboard includes the audit summary surface", () => {
       topPackages: [{
         name: "express",
         severity: "high",
+        remediationPriority: { level: "high", score: 90, reasons: [] },
         fixAvailable: true,
         directDependency: true,
         dependency: { ecosystem: "npm", manifest: "package.json", group: "dependencies", version: "^4.18.0" }
@@ -50,6 +51,7 @@ test("renderDashboard includes the audit summary surface", () => {
     planRemediation: [{
       package: "express",
       severity: "high",
+      remediationPriority: { level: "high", score: 90, reasons: [] },
       fixVersions: ["4.17.21"],
       fixAvailable: true,
       advisories: ["GHSA-test"],
@@ -92,6 +94,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /plan\.md/);
   assert.match(html, /Remediation Steps/);
   assert.match(html, /4\.17\.21/);
+  assert.match(html, /"level":"high"/);
+  assert.match(html, /"score":90/);
   assert.match(html, /Environment Steps/);
   assert.match(html, /node-version-mismatch/);
   assert.match(html, /CI Readiness/);

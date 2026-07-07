@@ -18,6 +18,7 @@ test("recommendedActions prioritizes security remediation with fix versions", ()
       topPackages: [{
         name: "lodash",
         severity: "high",
+        remediationPriority: { level: "high", score: 90, reasons: [] },
         fixAvailable: true,
         fixVersions: ["4.17.21"],
         advisories: [{ id: "GHSA-test" }]
@@ -28,6 +29,7 @@ test("recommendedActions prioritizes security remediation with fix versions", ()
   assert.equal(actions[0].id, "review-security-remediation");
   assert.equal(actions[0].priority, "high");
   assert.match(actions[0].summary, /lodash/);
+  assert.match(actions[0].summary, /high\/90/);
   assert.match(actions[0].summary, /4\.17\.21/);
 });
 

@@ -18,6 +18,7 @@ test("buildPlan creates a read-only action plan", () => {
         name: "lodash",
         scanner: "npm-audit",
         severity: "high",
+        remediationPriority: { level: "high", score: 90, reasons: ["severity:high", "direct-dependency", "fix-available"] },
         directDependency: true,
         dependency: { ecosystem: "npm", manifest: "package.json", group: "dependencies", version: "^4.17.0" },
         fixAvailable: true,
@@ -33,6 +34,7 @@ test("buildPlan creates a read-only action plan", () => {
   assert.deepEqual(plan.decision.warningCodes, ["security-vulnerabilities"]);
   assert.equal(plan.recommendedActions[0].id, "review-security-remediation");
   assert.equal(plan.remediationSteps[0].package, "lodash");
+  assert.equal(plan.remediationSteps[0].remediationPriority.level, "high");
   assert.equal(plan.remediationSteps[0].directDependency, true);
   assert.equal(plan.remediationSteps[0].dependency.manifest, "package.json");
   assert.equal(plan.remediationSteps[0].fixVersions[0], "4.17.21");
@@ -41,6 +43,7 @@ test("buildPlan creates a read-only action plan", () => {
   assert.match(renderPlan(plan), /Decision: review-first/);
   assert.match(renderPlan(plan), /lodash/);
   assert.match(renderPlan(plan), /declared in package\.json/);
+  assert.match(renderPlan(plan), /priority high\/90/);
   assert.match(renderPlan(plan), /Remediation steps/);
   assert.match(renderPlan(plan), /4\.17\.21/);
 });
@@ -69,6 +72,7 @@ test("compactStepSummary returns bounded AI-facing step summaries", () => {
     remediationSteps: [{
       package: "lodash",
       severity: "high",
+      remediationPriority: { level: "high", score: 90, reasons: [] },
       fixVersions: ["4.17.21"],
       advisories: [{ id: "GHSA-test" }]
     }],
@@ -82,6 +86,8 @@ test("compactStepSummary returns bounded AI-facing step summaries", () => {
   assert.deepEqual(summary.remediation[0], {
     package: "lodash",
     severity: "high",
+    priority: "high",
+    score: 90,
     fixVersions: ["4.17.21"],
     advisoryIds: ["GHSA-test"]
   });

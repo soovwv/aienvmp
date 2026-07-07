@@ -212,8 +212,9 @@ function remediationLines(item) {
   const fix = item.fixVersions?.length ? `fix ${item.fixVersions.join(", ")}` : item.fixAvailable ? "fix available" : "review required";
   const advisories = (item.advisories || []).map((advisory) => advisory.id || advisory.title).filter(Boolean).slice(0, 2);
   const dependency = item.directDependency && item.dependency ? `; declared in ${item.dependency.manifest} ${item.dependency.version}` : "; not found in dependency snapshot";
+  const priority = item.remediationPriority ? `priority ${item.remediationPriority.level}/${item.remediationPriority.score}` : "priority unscored";
   return [
-    `- ${item.package}: ${item.severity}; ${fix}${dependency}${advisories.length ? `; advisories ${advisories.join(", ")}` : ""}`,
+    `- ${item.package}: ${item.severity}; ${priority}; ${fix}${dependency}${advisories.length ? `; advisories ${advisories.join(", ")}` : ""}`,
     ...item.steps.slice(0, 4).map((step) => `  - ${step}`)
   ];
 }
@@ -287,7 +288,8 @@ const secPackages=sec.topPackages||[];
 const securityFix=p=>p.fixVersions?.length?\`fix \${p.fixVersions.slice(0,3).join(', ')}\`:(p.fixAvailable?'fix available':'review required');
 const securityRefs=p=>p.advisories?.length?\` - \${p.advisories.map(a=>a.id||a.title).filter(Boolean).slice(0,2).join(', ')}\`:'';
 const securityDep=p=>p.directDependency&&p.dependency?\`<div class="path">\${esc(p.dependency.manifest)} / \${esc(p.dependency.group)} / \${esc(p.dependency.version)}</div>\`:'<div class="path">not found in dependency snapshot</div>';
-const securityHtml=sec.enabled?\`<table><tr><th>Total</th><td><code>\${esc(secSummary.total||0)}</code></td></tr><tr><th>Critical</th><td><code>\${esc(secSummary.critical||0)}</code></td></tr><tr><th>High</th><td><code>\${esc(secSummary.high||0)}</code></td></tr><tr><th>Moderate</th><td><code>\${esc(secSummary.moderate||0)}</code></td></tr><tr><th>Low</th><td><code>\${esc(secSummary.low||0)}</code></td></tr></table>\${secPackages.length?'<div class="timeline">'+secPackages.slice(0,5).map(p=>\`<div class="event"><time>\${esc(p.severity)}</time><div><b>\${esc(p.name)}</b> \${esc(securityFix(p))}\${esc(securityRefs(p))}\${securityDep(p)}</div></div>\`).join('')+'</div>':'<div class="okline" style="margin-top:10px">No vulnerable packages reported.</div>'}\`:'<div class="okline">Security scan is off. Run <code>aienvmp sync --security</code> for read-only vulnerability summary.</div>';
+const securityPriority=p=>p.remediationPriority?\`<code>\${esc(p.remediationPriority.level)} \${esc(p.remediationPriority.score)}</code> \`:'';
+const securityHtml=sec.enabled?\`<table><tr><th>Total</th><td><code>\${esc(secSummary.total||0)}</code></td></tr><tr><th>Critical</th><td><code>\${esc(secSummary.critical||0)}</code></td></tr><tr><th>High</th><td><code>\${esc(secSummary.high||0)}</code></td></tr><tr><th>Moderate</th><td><code>\${esc(secSummary.moderate||0)}</code></td></tr><tr><th>Low</th><td><code>\${esc(secSummary.low||0)}</code></td></tr></table>\${secPackages.length?'<div class="timeline">'+secPackages.slice(0,5).map(p=>\`<div class="event"><time>\${esc(p.severity)}</time><div><b>\${esc(p.name)}</b> \${securityPriority(p)}\${esc(securityFix(p))}\${esc(securityRefs(p))}\${securityDep(p)}</div></div>\`).join('')+'</div>':'<div class="okline" style="margin-top:10px">No vulnerable packages reported.</div>'}\`:'<div class="okline">Security scan is off. Run <code>aienvmp sync --security</code> for read-only vulnerability summary.</div>';
 const change=c=>c.type==='changed'?\`\${c.scope} \${c.key}: \${c.before} -> \${c.after}\`:\`\${c.scope} \${c.key}: \${c.type} \${c.after||c.before}\`;
 const timelineLabel=t=>t.change?change(t.change):(t.summary||t.action||t.type||'recorded change');
 const agentNames={agents:'Codex',claude:'Claude',gemini:'Gemini'};
@@ -465,12 +467,13 @@ function securityLines(security = {}) {
 
 function securityPackageNote(pkg) {
   const fix = pkg.fixVersions?.length ? `fix ${pkg.fixVersions.slice(0, 3).join(", ")}` : pkg.fixAvailable ? "fix available" : "review required";
+  const priority = pkg.remediationPriority ? `priority ${pkg.remediationPriority.level}/${pkg.remediationPriority.score}; ` : "";
   const dependency = pkg.directDependency && pkg.dependency ? `; declared in ${pkg.dependency.manifest} ${pkg.dependency.version}` : "; not found in dependency snapshot";
   const advisories = (pkg.advisories || [])
     .map((item) => item.id || item.title)
     .filter(Boolean)
     .slice(0, 2);
-  return advisories.length ? `${fix}${dependency}; advisories ${advisories.join(", ")}` : `${fix}${dependency}`;
+  return advisories.length ? `${priority}${fix}${dependency}; advisories ${advisories.join(", ")}` : `${priority}${fix}${dependency}`;
 }
 
 function policyLines(policy) {

@@ -42,7 +42,8 @@ function securityActions(security = {}) {
 
   const packageHints = packages.map((pkg) => {
     const fix = pkg.fixVersions?.length ? `fix ${pkg.fixVersions.slice(0, 2).join(", ")}` : pkg.fixAvailable ? "fix available" : "review required";
-    return `${pkg.name} (${pkg.severity}, ${fix})`;
+    const priority = pkg.remediationPriority ? `${pkg.remediationPriority.level}/${pkg.remediationPriority.score}, ` : "";
+    return `${pkg.name} (${priority}${pkg.severity}, ${fix})`;
   });
 
   return [action(
