@@ -32,6 +32,7 @@ test("buildPlan creates a read-only action plan", () => {
   assert.equal(plan.preflight.state, "review-required");
   assert.equal(plan.preflight.artifacts.planJson, ".aienvmp/plan.json");
   assert.equal(plan.preflight.commands.recordIntent, "aienvmp intent --actor agent:id --action planned-change");
+  assert.equal(plan.preflight.quickstart.handoff, "aienvmp handoff --record --actor agent:id");
   assert.equal(plan.decision.mode, "review-first");
   assert.equal(plan.enforcement.mode, "advisory-by-default");
   assert.deepEqual(plan.enforcement.suggestedStrictScopes, ["security"]);

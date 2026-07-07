@@ -43,6 +43,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
       projectLocalWork: decision.canContinueProjectLocalWork ? "allowed" : "review-first",
       environmentChanges: decision.canChangeEnvironmentWithoutReview ? "allowed" : "intent-and-review-first"
     },
+    quickstart: agentQuickstart(decision.reviewRequired),
     artifacts: preflightArtifacts(),
     readOrder: [
       ".aienvmp/status.json",
@@ -62,6 +63,20 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
     },
     topAction,
     nextCommand: topAction?.command || decision.nextCommand
+  };
+}
+
+function agentQuickstart(reviewRequired) {
+  return {
+    label: "10-second AI flow",
+    readFirst: "aienvmp status --write",
+    detailCommand: "aienvmp context --json",
+    beforeEnvironmentChange: "aienvmp intent --actor agent:id --action planned-change --target <runtime|package-manager|docker|dependency>",
+    afterEnvironmentChange: "aienvmp sync && aienvmp record --actor agent:id --summary what-changed",
+    handoff: "aienvmp handoff --record --actor agent:id",
+    rule: reviewRequired
+      ? "Review warnings or open intents before environment changes; project-local work may continue."
+      : "Continue project-local work; record intent before environment changes."
   };
 }
 

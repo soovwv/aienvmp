@@ -23,6 +23,7 @@ export async function statusWorkspace(args) {
   } else if (!args.quiet) {
     console.log(`${output.state}: ${output.summary}`);
     console.log(`next: ${output.nextCommand}`);
+    console.log(`ai: ${output.quickstart.readFirst} -> ${output.quickstart.detailCommand}`);
     console.log(`strict: ${output.enforcement.recommendedCommand}`);
     if (artifact) console.log(`status: ${artifact}`);
   }

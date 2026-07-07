@@ -22,6 +22,8 @@ npx aienvmp plan
 npx aienvmp handoff
 ```
 
+10-second AI flow: `aienvmp status --write` -> `aienvmp context --json` -> intent before environment changes.
+
 Optional deeper read-only checks:
 
 ```bash

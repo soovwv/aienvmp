@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Added a 10-second AI quickstart flow to the shared preflight contract and status output.
+
 ## 0.1.37
 
 - Added `lightSbom` to the manifest as an AI-ready package and vulnerability summary.
