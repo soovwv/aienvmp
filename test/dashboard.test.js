@@ -44,6 +44,14 @@ test("renderDashboard includes the audit summary surface", () => {
         score: 90,
         fixAvailable: true,
         fixVersions: ["4.18.3"]
+      }],
+      dependencyChangeHints: [{
+        manifest: "package.json",
+        ecosystem: "npm",
+        manager: "npm",
+        groups: ["dependencies"],
+        packages: 1,
+        riskPackages: [{ name: "express", severity: "high", priority: "high", fixAvailable: true }]
       }]
     },
     security: {
@@ -146,6 +154,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Dependency Snapshot/);
   assert.match(html, /Light SBOM/);
   assert.match(html, /Direct vulnerable/);
+  assert.match(html, /Dependency change hints/);
   assert.match(html, /express/);
   assert.match(html, /Security Summary/);
   assert.match(html, /package\.json/);
@@ -175,7 +184,15 @@ test("dashWorkspace links written plan artifacts", async () => {
     lightSbom: {
       mode: "light-sbom",
       summary: { manifests: ["requirements.txt"], packages: 1, vulnerabilities: 0, directVulnerablePackages: 0, transitiveOrUnmatchedVulnerablePackages: 0 },
-      topRisk: []
+      topRisk: [],
+      dependencyChangeHints: [{
+        manifest: "requirements.txt",
+        ecosystem: "python",
+        manager: "pip",
+        groups: ["requirements"],
+        packages: 1,
+        riskPackages: []
+      }]
     },
     agentFiles: {}
   });
@@ -212,5 +229,7 @@ test("dashWorkspace links written plan artifacts", async () => {
   assert.match(html, /node-version-mismatch/);
   assert.match(html, /Dependency Snapshot/);
   assert.match(html, /Light SBOM/);
+  assert.match(html, /Dependency change hints/);
+  assert.match(html, /requirements\.txt/);
   assert.match(html, /django/);
 });
