@@ -28,6 +28,7 @@ npx aienvmp handoff --record --actor agent:codex
 ```
 
 Use `--dir <workspace>` when AI or CI runs outside the target project.
+Warnings are advisory by default. Use `doctor --strict <scope>` only when you want CI-style failure.
 
 ## What It Creates
 
@@ -50,7 +51,8 @@ AIENV.md                 # Markdown env map for AI agents
 - `coordination.conflictTargets` shows where multiple agents are planning changes.
 - `handoff` carries dependency read-set and protocol guidance for the next AI.
 - Light SBOM includes source/confidence hints; verify security claims with dedicated scanners.
-- Everything is advisory by default; strict failure is opt-in with `doctor --strict`.
+- `enforcementProfile.gate` explains when checks warn, fail, and set exit codes.
+- Everything is advisory by default; strict failure is opt-in with `doctor --strict` or `--ci`.
 
 ## Agent Files
 
@@ -77,6 +79,8 @@ aienvmp doctor --strict security|policy|coordination|all
 ```
 
 ## CI
+
+The GitHub Action writes status, schema, doctor, plan, and dashboard artifacts. `strict: "off"` reports warnings without failing the job.
 
 ```yaml
 - uses: soovwv/aienvmp@main

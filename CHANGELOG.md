@@ -6,6 +6,7 @@
 - Added `doctor --json` exit behavior metadata to distinguish advisory warnings from strict failure conditions.
 - Surfaced enforcement gate details in context, plan, and dashboard outputs.
 - Extended the GitHub Action to write `.aienvmp/schema.json` and `.aienvmp/doctor.json` artifacts by default.
+- Clarified README guidance for advisory-by-default behavior and opt-in strict/CI failure.
 
 ## 0.1.41
 
