@@ -1,6 +1,7 @@
 import { recommendedActions } from "./actions.js";
 import { aiDecision } from "./decision.js";
 import { enforcementAdvice } from "./enforcement.js";
+import { preflightContract } from "./contract.js";
 
 export function buildPreflight(manifest = {}, warnings = [], intents = []) {
   const decision = aiDecision(warnings, intents);
@@ -73,17 +74,6 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
     },
     topAction,
     nextCommand: topAction?.command || decision.nextCommand
-  };
-}
-
-function preflightContract() {
-  return {
-    name: "aienvmp-preflight",
-    version: 1,
-    stability: "additive",
-    requiredFields: ["schemaVersion", "state", "decision", "quickstart", "commands", "artifacts"],
-    aiEntryFields: ["state", "summary", "nextAgent", "coordination", "dependencyReadSet", "dependencyChangeProtocol"],
-    rule: "Consumers should ignore unknown fields and treat missing optional fields as unavailable."
   };
 }
 

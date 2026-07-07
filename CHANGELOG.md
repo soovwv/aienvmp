@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Added preflight contract metadata so AI and CI consumers can rely on stable entry fields while ignoring additive changes.
+- Added `aienvmp schema --json` to print the stable AI-readable output contract without scanning a workspace.
 
 ## 0.1.40
 

@@ -65,3 +65,15 @@ test("CLI context accepts --dir before the command", async () => {
   assert.equal(json.workspace.path, dir);
   assert.equal(json.status, "clear");
 });
+
+test("CLI schema prints the AI-readable output contract without a workspace", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    path.resolve("bin/aienvmp.js"),
+    "schema",
+    "--json"
+  ], { cwd: path.resolve(".") });
+
+  const json = JSON.parse(stdout);
+  assert.equal(json.name, "aienvmp-contract");
+  assert.equal(json.outputs.status.contract.name, "aienvmp-preflight");
+});
