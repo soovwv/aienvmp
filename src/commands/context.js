@@ -21,12 +21,13 @@ export async function contextWorkspace(args) {
   const decision = aiDecision(warnings, intents);
   const actions = recommendedActions(manifest, { warnings, intents });
   const stepSummary = compactStepSummary(buildPlan(manifest, warnings, intents, policy));
-  const preflight = buildPreflight(manifest, warnings, intents);
+  const preflight = buildPreflight(manifest, warnings, intents, timeline);
   if (args.json) {
     console.log(JSON.stringify({
       status: warnings.length ? "review-required" : "clear",
       preflight,
       coordination: preflight.coordination,
+      followUps: preflight.followUps,
       decision,
       enforcement: enforcementAdvice(warnings),
       recommendedActions: actions,

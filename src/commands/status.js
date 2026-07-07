@@ -15,7 +15,7 @@ export async function statusWorkspace(args) {
   const timeline = await readTimeline(timelinePath(dir));
   const intents = openIntents(await readJsonl(intentsPath(dir)));
   const warnings = [...diagnose(manifest, { timeline, intents }), ...policyWarnings(manifest, policy)];
-  const status = buildStatus(manifest, warnings, intents);
+  const status = buildStatus(manifest, warnings, intents, timeline);
   const artifact = args.write ? await writeStatusArtifact(dir, status) : "";
   const output = artifact ? { ...status, artifact } : status;
   if (args.json) {
@@ -39,6 +39,6 @@ export async function writeStatusArtifact(dir, status) {
   return out;
 }
 
-export function buildStatus(manifest = {}, warnings = [], intents = []) {
-  return buildPreflight(manifest, warnings, intents);
+export function buildStatus(manifest = {}, warnings = [], intents = [], timeline = []) {
+  return buildPreflight(manifest, warnings, intents, timeline);
 }

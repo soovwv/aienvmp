@@ -46,7 +46,7 @@ async function recordHandoff(file, handoff, actor) {
 export function buildHandoff(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const reviewRequired = warnings.length > 0 || intents.length > 0;
   const actions = recommendedActions(manifest, { warnings, intents });
-  const preflight = buildPreflight(manifest, warnings, intents);
+  const preflight = buildPreflight(manifest, warnings, intents, timeline);
   return {
     status: reviewRequired ? "review-required" : "clear",
     trust: manifest.trust || {},

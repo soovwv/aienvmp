@@ -9,6 +9,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.name, "aienvmp-contract");
   assert.equal(schema.outputs.status.contract.name, "aienvmp-preflight");
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("nextAgent"));
+  assert.ok(schema.outputs.status.contract.aiEntryFields.includes("followUps"));
   assert.ok(schema.outputs.context.rootFields.includes("coordination"));
   assert.ok(schema.outputs.handoff.rootFields.includes("dependencyHandoff"));
   assert.ok(schema.outputs.handoff.rootFields.includes("coordination"));

@@ -24,7 +24,7 @@ export async function dashWorkspace(args) {
   const planEnvironment = await detectedPlanEnvironment(dir);
   const html = renderDashboard({
     ...manifest,
-    preflight: buildPreflight(manifest, warnings, intents),
+    preflight: buildPreflight(manifest, warnings, intents, timeline),
     recommendedActions: recommendedActions(manifest, { warnings, intents }),
     planArtifacts,
     planRemediation,

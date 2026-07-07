@@ -173,6 +173,9 @@ export function renderContext(manifest, timeline = [], warnings = [], intents = 
     "Enforcement gate:",
     ...enforcementGateLines(manifest.preflight?.enforcementProfile?.gate),
     "",
+    "Follow-ups:",
+    ...followUpLines(manifest.preflight?.followUps),
+    "",
     "Open intents:",
     ...(intents.length ? intents.slice(-5).reverse().map((i) => `- ${i.actor}: ${i.action}`) : ["- none"]),
     "",
@@ -307,6 +310,14 @@ function enforcementGateLines(gate = {}) {
     `- Fail condition: ${gate.failCondition || "never in default mode"}`,
     `- Exit code: ${gate.exitCode || "0 unless the command itself errors"}`
   ];
+}
+
+function followUpLines(followUps = []) {
+  if (!followUps.length) return ["- none"];
+  return followUps.slice(0, 5).map((item) => {
+    const command = item.commands?.[0] ? ` (${item.commands[0]})` : "";
+    return `- ${item.target || "environment"}: ${item.summary || item.reason || "follow-up required"}${command}`;
+  });
 }
 
 function environmentLines(item) {

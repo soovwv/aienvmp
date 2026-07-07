@@ -54,6 +54,27 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.nextCommand, "aienvmp intent --actor agent:id --action planned-change");
 });
 
+test("buildStatus exposes pending follow-ups from timeline", () => {
+  const status = buildStatus({
+    runtimes: {},
+    dependencySnapshot: { summary: { packages: 1 } },
+    security: { summary: { total: 0 } }
+  }, [], [], [{
+    at: "2026-07-08T00:00:00.000Z",
+    actor: "agent:codex",
+    summary: "dependency-change",
+    followUp: {
+      required: true,
+      target: "dependency",
+      commands: ["aienvmp sync"]
+    }
+  }]);
+
+  assert.equal(status.followUps.length, 1);
+  assert.equal(status.followUps[0].target, "dependency");
+  assert.equal(status.followUps[0].commands[0], "aienvmp sync");
+});
+
 test("statusWorkspace JSON reports review-required and strict suggestion", async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-status-"));
   await fs.mkdir(path.join(dir, ".aienvmp"), { recursive: true });

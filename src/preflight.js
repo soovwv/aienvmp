@@ -2,8 +2,9 @@ import { recommendedActions } from "./actions.js";
 import { aiDecision } from "./decision.js";
 import { enforcementAdvice, enforcementGate } from "./enforcement.js";
 import { preflightContract } from "./contract.js";
+import { pendingFollowUps } from "./timeline.js";
 
-export function buildPreflight(manifest = {}, warnings = [], intents = []) {
+export function buildPreflight(manifest = {}, warnings = [], intents = [], timeline = []) {
   const decision = aiDecision(warnings, intents);
   const enforcement = enforcementAdvice(warnings);
   const actions = recommendedActions(manifest, { warnings, intents });
@@ -13,6 +14,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
   const dependencyReadSet = dependencyPreflightReadSet(manifest);
   const dependencyChangeProtocol = dependencyProtocol(manifest, dependencyReadSet);
   const coordination = coordinationSummary(intents);
+  const followUps = pendingFollowUps(timeline);
   return {
     schemaVersion: 1,
     contract: preflightContract(),
@@ -53,6 +55,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
     quickstart: agentQuickstart(decision.reviewRequired),
     nextAgent: nextAgentHint(state, dependencyReadSet, dependencyChangeProtocol),
     coordination,
+    followUps,
     intentTargets,
     dependencyReadSet,
     dependencyChangeProtocol,

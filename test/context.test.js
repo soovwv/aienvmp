@@ -62,6 +62,16 @@ test("contextWorkspace JSON includes compact step summary", async () => {
     },
     security: { enabled: false }
   });
+  await fs.writeFile(path.join(dir, ".aienvmp", "timeline.jsonl"), `${JSON.stringify({
+    at: "2026-07-08T00:00:00.000Z",
+    actor: "agent:codex",
+    summary: "dependency-change",
+    followUp: {
+      required: true,
+      target: "dependency",
+      commands: ["aienvmp sync"]
+    }
+  })}\n`, "utf8");
 
   const originalLog = console.log;
   let output = "";
@@ -86,15 +96,17 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   assert.equal(json.preflight.dependencyChangeProtocol.commands.recordAfterChange, "aienvmp record --actor agent:id --summary dependency-change --target dependency");
   assert.equal(json.coordination.openIntentCount, 0);
   assert.deepEqual(json.coordination.conflictTargets, []);
+  assert.equal(json.followUps[0].target, "dependency");
+  assert.equal(json.preflight.followUps[0].commands[0], "aienvmp sync");
   assert.equal(json.decision.schemaVersion, 1);
   assert.equal(json.decision.mode, "review-first");
   assert.equal(json.decision.canContinueProjectLocalWork, true);
   assert.equal(json.decision.canChangeEnvironmentWithoutReview, false);
-  assert.deepEqual(json.decision.warningCodes, ["node-version-mismatch"]);
+  assert.deepEqual(json.decision.warningCodes, ["node-version-mismatch", "handoff-stale"]);
   assert.equal(json.decision.requiredCommands.reviewPlan, "aienvmp plan");
   assert.equal(json.enforcement.mode, "advisory-by-default");
   assert.equal(json.enforcement.localBehavior, "non-blocking");
-  assert.deepEqual(json.enforcement.suggestedStrictScopes, ["policy"]);
+  assert.deepEqual(json.enforcement.suggestedStrictScopes, ["policy", "coordination"]);
   assert.equal(json.dependencySnapshot.summary.packages, 1);
   assert.equal(json.dependencySnapshot.packages[0].name, "express");
   assert.equal(json.lightSbom.summary.packages, 1);
@@ -105,4 +117,39 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   assert.equal(json.lightSbom.aiUse.dependencySource, "project manifests only; no install or resolver is run");
   assert.equal(json.stepSummary.environment[0].code, "node-version-mismatch");
   assert.deepEqual(json.stepSummary.remediation, []);
+});
+
+test("contextWorkspace text includes pending follow-ups", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-context-followup-"));
+  await fs.mkdir(path.join(dir, ".aienvmp"), { recursive: true });
+  await writeJson(path.join(dir, ".aienvmp", "manifest.json"), {
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    trust: { state: "observed", verified: false },
+    workspace: { path: dir, name: path.basename(dir) },
+    runtimes: {},
+    packageManagers: {},
+    containers: {},
+    projectHints: {},
+    dependencySnapshot: { summary: { packages: 0 } },
+    security: { enabled: false }
+  });
+  await fs.writeFile(path.join(dir, ".aienvmp", "timeline.jsonl"), `${JSON.stringify({
+    at: "2026-07-08T00:00:00.000Z",
+    actor: "agent:codex",
+    summary: "dependency-change",
+    followUp: { required: true, target: "dependency", commands: ["aienvmp sync"] }
+  })}\n`, "utf8");
+
+  const originalLog = console.log;
+  let output = "";
+  console.log = (value) => { output = value; };
+  try {
+    await contextWorkspace({ dir });
+  } finally {
+    console.log = originalLog;
+  }
+
+  assert.match(output, /Follow-ups/);
+  assert.match(output, /dependency-change/);
 });

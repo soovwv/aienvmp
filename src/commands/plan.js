@@ -18,7 +18,7 @@ export async function planWorkspace(args) {
   const intents = openIntents(await readJsonl(intentsPath(dir)));
   const policy = await loadPolicy(dir);
   const warnings = [...diagnose(manifest, { timeline, intents }), ...policyWarnings(manifest, policy)];
-  const plan = buildPlan(manifest, warnings, intents, policy);
+  const plan = buildPlan(manifest, warnings, intents, policy, timeline);
 
   if (args.write) {
     await writeJson(planJsonPath(dir), plan);
@@ -33,14 +33,14 @@ export async function planWorkspace(args) {
   return plan;
 }
 
-export function buildPlan(manifest, warnings = [], intents = [], policy = {}) {
+export function buildPlan(manifest, warnings = [], intents = [], policy = {}, timeline = []) {
   const actions = recommendedActions(manifest, { warnings, intents });
   const status = warnings.length || intents.length ? "review-required" : "clear";
   return {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
     status,
-    preflight: buildPreflight(manifest, warnings, intents),
+    preflight: buildPreflight(manifest, warnings, intents, timeline),
     workspace: manifest.workspace || {},
     trust: manifest.trust || {},
     decision: aiDecision(warnings, intents),

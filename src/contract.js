@@ -4,7 +4,7 @@ export function preflightContract() {
     version: 1,
     stability: "additive",
     requiredFields: ["schemaVersion", "state", "decision", "quickstart", "commands", "artifacts"],
-    aiEntryFields: ["state", "summary", "nextAgent", "coordination", "dependencyReadSet", "dependencyChangeProtocol"],
+    aiEntryFields: ["state", "summary", "nextAgent", "coordination", "followUps", "dependencyReadSet", "dependencyChangeProtocol"],
     rule: "Consumers should ignore unknown fields and treat missing optional fields as unavailable."
   };
 }
