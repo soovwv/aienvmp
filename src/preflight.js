@@ -47,6 +47,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
       environmentChanges: decision.canChangeEnvironmentWithoutReview ? "allowed" : "intent-and-review-first"
     },
     quickstart: agentQuickstart(decision.reviewRequired),
+    nextAgent: nextAgentHint(state, dependencyReadSet, dependencyChangeProtocol),
     intentTargets,
     dependencyReadSet,
     dependencyChangeProtocol,
@@ -69,6 +70,26 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
     },
     topAction,
     nextCommand: topAction?.command || decision.nextCommand
+  };
+}
+
+function nextAgentHint(state, dependencyReadSet = [], dependencyChangeProtocol = {}) {
+  const firstDependency = dependencyReadSet[0];
+  const dependencyFiles = firstDependency
+    ? [firstDependency.manifest, ...(firstDependency.lockfiles || [])].filter(Boolean)
+    : [];
+  return {
+    handoffCommand: dependencyChangeProtocol.commands?.handoff || "aienvmp handoff --record --actor agent:id",
+    readFirst: ".aienvmp/status.json",
+    readNext: "aienvmp context --json",
+    reviewState: state,
+    dependencyFiles,
+    dependencyProtocol: dependencyChangeProtocol.commands?.recordIntent
+      ? "record dependency intent, sync after change, then record dependency-change"
+      : "no dependency protocol detected",
+    rule: state === "clear"
+      ? "Next AI may continue project-local work; record intent before environment changes."
+      : "Next AI should review warnings or open intents before environment changes."
   };
 }
 

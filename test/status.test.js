@@ -30,6 +30,10 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.quickstart.label, "10-second AI flow");
   assert.equal(status.quickstart.detailCommand, "aienvmp context --json");
   assert.match(status.quickstart.rule, /Continue project-local work/);
+  assert.equal(status.nextAgent.readFirst, ".aienvmp/status.json");
+  assert.equal(status.nextAgent.handoffCommand, "aienvmp handoff --record --actor agent:id");
+  assert.deepEqual(status.nextAgent.dependencyFiles, ["package.json", "package-lock.json"]);
+  assert.match(status.nextAgent.dependencyProtocol, /record dependency intent/);
   assert.equal(status.intentTargets[0].target, "dependency");
   assert.equal(status.dependencyReadSet[0].manifest, "package.json");
   assert.deepEqual(status.dependencyReadSet[0].lockfiles, ["package-lock.json"]);
@@ -76,6 +80,7 @@ test("statusWorkspace JSON reports review-required and strict suggestion", async
   assert.equal(json.counts.dependencies, 1);
   assert.equal(json.agentUse.environmentChanges, "intent-and-review-first");
   assert.match(json.quickstart.rule, /Review warnings/);
+  assert.match(json.nextAgent.rule, /review warnings/i);
   assert.equal(json.intentTargets[0].target, "node");
   assert.equal(json.artifacts.envMap, "AIENV.md");
 });
