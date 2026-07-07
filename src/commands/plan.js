@@ -57,12 +57,88 @@ export function buildPlan(manifest, warnings = [], intents = [], policy = {}) {
       topPackages: manifest.security?.topPackages || []
     },
     remediationSteps: remediationSteps(manifest.security),
+    environmentSteps: environmentSteps(warnings),
     notes: [
       "This plan is read-only.",
       "Ask the user before global runtime, package manager, Docker, or global package changes.",
       "Prefer project-local version files and local environments."
     ]
   };
+}
+
+function environmentSteps(warnings = []) {
+  return warnings
+    .filter((warning) => warning.code !== "security-vulnerabilities")
+    .slice(0, 8)
+    .map((warning) => ({
+      code: warning.code,
+      category: environmentCategory(warning.code),
+      summary: warning.message,
+      steps: environmentStepLines(warning.code)
+    }));
+}
+
+function environmentCategory(code = "") {
+  if (["conflicting-open-intents", "stale-open-intent", "handoff-stale"].includes(code)) return "coordination";
+  if (code.includes("docker")) return "container";
+  if (code.includes("lockfile") || code.includes("package-manager")) return "package-manager";
+  if (code.includes("node") || code.includes("python") || code.includes("version") || code.includes("runtime")) return "runtime";
+  return "environment";
+}
+
+function environmentStepLines(code = "") {
+  if (code === "node-version-mismatch") return [
+    "Read .nvmrc and the detected Node version before changing tools.",
+    "Prefer project-local version managers such as nvm, mise, or asdf.",
+    "Ask before changing global Node or npm installations.",
+    "Run aienvmp sync and record the change after alignment."
+  ];
+  if (code === "python-version-mismatch") return [
+    "Read .python-version and the detected Python version before changing tools.",
+    "Prefer project-local virtual environments or version managers.",
+    "Ask before changing global Python installations.",
+    "Run aienvmp sync and record the change after alignment."
+  ];
+  if (code === "mixed-node-lockfiles" || code === "package-manager-policy-mismatch") return [
+    "Identify the intended package manager from project policy and lockfiles.",
+    "Do not delete lockfiles without user approval.",
+    "Use one package manager for dependency changes.",
+    "Record the chosen package manager policy if it changes."
+  ];
+  if (code === "python-missing") return [
+    "Confirm whether the Python project is active.",
+    "Prefer project-local Python setup before global installation.",
+    "Ask before installing a global Python runtime.",
+    "Run aienvmp sync after setup."
+  ];
+  if (code === "docker-missing") return [
+    "Confirm whether Docker is required for the current task.",
+    "Do not change Docker daemon or context without user approval.",
+    "Document fallback commands if Docker is unavailable.",
+    "Run aienvmp sync after Docker availability changes."
+  ];
+  if (code === "manifest-stale") return [
+    "Run aienvmp sync before environment changes.",
+    "Review context again after refresh."
+  ];
+  if (code === "conflicting-open-intents") return [
+    "Review open intents before changing the environment.",
+    "Coordinate with the user or other agent.",
+    "Resolve stale or superseded intents before proceeding."
+  ];
+  if (code === "stale-open-intent") return [
+    "Confirm whether the old intent is still valid.",
+    "Resolve or renew the intent before changing the environment."
+  ];
+  if (code === "handoff-stale") return [
+    "Run aienvmp handoff --record --actor agent:id before the next AI continues.",
+    "Review recent changes before new environment work."
+  ];
+  return [
+    "Review the warning before changing environment state.",
+    "Ask before global environment changes.",
+    "Run aienvmp sync after any accepted change."
+  ];
 }
 
 function remediationSteps(security = {}) {

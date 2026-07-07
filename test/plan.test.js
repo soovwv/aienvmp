@@ -36,6 +36,25 @@ test("buildPlan creates a read-only action plan", () => {
   assert.match(renderPlan(plan), /4\.17\.21/);
 });
 
+test("buildPlan creates environment steps for runtime and policy drift", () => {
+  const plan = buildPlan({
+    workspace: { path: "/tmp/work", name: "work" },
+    trust: { state: "observed" },
+    security: { enabled: false }
+  }, [{
+    code: "node-version-mismatch",
+    message: ".nvmrc requests 20, but detected node is 24.0.0."
+  }, {
+    code: "mixed-node-lockfiles",
+    message: "Multiple Node lockfiles detected: packageLock, pnpmLock."
+  }], [], {});
+
+  assert.deepEqual(plan.environmentSteps.map((step) => step.category), ["runtime", "package-manager"]);
+  assert.match(plan.environmentSteps[0].steps.join(" "), /project-local/);
+  assert.match(renderPlan(plan), /Environment steps/);
+  assert.match(renderPlan(plan), /package-manager/);
+});
+
 test("planWorkspace can write plan artifacts", async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-plan-"));
   await fs.mkdir(path.join(dir, ".aienvmp"), { recursive: true });

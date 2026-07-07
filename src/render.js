@@ -185,11 +185,21 @@ export function renderPlan(plan) {
     "Remediation steps:",
     ...(plan.remediationSteps?.length ? plan.remediationSteps.slice(0, 5).flatMap(remediationLines) : ["- none"]),
     "",
+    "Environment steps:",
+    ...(plan.environmentSteps?.length ? plan.environmentSteps.slice(0, 5).flatMap(environmentLines) : ["- none"]),
+    "",
     "Warnings:",
     ...(plan.warnings.length ? plan.warnings.map((warning) => `- [${warning.code}] ${warning.message}`) : ["- none"]),
     ""
   ];
   return lines.join("\n");
+}
+
+function environmentLines(item) {
+  return [
+    `- ${item.category}: ${item.summary}`,
+    ...item.steps.slice(0, 4).map((step) => `  - ${step}`)
+  ];
 }
 
 function remediationLines(item) {

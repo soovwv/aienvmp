@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.19
+
+- Added runtime, package manager, Docker, and coordination environment steps to `aienvmp plan`.
+- Kept environment plans read-only and ask-first for global changes.
+- Improved AI guidance for resolving version drift and multi-agent coordination warnings.
+
 ## 0.1.18
 
 - Added a dashboard remediation steps card backed by `.aienvmp/plan.json`.
