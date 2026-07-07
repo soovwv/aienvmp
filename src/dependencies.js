@@ -45,6 +45,45 @@ export function linkVulnerableDependencies(security = {}, snapshot = {}) {
   };
 }
 
+export function buildLightSbom(snapshot = {}, security = {}) {
+  const packages = snapshot.packages || [];
+  const vulnerable = security.topPackages || [];
+  const directVulnerable = vulnerable.filter((pkg) => pkg.directDependency === true);
+  const transitiveOrUnmatched = vulnerable.filter((pkg) => pkg.directDependency !== true);
+  return {
+    schemaVersion: 1,
+    mode: "light-sbom",
+    note: "AI-ready package and vulnerability summary from read-only project files and optional scanners.",
+    summary: {
+      ecosystems: countBy(packages, "ecosystem"),
+      managers: countBy(packages, "manager"),
+      groups: countBy(packages, "group"),
+      manifests: snapshot.manifests || [],
+      packages: packages.length,
+      vulnerabilities: Number(security.summary?.total || 0),
+      directVulnerablePackages: directVulnerable.length,
+      transitiveOrUnmatchedVulnerablePackages: transitiveOrUnmatched.length
+    },
+    topRisk: vulnerable.slice(0, 8).map((pkg) => ({
+      name: pkg.name,
+      ecosystem: scannerEcosystem(pkg.scanner),
+      severity: pkg.severity || "unknown",
+      directDependency: pkg.directDependency === true,
+      manifest: pkg.dependency?.manifest || "",
+      version: pkg.dependency?.version || pkg.version || "",
+      priority: pkg.remediationPriority?.level || "low",
+      score: pkg.remediationPriority?.score || 0,
+      fixAvailable: pkg.fixAvailable === true || Boolean(pkg.fixVersions?.length),
+      fixVersions: (pkg.fixVersions || []).slice(0, 3)
+    })),
+    aiUse: {
+      beforeDependencyChanges: "Read lightSbom.summary and lightSbom.topRisk before changing dependencies.",
+      securityMode: security.enabled ? "scanner-summary" : "scanner-off",
+      dependencySource: "project manifests only; no install or resolver is run"
+    }
+  };
+}
+
 export function remediationPriority(pkg = {}, context = {}) {
   const severityScore = { critical: 90, high: 70, moderate: 45, low: 20, info: 5, unknown: 30 };
   const severity = String(pkg.severity || "unknown").toLowerCase();
@@ -64,6 +103,14 @@ export function remediationPriority(pkg = {}, context = {}) {
   }
   const level = score >= 95 ? "urgent" : score >= 75 ? "high" : score >= 50 ? "medium" : "low";
   return { level, score, reasons };
+}
+
+function countBy(items = [], key) {
+  return Object.fromEntries(Object.entries(items.reduce((acc, item) => {
+    const value = item[key] || "unknown";
+    acc[value] = (acc[value] || 0) + 1;
+    return acc;
+  }, {})).sort(([a], [b]) => a.localeCompare(b)));
 }
 
 async function scanNodeDependencies(dir) {

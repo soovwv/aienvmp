@@ -10,7 +10,7 @@
 
 It helps Codex, Claude, Gemini, and humans avoid silent Node, Python, package manager, dependency, Docker, and security drift.
 
-Core loop: scan once, link runtime/dependency/security context, give AI a shared decision contract with advisory priorities, and hand off safe next steps.
+Core loop: scan once, link runtime/dependency/security context, give AI a shared decision contract with a light SBOM summary, and hand off safe next steps.
 
 ## Quick Start
 
@@ -108,6 +108,7 @@ aienvmp doctor --strict security  # fail only scoped warnings
 - dashboard and preflight explain advisory default vs optional strict mode
 - non-blocking unless strict mode is explicitly requested
 - security checks are opt-in and read-only
+- light SBOM is generated from project files and optional scanner summaries
 
 ## Development
 

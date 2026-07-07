@@ -24,6 +24,28 @@ test("renderDashboard includes the audit summary surface", () => {
       summary: { ecosystems: ["npm"], manifests: 1, packages: 1 },
       packages: [{ ecosystem: "npm", name: "express", version: "^4.18.0", manifest: "package.json", group: "dependencies" }]
     },
+    lightSbom: {
+      mode: "light-sbom",
+      summary: {
+        manifests: ["package.json"],
+        packages: 1,
+        vulnerabilities: 1,
+        directVulnerablePackages: 1,
+        transitiveOrUnmatchedVulnerablePackages: 0
+      },
+      topRisk: [{
+        name: "express",
+        ecosystem: "npm",
+        severity: "high",
+        directDependency: true,
+        manifest: "package.json",
+        version: "^4.18.0",
+        priority: "high",
+        score: 90,
+        fixAvailable: true,
+        fixVersions: ["4.18.3"]
+      }]
+    },
     security: {
       mode: "security",
       enabled: true,
@@ -122,6 +144,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /policy/);
   assert.match(html, /Global Inventory/);
   assert.match(html, /Dependency Snapshot/);
+  assert.match(html, /Light SBOM/);
+  assert.match(html, /Direct vulnerable/);
   assert.match(html, /express/);
   assert.match(html, /Security Summary/);
   assert.match(html, /package\.json/);
@@ -147,6 +171,11 @@ test("dashWorkspace links written plan artifacts", async () => {
       manifests: ["requirements.txt"],
       summary: { ecosystems: ["python"], manifests: 1, packages: 1 },
       packages: [{ ecosystem: "python", name: "django", version: "==3.2.0", manifest: "requirements.txt", group: "requirements" }]
+    },
+    lightSbom: {
+      mode: "light-sbom",
+      summary: { manifests: ["requirements.txt"], packages: 1, vulnerabilities: 0, directVulnerablePackages: 0, transitiveOrUnmatchedVulnerablePackages: 0 },
+      topRisk: []
     },
     agentFiles: {}
   });
@@ -182,5 +211,6 @@ test("dashWorkspace links written plan artifacts", async () => {
   assert.match(html, /doctor --strict policy/);
   assert.match(html, /node-version-mismatch/);
   assert.match(html, /Dependency Snapshot/);
+  assert.match(html, /Light SBOM/);
   assert.match(html, /django/);
 });

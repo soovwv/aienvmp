@@ -33,6 +33,8 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
   lines.push(...inventoryLines(manifest.inventory), "");
   lines.push("## Dependency Snapshot", "");
   lines.push(...dependencyLines(manifest.dependencySnapshot), "");
+  lines.push("## Light SBOM", "");
+  lines.push(...lightSbomLines(manifest.lightSbom), "");
   lines.push("## Security Summary", "");
   lines.push(...securityLines(manifest.security), "");
   lines.push("## Project Requirements And Hints", "");
@@ -284,6 +286,10 @@ const deps=manifest.dependencySnapshot||{};
 const depSummary=deps.summary||{ecosystems:[],manifests:0,packages:0};
 const depPackages=deps.packages||[];
 const depHtml=depPackages.length?'<table><tr><th>Packages</th><td><code>'+esc(depSummary.packages||0)+'</code></td></tr><tr><th>Ecosystems</th><td><code>'+esc((depSummary.ecosystems||[]).join(', ')||'none')+'</code></td></tr><tr><th>Manifests</th><td><code>'+esc((deps.manifests||[]).join(', ')||'none')+'</code></td></tr></table><div class="timeline">'+depPackages.slice(0,8).map(p=>\`<div class="event"><time>\${esc(p.ecosystem)}</time><div><b>\${esc(p.name)}</b> <code>\${esc(p.version)}</code><div class="path">\${esc(p.manifest)} / \${esc(p.group)}</div></div></div>\`).join('')+'</div>':'<div class="okline">No project dependency manifests detected.</div>';
+const lightSbom=manifest.lightSbom||{};
+const lightSbomSummary=lightSbom.summary||{};
+const topRisk=lightSbom.topRisk||[];
+const lightSbomHtml=\`<table><tr><th>Packages</th><td><code>\${esc(lightSbomSummary.packages||0)}</code></td></tr><tr><th>Vulnerabilities</th><td><code>\${esc(lightSbomSummary.vulnerabilities||0)}</code></td></tr><tr><th>Direct vulnerable</th><td><code>\${esc(lightSbomSummary.directVulnerablePackages||0)}</code></td></tr><tr><th>Manifests</th><td><code>\${esc((lightSbomSummary.manifests||[]).join(', ')||'none')}</code></td></tr></table>\${topRisk.length?'<div class="timeline">'+topRisk.slice(0,5).map(p=>\`<div class="event"><time>\${esc(p.priority)}</time><div><b>\${esc(p.name)}</b> \${esc(p.severity)} \${p.directDependency?'<code>direct</code>':'<code>transitive</code>'}<div class="path">\${esc(p.manifest||p.ecosystem)} \${esc(p.version||'')}</div></div></div>\`).join('')+'</div>':'<div class="okline">No high-risk package summary in the current light SBOM.</div>'}\`;
 const sec=manifest.security||{};
 const secSummary=sec.summary||{total:0,critical:0,high:0,moderate:0,low:0,info:0};
 const secPackages=sec.topPackages||[];
@@ -353,6 +359,7 @@ document.getElementById('app').innerHTML=\`
     \${card('Project Hints',\`<span class="pill">\${entries(manifest.projectHints).length} hints</span>\`,\`<table>\${rows(manifest.projectHints)}</table>\`)}
     \${card('Global Inventory',manifest.inventory?.enabled?'<span class="pill">deep</span>':'<span class="pill off">basic</span>',inventoryHtml)}
     \${card('Dependency Snapshot','<span class="pill">'+(depSummary.packages||0)+' packages</span>',depHtml)}
+    \${card('Light SBOM','<span class="pill">'+(lightSbomSummary.packages||0)+' packages</span>',lightSbomHtml)}
     \${card('Security Summary',sec.enabled?'<span class="pill warn">security</span>':'<span class="pill off">basic</span>',securityHtml)}
   </div>
   <aside>
@@ -447,6 +454,25 @@ function dependencyLines(snapshot = {}) {
   ];
   for (const pkg of packages.slice(0, 10)) {
     lines.push(`- ${pkg.ecosystem}/${pkg.name}: ${pkg.version} (${pkg.manifest})`);
+  }
+  return lines;
+}
+
+function lightSbomLines(lightSbom = {}) {
+  const summary = lightSbom.summary || {};
+  const lines = [
+    `- Mode: ${lightSbom.mode || "light-sbom"}`,
+    `- Packages: ${summary.packages || 0}`,
+    `- Vulnerabilities: ${summary.vulnerabilities || 0}`,
+    `- Direct vulnerable packages: ${summary.directVulnerablePackages || 0}`,
+    `- Transitive or unmatched vulnerable packages: ${summary.transitiveOrUnmatchedVulnerablePackages || 0}`
+  ];
+  const risks = lightSbom.topRisk || [];
+  if (risks.length) {
+    lines.push("- Top risk:");
+    for (const item of risks.slice(0, 8)) {
+      lines.push(`  - ${item.name}: ${item.severity}; ${item.priority}/${item.score}; ${item.directDependency ? "direct" : "transitive-or-unmatched"}${item.version ? `; ${item.version}` : ""}`);
+    }
   }
   return lines;
 }

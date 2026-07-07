@@ -38,6 +38,7 @@ export async function contextWorkspace(args) {
       containers: manifest.containers,
       inventory: inventorySummary(manifest.inventory),
       dependencySnapshot: dependencySummary(manifest.dependencySnapshot),
+      lightSbom: lightSbomSummary(manifest.lightSbom),
       security: securitySummary(manifest.security),
       projectHints: manifest.projectHints,
       warnings,
@@ -49,6 +50,24 @@ export async function contextWorkspace(args) {
     return;
   }
   console.log(renderContext(manifest, timeline, warnings, intents, policy, actions));
+}
+
+function lightSbomSummary(lightSbom = {}) {
+  return {
+    mode: lightSbom.mode || "light-sbom",
+    summary: lightSbom.summary || {
+      ecosystems: {},
+      managers: {},
+      groups: {},
+      manifests: [],
+      packages: 0,
+      vulnerabilities: 0,
+      directVulnerablePackages: 0,
+      transitiveOrUnmatchedVulnerablePackages: 0
+    },
+    topRisk: (lightSbom.topRisk || []).slice(0, 8),
+    aiUse: lightSbom.aiUse || {}
+  };
 }
 
 function dependencySummary(snapshot = {}) {

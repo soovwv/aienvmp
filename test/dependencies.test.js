@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { linkVulnerableDependencies, parsePyprojectDependencies, parseRequirementLine, remediationPriority, scanDependencySnapshot } from "../src/dependencies.js";
+import { buildLightSbom, linkVulnerableDependencies, parsePyprojectDependencies, parseRequirementLine, remediationPriority, scanDependencySnapshot } from "../src/dependencies.js";
 
 test("parseRequirementLine separates package name and version spec", () => {
   assert.deepEqual(parseRequirementLine("django==3.2.0"), { name: "django", version: "==3.2.0" });
@@ -60,6 +60,50 @@ test("linkVulnerableDependencies marks direct dependency matches", () => {
   assert.equal(security.topPackages[1].dependency, null);
   assert.equal(security.topPackages[2].directDependency, true);
   assert.equal(security.topPackages[2].dependency.manifest, "requirements.txt");
+});
+
+test("buildLightSbom creates an AI-ready package and risk summary", () => {
+  const snapshot = {
+    manifests: ["package.json", "requirements.txt"],
+    packages: [
+      { ecosystem: "npm", manager: "npm", group: "dependencies", name: "express", version: "^4.18.0", manifest: "package.json" },
+      { ecosystem: "python", manager: "pip", group: "requirements", name: "django", version: "==3.2.0", manifest: "requirements.txt" }
+    ]
+  };
+  const security = {
+    enabled: true,
+    summary: { total: 2 },
+    topPackages: [
+      {
+        name: "express",
+        scanner: "npm-audit",
+        severity: "high",
+        directDependency: true,
+        dependency: { manifest: "package.json", version: "^4.18.0" },
+        remediationPriority: { level: "high", score: 90 },
+        fixAvailable: true,
+        fixVersions: ["4.18.3"]
+      },
+      {
+        name: "transitive-only",
+        scanner: "npm-audit",
+        severity: "moderate",
+        directDependency: false,
+        remediationPriority: { level: "medium", score: 50 }
+      }
+    ]
+  };
+
+  const sbom = buildLightSbom(snapshot, security);
+  assert.equal(sbom.mode, "light-sbom");
+  assert.equal(sbom.summary.packages, 2);
+  assert.deepEqual(sbom.summary.ecosystems, { npm: 1, python: 1 });
+  assert.equal(sbom.summary.vulnerabilities, 2);
+  assert.equal(sbom.summary.directVulnerablePackages, 1);
+  assert.equal(sbom.summary.transitiveOrUnmatchedVulnerablePackages, 1);
+  assert.equal(sbom.topRisk[0].name, "express");
+  assert.equal(sbom.topRisk[0].directDependency, true);
+  assert.equal(sbom.aiUse.dependencySource, "project manifests only; no install or resolver is run");
 });
 
 test("remediationPriority scores severity, direct dependency, and fix availability", () => {

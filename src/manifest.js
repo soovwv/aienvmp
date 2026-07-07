@@ -6,12 +6,13 @@ import { exists } from "./fsutil.js";
 import { observedTrust } from "./trust.js";
 import { scanGlobalInventory } from "./inventory.js";
 import { scanSecurity } from "./security.js";
-import { linkVulnerableDependencies, scanDependencySnapshot } from "./dependencies.js";
+import { buildLightSbom, linkVulnerableDependencies, scanDependencySnapshot } from "./dependencies.js";
 
 export async function buildManifest(dir, options = {}) {
   const now = new Date().toISOString();
   const dependencySnapshot = await scanDependencySnapshot(dir);
   const security = linkVulnerableDependencies(await scanSecurity(dir, { security: options.security }), dependencySnapshot);
+  const lightSbom = buildLightSbom(dependencySnapshot, security);
   const manifest = {
     schemaName: "aienvmp.runtime-sbom",
     schemaVersion: 1,
@@ -31,6 +32,7 @@ export async function buildManifest(dir, options = {}) {
     containers: await scanContainers(),
     projectHints: await scanProjectHints(dir),
     dependencySnapshot,
+    lightSbom,
     inventory: await scanGlobalInventory({ deep: options.deep }),
     security,
     agentFiles: await scanAgentFiles(dir),

@@ -23,6 +23,9 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.equal(manifest.dependencySnapshot.mode, "snapshot");
   assert.equal(manifest.dependencySnapshot.summary.packages, 1);
   assert.equal(manifest.dependencySnapshot.packages[0].name, "express");
+  assert.equal(manifest.lightSbom.mode, "light-sbom");
+  assert.equal(manifest.lightSbom.summary.packages, 1);
+  assert.equal(manifest.lightSbom.summary.vulnerabilities, 0);
   assert.equal(manifest.generatedBy.name, "aienvmp");
   assert.equal(manifest.generatedBy.command, "aienvmp sync");
   assert.deepEqual(manifest.agentProtocol.afterEnvironmentChange, ["aienvmp sync"]);

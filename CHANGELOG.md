@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Added `lightSbom` to the manifest as an AI-ready package and vulnerability summary.
+- Linked dependency manifests, ecosystem/group counts, vulnerable direct dependencies, and top risk packages into one compact SBOM view.
+- Surfaced the light SBOM in context JSON, AIENV.md, and the dashboard without installing or resolving packages.
+
 ## 0.1.36
 
 - Added an explicit enforcement profile to the shared AI preflight contract.
