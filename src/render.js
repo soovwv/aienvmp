@@ -103,12 +103,12 @@ ${label} should use \`aienvmp\` as the workspace environment source of truth.
 
 Before changing runtimes, package managers, Docker settings, global packages, or environment policy:
 
-1. Run \`aienvmp context\`.
-2. Read \`AIENV.md\`.
-3. If the context says \`review-required\`, ask the user before changing the environment.
-4. Record planned environment changes with \`aienvmp intent\`.
-5. After environment changes, run \`aienvmp sync\`.
-6. Record what changed with \`aienvmp record\`.
+1. Run \`aienvmp status --write\`.
+2. Run \`aienvmp context --json\` for details.
+3. Read \`AIENV.md\`.
+4. If status or context says \`review-required\`, ask the user before changing the environment.
+5. Record planned environment changes with the recommended target, for example \`aienvmp intent --actor agent:id --action planned-change --target dependency\`.
+6. After environment changes, run \`aienvmp sync\` and \`aienvmp record --actor agent:id --summary what-changed\`.
 7. At handoff, run \`aienvmp handoff --record --actor agent:id\`.
 
 \`aienvmp\` does not replace this instruction file. It provides the live env map, lightweight runtime SBOM, intent log, timeline, and dashboard.`;

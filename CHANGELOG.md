@@ -1,11 +1,12 @@
 # Changelog
 
-## Unreleased
+## 0.1.38
 
 - Added a 10-second AI quickstart flow to the shared preflight contract and status output.
 - Added preflight intent target recommendations so agents can record runtime, package manager, dependency, Docker, or coordination changes consistently.
 - Surfaced AI intent target recommendations in the dashboard so humans can review the same target guidance.
 - Added the same quickstart and intent target guidance to `AIENV.md` so Markdown-first agents receive the current preflight.
+- Aligned AGENTS/Claude/Gemini pointer snippets with the same status-first, target-aware AI flow.
 
 ## 0.1.37
 
