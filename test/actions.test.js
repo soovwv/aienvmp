@@ -53,3 +53,18 @@ test("recommendedActions reports multi-agent record review", () => {
   assert.equal(actions[0].id, "review-agent-activity");
   assert.match(actions[0].command, /handoff/);
 });
+
+test("recommendedActions reports light SBOM risk scans", () => {
+  const actions = recommendedActions({
+    lightSbom: {
+      riskSummary: {
+        level: "low",
+        scanner: "off",
+        vulnerabilityCount: 0
+      }
+    }
+  }, { warnings: [], intents: [] });
+
+  assert.equal(actions[0].id, "scan-sbom-risk");
+  assert.equal(actions[0].command, "aienvmp sync --security");
+});

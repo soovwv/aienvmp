@@ -20,6 +20,7 @@ export function recommendedActions(manifest = {}, context = {}) {
   }
 
   actions.push(...securityActions(manifest.security));
+  actions.push(...sbomRiskActions(manifest.lightSbom?.riskSummary));
 
   if (hasRuntimePolicyWarning(warnings)) {
     actions.push(action("review-version-policy", "medium", "runtime", "Detected runtime or package manager policy drift. Prefer project-local version files and ask before global changes."));
@@ -34,6 +35,18 @@ export function recommendedActions(manifest = {}, context = {}) {
   }
 
   return dedupeActions(actions).slice(0, 8);
+}
+
+function sbomRiskActions(risk = {}) {
+  const actions = [];
+  if (!risk.level) return actions;
+  if (risk.scanner === "off" && risk.vulnerabilityCount === 0) {
+    actions.push(action("scan-sbom-risk", "medium", "security", "Run a read-only security scan before dependency or release decisions.", "aienvmp sync --security"));
+  }
+  if (["urgent", "high"].includes(risk.level)) {
+    actions.push(action("review-sbom-risk", "high", "security", `Review light SBOM risk summary before dependency changes: ${(risk.signals || []).slice(0, 2).join("; ") || risk.level}.`, "aienvmp plan --write"));
+  }
+  return actions;
 }
 
 function securityActions(security = {}) {

@@ -108,6 +108,7 @@ export function buildLightSbom(snapshot = {}, security = {}) {
       transitiveOrUnmatchedVulnerablePackages: transitiveOrUnmatched.length
     },
     topRisk,
+    riskSummary: lightSbomRiskSummary({ packages, security, directVulnerable, transitiveOrUnmatched, topRisk, lockfiles: snapshot.lockfiles || [] }),
     packageManagerPolicy: packageManagerPolicy(snapshot.lockfiles || []),
     dependencyChangeHints: dependencyChangeHints(packages, topRisk, snapshot.lockfiles || []),
     aiUse: {
@@ -117,6 +118,74 @@ export function buildLightSbom(snapshot = {}, security = {}) {
       trustRule: "Use lightSbom as a fast AI planning map; verify with dedicated scanners before security claims."
     }
   };
+}
+
+export function lightSbomRiskSummary({ packages = [], security = {}, directVulnerable = [], transitiveOrUnmatched = [], topRisk = [], lockfiles = [] } = {}) {
+  const signals = [];
+  let score = 0;
+  const critical = Math.max(Number(security.summary?.critical || 0), topRisk.filter((pkg) => pkg.severity === "critical").length);
+  const high = Math.max(Number(security.summary?.high || 0), topRisk.filter((pkg) => pkg.severity === "high").length);
+  const total = Number(security.summary?.total || 0);
+  if (critical > 0) {
+    score += 45;
+    signals.push(`${critical} critical vulnerability finding(s)`);
+  }
+  if (high > 0) {
+    score += 30;
+    signals.push(`${high} high vulnerability finding(s)`);
+  }
+  if (directVulnerable.length) {
+    score += 15;
+    signals.push(`${directVulnerable.length} vulnerable direct dependency package(s)`);
+  }
+  if (transitiveOrUnmatched.length) {
+    score += 8;
+    signals.push(`${transitiveOrUnmatched.length} vulnerable transitive or unmatched package(s)`);
+  }
+  if (packageManagerPolicy(lockfiles).status === "review-required") {
+    score += 10;
+    signals.push("mixed package manager lockfiles");
+  }
+  if (packages.length && security.enabled !== true) {
+    score += 5;
+    signals.push("security scanner summary is off");
+  }
+  const level = score >= 90 ? "urgent" : score >= 60 ? "high" : score >= 30 ? "medium" : score > 0 ? "low" : "clear";
+  const reviewTargets = [
+    ...new Set([
+      ...topRisk.map((pkg) => pkg.manifest).filter(Boolean),
+      ...topRisk.map((pkg) => pkg.name).filter(Boolean).slice(0, 5)
+    ])
+  ].slice(0, 8);
+  return {
+    level,
+    score,
+    signals,
+    scanner: security.enabled ? "enabled" : "off",
+    vulnerabilityCount: total,
+    directVulnerablePackages: directVulnerable.length,
+    reviewTargets,
+    next: riskNext(level, security.enabled, topRisk),
+    commands: riskCommands(level, security.enabled)
+  };
+}
+
+function riskNext(level, securityEnabled, topRisk = []) {
+  if (!securityEnabled) return "Run read-only security scan before dependency or release decisions.";
+  if (level === "urgent" || level === "high") return "Review dependency read set and topRisk before remediation; do not auto-fix without user approval.";
+  if (topRisk.length) return "Review topRisk packages before dependency changes.";
+  return "No SBOM risk signal requires action in the lightweight snapshot.";
+}
+
+function riskCommands(level, securityEnabled) {
+  const commands = [];
+  if (!securityEnabled) commands.push("aienvmp sync --security");
+  if (["urgent", "high", "medium"].includes(level)) {
+    commands.push("aienvmp intent --actor agent:id --action dependency-review --target dependency");
+    commands.push("aienvmp plan --write");
+  }
+  commands.push("aienvmp checkpoint --actor agent:id --summary dependency-review --target dependency");
+  return commands;
 }
 
 function packageManagerPolicy(lockfiles = []) {
@@ -196,8 +265,7 @@ function dependencyChangeHints(packages = [], topRisk = [], lockfiles = []) {
     ],
     afterChange: [
       "Run project tests or the narrowest relevant validation.",
-      "Run aienvmp sync.",
-      "Record the dependency change with aienvmp record."
+      "Run aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency."
     ]
   }));
 }

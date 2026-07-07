@@ -11,6 +11,13 @@ test("buildStatus returns a compact clear state", () => {
     runtimes: { node: "24.0.0" },
     dependencySnapshot: { summary: { packages: 2 }, manifests: ["package.json"] },
     lightSbom: {
+      riskSummary: {
+        level: "low",
+        score: 5,
+        scanner: "off",
+        next: "Run read-only security scan before dependency or release decisions.",
+        signals: ["security scanner summary is off"]
+      },
       dependencyChangeHints: [{
         manifest: "package.json",
         ecosystem: "npm",
@@ -43,6 +50,8 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.dependencyReadSet[0].manifest, "package.json");
   assert.deepEqual(status.dependencyReadSet[0].lockfiles, ["package-lock.json"]);
   assert.equal(status.dependencyChangeProtocol.mode, "advisory");
+  assert.equal(status.sbomRisk.level, "low");
+  assert.match(status.sbomRisk.next, /security scan/);
   assert.equal(status.dependencyChangeProtocol.commands.recordIntent, "aienvmp intent --actor agent:id --action planned-change --target dependency");
   assert.equal(status.commands.recordIntent, "aienvmp intent --actor agent:id --action planned-change --target dependency");
   assert.equal(status.commands.checkpoint, "aienvmp checkpoint --actor agent:id --summary what-changed --target environment");

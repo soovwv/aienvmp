@@ -58,6 +58,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: `aienvmp checkpoint` now performs the post-change loop and records an explicit sync ledger entry so follow-ups can be closed.
 - Verification: checkpoint tests cover text/JSON output, status artifact refresh, timeline entries, handoff recording, and cleared follow-ups.
 
+### Light SBOM risk required too much parsing
+
+- Issue: AI consumers could see package and vulnerability details, but had to infer risk level and next commands from several nested fields.
+- Fix: `lightSbom.riskSummary` and preflight `sbomRisk` now provide a compact risk score, signals, review targets, and advisory next steps.
+- Verification: tests cover risk scoring, top-risk severity fallback, scanner-off guidance, status/context exposure, dashboard rendering, and recommended actions.
+
 ## Template
 
 ### Title

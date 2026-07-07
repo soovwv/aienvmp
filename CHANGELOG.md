@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.46
+
+- Added `lightSbom.riskSummary` with compact risk level, score, scanner state, signals, review targets, and next commands.
+- Added `sbomRisk` to the shared AI preflight contract so status/context consumers can read SBOM risk without deep parsing.
+- Surfaced SBOM risk in `context --json`, `AIENV.md`, and the dashboard Light SBOM card.
+- Added recommended actions for read-only security scans and high light-SBOM risk review.
+- Used top-risk package severity as a fallback when scanner summary severity counts are incomplete.
+- Updated dependency change hints to point agents to `aienvmp checkpoint` after accepted dependency changes.
+- Added regression tests for risk scoring, scanner-off guidance, status/context outputs, dashboard rendering, and recommended actions.
+
 ## 0.1.45
 
 - Added `aienvmp checkpoint` as a one-command post-environment-change flow for record, sync, status, and handoff.

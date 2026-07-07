@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { buildLightSbom, linkVulnerableDependencies, parsePyprojectDependencies, parseRequirementLine, remediationPriority, scanDependencySnapshot } from "../src/dependencies.js";
+import { buildLightSbom, lightSbomRiskSummary, linkVulnerableDependencies, parsePyprojectDependencies, parseRequirementLine, remediationPriority, scanDependencySnapshot } from "../src/dependencies.js";
 
 test("parseRequirementLine separates package name and version spec", () => {
   assert.deepEqual(parseRequirementLine("django==3.2.0"), { name: "django", version: "==3.2.0" });
@@ -116,6 +116,9 @@ test("buildLightSbom creates an AI-ready package and risk summary", () => {
   assert.equal(sbom.summary.vulnerabilities, 2);
   assert.equal(sbom.summary.directVulnerablePackages, 1);
   assert.equal(sbom.summary.transitiveOrUnmatchedVulnerablePackages, 1);
+  assert.equal(sbom.riskSummary.level, "high");
+  assert.match(sbom.riskSummary.signals.join(" "), /vulnerable direct dependency/);
+  assert.deepEqual(sbom.riskSummary.reviewTargets.slice(0, 2), ["package.json", "express"]);
   assert.equal(sbom.topRisk[0].name, "express");
   assert.equal(sbom.topRisk[0].directDependency, true);
   assert.equal(sbom.dependencyChangeHints[0].manifest, "package.json");
@@ -126,6 +129,19 @@ test("buildLightSbom creates an AI-ready package and risk summary", () => {
   assert.match(sbom.dependencyChangeHints[0].beforeChange[0], /package\.json/);
   assert.equal(sbom.aiUse.dependencySource, "project manifests only; no install or resolver is run");
   assert.match(sbom.aiUse.trustRule, /fast AI planning map/);
+});
+
+test("lightSbomRiskSummary stays lightweight when scanners are off", () => {
+  const risk = lightSbomRiskSummary({
+    packages: [{ name: "express", ecosystem: "npm" }],
+    security: { enabled: false },
+    lockfiles: [{ file: "package-lock.json", ecosystem: "npm", manager: "npm" }]
+  });
+
+  assert.equal(risk.level, "low");
+  assert.equal(risk.scanner, "off");
+  assert.match(risk.next, /security scan/);
+  assert.equal(risk.commands[0], "aienvmp sync --security");
 });
 
 test("remediationPriority scores severity, direct dependency, and fix availability", () => {

@@ -47,6 +47,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `schema --json` prints the stable AI-readable output contract without scanning.
 - `status.json.nextAgent` tells the next AI what to read and whether to review first.
 - `dependencyReadSet` lists manifests and lockfiles before package or security changes.
+- `sbomRisk` gives AI a compact light-SBOM risk level, signals, and next command.
 - `coordination.conflictTargets` shows where multiple agents are planning changes.
 - `agentActivity.multiActorTargets` shows where multiple agents actually recorded env changes.
 - `followUps` shows records that still need `sync`, `status`, or `handoff`.

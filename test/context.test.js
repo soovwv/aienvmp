@@ -37,6 +37,14 @@ test("contextWorkspace JSON includes compact step summary", async () => {
         transitiveOrUnmatchedVulnerablePackages: 0
       },
       topRisk: [],
+      riskSummary: {
+        level: "low",
+        score: 5,
+        scanner: "off",
+        next: "Run read-only security scan before dependency or release decisions.",
+        signals: ["security scanner summary is off"],
+        commands: ["aienvmp sync --security"]
+      },
       dependencyChangeHints: [{
         manifest: "package.json",
         ecosystem: "npm",
@@ -112,6 +120,8 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   assert.equal(json.dependencySnapshot.summary.packages, 1);
   assert.equal(json.dependencySnapshot.packages[0].name, "express");
   assert.equal(json.lightSbom.summary.packages, 1);
+  assert.equal(json.sbomRisk.level, "low");
+  assert.equal(json.lightSbom.riskSummary.scanner, "off");
   assert.equal(json.lightSbom.dependencyChangeHints[0].manifest, "package.json");
   assert.equal(json.lightSbom.source.dependencies, "project manifests");
   assert.equal(json.lightSbom.confidence.transitiveDependencies, "not-resolved");

@@ -46,6 +46,14 @@ test("renderDashboard includes the audit summary surface", () => {
         fixAvailable: true,
         fixVersions: ["4.18.3"]
       }],
+      riskSummary: {
+        level: "high",
+        score: 80,
+        scanner: "enabled",
+        next: "Review dependency read set and topRisk before remediation; do not auto-fix without user approval.",
+        signals: ["1 high vulnerability finding(s)", "1 vulnerable direct dependency package(s)"],
+        reviewTargets: ["package.json", "express"]
+      },
       packageManagerPolicy: {
         status: "clear",
         ecosystems: {
@@ -267,6 +275,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Global Inventory/);
   assert.match(html, /Dependency Snapshot/);
   assert.match(html, /Light SBOM/);
+  assert.match(html, /Risk summary/);
+  assert.match(html, /vulnerable direct dependency/);
   assert.match(html, /Direct vulnerable/);
   assert.match(html, /Dependency change hints/);
   assert.match(html, /Package manager policy/);

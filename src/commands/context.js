@@ -27,6 +27,7 @@ export async function contextWorkspace(args) {
       status: warnings.length ? "review-required" : "clear",
       preflight,
       coordination: preflight.coordination,
+      sbomRisk: preflight.sbomRisk,
       followUps: preflight.followUps,
       decision,
       enforcement: enforcementAdvice(warnings),
@@ -75,6 +76,7 @@ function lightSbomSummary(lightSbom = {}) {
       guidance: "No lockfile policy detected."
     },
     dependencyChangeHints: (lightSbom.dependencyChangeHints || []).slice(0, 8),
+    riskSummary: lightSbom.riskSummary || {},
     source: lightSbom.source || {},
     confidence: lightSbom.confidence || {},
     limitations: lightSbom.limitations || [],

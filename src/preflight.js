@@ -16,6 +16,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
   const coordination = coordinationSummary(intents);
   const followUps = pendingFollowUps(timeline);
   const agentActivity = agentActivitySummary(timeline);
+  const sbomRisk = manifest.lightSbom?.riskSummary || {};
   return {
     schemaVersion: 1,
     contract: preflightContract(),
@@ -57,6 +58,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     nextAgent: nextAgentHint(state, dependencyReadSet, dependencyChangeProtocol),
     coordination,
     agentActivity,
+    sbomRisk,
     followUps,
     intentTargets,
     dependencyReadSet,
