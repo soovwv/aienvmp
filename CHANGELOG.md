@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.35
+
+- Added a shared AI preflight contract across status, context, plan, and handoff outputs.
+- Reused the same artifact map, read order, safe commands, decision, and enforcement guidance across AI-facing JSON.
+- Reduced drift risk between multi-agent handoffs and environment planning.
+
 ## 0.1.34
 
 - Added AI navigation metadata to `.aienvmp/status.json`.

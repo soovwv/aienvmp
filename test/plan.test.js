@@ -29,6 +29,9 @@ test("buildPlan creates a read-only action plan", () => {
   }, [{ code: "security-vulnerabilities", message: "high risk" }], [], {});
 
   assert.equal(plan.status, "review-required");
+  assert.equal(plan.preflight.state, "review-required");
+  assert.equal(plan.preflight.artifacts.planJson, ".aienvmp/plan.json");
+  assert.equal(plan.preflight.commands.recordIntent, "aienvmp intent --actor agent:id --action planned-change");
   assert.equal(plan.decision.mode, "review-first");
   assert.equal(plan.enforcement.mode, "advisory-by-default");
   assert.deepEqual(plan.enforcement.suggestedStrictScopes, ["security"]);
@@ -116,6 +119,8 @@ test("planWorkspace can write plan artifacts", async () => {
   try {
     const plan = await planWorkspace({ dir, write: true, json: true });
     assert.equal(plan.recommendedActions[0].id, "continue-project-local");
+    assert.equal(plan.preflight.state, "clear");
+    assert.equal(plan.preflight.commands.handoff, "aienvmp handoff --record --actor agent:id");
     assert.equal(plan.decision.mode, "project-local-work");
     assert.deepEqual(plan.enforcement.suggestedStrictScopes, []);
   } finally {
@@ -125,5 +130,6 @@ test("planWorkspace can write plan artifacts", async () => {
   assert.match(await fs.readFile(path.join(dir, ".aienvmp", "plan.md"), "utf8"), /AI Environment Plan/);
   const planJson = JSON.parse(await fs.readFile(path.join(dir, ".aienvmp", "plan.json"), "utf8"));
   assert.equal(planJson.schemaVersion, 1);
+  assert.equal(planJson.preflight.readOrder[0], ".aienvmp/status.json");
   assert.equal(planJson.decision.requiredCommands.handoff, "aienvmp handoff --record --actor agent:id");
 });

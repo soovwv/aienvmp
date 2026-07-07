@@ -8,6 +8,7 @@ import { recommendedActions } from "../actions.js";
 import { buildPlan, compactStepSummary } from "./plan.js";
 import { aiDecision } from "../decision.js";
 import { enforcementAdvice } from "../enforcement.js";
+import { buildPreflight } from "../preflight.js";
 
 export async function contextWorkspace(args) {
   const dir = workspaceDir(args);
@@ -20,9 +21,11 @@ export async function contextWorkspace(args) {
   const decision = aiDecision(warnings, intents);
   const actions = recommendedActions(manifest, { warnings, intents });
   const stepSummary = compactStepSummary(buildPlan(manifest, warnings, intents, policy));
+  const preflight = buildPreflight(manifest, warnings, intents);
   if (args.json) {
     console.log(JSON.stringify({
       status: warnings.length ? "review-required" : "clear",
+      preflight,
       decision,
       enforcement: enforcementAdvice(warnings),
       recommendedActions: actions,

@@ -7,6 +7,7 @@ import { openIntents, readJsonl, readTimeline } from "../timeline.js";
 import { changedTrust } from "../trust.js";
 import { recommendedActions } from "../actions.js";
 import { aiDecision } from "../decision.js";
+import { buildPreflight } from "../preflight.js";
 
 export async function handoffWorkspace(args) {
   const dir = workspaceDir(args);
@@ -49,6 +50,7 @@ export function buildHandoff(manifest, timeline = [], warnings = [], intents = [
     status: reviewRequired ? "review-required" : "clear",
     trust: manifest.trust || {},
     schemaVersion: manifest.schemaVersion || 1,
+    preflight: buildPreflight(manifest, warnings, intents),
     decision: aiDecision(warnings, intents),
     workspace: manifest.workspace,
     safeRuntime: {

@@ -55,6 +55,7 @@ AIENV.md
 
 Trust states are machine-readable: `observed`, `planned`, `changed`, `review`, `verified`, `stale`.
 `status.json` also lists AI read order, artifact paths, and safe commands.
+`status`, `context`, `plan`, and `handoff` share the same AI preflight contract.
 
 AI agents can observe, plan, and record. Only a human or CI should mark environment facts as verified.
 

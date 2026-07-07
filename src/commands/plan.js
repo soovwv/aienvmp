@@ -8,6 +8,7 @@ import { recommendedActions } from "../actions.js";
 import { openIntents, readJsonl, readTimeline } from "../timeline.js";
 import { aiDecision } from "../decision.js";
 import { enforcementAdvice } from "../enforcement.js";
+import { buildPreflight } from "../preflight.js";
 
 export async function planWorkspace(args) {
   const dir = workspaceDir(args);
@@ -39,6 +40,7 @@ export function buildPlan(manifest, warnings = [], intents = [], policy = {}) {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
     status,
+    preflight: buildPreflight(manifest, warnings, intents),
     workspace: manifest.workspace || {},
     trust: manifest.trust || {},
     decision: aiDecision(warnings, intents),
