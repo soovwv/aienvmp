@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Added a 10-second AI quickstart flow to the shared preflight contract and status output.
+- Added preflight intent target recommendations so agents can record runtime, package manager, dependency, Docker, or coordination changes consistently.
 
 ## 0.1.37
 

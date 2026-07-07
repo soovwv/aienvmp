@@ -8,6 +8,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
   const actions = recommendedActions(manifest, { warnings, intents });
   const state = decision.reviewRequired ? "review-required" : "clear";
   const topAction = actions[0] || null;
+  const intentTargets = recommendedIntentTargets(manifest, warnings, intents);
   return {
     schemaVersion: 1,
     state,
@@ -44,6 +45,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
       environmentChanges: decision.canChangeEnvironmentWithoutReview ? "allowed" : "intent-and-review-first"
     },
     quickstart: agentQuickstart(decision.reviewRequired),
+    intentTargets,
     artifacts: preflightArtifacts(),
     readOrder: [
       ".aienvmp/status.json",
@@ -59,11 +61,78 @@ export function buildPreflight(manifest = {}, warnings = [], intents = []) {
       context: "aienvmp context --json",
       plan: "aienvmp plan --write",
       handoff: "aienvmp handoff --record --actor agent:id",
-      recordIntent: "aienvmp intent --actor agent:id --action planned-change"
+      recordIntent: intentTargets[0]?.command || "aienvmp intent --actor agent:id --action planned-change"
     },
     topAction,
     nextCommand: topAction?.command || decision.nextCommand
   };
+}
+
+function recommendedIntentTargets(manifest = {}, warnings = [], intents = []) {
+  const targets = [];
+  for (const warning of warnings) {
+    addTarget(targets, targetFromWarning(warning), warning.message || warning.code, warning.code);
+  }
+  for (const intent of intents) {
+    addTarget(targets, intent.target || targetFromText(intent.action), `Open intent from ${intent.actor || "unknown"}.`, "open-intent");
+  }
+  const pmPolicy = manifest.lightSbom?.packageManagerPolicy;
+  if (pmPolicy?.status === "review-required") {
+    addTarget(targets, "package-manager", pmPolicy.guidance, "package-manager-policy");
+  }
+  if (Number(manifest.security?.summary?.total || 0) > 0) {
+    addTarget(targets, "dependency", "Security findings are dependency-related; record dependency intent before remediation.", "security");
+  }
+  if (Number(manifest.dependencySnapshot?.summary?.packages || 0) > 0) {
+    addTarget(targets, "dependency", "Dependency manifests detected; use this target before package changes.", "dependency-snapshot");
+  }
+  if (!targets.length) {
+    addTarget(targets, "environment", "Default target when the change affects runtime, dependency, container, or global tool state.", "default");
+  }
+  return targets.slice(0, 5).map((item) => ({
+    ...item,
+    command: `aienvmp intent --actor agent:id --action planned-change --target ${item.target}`
+  }));
+}
+
+function addTarget(targets, target, reason, source) {
+  const normalized = normalizeTarget(target);
+  if (!normalized) return;
+  const existing = targets.find((item) => item.target === normalized);
+  if (existing) {
+    if (source && !existing.sources.includes(source)) existing.sources.push(source);
+    return;
+  }
+  targets.push({ target: normalized, reason: reason || "Environment change target.", sources: source ? [source] : [] });
+}
+
+function targetFromWarning(warning = {}) {
+  if (warning.target) return warning.target;
+  const code = warning.code || "";
+  if (code.includes("node")) return "node";
+  if (code.includes("python")) return "python";
+  if (code.includes("docker")) return "docker";
+  if (code.includes("lockfile") || code.includes("package-manager")) return "package-manager";
+  if (code.includes("security")) return "dependency";
+  if (code.includes("intent") || code.includes("handoff")) return "coordination";
+  return targetFromText(`${warning.message || ""} ${code}`);
+}
+
+function targetFromText(text = "") {
+  const normalized = String(text).toLowerCase();
+  for (const target of ["node", "python", "docker", "package-manager", "dependency", "npm", "pnpm", "yarn", "uv", "pip", "pipx"]) {
+    if (normalized.includes(target)) return target;
+  }
+  if (normalized.includes("package manager") || normalized.includes("lockfile")) return "package-manager";
+  if (normalized.includes("vulnerab") || normalized.includes("package")) return "dependency";
+  return "";
+}
+
+function normalizeTarget(target = "") {
+  const normalized = String(target).trim().toLowerCase();
+  if (["npm", "pnpm", "yarn"].includes(normalized)) return "package-manager";
+  if (["pip", "pipx", "uv"].includes(normalized)) return "python";
+  return normalized;
 }
 
 function agentQuickstart(reviewRequired) {
