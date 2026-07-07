@@ -1,0 +1,52 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { buildPlan, planWorkspace } from "../src/commands/plan.js";
+import { renderPlan } from "../src/render.js";
+import { writeJson } from "../src/fsutil.js";
+
+test("buildPlan creates a read-only action plan", () => {
+  const plan = buildPlan({
+    workspace: { path: "/tmp/work", name: "work" },
+    trust: { state: "observed" },
+    security: {
+      enabled: true,
+      summary: { total: 1, critical: 0, high: 1, moderate: 0, low: 0, info: 0 },
+      topPackages: [{ name: "lodash", severity: "high", fixAvailable: true, fixVersions: ["4.17.21"] }]
+    }
+  }, [{ code: "security-vulnerabilities", message: "high risk" }], [], {});
+
+  assert.equal(plan.status, "review-required");
+  assert.equal(plan.recommendedActions[0].id, "review-security-remediation");
+  assert.match(renderPlan(plan), /read-only/);
+  assert.match(renderPlan(plan), /lodash/);
+});
+
+test("planWorkspace can write plan artifacts", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-plan-"));
+  await fs.mkdir(path.join(dir, ".aienvmp"), { recursive: true });
+  await writeJson(path.join(dir, ".aienvmp", "manifest.json"), {
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    trust: { state: "observed", verified: false },
+    workspace: { path: dir, name: path.basename(dir) },
+    runtimes: {},
+    packageManagers: {},
+    containers: {},
+    projectHints: {}
+  });
+
+  const originalLog = console.log;
+  console.log = () => {};
+  try {
+    const plan = await planWorkspace({ dir, write: true, json: true });
+    assert.equal(plan.recommendedActions[0].id, "continue-project-local");
+  } finally {
+    console.log = originalLog;
+  }
+
+  assert.match(await fs.readFile(path.join(dir, ".aienvmp", "plan.md"), "utf8"), /AI Environment Plan/);
+  assert.equal(JSON.parse(await fs.readFile(path.join(dir, ".aienvmp", "plan.json"), "utf8")).schemaVersion, 1);
+});

@@ -164,6 +164,31 @@ export function renderHandoff(handoff) {
   return lines.join("\n");
 }
 
+export function renderPlan(plan) {
+  const lines = [
+    "# AI Environment Plan",
+    "",
+    `Status: ${plan.status}`,
+    `Generated: ${plan.generatedAt}`,
+    `Workspace: ${plan.workspace?.path || "unknown"}`,
+    "",
+    "Purpose: read-only review plan for AI agents and humans. It does not install, remove, upgrade, downgrade, or lock anything.",
+    "",
+    "Recommended actions:",
+    ...(plan.recommendedActions.length
+      ? plan.recommendedActions.map((item) => `- [${item.priority}] ${item.category}: ${item.summary}${item.command ? ` (${item.command})` : ""}`)
+      : ["- none"]),
+    "",
+    "Review gates:",
+    ...plan.reviewGates.map((item) => `- ${item}`),
+    "",
+    "Warnings:",
+    ...(plan.warnings.length ? plan.warnings.map((warning) => `- [${warning.code}] ${warning.message}`) : ["- none"]),
+    ""
+  ];
+  return lines.join("\n");
+}
+
 export function renderDashboard(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const data = JSON.stringify({ manifest, timeline, warnings, intents, policy });
   return `<!doctype html>

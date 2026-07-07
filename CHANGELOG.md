@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.14
+
+- Added `aienvmp plan` for read-only AI environment action plans.
+- Added optional `aienvmp plan --write` artifacts at `.aienvmp/plan.json` and `.aienvmp/plan.md`.
+- Kept plan output advisory-only with review gates instead of automatic fixes.
+
 ## 0.1.13
 
 - Added `recommendedActions` to AI handoff output.

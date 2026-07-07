@@ -28,6 +28,14 @@ export function dashboardPath(dir) {
   return path.join(stateDir(dir), "dashboard.html");
 }
 
+export function planJsonPath(dir) {
+  return path.join(stateDir(dir), "plan.json");
+}
+
+export function planMdPath(dir) {
+  return path.join(stateDir(dir), "plan.md");
+}
+
 export function aiEnvPath(dir) {
   return path.join(dir, "AIENV.md");
 }
