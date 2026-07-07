@@ -16,6 +16,10 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.state, "clear");
   assert.equal(status.counts.runtimes, 1);
   assert.equal(status.counts.dependencies, 2);
+  assert.equal(status.agentUse.environmentChanges, "allowed");
+  assert.equal(status.artifacts.status, ".aienvmp/status.json");
+  assert.equal(status.readOrder[0], ".aienvmp/status.json");
+  assert.equal(status.commands.context, "aienvmp context --json");
   assert.equal(status.nextCommand, "aienvmp intent --actor agent:id --action planned-change");
 });
 
@@ -49,6 +53,8 @@ test("statusWorkspace JSON reports review-required and strict suggestion", async
   assert.equal(json.enforcement.suggestedStrictScopes[0], "policy");
   assert.equal(json.counts.warnings, 1);
   assert.equal(json.counts.dependencies, 1);
+  assert.equal(json.agentUse.environmentChanges, "intent-and-review-first");
+  assert.equal(json.artifacts.envMap, "AIENV.md");
 });
 
 test("statusWorkspace can write the compact AI status artifact", async () => {
@@ -73,4 +79,6 @@ test("statusWorkspace can write the compact AI status artifact", async () => {
   const written = JSON.parse(await fs.readFile(result.artifact, "utf8"));
   assert.equal(written.schemaVersion, 1);
   assert.equal(written.state, "clear");
+  assert.equal(written.readOrder[0], ".aienvmp/status.json");
+  assert.equal(written.commands.refresh, "aienvmp sync");
 });

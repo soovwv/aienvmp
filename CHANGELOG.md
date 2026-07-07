@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.34
+
+- Added AI navigation metadata to `.aienvmp/status.json`.
+- Included artifact paths, read order, safe commands, and agent-use rules in the compact status output.
+- Kept the status enhancement read-only and lightweight so `sync` remains the simple default flow.
+
 ## 0.1.33
 
 - Made `.aienvmp/status.json` a first-class artifact written by `aienvmp sync`.

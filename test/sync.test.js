@@ -33,6 +33,8 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   const status = JSON.parse(await fs.readFile(path.join(dir, ".aienvmp", "status.json"), "utf8"));
   assert.equal(status.schemaVersion, 1);
   assert.ok(["clear", "review-required"].includes(status.state));
+  assert.equal(status.agentUse.purpose, "First AI-readable environment preflight for this workspace.");
+  assert.equal(status.artifacts.dashboard, ".aienvmp/dashboard.html");
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "dashboard.html")));
   await assert.rejects(fs.access(path.join(dir, "AGENTS.md")));
 });
