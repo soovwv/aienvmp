@@ -110,17 +110,23 @@ export function handoffWarnings(timeline = []) {
 
 function inferTarget(action = "") {
   const normalized = String(action).toLowerCase();
-  for (const target of ["node", "python", "docker", "npm", "pnpm", "yarn", "uv", "pip", "pipx"]) {
+  for (const target of ["dependency", "node", "python", "docker", "npm", "pnpm", "yarn", "uv", "pip", "pipx"]) {
     if (normalized.includes(target)) return target;
   }
+  if (normalized.includes("package") || normalized.includes("lockfile") || normalized.includes("vulnerab")) return "dependency";
   return "";
 }
 
 function isEnvironmentChange(item = {}) {
-  if (["runtime", "package-manager", "container"].includes(item.change?.scope)) return true;
+  if (["runtime", "package-manager", "container", "dependency"].includes(item.change?.scope)) return true;
   if (item.type === "detected-change") return false;
   const text = `${item.type || ""} ${item.target || ""} ${item.summary || ""} ${item.action || ""} ${item.change?.scope || ""} ${item.change?.key || ""}`.toLowerCase();
   return [
+    "dependency",
+    "dependencies",
+    "package",
+    "lockfile",
+    "vulnerability",
     "runtime",
     "node",
     "python",

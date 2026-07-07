@@ -6,6 +6,7 @@
 - Added an advisory dependency change protocol so agents follow the same intent, refresh, record, and handoff flow for package/security edits.
 - Surfaced the dependency change protocol in `plan.md` so human-readable plans match the AI preflight contract.
 - Pointed security remediation recommendations at the dependency intent workflow instead of a generic context read.
+- Treated dependency records and package/security intents as coordination signals for stale handoff and multi-agent conflict warnings.
 
 ## 0.1.38
 

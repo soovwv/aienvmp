@@ -74,6 +74,19 @@ test("handoffWarnings accepts a later recorded handoff", () => {
   assert.equal(warnings.length, 0);
 });
 
+test("handoffWarnings treats dependency records as handoff-worthy changes", () => {
+  const warnings = handoffWarnings([{
+    at: "2026-07-08T00:00:00.000Z",
+    actor: "agent:codex",
+    type: "agent-record",
+    target: "dependency",
+    summary: "updated lodash"
+  }]);
+
+  assert.equal(warnings.length, 1);
+  assert.equal(warnings[0].code, "handoff-stale");
+});
+
 test("coordinationWarnings reports multiple agents changing the same target", () => {
   const warnings = coordinationWarnings([
     { actor: "agent:codex", action: "upgrade node", target: "node" },
@@ -83,6 +96,17 @@ test("coordinationWarnings reports multiple agents changing the same target", ()
   assert.equal(warnings.length, 1);
   assert.equal(warnings[0].code, "conflicting-open-intents");
   assert.equal(warnings[0].target, "node");
+});
+
+test("coordinationWarnings infers dependency intent conflicts", () => {
+  const warnings = coordinationWarnings([
+    { actor: "agent:codex", action: "fix vulnerable package" },
+    { actor: "agent:claude", action: "update dependency" }
+  ]);
+
+  assert.equal(warnings.length, 1);
+  assert.equal(warnings[0].code, "conflicting-open-intents");
+  assert.equal(warnings[0].target, "dependency");
 });
 
 test("strictResult filters failures by strict scope", () => {
