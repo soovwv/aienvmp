@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.15
+
+- Added dashboard links for written AI plan artifacts.
+- Added `write-plan` support to the GitHub Action so CI can emit read-only plan outputs.
+- Updated the GitHub Action example to show the sync, plan, and doctor flow.
+
 ## 0.1.14
 
 - Added `aienvmp plan` for read-only AI environment action plans.

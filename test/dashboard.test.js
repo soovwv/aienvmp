@@ -1,5 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { dashWorkspace } from "../src/commands/dash.js";
+import { writeJson } from "../src/fsutil.js";
 import { renderDashboard } from "../src/render.js";
 
 test("renderDashboard includes the audit summary surface", () => {
@@ -24,7 +29,11 @@ test("renderDashboard includes the audit summary surface", () => {
       category: "security",
       summary: "Review lodash before dependency changes.",
       command: "aienvmp context --json"
-    }]
+    }],
+    planArtifacts: {
+      markdown: ".aienvmp/plan.md",
+      json: ".aienvmp/plan.json"
+    }
   }, [], [], [], {});
 
   assert.match(html, /Audit summary/);
@@ -35,7 +44,35 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /AI Handoff/);
   assert.match(html, /Recommended Actions/);
   assert.match(html, /Review lodash/);
+  assert.match(html, /AI Plan Artifacts/);
+  assert.match(html, /plan\.md/);
   assert.match(html, /Global Inventory/);
   assert.match(html, /Security Summary/);
   assert.match(html, /lodash/);
+});
+
+test("dashWorkspace links written plan artifacts", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-dash-plan-"));
+  await fs.mkdir(path.join(dir, ".aienvmp"), { recursive: true });
+  await writeJson(path.join(dir, ".aienvmp", "manifest.json"), {
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    trust: { state: "observed", verified: false },
+    workspace: { path: dir, name: path.basename(dir) },
+    os: { platform: "test", release: "test", arch: "x64" },
+    runtimes: {},
+    packageManagers: {},
+    containers: {},
+    projectHints: {},
+    agentFiles: {}
+  });
+  await fs.writeFile(path.join(dir, ".aienvmp", "plan.md"), "# plan\n", "utf8");
+  await fs.writeFile(path.join(dir, ".aienvmp", "plan.json"), "{}\n", "utf8");
+
+  await dashWorkspace({ dir, quiet: true });
+  const html = await fs.readFile(path.join(dir, ".aienvmp", "dashboard.html"), "utf8");
+
+  assert.match(html, /AI Plan Artifacts/);
+  assert.match(html, /href="plan\.md"/);
+  assert.match(html, /href="plan\.json"/);
 });

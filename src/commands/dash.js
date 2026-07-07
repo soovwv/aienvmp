@@ -2,9 +2,9 @@ import fs from "node:fs/promises";
 import { execFile } from "node:child_process";
 import path from "node:path";
 import { diagnose } from "../doctor.js";
-import { readJson } from "../fsutil.js";
+import { exists, readJson } from "../fsutil.js";
 import { openIntents, readJsonl, readTimeline } from "../timeline.js";
-import { dashboardPath, intentsPath, manifestPath, timelinePath, workspaceDir } from "../paths.js";
+import { dashboardPath, intentsPath, manifestPath, planJsonPath, planMdPath, timelinePath, workspaceDir } from "../paths.js";
 import { renderDashboard } from "../render.js";
 import { loadPolicy, policyWarnings } from "../policy.js";
 import { recommendedActions } from "../actions.js";
@@ -17,13 +17,23 @@ export async function dashWorkspace(args) {
   const intents = openIntents(await readJsonl(intentsPath(dir)));
   const policy = await loadPolicy(dir);
   const warnings = [...diagnose(manifest, { timeline, intents }), ...policyWarnings(manifest, policy)];
-  const html = renderDashboard({ ...manifest, recommendedActions: recommendedActions(manifest, { warnings, intents }) }, timeline, warnings, intents, policy);
+  const planArtifacts = await detectedPlanArtifacts(dir);
+  const html = renderDashboard({ ...manifest, recommendedActions: recommendedActions(manifest, { warnings, intents }), planArtifacts }, timeline, warnings, intents, policy);
   const out = dashboardPath(dir);
   await fs.mkdir(path.dirname(out), { recursive: true });
   await fs.writeFile(out, html, "utf8");
   if (!args.quiet) console.log(`dashboard: ${out}`);
   if (args.open) openFile(out);
   return { dashboard: out };
+}
+
+async function detectedPlanArtifacts(dir) {
+  const json = planJsonPath(dir);
+  const markdown = planMdPath(dir);
+  return {
+    json: await exists(json) ? ".aienvmp/plan.json" : "",
+    markdown: await exists(markdown) ? ".aienvmp/plan.md" : ""
+  };
 }
 
 function openFile(file) {

@@ -11,6 +11,10 @@ inputs:
     description: Fail when doctor reports warnings
     required: false
     default: "false"
+  write-plan:
+    description: Write read-only AI plan artifacts
+    required: false
+    default: "true"
 
 runs:
   using: composite
@@ -18,6 +22,13 @@ runs:
     - name: Sync environment map
       shell: bash
       run: node "$GITHUB_ACTION_PATH/bin/aienvmp.js" sync --dir "${{ inputs.directory }}" --quiet
+
+    - name: Write AI plan
+      shell: bash
+      run: |
+        if [ "${{ inputs.write-plan }}" = "true" ]; then
+          node "$GITHUB_ACTION_PATH/bin/aienvmp.js" plan --dir "${{ inputs.directory }}" --write --json
+        fi
 
     - name: Doctor
       shell: bash

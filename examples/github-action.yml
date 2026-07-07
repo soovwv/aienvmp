@@ -13,4 +13,5 @@ jobs:
       - uses: soovwv/aienvmp@main
         with:
           directory: "."
+          write-plan: "true"
           strict: "false"

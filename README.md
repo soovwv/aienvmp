@@ -36,6 +36,8 @@ AIENV.md
 .aienvmp/manifest.json
 .aienvmp/intents.jsonl
 .aienvmp/timeline.jsonl
+.aienvmp/plan.json
+.aienvmp/plan.md
 .aienvmp/dashboard.html
 ```
 
