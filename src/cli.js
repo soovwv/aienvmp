@@ -8,6 +8,7 @@ import { contextWorkspace } from "./commands/context.js";
 import { recordWorkspace } from "./commands/record.js";
 import { intentWorkspace } from "./commands/intent.js";
 import { resolveWorkspace } from "./commands/resolve.js";
+import { readFileSync } from "node:fs";
 
 const commands = new Map([
   ["init", initWorkspace],
@@ -22,7 +23,7 @@ const commands = new Map([
   ["resolve", resolveWorkspace]
 ]);
 
-const version = "0.1.0";
+const version = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version;
 
 export async function main(argv) {
   const [command, ...rest] = argv;
