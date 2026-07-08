@@ -272,6 +272,18 @@ test("renderDashboard includes the audit summary surface", () => {
   }, [], [], [], {});
 
   assert.match(html, /Audit summary/);
+  assert.match(html, /AI control strip/);
+  assert.match(html, /\.control-card\.review/);
+  assert.match(html, /controlCard\('AI readiness'/);
+  assert.match(html, /controlCard\('Collaboration'/);
+  assert.match(html, /controlCard\('SBOM risk'/);
+  assert.match(html, /AI readiness/);
+  assert.match(html, /Collaboration/);
+  assert.match(html, /SBOM risk/);
+  assert.match(html, /sbomRiskValue\+sbomRiskScore/);
+  assert.match(html, /"score":80/);
+  assert.match(html, /aienvmp handoff --record --actor agent:id/);
+  assert.match(html, /Review dependency read set and topRisk/);
   assert.match(html, /AI decision/);
   assert.match(html, /AI readiness/);
   assert.match(html, /Review listed signals/);

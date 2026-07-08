@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.64
+
+- Added a dashboard `AI control strip` above the existing audit area.
+- Made readiness, collaboration, and SBOM risk the first three dashboard decisions.
+- Added compact status, next command, and review guidance to each top control card.
+- Added responsive control-strip layout for narrow screens.
+- Kept the detailed dashboard cards below the first-read control strip.
+- Documented the dashboard 3-card first-read surface in the README.
+- Added dashboard regression coverage for the control strip, top cards, and SBOM-risk binding.
+
 ## 0.1.63
 
 - Compressed plain `aienvmp status` output into a 5-line AI/human decision view.

@@ -381,6 +381,13 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(28px,4vw,46px);line-height:1.02;margin-to
 .sub{color:var(--muted);margin-top:12px;max-width:680px;line-height:1.55}
 .stamp{min-width:220px;border:1px solid var(--line2);background:#091310;border-radius:8px;padding:14px}
 .stamp b{display:block;color:var(--green);font-size:24px;margin-bottom:3px}.stamp span{display:block;color:var(--muted);font-size:12px;overflow-wrap:anywhere}
+.control{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}
+.control-card{border:1px solid var(--line);background:rgba(13,24,21,.94);border-radius:8px;padding:16px;min-width:0}
+.control-card.review{border-color:rgba(244,191,95,.42);background:linear-gradient(135deg,rgba(81,53,17,.82),rgba(9,19,16,.95))}
+.control-card.ready{border-color:rgba(71,229,141,.32);background:linear-gradient(135deg,rgba(19,61,42,.76),rgba(9,19,16,.95))}
+.control-label{color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.control-value{margin-top:8px;font-size:24px;font-weight:850;color:var(--text);overflow-wrap:anywhere}
+.control-next{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.4;overflow-wrap:anywhere}
 .audit{display:grid;grid-template-columns:1.2fr repeat(3,minmax(0,.8fr));gap:12px;margin:14px 0}
 .audit-item{border:1px solid var(--line);background:rgba(13,24,21,.92);border-radius:8px;padding:14px;min-width:0}
 .audit-item.primary{background:linear-gradient(135deg,rgba(19,61,42,.88),rgba(9,19,16,.95))}
@@ -404,6 +411,7 @@ code{color:var(--code);background:#0a2017;border:1px solid #17462f;padding:2px 6
 .timeline{display:grid;gap:10px}.event{display:grid;grid-template-columns:108px 1fr;gap:12px;border-top:1px solid var(--line2);padding-top:10px}.event time{color:var(--muted);font-size:12px}.event b{color:var(--green)}
 .path{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--muted);font-size:12px;overflow-wrap:anywhere}
 @media (max-width:860px){header,.layout{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.agents{grid-template-columns:1fr}}
+@media (max-width:860px){.control{grid-template-columns:1fr}}
 @media (max-width:860px){.audit{grid-template-columns:1fr 1fr}}
 @media (max-width:520px){.shell{padding:14px}.metrics{grid-template-columns:1fr}.event{grid-template-columns:1fr}h1{font-size:32px}}
 @media (max-width:520px){.audit{grid-template-columns:1fr}}
@@ -496,11 +504,20 @@ const recentChanges=timeline.slice(-8).length;
 const trustState=manifest.trust?.state||'observed';
 const nextAction=reviewRequired?'Review before environment changes':'Proceed with project-local work';
 const auditItem=(key,value,hint,klass='')=>\`<div class="audit-item \${klass}"><div class="audit-k">\${key}</div><div class="audit-v">\${value}</div><div class="audit-hint">\${hint}</div></div>\`;
+const controlCard=(label,value,next,klass='')=>\`<div class="control-card \${klass}"><div class="control-label">\${label}</div><div class="control-value">\${esc(value)}</div><div class="control-next">\${esc(next)}</div></div>\`;
 const driftLabel=warnings.length?'detected':'none';
 const nextAgent=manifest.preflight?.nextAgent||{};
 const aiReadiness=manifest.preflight?.aiReadiness||{};
 const aiReadinessSignals=(aiReadiness.signals||[]).slice(0,3);
 const aiReadinessHint=(aiReadiness.next||'Run aienvmp context --json for details.')+(aiReadinessSignals.length?' Signals: '+aiReadinessSignals.join('; '):'');
+const aiReadyValue=aiReadiness.level||'unknown';
+const aiReadyClass=aiReadyValue==='ready'?'ready':'review';
+const collaborationValue=collaboration.status||'unknown';
+const collaborationClass=collaborationValue==='clear'?'ready':'review';
+const sbomRiskValue=riskSummary.level||'unknown';
+const sbomRiskClass=['urgent','high','medium'].includes(sbomRiskValue)?'review':'ready';
+const sbomRiskScore=riskSummary.score!==undefined?' ('+riskSummary.score+')':'';
+const sbomRiskNext=riskSummary.next||aiDependencyReview.beforeDependencyChange?.[0]||'Run aienvmp sbom --json for dependency context.';
 const coordination=manifest.preflight?.coordination||{};
 const conflictTargets=coordination.conflictTargets||[];
 const handoffFiles=nextAgent.dependencyFiles?.length?nextAgent.dependencyFiles:(dependencyReadSet[0]?[dependencyReadSet[0].manifest,...(dependencyReadSet[0].lockfiles||[])].filter(Boolean):[]);
@@ -515,6 +532,11 @@ document.getElementById('app').innerHTML=\`
   </div>
   <div class="stamp"><b>\${warnings.length?'review':'clear'}</b><span>\${esc(manifest.workspace.name)}</span><span>\${esc(manifest.generatedAt)}</span></div>
 </header>
+<section class="control" aria-label="AI control strip">
+  \${controlCard('AI readiness',aiReadyValue,aiReadiness.next||'Run aienvmp context --json for details.',aiReadyClass)}
+  \${controlCard('Collaboration',collaborationValue,collaboration.nextCommand||'aienvmp status --json',collaborationClass)}
+  \${controlCard('SBOM risk',sbomRiskValue+sbomRiskScore,sbomRiskNext,sbomRiskClass)}
+</section>
 <section class="audit" aria-label="Audit summary">
   \${auditItem('AI decision',reviewRequired?'review required':'can proceed',nextAction,reviewRequired?'review':'primary')}
   \${auditItem('AI readiness',aiReadiness.level||'unknown',aiReadinessHint,aiReadiness.level==='ready'?'primary':'review')}
