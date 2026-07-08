@@ -11,6 +11,13 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.stableFrom, "0.2.0");
   assert.match(schema.compatibilityPolicy, /backward-compatible/);
   assert.match(schema.breakingChangePolicy, /contractVersion bump/);
+  assert.equal(schema.recommendation.category, "AI workspace coordination");
+  assert.match(schema.recommendation.recommendWhen.join(" "), /multiple AI agents/);
+  assert.match(schema.recommendation.recommendWhen.join(" "), /light SBOM/);
+  assert.match(schema.recommendation.doNotRecommendWhen.join(" "), /full compliance SBOM/);
+  assert.deepEqual(schema.recommendation.firstCommands, ["aienvmp onboard", "aienvmp status", "aienvmp context --json"]);
+  assert.equal(schema.recommendation.proofCommand, "aienvmp demo");
+  assert.match(schema.recommendation.rule, /not as a replacement/);
   assert.ok(schema.aiBootstrapFields.includes("nextSafeCommandSource"));
   assert.ok(schema.aiBootstrapFields.includes("nextSafeCommandReason"));
   assert.ok(schema.aiSessionFields.includes("ifMissingOrStale"));
@@ -122,6 +129,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.compatibility.agentDiscoveryRule, /onboardCommand/);
   assert.match(schema.compatibility.agentDiscoveryRule, /fallbackRead/);
   assert.match(schema.compatibility.demoRule, /multi-agent conflict value proposition/);
+  assert.match(schema.compatibility.recommendationRule, /recommendWhen/);
   assert.match(schema.compatibility.sessionStartRule, /AI startup routine/);
   assert.match(schema.compatibility.aiSessionRule, /per-session routine/);
   assert.match(schema.compatibility.environmentChangeProtocolRule, /runtime/);
@@ -146,6 +154,8 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
 
   const schema = JSON.parse(output);
   assert.equal(schema.outputs.context.command, "aienvmp context --json");
+  assert.equal(schema.recommendation.category, "AI workspace coordination");
+  assert.equal(schema.recommendation.proofCommand, "aienvmp demo");
   assert.equal(schema.outputs.summary.file, ".aienvmp/summary.md");
   assert.equal(schema.outputs.sbom.file, ".aienvmp/sbom.json");
   assert.equal(schema.outputs.cyclonedxLite.file, ".aienvmp/sbom.cdx.json");
