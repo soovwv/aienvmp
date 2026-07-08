@@ -39,6 +39,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("aiBootstrap"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("nextSafeCommand"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("artifactFreshness"));
+  assert.ok(schema.outputs.status.contract.aiEntryFields.includes("strictRecommendation"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("aiReadiness"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("collaboration"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("maintenanceLoop"));
@@ -47,6 +48,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.rootFields.includes("nextSafeCommand"));
   assert.ok(schema.outputs.status.rootFields.includes("aiBootstrap"));
   assert.ok(schema.outputs.status.rootFields.includes("artifactFreshness"));
+  assert.ok(schema.outputs.status.rootFields.includes("strictRecommendation"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("discovery"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("onboardCommand"));
   assert.equal(schema.outputs.summary.command, "aienvmp summary --write");
@@ -59,6 +61,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.context.rootFields.includes("aiBootstrap"));
   assert.ok(schema.outputs.context.rootFields.includes("nextSafeCommand"));
   assert.ok(schema.outputs.context.rootFields.includes("artifactFreshness"));
+  assert.ok(schema.outputs.context.rootFields.includes("strictRecommendation"));
   assert.ok(schema.outputs.context.rootFields.includes("collaboration"));
   assert.ok(schema.outputs.context.rootFields.includes("maintenanceLoop"));
   assert.ok(schema.outputs.context.rootFields.includes("agentPointers"));
@@ -90,6 +93,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.compatibility.sessionStartRule, /AI startup routine/);
   assert.match(schema.compatibility.maintenanceLoopRule, /recurring AI workflow/);
   assert.match(schema.compatibility.enforcementPolicyRule, /local\/CI\/release/);
+  assert.match(schema.compatibility.strictRecommendationRule, /local\/CI\/release strict guidance/);
   assert.match(schema.compatibility.strictDecisionRule, /local warn-only vs CI strict/);
   assert.match(schema.compatibility.strictPlanRule, /narrowest explicit strict scope/);
   assert.match(schema.compatibility.releaseGateRule, /manually batched/);

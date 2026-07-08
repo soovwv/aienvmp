@@ -4,7 +4,7 @@ export function preflightContract() {
     version: 1,
     stability: "additive",
     requiredFields: ["schemaVersion", "state", "decision", "quickstart", "commands", "artifacts"],
-    aiEntryFields: ["state", "summary", "aiBootstrap", "nextSafeCommand", "artifactFreshness", "aiReadiness", "collaboration", "maintenanceLoop", "nextAgent", "coordination", "agentActivity", "agentPointers", "sbomRisk", "followUps", "dependencyReadSet", "dependencyChangeProtocol"],
+    aiEntryFields: ["state", "summary", "aiBootstrap", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "aiReadiness", "collaboration", "maintenanceLoop", "nextAgent", "coordination", "agentActivity", "agentPointers", "sbomRisk", "followUps", "dependencyReadSet", "dependencyChangeProtocol"],
     rule: "Consumers should ignore unknown fields and treat missing optional fields as unavailable."
   };
 }
@@ -71,7 +71,7 @@ export function schemaContract() {
       status: {
         file: ".aienvmp/status.json",
         command: "aienvmp status --json",
-        rootFields: ["state", "aiBootstrap", "nextCommand", "nextSafeCommand", "artifactFreshness", "decision", "counts", "aiReadiness", "collaboration", "maintenanceLoop", "coordination", "agentPointers", "sbomRisk"],
+        rootFields: ["state", "aiBootstrap", "nextCommand", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "decision", "counts", "aiReadiness", "collaboration", "maintenanceLoop", "coordination", "agentPointers", "sbomRisk"],
         agentPointerFields: ["installedCount", "missingCount", "installed", "missing", "discovery", "onboardCommand", "next", "targets"],
         contract: preflightContract()
       },
@@ -89,7 +89,7 @@ export function schemaContract() {
       },
       context: {
         command: "aienvmp context --json",
-        rootFields: ["status", "aiBootstrap", "nextSafeCommand", "artifactFreshness", "preflight", "aiReadiness", "collaboration", "maintenanceLoop", "coordination", "agentPointers", "decision", "enforcement", "recommendedActions", "workspace", "dependencySnapshot", "lightSbom", "warnings"]
+        rootFields: ["status", "aiBootstrap", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "preflight", "aiReadiness", "collaboration", "maintenanceLoop", "coordination", "agentPointers", "decision", "enforcement", "recommendedActions", "workspace", "dependencySnapshot", "lightSbom", "warnings"]
       },
       handoff: {
         command: "aienvmp handoff --json",
@@ -127,6 +127,7 @@ export function schemaContract() {
       sessionStartRule: "Use agentDiscovery.sessionStart as the shortest AI startup routine; read status first, sync only when stale or missing, and keep local work advisory.",
       maintenanceLoopRule: "Use maintenanceLoop as the short recurring AI workflow: refresh, decide, inspect, plan, intent, checkpoint, and handoff without blocking local operation.",
       enforcementPolicyRule: "Use enforcement.policy for the shortest local/CI/release gate summary: local stays warn-only, CI uses the recommended strict scope, release uses strict all.",
+      strictRecommendationRule: "Use strictRecommendation for the shortest local/CI/release strict guidance; local must stay warn-only unless strict is explicitly requested.",
       strictDecisionRule: "Use enforcement.strictDecision or preflight.enforcementProfile.strictDecision for the shortest local warn-only vs CI strict decision.",
       strictPlanRule: "Use enforcement.strictPlan or preflight.enforcementProfile.strictPlan to choose the narrowest explicit strict scope for CI.",
       releaseGateRule: "Use releaseGate.localCommand and releaseGate.workflow before npm publish; releases should be manually batched instead of published per commit."

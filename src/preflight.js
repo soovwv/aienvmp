@@ -20,6 +20,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
   const agentPointers = agentPointerSummary(manifest.agentFiles);
   const aiReadiness = aiReadinessSummary({ state, decision, coordination, agentActivity, agentPointers, sbomRisk, followUps });
   const collaboration = collaborationSummary({ state, decision, coordination, agentActivity, followUps, aiReadiness });
+  const strictRecommendation = strictRecommendationSummary(enforcement);
   const maintenanceLoop = maintenanceLoopSummary({
     state,
     decision,
@@ -42,6 +43,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
       : "Review warnings or open intents before environment changes.",
     decision,
     enforcement,
+    strictRecommendation,
     enforcementProfile: {
       defaultMode: "advisory",
       localOperation: "non-blocking",
@@ -109,6 +111,22 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     topAction,
     nextCommand,
     nextSafeCommand: nextCommand
+  };
+}
+
+function strictRecommendationSummary(enforcement = {}) {
+  const strictDecision = enforcement.strictDecision || {};
+  const policy = enforcement.policy || {};
+  return {
+    mode: "advisory-local-strict-optional",
+    localCommand: strictDecision.localCommand || "aienvmp doctor --json",
+    localBehavior: strictDecision.local || "warn-only",
+    shouldFailLocal: strictDecision.shouldFailLocal === true,
+    recommendedScope: strictDecision.recommendedScope || "all",
+    ciCommand: strictDecision.ciCommand || "aienvmp doctor --strict all --json",
+    releaseCommand: policy.release?.command || "aienvmp doctor --strict all --json",
+    failingScopes: strictDecision.failingScopes || [],
+    rule: strictDecision.rule || "Keep local operation advisory; use strict checks only for CI, release, or explicit human-requested verification."
   };
 }
 

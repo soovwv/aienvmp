@@ -29,6 +29,7 @@ export async function contextWorkspace(args) {
       nextSafeCommand,
       aiBootstrap: preflight.aiBootstrap,
       artifactFreshness: preflight.artifactFreshness,
+      strictRecommendation: preflight.strictRecommendation,
       preflight,
       aiReadiness: preflight.aiReadiness,
       collaboration: preflight.collaboration,

@@ -91,6 +91,11 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.commands.checkpoint, "aienvmp checkpoint --actor agent:id --summary what-changed --target environment");
   assert.equal(status.enforcementProfile.defaultMode, "advisory");
   assert.equal(status.enforcementProfile.localOperation, "non-blocking");
+  assert.equal(status.strictRecommendation.localCommand, "aienvmp doctor --json");
+  assert.equal(status.strictRecommendation.localBehavior, "warn-only");
+  assert.equal(status.strictRecommendation.shouldFailLocal, false);
+  assert.equal(status.strictRecommendation.ciCommand, "aienvmp doctor --strict all --json");
+  assert.equal(status.strictRecommendation.releaseCommand, "aienvmp doctor --strict all --json");
   assert.equal(status.enforcementProfile.gate.localDefault, "warn-only");
   assert.equal(status.enforcementProfile.gate.failCondition, "never in default mode");
   assert.equal(status.enforcementProfile.strictPlan.ciCommand, "aienvmp doctor --strict all --json");

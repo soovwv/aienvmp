@@ -21,6 +21,7 @@
 - Added `aienvmp demo` so npm users can run the multi-agent conflict demo without cloning the repository.
 - Added demo discovery metadata to `schema --json` and updated the conflict demo docs around `npx aienvmp demo`.
 - Updated the packaged `aienvmp` AI skill with the current session-start, artifact freshness, and demo guidance.
+- Added `strictRecommendation` so AI agents can read one compact local warn-only, CI strict, and release strict decision without changing default advisory behavior.
 
 ## 0.1.69
 

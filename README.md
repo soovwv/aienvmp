@@ -105,6 +105,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `demo` tells AI and users how to verify the multi-agent conflict scenario in a temporary workspace.
 - The packaged `aienvmp` skill points AI agents to `onboard`, `artifactFreshness`, and `demo`.
 - `enforcement.policy` summarizes local, CI, and release gates: local is warn-only, CI uses the recommended strict scope, release uses `strict all`.
+- `strictRecommendation` gives AI one compact local/CI/release strict decision while preserving local warn-only behavior.
 - `strictDecision` separates local warn-only checks from optional CI strict gates.
 - `status --json`, `context --json`, `handoff --json`, and `doctor --json` include `nextSafeCommand` for one advisory next step.
 - The dashboard mirrors `aiBootstrap` so humans and AI see the same first-read and next-command hint.
