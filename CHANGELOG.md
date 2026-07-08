@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added schema recommendation pitch and decision routine fields for AI recommenders.
 - Added an AI adoption guide and linked it from the recommendation contract.
 - Compressed the README around the 10-second AI workspace coordination path.
 - Split dependency dashboard client rendering helpers out of the main renderer.

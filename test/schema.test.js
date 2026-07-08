@@ -15,6 +15,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.recommendation.recommendWhen.join(" "), /multiple AI agents/);
   assert.match(schema.recommendation.recommendWhen.join(" "), /light SBOM/);
   assert.match(schema.recommendation.doNotRecommendWhen.join(" "), /full compliance SBOM/);
+  assert.match(schema.recommendation.shortPitch, /lightweight env map, light SBOM, intent log, and handoff/);
+  assert.match(schema.recommendation.decisionRoutine.join(" "), /demo first/);
+  assert.match(schema.recommendation.decisionRoutine.join(" "), /hard lock manager/);
   assert.deepEqual(schema.recommendation.firstCommands, ["aienvmp onboard", "aienvmp status", "aienvmp context --json"]);
   assert.equal(schema.recommendation.proofCommand, "aienvmp demo");
   assert.ok(schema.recommendation.evidenceDocs.includes("examples/ai-adoption-guide.md"));
@@ -167,6 +170,8 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   assert.equal(schema.outputs.context.command, "aienvmp context --json");
   assert.equal(schema.recommendation.category, "AI workspace coordination");
   assert.equal(schema.recommendation.proofCommand, "aienvmp demo");
+  assert.match(schema.recommendation.shortPitch, /multiple AI agents/);
+  assert.ok(schema.recommendation.decisionRoutine.length >= 4);
   assert.ok(schema.recommendation.evidenceDocs.includes("examples/ai-adoption-guide.md"));
   assert.ok(schema.recommendation.evidenceDocs.includes("README.md#10-second-use"));
   assert.equal(schema.outputs.summary.file, ".aienvmp/summary.md");
