@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { dashWorkspace } from "../src/commands/dash.js";
 import { writeJson } from "../src/fsutil.js";
-import { dashboardCardPriority, dashboardEssentialCards, dashboardPriorityClientScript, renderDashboard } from "../src/render.js";
+import { dashboardAgentClientScript, dashboardCardPriority, dashboardEssentialCards, dashboardPriorityClientScript, renderDashboard } from "../src/render.js";
 
 test("renderDashboard includes the audit summary surface", () => {
   const html = renderDashboard({
@@ -367,12 +367,18 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.equal(dashboardCardPriority("Runtimes"), "support");
   assert.match(dashboardPriorityClientScript(), /const essentialCards=\["AI Session"/);
   assert.match(dashboardPriorityClientScript(), /const cardPriority=title=>essentialCards\.includes\(title\)\?'essential':'support'/);
+  assert.match(dashboardAgentClientScript(), /const agentNames=\{agents:'Codex',claude:'Claude',gemini:'Gemini'\}/);
+  assert.match(dashboardAgentClientScript(), /agentNames\.cursor='Cursor'/);
+  assert.match(dashboardAgentClientScript(), /aienvmp pointer installed/);
+  assert.match(dashboardAgentClientScript(), /agentPointerCount=entries\(manifest\.agentFiles\)/);
   for (const title of dashboardEssentialCards) {
     assert.match(html, new RegExp(`card\\('${title}'`));
   }
   assert.match(html, /const essentialCards=\["AI Session","Environment Health","AI Collaboration","Light SBOM","Agent Pointers","Agent Intents","Environment Ledger","Enforcement Mode","Release Readiness"\]/);
   assert.match(html, /data-dashboard-priority=/);
   assert.match(html, /cardPriority\(title\)/);
+  assert.match(html, /const agentNames=\{agents:'Codex',claude:'Claude',gemini:'Gemini'\}/);
+  assert.match(html, /agentNames\.copilot='Copilot'/);
   assert.match(html, /\.card\.essential/);
   assert.match(html, /const reviewTargets=\[\.\.\.new Set/);
   assert.match(html, /\.control-card\.review/);

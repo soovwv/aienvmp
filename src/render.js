@@ -1,11 +1,11 @@
 import { schemaContract } from "./contract.js";
-import { dashboardPriorityClientScript } from "./dashboard.js";
+import { dashboardAgentClientScript, dashboardPriorityClientScript } from "./dashboard.js";
 
 const markerBegin = "<!-- aienvmp:begin -->";
 const markerEnd = "<!-- aienvmp:end -->";
 
 export { markerBegin, markerEnd };
-export { dashboardCardPriority, dashboardEssentialCards, dashboardPriorityClientScript } from "./dashboard.js";
+export { dashboardAgentClientScript, dashboardCardPriority, dashboardEssentialCards, dashboardPriorityClientScript } from "./dashboard.js";
 
 export function renderAIEnv(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const lines = [];
@@ -535,14 +535,7 @@ const securityPriority=p=>p.remediationPriority?\`<code>\${esc(p.remediationPrio
 const securityHtml=sec.enabled?\`<table><tr><th>Total</th><td><code>\${esc(secSummary.total||0)}</code></td></tr><tr><th>Critical</th><td><code>\${esc(secSummary.critical||0)}</code></td></tr><tr><th>High</th><td><code>\${esc(secSummary.high||0)}</code></td></tr><tr><th>Moderate</th><td><code>\${esc(secSummary.moderate||0)}</code></td></tr><tr><th>Low</th><td><code>\${esc(secSummary.low||0)}</code></td></tr></table>\${secPackages.length?'<div class="timeline">'+secPackages.slice(0,5).map(p=>\`<div class="event"><time>\${esc(p.severity)}</time><div><b>\${esc(p.name)}</b> \${securityPriority(p)}\${esc(securityFix(p))}\${esc(securityRefs(p))}\${securityDep(p)}</div></div>\`).join('')+'</div>':'<div class="okline" style="margin-top:10px">No vulnerable packages reported.</div>'}\`:'<div class="okline">Security scan is off. Run <code>aienvmp sync --security</code> for read-only vulnerability summary.</div>';
 const change=c=>c.type==='changed'?\`\${c.scope} \${c.key}: \${c.before} -> \${c.after}\`:\`\${c.scope} \${c.key}: \${c.type} \${c.after||c.before}\`;
 const timelineLabel=t=>t.change?change(t.change):(t.summary||t.action||t.type||'recorded change');
-const agentNames={agents:'Codex',claude:'Claude',gemini:'Gemini'};
-const agentInfo=v=>typeof v==='object'&&v? v : {exists:!!v,hasAienvmpPointer:!!v,path:''};
-const agentHasPointer=v=>agentInfo(v).hasAienvmpPointer===true;
-if(agentInfo(manifest.agentFiles?.cursor).exists||agentHasPointer(manifest.agentFiles?.cursor))agentNames.cursor='Cursor';
-if(agentInfo(manifest.agentFiles?.copilot).exists||agentHasPointer(manifest.agentFiles?.copilot))agentNames.copilot='Copilot';
-const agentStatus=v=>agentHasPointer(v)?'aienvmp pointer installed':(agentInfo(v).exists?'file detected, pointer missing':'not detected');
-const agentCards=Object.entries(agentNames).map(([key,label])=>\`<div class="agent"><strong>\${label}</strong><span>\${esc(agentStatus(manifest.agentFiles?.[key]))}</span>\${agentInfo(manifest.agentFiles?.[key]).installCommand?\`<span class="path">\${esc(agentInfo(manifest.agentFiles?.[key]).installCommand)}</span>\`:''}</div>\`).join('');
-const agentPointerCount=entries(manifest.agentFiles).filter(([,v])=>agentHasPointer(v)).length;
+${dashboardAgentClientScript()}
 const warnHtml=warnings.length?'<div class="warnings">'+warnings.map(w=>\`<div class="warning">\${esc(w.message)}</div>\`).join('')+'</div>':'<div class="okline">No blocking environment warnings detected.</div>';
 const timelineHtml=timeline.length?'<div class="timeline">'+timeline.slice(-8).reverse().map(t=>\`<div class="event"><time>\${esc(t.at.replace('T',' ').slice(0,16))}</time><div><b>\${esc(t.actor||'system')}</b> \${esc(timelineLabel(t))}</div></div>\`).join('')+'</div>':'<div class="okline">No previous environment changes recorded.</div>';
 const intentsHtml=intents.length?'<div class="timeline">'+intents.slice(-6).reverse().map(i=>\`<div class="event"><time>\${esc(i.at.replace('T',' ').slice(0,16))}</time><div><b>\${esc(i.actor)}</b> plans \${esc(i.action)}</div></div>\`).join('')+'</div>':'<div class="okline">No pending agent intents recorded.</div>';
