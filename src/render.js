@@ -76,6 +76,7 @@ function preflightLines(preflight = {}) {
   const quickstart = preflight.quickstart;
   const aiBootstrap = preflight.aiBootstrap || {};
   const aiSession = preflight.aiSession || {};
+  const followUpPlan = preflight.followUpPlan || {};
   const targets = preflight.intentTargets || [];
   const maintenanceLoop = preflight.maintenanceLoop || {};
   const lines = ["## 10-Second AI Flow", ""];
@@ -105,6 +106,9 @@ function preflightLines(preflight = {}) {
   }
   if (maintenanceLoop.nextCommand) {
     lines.push(`- Maintenance loop: \`${maintenanceLoop.nextCommand}\` - ${maintenanceLoop.rule || "refresh, inspect, record intent, checkpoint, and hand off"}`);
+  }
+  if (followUpPlan.status) {
+    lines.push(`- Follow-up plan: ${followUpPlan.status} / \`${followUpPlan.nextCommand || "aienvmp status --json"}\` - ${followUpPlan.rule || followUpPlan.reason || "Resolve follow-ups before shared environment changes."}`);
   }
   lines.push("", "## Recommended Intent Targets", "");
   if (targets.length) {
@@ -223,6 +227,9 @@ export function renderContext(manifest, timeline = [], warnings = [], intents = 
     "",
     "Enforcement gate:",
     ...enforcementGateLines(manifest.preflight?.enforcementProfile?.gate),
+    "",
+    "Follow-up plan:",
+    ...followUpPlanLines(manifest.preflight?.followUpPlan),
     "",
     "Follow-ups:",
     ...followUpLines(manifest.preflight?.followUps),
@@ -398,6 +405,15 @@ function followUpLines(followUps = []) {
     const command = item.commands?.[0] ? ` (${item.commands[0]})` : "";
     return `- ${item.target || "environment"}: ${item.summary || item.reason || "follow-up required"}${command}`;
   });
+}
+
+function followUpPlanLines(followUpPlan = {}) {
+  if (!followUpPlan.status) return ["- none"];
+  const targets = followUpPlan.targets?.length ? `; targets: ${followUpPlan.targets.join(", ")}` : "";
+  return [
+    `- ${followUpPlan.status}: ${followUpPlan.nextCommand || "aienvmp status --json"}${targets}`,
+    `- Rule: ${followUpPlan.rule || followUpPlan.reason || "Resolve follow-ups before shared environment changes."}`
+  ];
 }
 
 function agentActivityLines(activity = {}) {

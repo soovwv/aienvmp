@@ -218,5 +218,7 @@ test("contextWorkspace text includes pending follow-ups", async () => {
   }
 
   assert.match(output, /Follow-ups/);
+  assert.match(output, /Follow-up plan/);
+  assert.match(output, /pending: aienvmp sync; targets: dependency/);
   assert.match(output, /dependency-change/);
 });

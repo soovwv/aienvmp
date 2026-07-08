@@ -57,6 +57,7 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.match(aiEnv, /Next safe command:/);
   assert.match(aiEnv, /Read first: `\.aienvmp\/status\.json`/);
   assert.match(aiEnv, /Bootstrap: allowed \/ intent-first \/ advisory/);
+  assert.match(aiEnv, /Follow-up plan: clear \/ `aienvmp status --json`/);
   assert.match(aiEnv, /Recommended Intent Targets/);
   assert.match(aiEnv, /Dependency Read Set/);
   assert.match(aiEnv, /Dependency Change Protocol/);
