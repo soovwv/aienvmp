@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Clarified the README first screen around dependency-free, advisory operation for lightweight shared machines.
 - Added `aiBootstrap.nextSafeCommandSource` and `nextSafeCommandReason` so AI agents can explain why a next command was chosen.
 - Documented the release policy: keep `0.1.x` as prototype history, stabilize the AI workspace contract in `0.2.x`, batch npm releases, and prefer deprecation over unpublish.
 - Added AI contract compatibility metadata and a manual npm release workflow so `0.2.0+` releases can be gated instead of published per commit.
