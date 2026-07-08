@@ -90,8 +90,12 @@ test("package, README, and CLI help share the AI workspace coordination position
 
   assert.match(pkg.description, /AI workspace coordination/);
   assert.ok(pkg.keywords.includes("ai-workspace"));
+  assert.ok(pkg.keywords.includes("ai-coding"));
   assert.ok(pkg.keywords.includes("coordination"));
+  assert.ok(pkg.keywords.includes("workspace-coordination"));
   assert.ok(pkg.keywords.includes("multi-agent"));
+  assert.ok(pkg.keywords.includes("environment-map"));
+  assert.ok(pkg.keywords.includes("light-sbom"));
   assert.match(readme.slice(0, 1200), /AI workspace coordination/);
   assert.match(readme.slice(0, 1200), /dependency-free/);
   assert.match(readme.slice(0, 1200), /without heavy locks/);
