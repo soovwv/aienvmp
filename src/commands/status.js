@@ -48,12 +48,13 @@ export function renderStatusText(output = {}, options = {}) {
     ? output.aiSession.start.join(" -> ")
     : `aienvmp status --json -> ${detail}`;
   const summary = output.artifacts?.summary || ".aienvmp/summary.md";
+  const discovery = output.agentPointers?.discovery || "missing: run aienvmp onboard";
   const lines = [
     `${output.state || "unknown"}: ${output.summary || "Run aienvmp context --json for details."}`,
     `ready: ${readiness} | collaboration: ${collaboration}`,
     `sbom: ${sbomRisk} (${sbomScore}) | warnings: ${valueOrZero(counts.warnings)} | intents: ${valueOrZero(counts.openIntents)}`,
     `next: ${output.nextCommand || "aienvmp status --json"}`,
-    `session: ${sessionStart} | summary: ${summary}`
+    `session: ${sessionStart} | summary: ${summary} | discovery: ${discovery}`
   ];
 
   if (options.verbose) {
