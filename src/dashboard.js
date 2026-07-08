@@ -57,3 +57,9 @@ export function dashboardReviewPlanHtmlClientScript() {
     "const aiReviewPlanHtml=aiReviewPlan.status?`<table><tr><th>Status</th><td><code>${esc(aiReviewPlan.status)}</code></td></tr><tr><th>Risk</th><td><code>${esc(aiReviewPlan.risk||'clear/0')}</code></td></tr><tr><th>Confidence</th><td><code>${esc(aiReviewPlan.securityConfidence||'unknown')}</code></td></tr><tr><th>Policy</th><td><code>${esc(aiReviewPlan.packageManagerPolicy||'not-detected')}</code></td></tr><tr><th>Before</th><td><code>${esc(aiReviewPlan.beforeChange||'aienvmp sbom --json')}</code></td></tr><tr><th>After</th><td><code>${esc(aiReviewPlan.afterChange||'aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency')}</code></td></tr></table><div class=\"path\">${esc(aiReviewPlan.rule||'Record dependency intent before dependency or lockfile changes.')}</div>`:'<div class=\"okline\">No AI review plan available. Run <code>aienvmp sbom --json</code>.</div>';"
   ].join("\n");
 }
+
+export function dashboardScannerGuidanceHtmlClientScript() {
+  return [
+    "const scannerGuidanceHtml=`<table><tr><th>Mode</th><td><code>${esc(scannerGuidance.mode||'optional-read-only')}</code></td></tr><tr><th>Default</th><td><code>${esc(scannerGuidance.defaultCommand||'aienvmp sbom --json')}</code></td></tr><tr><th>Scanner</th><td><code>${esc(scannerGuidance.scannerCommand||'aienvmp sync --security')}</code></td></tr><tr><th>Confidence</th><td><code>${esc(scannerGuidance.securityConfidence||'unknown')}</code></td></tr><tr><th>Run before</th><td>${esc((scannerGuidance.whenToRun||[]).join(', ')||'security-sensitive decisions')}</td></tr></table><div class=\"path\">${esc(scannerGuidance.rule||'Keep the default SBOM lightweight; use optional read-only scanners when security confidence matters.')}</div>`;"
+  ].join("\n");
+}
