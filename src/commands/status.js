@@ -44,18 +44,22 @@ export function renderStatusText(output = {}, options = {}) {
   const sbomRisk = output.sbomRisk?.level || "unknown";
   const sbomScore = valueOrZero(output.sbomRisk?.score);
   const detail = output.quickstart?.detailCommand || "aienvmp context --json";
+  const sessionStart = Array.isArray(output.aiSession?.start) && output.aiSession.start.length
+    ? output.aiSession.start.join(" -> ")
+    : `aienvmp status --json -> ${detail}`;
   const summary = output.artifacts?.summary || ".aienvmp/summary.md";
   const lines = [
     `${output.state || "unknown"}: ${output.summary || "Run aienvmp context --json for details."}`,
     `ready: ${readiness} | collaboration: ${collaboration}`,
     `sbom: ${sbomRisk} (${sbomScore}) | warnings: ${valueOrZero(counts.warnings)} | intents: ${valueOrZero(counts.openIntents)}`,
     `next: ${output.nextCommand || "aienvmp status --json"}`,
-    `details: ${detail} | summary: ${summary}`
+    `session: ${sessionStart} | summary: ${summary}`
   ];
 
   if (options.verbose) {
     lines.push(
       `ai: ${output.quickstart?.readFirst || "aienvmp status --write"} -> ${detail}`,
+      `stale: ${output.aiSession?.ifMissingOrStale || output.artifactFreshness?.refreshCommand || "aienvmp sync"}`,
       `intent: ${output.intentTargets?.[0]?.command || output.commands?.recordIntent || "aienvmp intent --actor agent:id --action planned-change"}`,
       `checkpoint: ${output.commands?.checkpoint || "aienvmp checkpoint --actor agent:id --summary what-changed --target environment"}`,
       `handoff: ${output.nextAgent?.handoffCommand || "aienvmp handoff --record --actor agent:id"}`,

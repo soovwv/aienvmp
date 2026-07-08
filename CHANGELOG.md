@@ -28,6 +28,7 @@
 - Added opt-in Cursor and GitHub Copilot instruction-file pointers while keeping default onboarding focused on Codex, Claude, and Gemini.
 - Made `snippet` reject unknown targets instead of silently writing the default agent pointer.
 - Added `aiSession` to status/context/preflight surfaces so AI agents get one compact startup, stale-refresh, intent, checkpoint, and handoff routine.
+- Updated compact `status` text to show the `aiSession` startup path while keeping the default output at five lines.
 
 ## 0.1.69
 

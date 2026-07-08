@@ -354,7 +354,7 @@ test("statusWorkspace text prints a compact default decision", async () => {
   }
 
   assert.match(lines.join("\n"), /ready: ready \| collaboration: clear/);
-  assert.match(lines.join("\n"), /details: aienvmp context --json/);
+  assert.match(lines.join("\n"), /session: aienvmp status --json -> aienvmp context --json/);
   assert.equal(lines.join("\n").split("\n").length, 5);
 });
 
@@ -384,6 +384,7 @@ test("statusWorkspace verbose text keeps command details", async () => {
   }
 
   const output = lines.join("\n");
+  assert.match(output, /stale: aienvmp sync/);
   assert.match(output, /intent: aienvmp intent/);
   assert.match(output, /checkpoint: aienvmp checkpoint/);
   assert.match(output, /handoff: aienvmp handoff --record --actor agent:id/);
@@ -409,7 +410,7 @@ test("renderStatusText stays compact for default human and AI scan", () => {
     "ready: review | collaboration: review-before-env-change",
     "sbom: medium (42) | warnings: 2 | intents: 1",
     "next: aienvmp plan --write",
-    "details: aienvmp context --json | summary: .aienvmp/summary.md"
+    "session: aienvmp status --json -> aienvmp context --json | summary: .aienvmp/summary.md"
   ]);
 });
 
