@@ -48,6 +48,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
       reason: "Avoid disrupting shared servers or developer machines while still making drift visible.",
       recommendedStrictCommand: enforcement.recommendedCommand,
       strictPlan: enforcement.strictPlan,
+      strictDecision: enforcement.strictDecision,
       strictCommands: [
         "aienvmp doctor --strict security",
         "aienvmp doctor --strict policy",

@@ -8,6 +8,8 @@
 - Surfaced the maintenance loop in `context --json`, `summary.md`, `AIENV.md`, schema metadata, and regression tests.
 - Added `maintenanceLoop.sbomReview` so AI agents can connect SBOM risk, scanner confidence, review targets, and dependency-change commands.
 - Added medium light-SBOM risk planning guidance to recommended actions.
+- Added `strictDecision` so AI agents and CI can distinguish local warn-only checks from optional strict gates.
+- Surfaced local `doctor --json` and scoped CI strict commands in summary, dashboard, status/context JSON, and tests.
 
 ## 0.1.66
 

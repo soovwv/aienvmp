@@ -220,6 +220,8 @@ test("doctorWorkspace JSON explains advisory exit behavior", async () => {
   assert.match(json.exitBehavior.reason, /strict mode is off/);
   assert.equal(json.enforcement.strictPlan.recommendedStrictScope, "policy");
   assert.equal(json.enforcement.strictPlan.ciCommand, "aienvmp doctor --strict policy --json");
+  assert.equal(json.enforcement.strictDecision.localCommand, "aienvmp doctor --json");
+  assert.equal(json.enforcement.strictDecision.recommendedCommand, "aienvmp doctor --strict policy");
   assert.equal(json.aiReadiness.level, "review");
   assert.match(json.aiReadiness.next, /Review/);
   assert.deepEqual(json.agentPointers.installed, ["claude"]);

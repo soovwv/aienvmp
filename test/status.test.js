@@ -82,6 +82,9 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.enforcementProfile.gate.localDefault, "warn-only");
   assert.equal(status.enforcementProfile.gate.failCondition, "never in default mode");
   assert.equal(status.enforcementProfile.strictPlan.ciCommand, "aienvmp doctor --strict all --json");
+  assert.equal(status.enforcementProfile.strictDecision.localCommand, "aienvmp doctor --json");
+  assert.equal(status.enforcementProfile.strictDecision.shouldFailLocal, false);
+  assert.equal(status.enforcementProfile.strictDecision.ciCommand, "aienvmp doctor --strict all --json");
   assert.equal(status.artifacts.status, ".aienvmp/status.json");
   assert.equal(status.readOrder[0], ".aienvmp/status.json");
   assert.equal(status.readOrder[1], ".aienvmp/summary.md");
@@ -259,6 +262,8 @@ test("statusWorkspace JSON reports review-required and strict suggestion", async
   assert.equal(json.state, "review-required");
   assert.equal(json.contract.version, 1);
   assert.equal(json.enforcement.suggestedStrictScopes[0], "policy");
+  assert.equal(json.enforcement.strictDecision.recommendedScope, "policy");
+  assert.equal(json.enforcement.strictDecision.local, "warn-only");
   assert.equal(json.counts.warnings, 1);
   assert.equal(json.counts.dependencies, 1);
   assert.equal(json.agentUse.environmentChanges, "intent-and-review-first");

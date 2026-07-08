@@ -251,6 +251,13 @@ test("renderDashboard includes the audit summary surface", () => {
           ciCommand: "aienvmp doctor --strict policy --json",
           rule: "Use the narrowest failing strict scope first; keep local operation advisory unless CI or the user explicitly requests failure."
         },
+        strictDecision: {
+          local: "warn-only",
+          localCommand: "aienvmp doctor --json",
+          recommendedCommand: "aienvmp doctor --strict policy",
+          ciCommand: "aienvmp doctor --strict policy --json",
+          rule: "Keep local operation advisory; use the first failing scope only when CI or the user wants a gate."
+        },
         gate: {
           defaultMode: "advisory",
           strictMode: "off",
@@ -343,7 +350,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /never in default mode/);
   assert.match(html, /0 unless the command itself errors/);
   assert.match(html, /doctor --strict policy/);
+  assert.match(html, /aienvmp doctor --json/);
   assert.match(html, /doctor --strict policy --json/);
+  assert.match(html, /Keep local operation advisory/);
   assert.match(html, /narrowest failing strict scope/);
   assert.match(html, /security/);
   assert.match(html, /policy/);

@@ -63,6 +63,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `handoff` carries dependency read-set and protocol guidance for the next AI.
 - Light SBOM includes source/confidence hints; verify security claims with dedicated scanners.
 - `enforcementProfile.gate` explains when checks warn, fail, and set exit codes.
+- `strictDecision` separates local warn-only checks from optional CI strict gates.
 - Everything is advisory by default; strict failure is opt-in with `doctor --strict` or `--ci`.
 
 ## Agent Files

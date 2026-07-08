@@ -60,6 +60,7 @@ export function renderSummary(status = {}, manifest = {}) {
   const aiNext = aiReadiness.next || "Run aienvmp context --json for details.";
   const aiDependencyReview = manifest.lightSbom?.aiDependencyReview || {};
   const strictPlan = status.enforcementProfile?.strictPlan || status.enforcement?.strictPlan || {};
+  const strictDecision = status.enforcementProfile?.strictDecision || status.enforcement?.strictDecision || {};
 
   return [
     "# aienvmp summary",
@@ -72,6 +73,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- AI safe local work: ${toList(aiReadiness.safeProjectLocalActions)[0] || "read artifacts and avoid environment changes until reviewed"}`,
     `- AI read first: ${readFirst}, then ${detail}`,
     `- mode: advisory by default; strict is opt-in with ${strict}`,
+    `- local check: ${strictDecision.localCommand || "aienvmp doctor --json"} (${strictDecision.local || "warn-only"})`,
     `- CI strict: ${strictPlan.ciCommand || `${strict} --json`}`,
     "",
     `- state: ${status.state || "unknown"}`,

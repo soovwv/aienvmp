@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { enforcementAdvice, enforcementGate, strictResult } from "../src/enforcement.js";
+import { enforcementAdvice, enforcementGate, strictDecision, strictResult } from "../src/enforcement.js";
 
 test("enforcementAdvice keeps local behavior advisory and suggests scoped strict checks", () => {
   const warnings = [
@@ -20,6 +20,11 @@ test("enforcementAdvice keeps local behavior advisory and suggests scoped strict
   assert.equal(advice.strictPlan.recommendedStrictScope, "security");
   assert.equal(advice.strictPlan.ciCommand, "aienvmp doctor --strict security --json");
   assert.match(advice.strictPlan.rule, /narrowest failing strict scope/);
+  assert.equal(advice.strictDecision.localCommand, "aienvmp doctor --json");
+  assert.equal(advice.strictDecision.shouldFailLocal, false);
+  assert.equal(advice.strictDecision.recommendedScope, "security");
+  assert.equal(advice.strictDecision.ciCommand, "aienvmp doctor --strict security --json");
+  assert.deepEqual(advice.strictDecision.failingScopes, ["security", "policy", "coordination"]);
 });
 
 test("enforcementAdvice suggests all only when no scoped warning fails", () => {
@@ -29,6 +34,23 @@ test("enforcementAdvice suggests all only when no scoped warning fails", () => {
   assert.equal(advice.strictPlan.recommendedStrictScope, "all");
   assert.equal(advice.strictPlan.ciCommand, "aienvmp doctor --strict all --json");
   assert.match(advice.strictPlan.rule, /explicit CI health checks/);
+  assert.equal(advice.strictDecision.ci, "optional-health-check");
+  assert.deepEqual(advice.strictDecision.passingScopes, ["security", "policy", "coordination"]);
+});
+
+test("strictDecision keeps local checks warn-only and CI scoped", () => {
+  const decision = strictDecision(["coordination"], [
+    { scope: "security", status: "pass" },
+    { scope: "policy", status: "pass" },
+    { scope: "coordination", status: "fail" },
+    { scope: "all", status: "fail" }
+  ]);
+
+  assert.equal(decision.local, "warn-only");
+  assert.equal(decision.shouldFailLocal, false);
+  assert.equal(decision.recommendedCommand, "aienvmp doctor --strict coordination");
+  assert.equal(decision.ciCommand, "aienvmp doctor --strict coordination --json");
+  assert.match(decision.whenToUseStrict, /CI/);
 });
 
 test("strictResult remains advisory unless strict or ci is requested", () => {
