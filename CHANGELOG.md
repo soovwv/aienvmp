@@ -9,6 +9,7 @@
 - Added `followUpPlan` to handoff continuation so the next AI receives pending follow-up targets and commands directly.
 - Added `followUpPlan` to plan JSON and Markdown so read-only planning starts with pending follow-up work when needed.
 - Added `followUpPlan` to doctor JSON and pending text output so advisory checks surface unresolved follow-up work.
+- Added pending `followUpPlan` to the GitHub Action Step Summary so CI artifacts show unresolved environment follow-up work.
 - Added compact light SBOM `aiUse` decision, confidence, read-first, and before/after-change fields.
 - Added release readiness evidence commands and stabilization focus for AI/CI release review.
 - Added per-session AI avoid guidance to status, context, env map, and dashboard surfaces.

@@ -123,6 +123,36 @@ runs:
         NODE
         fi
 
+    - name: Append follow-up plan summary
+      shell: bash
+      run: |
+        if [ "${{ inputs.write-summary }}" = "true" ] && [ -n "$GITHUB_STEP_SUMMARY" ]; then
+          mkdir -p "${{ inputs.directory }}/.aienvmp"
+          doctor_source="${{ inputs.directory }}/.aienvmp/doctor.json"
+          if [ ! -f "$doctor_source" ]; then
+            doctor_source="$(mktemp)"
+            node "$GITHUB_ACTION_PATH/bin/aienvmp.js" doctor --dir "${{ inputs.directory }}" --json > "$doctor_source"
+          fi
+          node - "$doctor_source" "$GITHUB_STEP_SUMMARY" <<'NODE'
+        const fs = require("node:fs");
+
+        const [doctorPath, summaryPath] = process.argv.slice(2);
+        const doctor = JSON.parse(fs.readFileSync(doctorPath, "utf8"));
+        const followUp = doctor.followUpPlan || {};
+        if (followUp.status !== "pending") process.exit(0);
+
+        fs.appendFileSync(summaryPath, [
+          "",
+          "## aienvmp follow-up plan",
+          "",
+          `- next: \`${followUp.nextCommand || "aienvmp status --json"}\``,
+          `- targets: ${(followUp.targets || []).join(", ") || "environment"}`,
+          `- rule: ${followUp.rule || "Resolve follow-ups before shared environment changes."}`,
+          ""
+        ].join("\n"));
+        NODE
+        fi
+
     - name: Append AI loop summary
       shell: bash
       run: |
