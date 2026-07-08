@@ -27,6 +27,8 @@ export async function contextWorkspace(args) {
     console.log(JSON.stringify({
       status: warnings.length ? "review-required" : "clear",
       nextSafeCommand,
+      startHere: preflight.artifacts?.startHere || ".aienvmp/README.md",
+      readOrder: preflight.readOrder || [],
       aiSession: preflight.aiSession,
       aiBootstrap: preflight.aiBootstrap,
       artifactFreshness: preflight.artifactFreshness,

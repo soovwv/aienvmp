@@ -50,6 +50,8 @@ export function buildHandoff(manifest, timeline = [], warnings = [], intents = [
   return {
     status: reviewRequired ? "review-required" : "clear",
     nextSafeCommand: preflight.nextCommand || preflight.maintenanceLoop?.nextCommand || "aienvmp status --json",
+    startHere: preflight.artifacts?.startHere || ".aienvmp/README.md",
+    readOrder: preflight.readOrder || [],
     aiBootstrap: preflight.aiBootstrap,
     trust: manifest.trust || {},
     schemaVersion: manifest.schemaVersion || 1,

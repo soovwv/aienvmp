@@ -121,6 +121,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.plan.rootFields.includes("nextSafeCommand"));
   assert.ok(schema.outputs.plan.rootFields.includes("followUpPlan"));
   assert.ok(schema.outputs.context.rootFields.includes("coordination"));
+  assert.ok(schema.outputs.context.rootFields.includes("startHere"));
+  assert.ok(schema.outputs.context.rootFields.includes("readOrder"));
   assert.ok(schema.outputs.context.rootFields.includes("aiSession"));
   assert.ok(schema.outputs.context.rootFields.includes("aiBootstrap"));
   assert.ok(schema.outputs.context.rootFields.includes("nextSafeCommand"));
@@ -133,6 +135,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.context.rootFields.includes("environmentChangeProtocol"));
   assert.ok(schema.outputs.context.rootFields.includes("aiReadiness"));
   assert.ok(schema.outputs.handoff.rootFields.includes("dependencyHandoff"));
+  assert.ok(schema.outputs.handoff.rootFields.includes("startHere"));
+  assert.ok(schema.outputs.handoff.rootFields.includes("readOrder"));
   assert.ok(schema.outputs.handoff.rootFields.includes("aiBootstrap"));
   assert.ok(schema.outputs.handoff.rootFields.includes("nextSafeCommand"));
   assert.ok(schema.outputs.handoff.rootFields.includes("continuation"));
