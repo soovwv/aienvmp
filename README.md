@@ -6,28 +6,54 @@
 
 **AI Environment Map.**
 
-`aienvmp` is a lightweight env map and light SBOM for shared AI coding machines.
+`aienvmp` is a lightweight env map and light SBOM for AI coding workspaces.
 
-It helps Codex, Claude, Gemini, and humans avoid silent runtime, package manager, dependency, Docker, and security drift.
+It helps Codex, Claude, Gemini, and humans avoid silent runtime, package manager, dependency, Docker, and security drift on shared machines.
+
+**Use it when multiple AI agents or people touch the same server, repo, laptop, or CI workspace.**
+
+## Why
+
+- one AI-readable environment map
+- one lightweight SBOM view
+- one append-only intent and change timeline
+- one human dashboard
+- advisory by default, strict only when requested
 
 ## 10-Second Use
 
 ```bash
 npx aienvmp sync
 npx aienvmp status
+npx aienvmp handoff
+```
+
+For AI details:
+
+```bash
 npx aienvmp context --json
 npx aienvmp schema --json
 ```
 
-Before environment changes:
+Before an environment-affecting change:
 
 ```bash
-npx aienvmp intent --actor agent:codex --action "change dependency" --target dependency
-npx aienvmp checkpoint --actor agent:codex --summary "dependency-change" --target dependency
+npx aienvmp intent --actor agent:id --action "planned-change" --target dependency
+npx aienvmp checkpoint --actor agent:id --summary "dependency-change" --target dependency
 ```
 
-Use `--dir <workspace>` when AI or CI runs outside the target project.
-Warnings are advisory by default. Use `doctor --strict <scope>` only when you want CI-style failure.
+Use `--dir <workspace>` when AI or CI runs outside the target project. Warnings do not block local work by default.
+
+## AI Loop
+
+1. `sync` refreshes `AIENV.md`, status, summary, SBOM, ledger, and dashboard.
+2. `status` gives the 5-line clear/review decision.
+3. `context --json` gives AI the full preflight contract.
+4. `intent` records planned env changes before touching dependencies, runtimes, package managers, Docker, or global tools.
+5. `checkpoint` records the accepted change, refreshes outputs, and writes a handoff.
+6. `handoff` tells the next AI what to read, what to avoid, and whether SBOM/strict review is needed.
+
+Local mode is warn-only. Use `doctor --strict security|policy|coordination|all` only for CI or explicit human-requested gates.
 
 ## What It Creates
 
@@ -46,25 +72,12 @@ AIENV.md                 # Markdown env map for AI agents
 
 ## AI Contract
 
-- `status`, `context`, `plan`, and `handoff` share one preflight contract.
-- `schema --json` prints the stable AI-readable output contract without scanning.
-- `summary.md` is the short CI/AI handoff view, with `AI readiness`, signals, and next action first.
-- `status.json.nextAgent` tells the next AI what to read and whether to review first.
-- `aiReadiness` gives a one-field ready/review signal for AI continuation.
-- `collaboration` gives the shortest multi-agent env-change status, targets, and next command.
-- `maintenanceLoop` gives AI a recurring refresh, decide, inspect, SBOM review, intent, checkpoint, and handoff cycle.
-- `dashboard.html` starts with a 3-card AI control strip, one next command, and a compact first-read strip.
-- `dependencyReadSet` lists manifests and lockfiles before package or security changes.
-- `sbomRisk` gives AI a compact light-SBOM risk level, signals, and next command.
-- `sbom.json.aiDependencyReview` connects SBOM risk, scanner confidence, and safe dependency-change steps.
-- `coordination.conflictTargets` shows where multiple agents are planning changes.
-- `agentActivity.multiActorTargets` shows where multiple agents actually recorded env changes.
-- `followUps` shows records that still need `sync`, `status`, or `handoff`.
-- `handoff` carries continuation, dependency read-set, SBOM review, and protocol guidance for the next AI.
-- Light SBOM includes source/confidence hints; verify security claims with dedicated scanners.
-- `enforcementProfile.gate` explains when checks warn, fail, and set exit codes.
+- `status`, `context`, `plan`, and `handoff` share one additive preflight contract.
+- `maintenanceLoop` gives AI the recurring env-management loop.
+- `sbomRisk` and `sbomReview` connect light SBOM risk to safe dependency-change steps.
+- `collaboration`, `coordination`, and `agentActivity` show multi-agent conflicts and shared targets.
 - `strictDecision` separates local warn-only checks from optional CI strict gates.
-- Everything is advisory by default; strict failure is opt-in with `doctor --strict` or `--ci`.
+- `schema --json` prints the stable machine-readable contract without scanning.
 
 ## Agent Files
 

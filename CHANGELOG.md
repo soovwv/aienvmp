@@ -12,6 +12,7 @@
 - Surfaced local `doctor --json` and scoped CI strict commands in summary, dashboard, status/context JSON, and tests.
 - Added `handoff.continuation` so the next AI receives maintenance-loop, SBOM-review, and strict-decision guidance without parsing the full preflight.
 - Added the continuation summary to plain Markdown handoff output and schema metadata.
+- Reworked the README first-read flow around shared AI workspaces, the 10-second command path, and the AI maintenance loop.
 
 ## 0.1.66
 
