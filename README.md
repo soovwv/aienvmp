@@ -85,6 +85,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `maintenanceLoop` gives AI the recurring env-management loop.
 - `sbomRisk` and `sbomReview` connect light SBOM risk to safe dependency-change steps.
 - `collaboration`, `coordination`, and `agentActivity` show multi-agent conflicts and shared targets.
+- `agentPointers.discovery` tells AI whether Codex, Claude, and Gemini instruction files can discover `aienvmp`; `agentPointers.onboardCommand` is the one-command fix.
 - `strictDecision` separates local warn-only checks from optional CI strict gates.
 - `status --json`, `context --json`, `handoff --json`, and `doctor --json` include `nextSafeCommand` for one advisory next step.
 - The dashboard mirrors `aiBootstrap` so humans and AI see the same first-read and next-command hint.

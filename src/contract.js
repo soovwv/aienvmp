@@ -38,6 +38,7 @@ export function schemaContract() {
         file: ".aienvmp/status.json",
         command: "aienvmp status --json",
         rootFields: ["state", "aiBootstrap", "nextCommand", "nextSafeCommand", "decision", "counts", "aiReadiness", "collaboration", "maintenanceLoop", "coordination", "agentPointers", "sbomRisk"],
+        agentPointerFields: ["installedCount", "missingCount", "installed", "missing", "discovery", "onboardCommand", "next", "targets"],
         contract: preflightContract()
       },
       summary: {
@@ -86,6 +87,7 @@ export function schemaContract() {
       localBehavior: "read-only; this command does not scan, install, update, or lock anything.",
       aiReadinessRule: "When aiReadiness.level is review, project-local code work may still continue if aiReadiness.projectLocalWork is allowed; environment changes should follow intent/review guidance.",
       collaborationRule: "Use collaboration.status, activeTargets, and nextCommand as the shortest multi-agent environment coordination hint.",
+      agentDiscoveryRule: "Use agentPointers.discovery and agentPointers.onboardCommand to decide whether AI instruction-file pointers can discover aienvmp automatically.",
       maintenanceLoopRule: "Use maintenanceLoop as the short recurring AI workflow: refresh, decide, inspect, plan, intent, checkpoint, and handoff without blocking local operation.",
       strictDecisionRule: "Use enforcement.strictDecision or preflight.enforcementProfile.strictDecision for the shortest local warn-only vs CI strict decision.",
       strictPlanRule: "Use enforcement.strictPlan or preflight.enforcementProfile.strictPlan to choose the narrowest explicit strict scope for CI."

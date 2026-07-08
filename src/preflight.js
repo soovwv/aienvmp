@@ -375,8 +375,12 @@ export function agentPointerSummary(agentFiles = {}) {
     installed: installed.map((item) => item.role),
     missing: missing.map((item) => item.role),
     targets,
+    discovery: installed.length
+      ? `ready: ${installed.map((item) => item.role).join(", ")}`
+      : "missing: run aienvmp onboard",
+    onboardCommand: "aienvmp onboard",
     next: missing.length
-      ? `Install a pointer with ${missing[0].installCommand} if this workspace uses that AI.`
+      ? `Run aienvmp onboard for Codex, Claude, and Gemini, or install one pointer with ${missing[0].installCommand}.`
       : "Agent instruction pointers are installed for detected AI instruction files.",
     mode: "advisory"
   };

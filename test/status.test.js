@@ -210,6 +210,9 @@ test("buildStatus exposes agent pointer discovery hints", () => {
   assert.deepEqual(status.agentPointers.missing, ["claude", "gemini"]);
   assert.equal(status.aiReadiness.level, "ready");
   assert.equal(status.agentPointers.targets[1].file, "CLAUDE.md");
+  assert.equal(status.agentPointers.onboardCommand, "aienvmp onboard");
+  assert.match(status.agentPointers.discovery, /ready: codex/);
+  assert.match(status.agentPointers.next, /aienvmp onboard/);
   assert.match(status.agentPointers.next, /snippet claude/);
 });
 
@@ -225,6 +228,7 @@ test("buildStatus marks AI readiness review when no agent pointer is installed",
 
   assert.equal(status.aiReadiness.level, "review");
   assert.equal(status.aiReadiness.requiresHumanReview, true);
+  assert.equal(status.agentPointers.discovery, "missing: run aienvmp onboard");
   assert.match(status.aiReadiness.signals.join(" "), /pointer/);
   assert.match(status.aiReadiness.safeProjectLocalActions.join(" "), /code-only work/);
   assert.match(status.aiReadiness.reviewOnlyEnvironmentChanges, /review signals/);

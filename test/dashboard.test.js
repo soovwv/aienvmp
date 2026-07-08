@@ -304,6 +304,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const nextReason=topAction\.summary\|\|aiBootstrap\.rule\|\|maintenanceLoop\.rule/);
   assert.match(html, /const firstRead=aiBootstrap\.readFirst\|\|nextAgent\.readFirst\|\|'\.aienvmp\/status\.json'/);
   assert.match(html, /const bootstrapState=\[aiBootstrap\.projectLocalWork\|\|'allowed',aiBootstrap\.environmentChanges\|\|'intent-first'\]/);
+  assert.match(html, /const agentDiscovery=manifest\.preflight\?\.agentPointers\?\.discovery/);
+  assert.match(html, /AI discovery/);
   assert.match(html, /const reviewTargets=\[\.\.\.new Set/);
   assert.match(html, /\.control-card\.review/);
   assert.match(html, /controlCard\('AI readiness'/);
@@ -398,6 +400,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Agent Pointers/);
   assert.match(html, /aienvmp pointer installed/);
   assert.match(html, /file detected, pointer missing/);
+  assert.match(html, /aienvmp onboard/);
   assert.match(html, /aienvmp snippet claude --write/);
 });
 

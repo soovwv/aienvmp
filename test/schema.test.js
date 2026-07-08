@@ -30,6 +30,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("agentPointers"));
   assert.ok(schema.outputs.status.rootFields.includes("nextSafeCommand"));
   assert.ok(schema.outputs.status.rootFields.includes("aiBootstrap"));
+  assert.ok(schema.outputs.status.agentPointerFields.includes("discovery"));
+  assert.ok(schema.outputs.status.agentPointerFields.includes("onboardCommand"));
   assert.equal(schema.outputs.summary.command, "aienvmp summary --write");
   assert.equal(schema.outputs.summary.format, "markdown");
   assert.deepEqual(schema.outputs.summary.startsWith, ["AI readiness", "AI signals", "AI next"]);
@@ -63,6 +65,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.compatibility.breakingChangeRule, /migration note/);
   assert.match(schema.compatibility.aiReadinessRule, /project-local code work/);
   assert.match(schema.compatibility.collaborationRule, /multi-agent environment coordination/);
+  assert.match(schema.compatibility.agentDiscoveryRule, /onboardCommand/);
   assert.match(schema.compatibility.maintenanceLoopRule, /recurring AI workflow/);
   assert.match(schema.compatibility.strictDecisionRule, /local warn-only vs CI strict/);
   assert.match(schema.compatibility.strictPlanRule, /narrowest explicit strict scope/);

@@ -6,6 +6,7 @@
 - Documented the release policy: keep `0.1.x` as prototype history, stabilize the AI workspace contract in `0.2.x`, batch npm releases, and prefer deprecation over unpublish.
 - Added AI contract compatibility metadata and a manual npm release workflow so `0.2.0+` releases can be gated instead of published per commit.
 - Added `aienvmp onboard` to install Codex, Claude, and Gemini pointers in one command and refresh the generated AI env artifacts.
+- Surfaced AI discovery state and `onboard` guidance in status JSON, schema metadata, and the dashboard first-read strip.
 
 ## 0.1.69
 

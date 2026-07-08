@@ -577,6 +577,8 @@ const firstRead=aiBootstrap.readFirst||nextAgent.readFirst||'.aienvmp/status.jso
 const reviewTargets=[...new Set([...(conflictTargets||[]),...(collaboration.activeTargets||[]),...(riskSummary.reviewTargets||[])].filter(Boolean))];
 const safeMode=aiBootstrap.localMode||enforcementProfile.gate?.localDefault||enforcementProfile.localOperation||'warn-only';
 const bootstrapState=[aiBootstrap.projectLocalWork||'allowed',aiBootstrap.environmentChanges||'intent-first'].join(' / ');
+const agentDiscovery=manifest.preflight?.agentPointers?.discovery||((agentPointerCount||0)>0?'ready':'missing: run aienvmp onboard');
+const agentDiscoveryNext=manifest.preflight?.agentPointers?.next||'Run aienvmp onboard to install AI instruction-file pointers.';
 const briefItem=(key,value)=>\`<div class="brief-item"><div class="brief-k">\${key}</div><div class="brief-v">\${esc(value)}</div></div>\`;
 const handoffHtml=\`<table><tr><th>Status</th><td>\${reviewRequired?'review-required':'clear'}</td></tr><tr><th>Trust</th><td><code>\${esc(trustState)}</code></td></tr><tr><th>Read first</th><td><code>\${esc(firstRead)}</code></td></tr><tr><th>Dependency files</th><td>\${handoffFiles.length?'<code>'+esc(handoffFiles.join(', '))+'</code>':'none'}</td></tr><tr><th>Conflicts</th><td>\${conflictTargets.length?'<code>'+esc(conflictTargets.join(', '))+'</code>':'none'}</td></tr><tr><th>Next</th><td>\${esc(handoffNext)}</td></tr></table>\`;
 document.getElementById('app').innerHTML=\`
@@ -602,6 +604,7 @@ document.getElementById('app').innerHTML=\`
   \${briefItem('AI bootstrap',bootstrapState)}
   \${briefItem('Status',reviewRequired?'review required':'clear')}
   \${briefItem('Read first',firstRead)}
+  \${briefItem('AI discovery',agentDiscovery)}
   \${briefItem('Review targets',reviewTargets.length?reviewTargets.slice(0,4).join(', '):'none')}
   \${briefItem('Local mode',safeMode)}
 </section>
@@ -666,7 +669,7 @@ document.getElementById('app').innerHTML=\`
     <div style="height:14px"></div>
     \${card('AI Handoff',reviewRequired?'<span class="pill warn">review</span>':'<span class="pill">ready</span>',handoffHtml)}
     <div style="height:14px"></div>
-    \${card('Agent Pointers','<span class="pill">'+agentPointerCount+' installed</span>','<div class="agents">'+agentCards+'</div>')}
+    \${card('Agent Pointers','<span class="pill">'+agentPointerCount+' installed</span>','<div class="path">'+esc(agentDiscoveryNext)+'</div><div class="agents">'+agentCards+'</div>')}
     <div style="height:14px"></div>
     \${card('Snapshot','',\`<table><tr><th>OS</th><td>\${esc(manifest.os.platform)} \${esc(manifest.os.release)} \${esc(manifest.os.arch)}</td></tr><tr><th>Shell</th><td>\${esc(manifest.os.shell||'unknown')}</td></tr><tr><th>Workspace</th><td><div class="path">\${esc(manifest.workspace.path)}</div></td></tr></table>\`)}
   </aside>
