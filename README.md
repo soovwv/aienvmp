@@ -97,6 +97,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `sbomRisk` and `sbomReview` connect light SBOM risk to safe dependency-change steps.
 - `collaboration`, `coordination`, and `agentActivity` show multi-agent conflicts and shared targets.
 - `agentPointers.discovery` tells AI whether Codex, Claude, and Gemini instruction files can discover `aienvmp`; `agentPointers.onboardCommand` is the one-command fix.
+- `enforcement.policy` summarizes local, CI, and release gates: local is warn-only, CI uses the recommended strict scope, release uses `strict all`.
 - `strictDecision` separates local warn-only checks from optional CI strict gates.
 - `status --json`, `context --json`, `handoff --json`, and `doctor --json` include `nextSafeCommand` for one advisory next step.
 - The dashboard mirrors `aiBootstrap` so humans and AI see the same first-read and next-command hint.
@@ -144,6 +145,14 @@ aienvmp doctor --strict security|policy|coordination|all
 
 The GitHub Action writes status, summary, schema, doctor, plan, SBOM, and dashboard artifacts. `strict: "off"` reports warnings without failing the job.
 The Step Summary includes `aienvmp strict plan` and `aienvmp AI loop` blocks so humans and AI agents can choose CI gates and continue the same workflow without parsing full artifacts.
+
+Recommended gates:
+
+```bash
+npx aienvmp doctor --json                 # local, warn-only
+npx aienvmp doctor --strict policy --json # CI, scoped when policy drift is relevant
+npx aienvmp doctor --strict all --json    # release, full gate
+```
 
 ```yaml
 - uses: soovwv/aienvmp@main

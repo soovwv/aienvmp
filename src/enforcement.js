@@ -35,10 +35,43 @@ export function enforcementAdvice(warnings = []) {
     scopes: scopeResults,
     strictPlan: strictScopePlan(suggestedStrictScopes, scopeResults),
     strictDecision: strictDecision(suggestedStrictScopes, scopeResults),
+    policy: enforcementPolicy(suggestedStrictScopes, scopeResults),
     recommendedCommand: suggestedStrictScopes.length
       ? `aienvmp doctor --strict ${suggestedStrictScopes[0]}`
       : "aienvmp doctor --strict all",
     note: "Use strict mode in CI or explicit checks; do not block local operation unless the user requests it."
+  };
+}
+
+export function enforcementPolicy(suggestedStrictScopes = [], scopeResults = []) {
+  const recommendedScope = suggestedStrictScopes[0] || "all";
+  const failingScopes = suggestedStrictScopes.slice();
+  const releaseScope = "all";
+  return {
+    defaultMode: "advisory",
+    local: {
+      mode: "warn-only",
+      command: "aienvmp doctor --json",
+      fails: false
+    },
+    ci: {
+      mode: failingScopes.length ? "strict-recommended-scope" : "optional-health-check",
+      scope: recommendedScope,
+      command: `aienvmp doctor --strict ${recommendedScope} --json`,
+      failsOn: failingScopes.length ? "matching recommended-scope warnings" : "only if explicit all-scope health check fails"
+    },
+    release: {
+      mode: "strict-all",
+      scope: releaseScope,
+      command: "aienvmp doctor --strict all --json",
+      failsOn: "any security, policy, or coordination warning"
+    },
+    rule: "Keep local operation advisory. Use CI/release strict checks only when automation or a human explicitly asks for a gate.",
+    scopeStatuses: scopeResults.map((item) => ({
+      scope: item.scope,
+      status: item.status,
+      matchedWarningCodes: item.matchedWarningCodes || []
+    }))
   };
 }
 

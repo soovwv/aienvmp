@@ -67,6 +67,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.compatibility.collaborationRule, /multi-agent environment coordination/);
   assert.match(schema.compatibility.agentDiscoveryRule, /onboardCommand/);
   assert.match(schema.compatibility.maintenanceLoopRule, /recurring AI workflow/);
+  assert.match(schema.compatibility.enforcementPolicyRule, /local\/CI\/release/);
   assert.match(schema.compatibility.strictDecisionRule, /local warn-only vs CI strict/);
   assert.match(schema.compatibility.strictPlanRule, /narrowest explicit strict scope/);
 });

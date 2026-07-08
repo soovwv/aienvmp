@@ -9,6 +9,7 @@
 - Surfaced AI discovery state and `onboard` guidance in status JSON, schema metadata, and the dashboard first-read strip.
 - Made `onboard` output and the README first screen more action-oriented around AI discovery, first-read files, and next commands.
 - Added a runnable multi-agent conflict demo that shows Codex and Claude dependency intents producing a review-before-env-change collaboration state.
+- Added `enforcement.policy` as a short AI-readable local/CI/release gate summary while keeping local operation advisory by default.
 
 ## 0.1.69
 

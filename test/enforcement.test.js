@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { enforcementAdvice, enforcementGate, strictDecision, strictResult } from "../src/enforcement.js";
+import { enforcementAdvice, enforcementGate, enforcementPolicy, strictDecision, strictResult } from "../src/enforcement.js";
 
 test("enforcementAdvice keeps local behavior advisory and suggests scoped strict checks", () => {
   const warnings = [
@@ -25,6 +25,11 @@ test("enforcementAdvice keeps local behavior advisory and suggests scoped strict
   assert.equal(advice.strictDecision.recommendedScope, "security");
   assert.equal(advice.strictDecision.ciCommand, "aienvmp doctor --strict security --json");
   assert.deepEqual(advice.strictDecision.failingScopes, ["security", "policy", "coordination"]);
+  assert.equal(advice.policy.local.command, "aienvmp doctor --json");
+  assert.equal(advice.policy.local.fails, false);
+  assert.equal(advice.policy.ci.scope, "security");
+  assert.equal(advice.policy.ci.command, "aienvmp doctor --strict security --json");
+  assert.equal(advice.policy.release.command, "aienvmp doctor --strict all --json");
 });
 
 test("enforcementAdvice suggests all only when no scoped warning fails", () => {
@@ -36,6 +41,25 @@ test("enforcementAdvice suggests all only when no scoped warning fails", () => {
   assert.match(advice.strictPlan.rule, /explicit CI health checks/);
   assert.equal(advice.strictDecision.ci, "optional-health-check");
   assert.deepEqual(advice.strictDecision.passingScopes, ["security", "policy", "coordination"]);
+  assert.equal(advice.policy.ci.mode, "optional-health-check");
+  assert.equal(advice.policy.release.scope, "all");
+});
+
+test("enforcementPolicy gives AI one local CI release gate summary", () => {
+  const policy = enforcementPolicy(["coordination"], [
+    { scope: "security", status: "pass" },
+    { scope: "policy", status: "pass" },
+    { scope: "coordination", status: "fail", matchedWarningCodes: ["conflicting-open-intents"] },
+    { scope: "all", status: "fail", matchedWarningCodes: ["conflicting-open-intents"] }
+  ]);
+
+  assert.equal(policy.defaultMode, "advisory");
+  assert.equal(policy.local.mode, "warn-only");
+  assert.equal(policy.ci.scope, "coordination");
+  assert.equal(policy.ci.command, "aienvmp doctor --strict coordination --json");
+  assert.equal(policy.release.command, "aienvmp doctor --strict all --json");
+  assert.match(policy.rule, /local operation advisory/);
+  assert.deepEqual(policy.scopeStatuses.find((item) => item.scope === "coordination").matchedWarningCodes, ["conflicting-open-intents"]);
 });
 
 test("strictDecision keeps local checks warn-only and CI scoped", () => {
