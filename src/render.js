@@ -641,6 +641,7 @@ const coordination=manifest.preflight?.coordination||{};
 const conflictTargets=coordination.conflictTargets||[];
 const handoffFiles=nextAgent.dependencyFiles?.length?nextAgent.dependencyFiles:(dependencyReadSet[0]?[dependencyReadSet[0].manifest,...(dependencyReadSet[0].lockfiles||[])].filter(Boolean):[]);
 const handoffNext=nextAgent.rule||(reviewRequired?'Review warnings and open intents':'Continue project-local work');
+const startHere=manifest.preflight?.artifacts?.startHere||'.aienvmp/README.md';
 const firstRead=aiBootstrap.readFirst||nextAgent.readFirst||'.aienvmp/status.json';
 const reviewTargets=[...new Set([...(conflictTargets||[]),...(collaboration.activeTargets||[]),...(riskSummary.reviewTargets||[])].filter(Boolean))];
 const safeMode=aiBootstrap.localMode||enforcementProfile.gate?.localDefault||enforcementProfile.localOperation||'warn-only';
@@ -674,6 +675,7 @@ document.getElementById('app').innerHTML=\`
   \${briefItem('AI bootstrap',bootstrapState)}
   \${briefItem('Status',reviewRequired?'review required':'clear')}
   \${briefItem('Freshness',artifactFreshnessValue+' / '+artifactFreshnessNext)}
+  \${briefItem('Start here',startHere)}
   \${briefItem('Read first',firstRead)}
   \${briefItem('AI discovery',agentDiscovery)}
   \${briefItem('Review targets',reviewTargets.length?reviewTargets.slice(0,4).join(', '):'none')}

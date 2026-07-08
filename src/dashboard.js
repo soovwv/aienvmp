@@ -13,7 +13,7 @@ export const dashboardEssentialCards = Object.freeze([
 export const dashboardEssentialSurfaces = Object.freeze({
   controlStrip: ["AI readiness", "Freshness", "Collaboration", "SBOM risk"],
   nextCommand: "Next command",
-  firstRead: ["AI bootstrap", "Status", "Freshness", "Read first", "AI discovery", "Review targets", "Local mode"],
+  firstRead: ["AI bootstrap", "Status", "Freshness", "Start here", "Read first", "AI discovery", "Review targets", "Local mode"],
   essentialCards: dashboardEssentialCards,
   rule: "Keep these surfaces visible before adding support cards; the dashboard is a human view of the AI startup contract."
 });

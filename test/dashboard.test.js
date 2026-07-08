@@ -345,6 +345,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /AI control strip/);
   assert.match(html, /Next command/);
   assert.match(html, /First read/);
+  assert.match(html, /Start here/);
   assert.match(html, /AI bootstrap/);
   assert.match(html, /\.nextbar/);
   assert.match(html, /\.brief/);
@@ -367,6 +368,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const artifactFreshnessNext=artifactFreshness\.nextCommand\|\|artifactFreshness\.refreshCommand\|\|'aienvmp sync'/);
   assert.match(html, /const nextCommand=aiBootstrap\.nextSafeCommand\|\|manifest\.preflight\?\.nextSafeCommand/);
   assert.match(html, /const nextReason=topAction\.summary\|\|aiBootstrap\.rule\|\|maintenanceLoop\.rule/);
+  assert.match(html, /const startHere=manifest\.preflight\?\.artifacts\?\.startHere\|\|'\.aienvmp\/README\.md'/);
   assert.match(html, /const firstRead=aiBootstrap\.readFirst\|\|nextAgent\.readFirst\|\|'\.aienvmp\/status\.json'/);
   assert.match(html, /const bootstrapState=\[aiBootstrap\.projectLocalWork\|\|'allowed',aiBootstrap\.environmentChanges\|\|'intent-first'\]/);
   assert.match(html, /const agentDiscovery=manifest\.preflight\?\.agentPointers\?\.discovery/);
@@ -389,6 +391,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.equal(dashboardCardPriority("AI Session"), "essential");
   assert.equal(dashboardCardPriority("Runtimes"), "support");
   assert.deepEqual(dashboardEssentialSurfaces.controlStrip, ["AI readiness", "Freshness", "Collaboration", "SBOM risk"]);
+  assert.ok(dashboardEssentialSurfaces.firstRead.includes("Start here"));
   assert.equal(dashboardEssentialSurfaces.nextCommand, "Next command");
   assert.ok(dashboardEssentialSurfaces.essentialCards.includes("Light SBOM"));
   assert.match(dashboardEssentialSurfaces.rule, /AI startup contract/);
