@@ -94,6 +94,7 @@ aienvmp schema --json           # stable output contract for AI/CI consumers
 aienvmp plan --write            # read-only action plan
 aienvmp handoff --record        # next-agent summary
 aienvmp intent                  # record planned env change
+aienvmp resolve --target dependency --actor agent:id
 aienvmp record                  # record what changed
 aienvmp checkpoint              # record + sync + status + handoff after env change
 aienvmp doctor --strict security|policy|coordination|all

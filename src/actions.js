@@ -12,7 +12,7 @@ export function recommendedActions(manifest = {}, context = {}) {
   }
 
   if (warnings.some((warning) => warning.code === "conflicting-open-intents")) {
-    actions.push(action("coordinate-agents", "high", "coordination", "Multiple agents are planning changes to the same environment target. Coordinate with the user before proceeding."));
+    actions.push(action("coordinate-agents", "high", "coordination", "Multiple agents are planning changes to the same environment target. Coordinate with the user before proceeding.", "aienvmp resolve --actor agent:id --target <target> --status resolved"));
   }
 
   if (warnings.some((warning) => warning.code === "multi-agent-records")) {

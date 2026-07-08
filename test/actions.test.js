@@ -42,6 +42,7 @@ test("recommendedActions reports coordination work for open intents", () => {
   });
 
   assert.deepEqual(actions.map((item) => item.id).slice(0, 2), ["review-open-intents", "coordinate-agents"]);
+  assert.match(actions[1].command, /resolve --actor agent:id --target <target>/);
 });
 
 test("recommendedActions reports multi-agent record review", () => {

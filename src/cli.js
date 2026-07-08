@@ -137,7 +137,7 @@ Advanced:
   aienvmp init [--dir .]
   aienvmp scan [--dir .] [--deep] [--security]
   aienvmp intent [--dir .] --actor agent:codex --action "install pnpm"
-  aienvmp resolve [--dir .] --actor human:you --id <intent-id> [--status resolved|cancelled]
+  aienvmp resolve [--dir .] --actor human:you (--id <intent-id>|--target dependency|--all) [--status resolved|cancelled] [--json]
   aienvmp record [--dir .] --actor agent:codex --summary "updated .nvmrc" [--target node] [--before 20] [--after 24]
   aienvmp checkpoint [--dir .] --actor agent:codex --summary "updated dependency" [--target dependency]
   aienvmp snippet [agents|codex|claude|gemini] [--write AGENTS.md]

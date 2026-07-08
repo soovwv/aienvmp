@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.66
+
+- Added `aienvmp resolve --target <target>` to resolve all open intents for one environment target.
+- Added `aienvmp resolve --all` to close all open intents after coordination.
+- Added `resolve --json` output so AI agents can read resolved refs and counts directly.
+- Kept single-intent `resolve --id` behavior for precise manual cleanup.
+- Updated coordination recommended actions to point at target-based resolve.
+- Updated CLI help and README command guidance for the simplified resolve flow.
+- Added regression tests for target resolve, all resolve, JSON output, and coordination action commands.
+
 ## 0.1.65
 
 - Added a dashboard `Next command` bar directly below the AI control strip.
