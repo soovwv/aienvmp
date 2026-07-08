@@ -20,3 +20,38 @@ test("multi-agent conflict demo detects dependency coordination", async () => {
   assert.match(stdout, /conflict targets: dependency/);
   assert.match(stdout, /read first: \.aienvmp\/status\.json/);
 });
+
+test("CLI demo shows the multi-agent conflict without touching the current workspace", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    path.resolve("bin/aienvmp.js"),
+    "demo"
+  ], {
+    cwd: path.resolve("."),
+    maxBuffer: 5 * 1024 * 1024
+  });
+
+  assert.match(stdout, /aienvmp multi-agent conflict demo/);
+  assert.match(stdout, /collaboration: review-before-env-change/);
+  assert.match(stdout, /conflict targets: dependency/);
+  assert.match(stdout, /freshness: fresh \/ aienvmp status --json/);
+  assert.match(stdout, /why: Two AI agents planned dependency changes/);
+});
+
+test("CLI demo JSON gives AI consumers the same conflict signal", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    path.resolve("bin/aienvmp.js"),
+    "demo",
+    "--json"
+  ], {
+    cwd: path.resolve("."),
+    maxBuffer: 5 * 1024 * 1024
+  });
+
+  const json = JSON.parse(stdout);
+  assert.equal(json.name, "aienvmp multi-agent conflict demo");
+  assert.equal(json.collaboration, "review-before-env-change");
+  assert.deepEqual(json.conflictTargets, ["dependency"]);
+  assert.equal(json.readFirst, ".aienvmp/status.json");
+  assert.equal(json.artifactFreshness.state, "fresh");
+  assert.ok(json.contextFields.includes("artifactFreshness"));
+});

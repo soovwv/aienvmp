@@ -37,10 +37,10 @@ npx aienvmp handoff
 
 Run `sync` later when you only need to refresh artifacts without touching instruction-file pointers.
 
-Try the multi-agent conflict demo from a cloned repo:
+Try the multi-agent conflict demo without touching your workspace:
 
 ```bash
-npm run demo:conflict
+npx aienvmp demo
 ```
 
 For AI details:
@@ -203,6 +203,7 @@ npm deprecate 'aienvmp@<0.2.0' 'Prototype history: use aienvmp@0.2.0 or newer fo
 node --test
 npm run smoke
 npm run demo:conflict
+npx aienvmp demo
 npm run release:check
 npm pack --dry-run
 ```

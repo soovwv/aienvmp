@@ -18,6 +18,7 @@ import { checkpointWorkspace } from "./commands/checkpoint.js";
 import { sbomWorkspace } from "./commands/sbom.js";
 import { summaryWorkspace } from "./commands/summary.js";
 import { onboardWorkspace } from "./commands/onboard.js";
+import { demoWorkspace } from "./commands/demo.js";
 import { readFileSync } from "node:fs";
 
 const commands = new Map([
@@ -40,7 +41,8 @@ const commands = new Map([
   ["checkpoint", checkpointWorkspace],
   ["sbom", sbomWorkspace],
   ["summary", summaryWorkspace],
-  ["onboard", onboardWorkspace]
+  ["onboard", onboardWorkspace],
+  ["demo", demoWorkspace]
 ]);
 
 const version = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version;
@@ -122,6 +124,7 @@ Usage:
   aienvmp summary [--dir .] [--write]
   aienvmp schema [--json]
   aienvmp onboard [codex claude gemini] [--agents codex,claude,gemini] [--no-sync]
+  aienvmp demo [conflict] [--json]
 
 Common:
   aienvmp onboard   install AI instruction-file pointers and refresh outputs
@@ -135,6 +138,7 @@ Common:
   aienvmp summary   print/write a compact Markdown summary for AI and CI
   aienvmp schema    print the stable AI-readable output contract
   aienvmp snippet   print an AGENTS.md pointer snippet
+  aienvmp demo      run the temporary multi-agent conflict demo
   aienvmp dash      regenerate/open the lightweight dashboard
 
 Advanced:
@@ -151,6 +155,7 @@ Advanced:
   aienvmp doctor [--dir .] [--json] [--ci] [--strict security|policy|coordination|all]
   aienvmp sbom [--dir .] [--json] [--write]
   aienvmp summary [--dir .] [--write]
+  aienvmp demo [conflict] [--json]
   aienvmp dash [--dir .] [--open]
 `);
 }
