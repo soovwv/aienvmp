@@ -343,6 +343,10 @@ test("renderDashboard includes the audit summary surface", () => {
 
   assert.match(html, /Audit summary/);
   assert.match(html, /AI control strip/);
+  assert.match(html, /10-second review/);
+  assert.match(html, /For humans: check this before any shared environment change/);
+  assert.match(html, /\.cockpit/);
+  assert.match(html, /const primaryReviewTarget=reviewTargets\[0\]\|\|'none'/);
   assert.match(html, /Next command/);
   assert.match(html, /First read/);
   assert.match(html, /Start here/);
@@ -391,6 +395,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.equal(dashboardCardPriority("AI Session"), "essential");
   assert.equal(dashboardCardPriority("Runtimes"), "support");
   assert.deepEqual(dashboardEssentialSurfaces.controlStrip, ["AI readiness", "Freshness", "Collaboration", "SBOM risk"]);
+  assert.deepEqual(dashboardEssentialSurfaces.tenSecondReview, ["Start here", "Next command", "Review target", "Mode"]);
   assert.ok(dashboardEssentialSurfaces.firstRead.includes("Start here"));
   assert.equal(dashboardEssentialSurfaces.nextCommand, "Next command");
   assert.ok(dashboardEssentialSurfaces.essentialCards.includes("Light SBOM"));
@@ -441,7 +446,7 @@ test("renderDashboard includes the audit summary surface", () => {
     assert.match(html, new RegExp(`card\\('${title}'`));
   }
   assert.match(html, /const essentialCards=\["AI Session","Environment Health","AI Collaboration","Light SBOM","Agent Pointers","Agent Intents","Environment Ledger","Enforcement Mode","Release Readiness"\]/);
-  assert.match(html, /const essentialSurfaces=\{"controlStrip":\["AI readiness","Freshness","Collaboration","SBOM risk"\]/);
+  assert.match(html, /const essentialSurfaces=\{"controlStrip":\["AI readiness","Freshness","Collaboration","SBOM risk"\],"tenSecondReview":\["Start here","Next command","Review target","Mode"\]/);
   assert.match(html, /data-dashboard-priority=/);
   assert.match(html, /cardPriority\(title\)/);
   assert.match(html, /const agentNames=\{agents:'Codex',claude:'Claude',gemini:'Gemini'\}/);
@@ -477,6 +482,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /aienvmp handoff --record --actor agent:id/);
   assert.match(html, /Review dependency read set and topRisk/);
   assert.match(html, /Review targets/);
+  assert.match(html, /Review target/);
   assert.match(html, /Freshness/);
   assert.match(html, /Local mode/);
   assert.match(html, /AI decision/);

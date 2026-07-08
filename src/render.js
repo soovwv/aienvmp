@@ -481,6 +481,14 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(28px,4vw,46px);line-height:1.02;margin-to
 .nextbar b{color:var(--green);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
 .nextbar code{display:inline-block;max-width:100%;white-space:normal;overflow-wrap:anywhere}
 .nextbar span{color:var(--muted);font-size:12px;overflow-wrap:anywhere}
+.cockpit{border:1px solid rgba(71,229,141,.26);background:linear-gradient(135deg,rgba(13,24,21,.96),rgba(9,19,16,.95));border-radius:8px;padding:14px;margin:0 0 14px}
+.cockpit-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.cockpit-title{color:var(--green);font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.08em}
+.cockpit-rule{color:var(--muted);font-size:12px;line-height:1.4}
+.cockpit-grid{display:grid;grid-template-columns:1.1fr 1.5fr 1fr .8fr;gap:8px}
+.cockpit-item{border:1px solid var(--line2);background:rgba(8,17,15,.74);border-radius:8px;padding:10px;min-width:0}
+.cockpit-k{color:var(--muted);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.cockpit-v{margin-top:6px;font-size:13px;font-weight:800;overflow-wrap:anywhere}
 .brief{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:0 0 14px}
 .brief-item{border:1px solid var(--line2);background:rgba(9,19,16,.9);border-radius:8px;padding:10px;min-width:0}
 .brief-k{color:var(--muted);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
@@ -511,10 +519,12 @@ code{color:var(--code);background:#0a2017;border:1px solid #17462f;padding:2px 6
 @media (max-width:860px){header,.layout{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.agents{grid-template-columns:1fr}}
 @media (max-width:860px){.control{grid-template-columns:1fr}}
 @media (max-width:860px){.nextbar{grid-template-columns:1fr}}
+@media (max-width:860px){.cockpit-grid{grid-template-columns:1fr 1fr}}
 @media (max-width:860px){.brief{grid-template-columns:1fr 1fr}}
 @media (max-width:860px){.audit{grid-template-columns:1fr 1fr}}
 @media (max-width:520px){.shell{padding:14px}.metrics{grid-template-columns:1fr}.event{grid-template-columns:1fr}h1{font-size:32px}}
 @media (max-width:520px){.brief{grid-template-columns:1fr}}
+@media (max-width:520px){.cockpit-head{display:block}.cockpit-rule{margin-top:6px}.cockpit-grid{grid-template-columns:1fr}}
 @media (max-width:520px){.audit{grid-template-columns:1fr}}
 </style>
 </head>
@@ -644,6 +654,7 @@ const handoffNext=nextAgent.rule||(reviewRequired?'Review warnings and open inte
 const startHere=manifest.preflight?.artifacts?.startHere||'.aienvmp/README.md';
 const firstRead=aiBootstrap.readFirst||nextAgent.readFirst||'.aienvmp/status.json';
 const reviewTargets=[...new Set([...(conflictTargets||[]),...(collaboration.activeTargets||[]),...(riskSummary.reviewTargets||[])].filter(Boolean))];
+const primaryReviewTarget=reviewTargets[0]||'none';
 const safeMode=aiBootstrap.localMode||enforcementProfile.gate?.localDefault||enforcementProfile.localOperation||'warn-only';
 const bootstrapState=[aiBootstrap.projectLocalWork||'allowed',aiBootstrap.environmentChanges||'intent-first'].join(' / ');
 const agentDiscovery=manifest.preflight?.agentPointers?.discovery||((agentPointerCount||0)>0?'ready':'missing: run aienvmp onboard');
@@ -670,6 +681,18 @@ document.getElementById('app').innerHTML=\`
   <b>Next command</b>
   <code>\${esc(nextCommand)}</code>
   <span>\${esc(nextReason)}</span>
+</section>
+<section class="cockpit" aria-label="10-second review">
+  <div class="cockpit-head">
+    <div class="cockpit-title">10-second review</div>
+    <div class="cockpit-rule">For humans: check this before any shared environment change.</div>
+  </div>
+  <div class="cockpit-grid">
+    <div class="cockpit-item"><div class="cockpit-k">Start here</div><div class="cockpit-v">\${esc(startHere)}</div></div>
+    <div class="cockpit-item"><div class="cockpit-k">Next command</div><div class="cockpit-v"><code>\${esc(nextCommand)}</code></div></div>
+    <div class="cockpit-item"><div class="cockpit-k">Review target</div><div class="cockpit-v">\${esc(primaryReviewTarget)}</div></div>
+    <div class="cockpit-item"><div class="cockpit-k">Mode</div><div class="cockpit-v">\${esc(safeMode)}</div></div>
+  </div>
 </section>
 <section class="brief" aria-label="First read">
   \${briefItem('AI bootstrap',bootstrapState)}

@@ -85,8 +85,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.releaseReadiness.batchRule, /one npm publish/);
   assert.equal(schema.dashboard.mode, "light-human-view");
   assert.deepEqual(schema.dashboard.essentialSurfaces.controlStrip, ["AI readiness", "Freshness", "Collaboration", "SBOM risk"]);
+  assert.deepEqual(schema.dashboard.essentialSurfaces.tenSecondReview, ["Start here", "Next command", "Review target", "Mode"]);
   assert.ok(schema.dashboard.essentialSurfaces.essentialCards.includes("Light SBOM"));
-  assert.match(schema.dashboard.rule, /essential cards/);
+  assert.match(schema.dashboard.rule, /10-second review/);
   assert.equal(schema.outputs.status.contract.name, "aienvmp-preflight");
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("nextAgent"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("readOrder"));

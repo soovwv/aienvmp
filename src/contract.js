@@ -110,7 +110,7 @@ export function schemaContract() {
     dashboard: {
       mode: "light-human-view",
       essentialSurfaces: dashboardEssentialSurfaces,
-      rule: "Dashboard support cards may grow, but the control strip, next command, first-read brief, and essential cards should stay visible and aligned with AI outputs."
+      rule: "Dashboard support cards may grow, but the control strip, 10-second review, next command, first-read brief, and essential cards should stay visible and aligned with AI outputs."
     },
     releaseGate: {
       mode: "manual-batched",
