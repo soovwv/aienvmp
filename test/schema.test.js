@@ -9,12 +9,14 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.name, "aienvmp-contract");
   assert.equal(schema.outputs.status.contract.name, "aienvmp-preflight");
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("nextAgent"));
+  assert.ok(schema.outputs.status.contract.aiEntryFields.includes("aiReadiness"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("followUps"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("agentPointers"));
   assert.equal(schema.outputs.summary.command, "aienvmp summary --write");
   assert.equal(schema.outputs.summary.format, "markdown");
   assert.ok(schema.outputs.context.rootFields.includes("coordination"));
   assert.ok(schema.outputs.context.rootFields.includes("agentPointers"));
+  assert.ok(schema.outputs.context.rootFields.includes("aiReadiness"));
   assert.ok(schema.outputs.handoff.rootFields.includes("dependencyHandoff"));
   assert.ok(schema.outputs.handoff.rootFields.includes("coordination"));
   assert.equal(schema.outputs.sbom.command, "aienvmp sbom --json");

@@ -112,6 +112,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: `agentPointers` now appears in status/preflight, context JSON, doctor JSON, and summary markdown.
 - Verification: regression tests cover status, context, doctor, schema, and summary outputs.
 
+### AI continuation readiness was spread across several fields
+
+- Issue: AI consumers had to infer readiness from status, intents, activity, follow-ups, pointer state, and SBOM risk separately.
+- Fix: `aiReadiness` now provides one advisory ready/review signal across status, context, doctor, summary, and dashboard.
+- Verification: regression tests cover ready/review summaries, text status output, schema metadata, and dashboard rendering.
+
 ## Template
 
 ### Title

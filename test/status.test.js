@@ -38,6 +38,8 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.counts.runtimes, 1);
   assert.equal(status.counts.dependencies, 2);
   assert.equal(status.agentUse.environmentChanges, "allowed");
+  assert.equal(status.aiReadiness.level, "ready");
+  assert.equal(status.aiReadiness.environmentChanges, "allowed");
   assert.equal(status.quickstart.label, "10-second AI flow");
   assert.equal(status.quickstart.detailCommand, "aienvmp context --json");
   assert.equal(status.quickstart.afterEnvironmentChange, "aienvmp checkpoint --actor agent:id --summary what-changed --target environment");
@@ -130,8 +132,23 @@ test("buildStatus exposes agent pointer discovery hints", () => {
 
   assert.deepEqual(status.agentPointers.installed, ["codex"]);
   assert.deepEqual(status.agentPointers.missing, ["claude", "gemini"]);
+  assert.equal(status.aiReadiness.level, "ready");
   assert.equal(status.agentPointers.targets[1].file, "CLAUDE.md");
   assert.match(status.agentPointers.next, /snippet claude/);
+});
+
+test("buildStatus marks AI readiness review when no agent pointer is installed", () => {
+  const status = buildStatus({
+    runtimes: {},
+    dependencySnapshot: { summary: { packages: 0 } },
+    security: { summary: { total: 0 } },
+    agentFiles: {
+      agents: { path: "AGENTS.md", exists: false, hasAienvmpPointer: false, installCommand: "aienvmp snippet codex --write", role: "codex" }
+    }
+  }, [], []);
+
+  assert.equal(status.aiReadiness.level, "review");
+  assert.match(status.aiReadiness.signals.join(" "), /pointer/);
 });
 
 test("buildStatus treats legacy boolean agent files as installed pointers", () => {
@@ -211,6 +228,7 @@ test("statusWorkspace text prints the next-agent handoff command", async () => {
 
   assert.match(lines.join("\n"), /handoff: aienvmp handoff --record --actor agent:id/);
   assert.match(lines.join("\n"), /checkpoint: aienvmp checkpoint/);
+  assert.match(lines.join("\n"), /ai-readiness: ready/);
 });
 
 test("buildStatus summarizes open intent coordination by target", () => {

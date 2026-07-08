@@ -18,6 +18,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
   const agentActivity = agentActivitySummary(timeline);
   const sbomRisk = manifest.lightSbom?.riskSummary || {};
   const agentPointers = agentPointerSummary(manifest.agentFiles);
+  const aiReadiness = aiReadinessSummary({ state, decision, coordination, agentActivity, agentPointers, sbomRisk, followUps });
   return {
     schemaVersion: 1,
     contract: preflightContract(),
@@ -60,6 +61,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     coordination,
     agentActivity,
     agentPointers,
+    aiReadiness,
     sbomRisk,
     followUps,
     intentTargets,
@@ -86,6 +88,31 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     },
     topAction,
     nextCommand: topAction?.command || decision.nextCommand
+  };
+}
+
+function aiReadinessSummary({ state, decision, coordination, agentActivity, agentPointers, sbomRisk, followUps }) {
+  const blockers = [];
+  const review = [];
+  if (state !== "clear") review.push("status review required");
+  if ((coordination?.conflictTargets || []).length) review.push("open intent conflicts");
+  if ((agentActivity?.multiActorTargets || []).length) review.push("multi-agent environment activity");
+  if ((followUps || []).length) review.push("pending environment follow-ups");
+  if (["urgent", "high"].includes(sbomRisk?.level)) review.push("high light SBOM risk");
+  if ((agentPointers?.targets || []).length && (agentPointers?.installedCount || 0) === 0) review.push("no agent instruction pointer installed");
+
+  const level = review.length ? "review" : "ready";
+  const next = level === "ready"
+    ? "AI agents can continue project-local work; record intent before environment changes."
+    : "Review listed signals before another AI changes runtimes, dependencies, package managers, Docker, or global tools.";
+  return {
+    level,
+    projectLocalWork: decision?.canContinueProjectLocalWork ? "allowed" : "review-first",
+    environmentChanges: decision?.canChangeEnvironmentWithoutReview ? "allowed" : "intent-and-review-first",
+    signals: review,
+    blockers,
+    next,
+    mode: "advisory"
   };
 }
 

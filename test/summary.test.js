@@ -11,6 +11,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
     state: "review-required",
     counts: { warnings: 1, openIntents: 2, runtimes: 3, dependencies: 4, vulnerabilities: 5 },
     sbomRisk: { level: "medium", score: 42, scanner: "not run", signals: ["scanner unavailable"], next: "Run a dedicated scanner." },
+    aiReadiness: { level: "review", next: "Review listed signals before another AI changes the environment." },
     nextCommand: "aienvmp handoff",
     quickstart: { detailCommand: "aienvmp context --json" },
     nextAgent: { readFirst: ".aienvmp/status.json" },
@@ -42,6 +43,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /# aienvmp summary/);
   assert.match(markdown, /state: review-required/);
   assert.match(markdown, /light SBOM risk: medium \(42\)/);
+  assert.match(markdown, /AI readiness: review/);
   assert.match(markdown, /AI read first: \.aienvmp\/status\.json/);
   assert.match(markdown, /conflict targets: dependency/);
   assert.match(markdown, /multi-actor targets: node/);

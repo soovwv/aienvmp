@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.54
+
+- Added `aiReadiness` to the shared preflight/status contract.
+- Added root `aiReadiness` to `context --json`.
+- Added `aiReadiness` to `doctor --json` as advisory metadata.
+- Printed `ai-readiness` in plain `aienvmp status` output.
+- Added `AI readiness` to `.aienvmp/summary.md`.
+- Added an AI readiness item to the dashboard audit band.
+- Updated README, schema metadata, and regression tests for the ready/review signal.
+
 ## 0.1.53
 
 - Added `agentPointers` to the shared AI preflight/status contract.

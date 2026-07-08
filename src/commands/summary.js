@@ -52,6 +52,7 @@ export function renderSummary(status = {}, manifest = {}) {
   const dependencyCommands = dependencyProtocol.commands || {};
   const dependencyFiles = dependencyFilesFor(status.dependencyReadSet);
   const agentPointers = status.agentPointers || {};
+  const aiReadiness = status.aiReadiness || {};
 
   return [
     "# aienvmp summary",
@@ -62,6 +63,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- runtimes: ${valueOrZero(counts.runtimes)} / dependencies: ${valueOrZero(counts.dependencies)} / vulnerabilities: ${valueOrZero(counts.vulnerabilities)}`,
     `- light SBOM risk: ${riskLevel} (${riskScore}) / scanner: ${scanner}`,
     `- next: ${next}`,
+    `- AI readiness: ${aiReadiness.level || "unknown"} / ${aiReadiness.next || "Run aienvmp context --json for details."}`,
     `- AI read first: ${readFirst}, then ${detail}`,
     `- mode: advisory by default; strict is opt-in with ${strict}`,
     "",

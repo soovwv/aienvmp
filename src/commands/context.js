@@ -26,6 +26,7 @@ export async function contextWorkspace(args) {
     console.log(JSON.stringify({
       status: warnings.length ? "review-required" : "clear",
       preflight,
+      aiReadiness: preflight.aiReadiness,
       coordination: preflight.coordination,
       agentPointers: preflight.agentPointers,
       sbomRisk: preflight.sbomRisk,

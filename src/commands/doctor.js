@@ -5,7 +5,7 @@ import { intentsPath, manifestPath, timelinePath, workspaceDir } from "../paths.
 import { loadPolicy, policyWarnings } from "../policy.js";
 import { recommendedActions } from "../actions.js";
 import { enforcementAdvice, strictResult } from "../enforcement.js";
-import { agentPointerSummary } from "../preflight.js";
+import { buildPreflight } from "../preflight.js";
 
 export { strictResult } from "../enforcement.js";
 
@@ -18,6 +18,7 @@ export async function doctorWorkspace(args) {
   const intents = openIntents(await readJsonl(intentsPath(dir)));
   const warnings = [...diagnose(manifest, { timeline, intents }), ...policyWarnings(manifest, policy)];
   const actions = recommendedActions(manifest, { warnings, intents });
+  const preflight = buildPreflight(manifest, warnings, intents, timeline);
   const strict = strictResult(warnings, args);
   const exitBehavior = {
     mode: strict.enabled ? "strict" : "advisory",
@@ -33,7 +34,8 @@ export async function doctorWorkspace(args) {
       exitBehavior,
       trust: manifest.trust || {},
       policy,
-      agentPointers: agentPointerSummary(manifest.agentFiles),
+      aiReadiness: preflight.aiReadiness,
+      agentPointers: preflight.agentPointers,
       openIntentCount: intents.length,
       warnings,
       recommendedActions: actions,

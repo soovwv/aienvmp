@@ -187,6 +187,12 @@ test("renderDashboard includes the audit summary surface", () => {
           multiActor: true
         }]
       },
+      aiReadiness: {
+        level: "review",
+        next: "Review listed signals before another AI changes runtimes or dependencies.",
+        signals: ["open intent conflicts"],
+        mode: "advisory"
+      },
       dependencyReadSet: [{
         manifest: "package.json",
         ecosystem: "npm",
@@ -233,6 +239,8 @@ test("renderDashboard includes the audit summary surface", () => {
 
   assert.match(html, /Audit summary/);
   assert.match(html, /AI decision/);
+  assert.match(html, /AI readiness/);
+  assert.match(html, /Review listed signals/);
   assert.match(html, /Runtime drift/);
   assert.match(html, /Open env changes/);
   assert.match(html, /Trust/);

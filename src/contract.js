@@ -4,7 +4,7 @@ export function preflightContract() {
     version: 1,
     stability: "additive",
     requiredFields: ["schemaVersion", "state", "decision", "quickstart", "commands", "artifacts"],
-    aiEntryFields: ["state", "summary", "nextAgent", "coordination", "agentActivity", "agentPointers", "sbomRisk", "followUps", "dependencyReadSet", "dependencyChangeProtocol"],
+    aiEntryFields: ["state", "summary", "aiReadiness", "nextAgent", "coordination", "agentActivity", "agentPointers", "sbomRisk", "followUps", "dependencyReadSet", "dependencyChangeProtocol"],
     rule: "Consumers should ignore unknown fields and treat missing optional fields as unavailable."
   };
 }
@@ -28,7 +28,7 @@ export function schemaContract() {
       },
       context: {
         command: "aienvmp context --json",
-        rootFields: ["status", "preflight", "coordination", "agentPointers", "decision", "recommendedActions", "workspace", "dependencySnapshot", "lightSbom", "warnings"]
+        rootFields: ["status", "preflight", "aiReadiness", "coordination", "agentPointers", "decision", "recommendedActions", "workspace", "dependencySnapshot", "lightSbom", "warnings"]
       },
       handoff: {
         command: "aienvmp handoff --json",

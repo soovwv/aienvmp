@@ -218,6 +218,8 @@ test("doctorWorkspace JSON explains advisory exit behavior", async () => {
   assert.equal(json.exitBehavior.mode, "advisory");
   assert.equal(json.exitBehavior.willSetFailureExitCode, false);
   assert.match(json.exitBehavior.reason, /strict mode is off/);
+  assert.equal(json.aiReadiness.level, "review");
+  assert.match(json.aiReadiness.next, /Review/);
   assert.deepEqual(json.agentPointers.installed, ["claude"]);
   assert.deepEqual(json.agentPointers.missing, ["codex"]);
 });
