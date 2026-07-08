@@ -69,3 +69,9 @@ export function dashboardRiskSummaryClientScript() {
     "const riskSummaryHtml=riskSummary.level?`<table><tr><th>Level</th><td><code>${esc(riskSummary.level)}</code> ${esc(riskSummary.score||0)}</td></tr><tr><th>Scanner</th><td><code>${esc(riskSummary.scanner||'unknown')}</code></td></tr><tr><th>Next</th><td>${esc(riskSummary.next||'No SBOM action required.')}</td></tr><tr><th>Targets</th><td>${esc((riskSummary.reviewTargets||[]).join(', ')||'none')}</td></tr></table>${riskSummary.signals?.length?'<div class=\"timeline\">'+riskSummary.signals.slice(0,5).map(s=>`<div class=\"event\"><time>risk</time><div>${esc(s)}</div></div>`).join('')+'</div>':''}`:'<div class=\"okline\">No risk summary available.</div>';"
   ].join("\n");
 }
+
+export function dashboardPackageManagerPolicyClientScript() {
+  return [
+    "const pmPolicyHtml='<table><tr><th>Status</th><td><code>'+esc(pmPolicy.status||'no-lockfile')+'</code></td></tr><tr><th>Guidance</th><td>'+esc(pmPolicy.guidance||'No lockfile policy detected.')+'</td></tr></table>';"
+  ].join("\n");
+}
