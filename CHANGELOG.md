@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.65
+
+- Added a dashboard `Next command` bar directly below the AI control strip.
+- Chose the dashboard next command from preflight, top recommended action, collaboration, then status fallback.
+- Added a short reason beside the next command so humans and AI agents know why it is suggested.
+- Made the next command bar responsive and wrap long commands safely.
+- Kept detailed recommended actions below the first-read dashboard area.
+- Updated README wording to mention the single next command.
+- Added dashboard regression coverage for next-command source and reason binding.
+
 ## 0.1.64
 
 - Added a dashboard `AI control strip` above the existing audit area.

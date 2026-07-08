@@ -273,6 +273,10 @@ test("renderDashboard includes the audit summary surface", () => {
 
   assert.match(html, /Audit summary/);
   assert.match(html, /AI control strip/);
+  assert.match(html, /Next command/);
+  assert.match(html, /\.nextbar/);
+  assert.match(html, /const nextCommand=manifest\.preflight\?\.nextCommand\|\|topAction\.command\|\|collaboration\.nextCommand/);
+  assert.match(html, /const nextReason=topAction\.summary\|\|collaboration\.rule/);
   assert.match(html, /\.control-card\.review/);
   assert.match(html, /controlCard\('AI readiness'/);
   assert.match(html, /controlCard\('Collaboration'/);

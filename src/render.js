@@ -388,6 +388,10 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(28px,4vw,46px);line-height:1.02;margin-to
 .control-label{color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
 .control-value{margin-top:8px;font-size:24px;font-weight:850;color:var(--text);overflow-wrap:anywhere}
 .control-next{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.4;overflow-wrap:anywhere}
+.nextbar{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;border:1px solid rgba(71,229,141,.34);background:rgba(13,24,21,.96);border-radius:8px;padding:13px 15px;margin:-2px 0 14px}
+.nextbar b{color:var(--green);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+.nextbar code{display:inline-block;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.nextbar span{color:var(--muted);font-size:12px;overflow-wrap:anywhere}
 .audit{display:grid;grid-template-columns:1.2fr repeat(3,minmax(0,.8fr));gap:12px;margin:14px 0}
 .audit-item{border:1px solid var(--line);background:rgba(13,24,21,.92);border-radius:8px;padding:14px;min-width:0}
 .audit-item.primary{background:linear-gradient(135deg,rgba(19,61,42,.88),rgba(9,19,16,.95))}
@@ -412,6 +416,7 @@ code{color:var(--code);background:#0a2017;border:1px solid #17462f;padding:2px 6
 .path{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--muted);font-size:12px;overflow-wrap:anywhere}
 @media (max-width:860px){header,.layout{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.agents{grid-template-columns:1fr}}
 @media (max-width:860px){.control{grid-template-columns:1fr}}
+@media (max-width:860px){.nextbar{grid-template-columns:1fr}}
 @media (max-width:860px){.audit{grid-template-columns:1fr 1fr}}
 @media (max-width:520px){.shell{padding:14px}.metrics{grid-template-columns:1fr}.event{grid-template-columns:1fr}h1{font-size:32px}}
 @media (max-width:520px){.audit{grid-template-columns:1fr}}
@@ -466,6 +471,7 @@ const intentsHtml=intents.length?'<div class="timeline">'+intents.slice(-6).reve
 const policyHtml=entries(policy).length?\`<table>\${rows(policy)}</table>\`:'<div class="okline">No explicit version policy set.</div>';
 const actions=manifest.recommendedActions||[];
 const actionsHtml=actions.length?'<div class="timeline">'+actions.slice(0,6).map(a=>\`<div class="event"><time>\${esc(a.priority)}</time><div><b>\${esc(a.category)}</b> \${esc(a.summary)}\${a.command?\`<div class="path">\${esc(a.command)}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No recommended actions. Continue project-local work.</div>';
+const topAction=actions[0]||{};
 const plan=manifest.planArtifacts||{};
 const planHtml=plan.markdown||plan.json?\`<table><tr><th>Markdown</th><td>\${plan.markdown?'<a href="plan.md">plan.md</a>':'not written'}</td></tr><tr><th>JSON</th><td>\${plan.json?'<a href="plan.json">plan.json</a>':'not written'}</td></tr></table>\`:'<div class="okline">No plan artifacts yet. Run <code>aienvmp plan --write</code>.</div>';
 const sbomArtifactHtml='<table><tr><th>JSON</th><td><a href="sbom.json">sbom.json</a></td></tr><tr><th>CDX Lite</th><td><a href="sbom.cdx.json">sbom.cdx.json</a></td></tr><tr><th>Command</th><td><code>aienvmp sbom --write</code></td></tr></table>';
@@ -518,6 +524,8 @@ const sbomRiskValue=riskSummary.level||'unknown';
 const sbomRiskClass=['urgent','high','medium'].includes(sbomRiskValue)?'review':'ready';
 const sbomRiskScore=riskSummary.score!==undefined?' ('+riskSummary.score+')':'';
 const sbomRiskNext=riskSummary.next||aiDependencyReview.beforeDependencyChange?.[0]||'Run aienvmp sbom --json for dependency context.';
+const nextCommand=manifest.preflight?.nextCommand||topAction.command||collaboration.nextCommand||'aienvmp status --json';
+const nextReason=topAction.summary||collaboration.rule||riskSummary.next||'Read status/context before changing shared environment state.';
 const coordination=manifest.preflight?.coordination||{};
 const conflictTargets=coordination.conflictTargets||[];
 const handoffFiles=nextAgent.dependencyFiles?.length?nextAgent.dependencyFiles:(dependencyReadSet[0]?[dependencyReadSet[0].manifest,...(dependencyReadSet[0].lockfiles||[])].filter(Boolean):[]);
@@ -536,6 +544,11 @@ document.getElementById('app').innerHTML=\`
   \${controlCard('AI readiness',aiReadyValue,aiReadiness.next||'Run aienvmp context --json for details.',aiReadyClass)}
   \${controlCard('Collaboration',collaborationValue,collaboration.nextCommand||'aienvmp status --json',collaborationClass)}
   \${controlCard('SBOM risk',sbomRiskValue+sbomRiskScore,sbomRiskNext,sbomRiskClass)}
+</section>
+<section class="nextbar" aria-label="Next command">
+  <b>Next command</b>
+  <code>\${esc(nextCommand)}</code>
+  <span>\${esc(nextReason)}</span>
 </section>
 <section class="audit" aria-label="Audit summary">
   \${auditItem('AI decision',reviewRequired?'review required':'can proceed',nextAction,reviewRequired?'review':'primary')}
