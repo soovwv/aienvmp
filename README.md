@@ -180,6 +180,7 @@ See [examples/github-action.yml](examples/github-action.yml).
 - `0.1.x` is the prototype history for fast AI-contract validation.
 - `0.2.x` starts the stabilized AI workspace contract.
 - npm releases are manually gated and batched around meaningful changes, with security fixes as the exception.
+- Run `npm run release:check` before publishing; the GitHub `Release` workflow runs the same gate.
 - Manual publish runs from GitHub Actions `Release` workflow and requires the `NPM_TOKEN` secret.
 - `0.1.x` is deprecated only after `0.2.0` is published, with a message that points users to the stable contract.
 - Broken or superseded versions are deprecated instead of unpublished.
@@ -195,6 +196,8 @@ npm deprecate 'aienvmp@<0.2.0' 'Prototype history: use aienvmp@0.2.0 or newer fo
 ```bash
 node --test
 npm run smoke
+npm run demo:conflict
+npm run release:check
 npm pack --dry-run
 ```
 

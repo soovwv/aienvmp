@@ -56,14 +56,8 @@ jobs:
             exit 1
           fi
 
-      - name: Test
-        run: npm test
-
-      - name: Smoke
-        run: npm run smoke
-
-      - name: Pack dry-run
-        run: npm run pack:dry
+      - name: Release check
+        run: npm run release:check
 
       - name: Publish to npm
         run: npm publish --tag "${{ github.event.inputs.npm_tag }}" --provenance

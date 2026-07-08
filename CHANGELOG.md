@@ -12,6 +12,7 @@
 - Added `enforcement.policy` as a short AI-readable local/CI/release gate summary while keeping local operation advisory by default.
 - Added `sbom.json.aiReviewPlan` so AI agents get one compact light-SBOM decision for risk, scanner confidence, package manager policy, and before/after dependency-change commands.
 - Mirrored the compact SBOM review plan in the dashboard Light SBOM card and summary artifact for human/AI consistency.
+- Added `npm run release:check` and wired the manual Release workflow to the same local release gate.
 
 ## 0.1.69
 
