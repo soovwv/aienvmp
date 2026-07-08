@@ -25,6 +25,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.agentDiscovery.mode, "instruction-file-pointer");
   assert.equal(schema.agentDiscovery.installCommand, "aienvmp onboard");
   assert.equal(schema.agentDiscovery.optionalInstallCommand, "aienvmp onboard --agents cursor,copilot");
+  assert.equal(schema.agentDiscovery.fallbackCommand, "aienvmp status --json");
+  assert.deepEqual(schema.agentDiscovery.fallbackRead, [".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
   assert.ok(schema.agentDiscovery.optionalFiles.includes(".github/copilot-instructions.md"));
   assert.deepEqual(schema.agentDiscovery.files, ["AGENTS.md", "CLAUDE.md", "GEMINI.md"]);
   assert.ok(schema.agentDiscovery.sessionStart.includes("Run aienvmp status --json before environment-affecting work."));
@@ -68,6 +70,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.rootFields.includes("strictRecommendation"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("discovery"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("onboardCommand"));
+  assert.ok(schema.outputs.status.agentPointerFields.includes("fallbackRead"));
+  assert.ok(schema.outputs.status.agentPointerFields.includes("fallbackCommand"));
+  assert.ok(schema.outputs.status.agentPointerFields.includes("rule"));
   assert.equal(schema.outputs.summary.command, "aienvmp summary --write");
   assert.equal(schema.outputs.summary.format, "markdown");
   assert.deepEqual(schema.outputs.summary.startsWith, ["AI readiness", "AI signals", "AI next"]);
@@ -110,6 +115,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.compatibility.collaborationRule, /multi-agent environment coordination/);
   assert.match(schema.compatibility.sbomStrategyRule, /optional read-only scanners/);
   assert.match(schema.compatibility.agentDiscoveryRule, /onboardCommand/);
+  assert.match(schema.compatibility.agentDiscoveryRule, /fallbackRead/);
   assert.match(schema.compatibility.demoRule, /multi-agent conflict value proposition/);
   assert.match(schema.compatibility.sessionStartRule, /AI startup routine/);
   assert.match(schema.compatibility.aiSessionRule, /per-session routine/);
@@ -138,6 +144,7 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   assert.equal(schema.outputs.sbom.file, ".aienvmp/sbom.json");
   assert.equal(schema.outputs.cyclonedxLite.file, ".aienvmp/sbom.cdx.json");
   assert.equal(schema.agentDiscovery.installCommand, "aienvmp onboard");
+  assert.equal(schema.agentDiscovery.fallbackCommand, "aienvmp status --json");
   assert.ok(schema.agentDiscovery.rule.includes("Optional Cursor and Copilot"));
   assert.equal(schema.sbomStrategy.scannerCommand, "aienvmp sync --security");
   assert.equal(schema.demo.command, "aienvmp demo");

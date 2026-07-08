@@ -17,6 +17,7 @@ npx aienvmp status
 
 `onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`, refreshes the artifacts, and tells AI agents to read `.aienvmp/status.json` first.
 Its output and pointers include the same session-start rule: read status before environment work, sync only when stale or missing, and keep local coding advisory.
+If pointers are not installed, AI can still use existing artifacts directly: read `.aienvmp/status.json`, `.aienvmp/summary.md`, then `npx aienvmp context --json`.
 Optional Cursor and Copilot pointers are available with `npx aienvmp onboard --agents cursor,copilot`.
 
 ## Why

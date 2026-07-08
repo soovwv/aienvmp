@@ -40,13 +40,15 @@ export function schemaContract() {
       optionalFiles: [".cursor/rules/environment.md", ".github/copilot-instructions.md"],
       installCommand: "aienvmp onboard",
       optionalInstallCommand: "aienvmp onboard --agents cursor,copilot",
+      fallbackCommand: "aienvmp status --json",
+      fallbackRead: [".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
       sessionStart: [
         "Treat the aienvmp marker block as the live environment pointer.",
         "Run aienvmp status --json before environment-affecting work.",
         "Run aienvmp sync if .aienvmp/status.json is missing or stale.",
         "Continue project-local code work unless status/context requires environment review."
       ],
-      rule: "aienvmp does not replace agent instruction files; it gives them a shared live env map and light SBOM. Optional Cursor and Copilot pointers are opt-in."
+      rule: "aienvmp does not replace agent instruction files; it gives them a shared live env map and light SBOM. Instruction-file pointers improve automatic discovery, while existing artifacts remain directly usable through the fallback read path. Optional Cursor and Copilot pointers are opt-in."
     },
     demo: {
       command: "aienvmp demo",
@@ -97,7 +99,7 @@ export function schemaContract() {
         file: ".aienvmp/status.json",
         command: "aienvmp status --json",
         rootFields: ["state", "aiSession", "aiBootstrap", "nextCommand", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "decision", "counts", "aiReadiness", "collaboration", "maintenanceLoop", "coordination", "agentPointers", "sbomRisk"],
-        agentPointerFields: ["installedCount", "missingCount", "installed", "missing", "discovery", "onboardCommand", "next", "targets"],
+        agentPointerFields: ["installedCount", "missingCount", "installed", "missing", "discovery", "onboardCommand", "fallbackCommand", "fallbackRead", "next", "targets", "rule"],
         contract: preflightContract()
       },
       summary: {
@@ -149,7 +151,7 @@ export function schemaContract() {
       aiReadinessRule: "When aiReadiness.level is review, project-local code work may still continue if aiReadiness.projectLocalWork is allowed; environment changes should follow intent/review guidance.",
       collaborationRule: "Use collaboration.status, activeTargets, and nextCommand as the shortest multi-agent environment coordination hint.",
       sbomStrategyRule: "Use sbomStrategy and sbom.scannerGuidance to keep default SBOM review lightweight while requesting optional read-only scanners before security-sensitive decisions.",
-      agentDiscoveryRule: "Use agentPointers.discovery and agentPointers.onboardCommand to decide whether AI instruction-file pointers can discover aienvmp automatically.",
+      agentDiscoveryRule: "Use agentPointers.discovery and agentPointers.onboardCommand to decide whether AI instruction-file pointers can discover aienvmp automatically; use fallbackRead when no pointer was installed but artifacts exist.",
       demoRule: "Use demo.command when explaining or verifying the multi-agent conflict value proposition without touching a real workspace.",
       sessionStartRule: "Use agentDiscovery.sessionStart as the shortest AI startup routine; read status first, sync only when stale or missing, and keep local work advisory.",
       aiSessionRule: "Use aiSession as the shortest per-session routine; it collects read order, stale refresh, intent, checkpoint, and handoff commands without requiring field-by-field inference.",

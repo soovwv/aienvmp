@@ -458,10 +458,13 @@ export function agentPointerSummary(agentFiles = {}) {
       ? `ready: ${installed.map((item) => item.role).join(", ")}`
       : "missing: run aienvmp onboard",
     onboardCommand: "aienvmp onboard",
+    fallbackRead: [".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+    fallbackCommand: "aienvmp status --json",
     next: missing.length
       ? `Run aienvmp onboard for Codex, Claude, and Gemini, or install one pointer with ${missing[0].installCommand}. Optional: use --agents cursor,copilot when those tools should discover aienvmp too.`
       : "Agent instruction pointers are installed for detected AI instruction files.",
-    mode: "advisory"
+    mode: "advisory",
+    rule: "Instruction-file pointers improve automatic discovery, but existing aienvmp artifacts remain directly usable by reading status, summary, then context."
   };
 }
 
