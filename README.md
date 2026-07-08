@@ -36,6 +36,12 @@ npx aienvmp handoff
 
 Run `sync` later when you only need to refresh artifacts without touching instruction-file pointers.
 
+Try the multi-agent conflict demo from a cloned repo:
+
+```bash
+npm run demo:conflict
+```
+
 For AI details:
 
 ```bash
@@ -184,5 +190,7 @@ npm pack --dry-run
 ```
 
 [Roadmap](ROADMAP.md) / [Security](SECURITY.md) / [Troubleshooting](TROUBLESHOOTING.md) / [Bugfix Log](BUGFIXES.md) / [Contributing](CONTRIBUTING.md)
+
+[Multi-agent conflict demo](examples/multi-agent-conflict.md)
 
 Apache-2.0

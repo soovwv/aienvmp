@@ -32,7 +32,8 @@
   "scripts": {
     "test": "node --test",
     "pack:dry": "npm pack --dry-run",
-    "smoke": "node bin/aienvmp.js --version && node bin/aienvmp.js --help"
+    "smoke": "node bin/aienvmp.js --version && node bin/aienvmp.js --help",
+    "demo:conflict": "node examples/multi-agent-conflict-demo.mjs"
   },
   "keywords": [
     "ai",

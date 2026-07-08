@@ -2,6 +2,14 @@
 
 Use this demo when explaining why `aienvmp` exists: two AI agents touch one workspace and must avoid silent dependency or runtime drift.
 
+## One Command
+
+```bash
+npm run demo:conflict
+```
+
+The script creates a temporary workspace, onboards Codex/Claude/Gemini pointers, records two dependency intents, refreshes the env map, and prints the detected collaboration conflict.
+
 ## Setup
 
 ```bash
