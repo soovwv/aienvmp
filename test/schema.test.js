@@ -24,6 +24,11 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.deepEqual(schema.agentDiscovery.files, ["AGENTS.md", "CLAUDE.md", "GEMINI.md"]);
   assert.ok(schema.agentDiscovery.sessionStart.includes("Run aienvmp status --json before environment-affecting work."));
   assert.match(schema.agentDiscovery.rule, /shared live env map/);
+  assert.equal(schema.demo.command, "aienvmp demo");
+  assert.equal(schema.demo.jsonCommand, "aienvmp demo --json");
+  assert.equal(schema.demo.scenario, "multi-agent-conflict");
+  assert.match(schema.demo.workspaceImpact, /temporary workspace only/);
+  assert.ok(schema.demo.expectedSignals.includes("artifactFreshness"));
   assert.equal(schema.releaseGate.mode, "manual-batched");
   assert.equal(schema.releaseGate.localCommand, "npm run release:check");
   assert.equal(schema.releaseGate.workflow, ".github/workflows/release.yml");
@@ -81,6 +86,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.compatibility.aiReadinessRule, /project-local code work/);
   assert.match(schema.compatibility.collaborationRule, /multi-agent environment coordination/);
   assert.match(schema.compatibility.agentDiscoveryRule, /onboardCommand/);
+  assert.match(schema.compatibility.demoRule, /multi-agent conflict value proposition/);
   assert.match(schema.compatibility.sessionStartRule, /AI startup routine/);
   assert.match(schema.compatibility.maintenanceLoopRule, /recurring AI workflow/);
   assert.match(schema.compatibility.enforcementPolicyRule, /local\/CI\/release/);
@@ -105,6 +111,7 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   assert.equal(schema.outputs.sbom.file, ".aienvmp/sbom.json");
   assert.equal(schema.outputs.cyclonedxLite.file, ".aienvmp/sbom.cdx.json");
   assert.equal(schema.agentDiscovery.installCommand, "aienvmp onboard");
+  assert.equal(schema.demo.command, "aienvmp demo");
   assert.equal(schema.releaseGate.localCommand, "npm run release:check");
   assert.match(schema.compatibility.localBehavior, /read-only/);
 });

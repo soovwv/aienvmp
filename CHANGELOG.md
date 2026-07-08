@@ -19,6 +19,7 @@
 - Mirrored `artifactFreshness` in the summary and dashboard so humans and Markdown-first agents get the same refresh signal.
 - Added the session-start and artifact freshness rule to `onboard` output so first-run AI agents get the same startup contract immediately.
 - Added `aienvmp demo` so npm users can run the multi-agent conflict demo without cloning the repository.
+- Added demo discovery metadata to `schema --json` and updated the conflict demo docs around `npx aienvmp demo`.
 
 ## 0.1.69
 

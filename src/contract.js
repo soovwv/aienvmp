@@ -45,6 +45,14 @@ export function schemaContract() {
       ],
       rule: "aienvmp does not replace agent instruction files; it gives them a shared live env map and light SBOM."
     },
+    demo: {
+      command: "aienvmp demo",
+      jsonCommand: "aienvmp demo --json",
+      scenario: "multi-agent-conflict",
+      workspaceImpact: "temporary workspace only; does not touch the caller workspace unless --dir is explicitly passed",
+      expectedSignals: ["review-before-env-change", "dependency conflict target", "artifactFreshness", "AI discovery"],
+      purpose: "Show why shared AI coding workspaces need an env map, intent log, and light SBOM before users install the tool in a real repo."
+    },
     releaseGate: {
       mode: "manual-batched",
       localCommand: "npm run release:check",
@@ -115,6 +123,7 @@ export function schemaContract() {
       aiReadinessRule: "When aiReadiness.level is review, project-local code work may still continue if aiReadiness.projectLocalWork is allowed; environment changes should follow intent/review guidance.",
       collaborationRule: "Use collaboration.status, activeTargets, and nextCommand as the shortest multi-agent environment coordination hint.",
       agentDiscoveryRule: "Use agentPointers.discovery and agentPointers.onboardCommand to decide whether AI instruction-file pointers can discover aienvmp automatically.",
+      demoRule: "Use demo.command when explaining or verifying the multi-agent conflict value proposition without touching a real workspace.",
       sessionStartRule: "Use agentDiscovery.sessionStart as the shortest AI startup routine; read status first, sync only when stale or missing, and keep local work advisory.",
       maintenanceLoopRule: "Use maintenanceLoop as the short recurring AI workflow: refresh, decide, inspect, plan, intent, checkpoint, and handoff without blocking local operation.",
       enforcementPolicyRule: "Use enforcement.policy for the shortest local/CI/release gate summary: local stays warn-only, CI uses the recommended strict scope, release uses strict all.",

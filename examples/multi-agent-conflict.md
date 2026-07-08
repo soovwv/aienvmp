@@ -5,10 +5,16 @@ Use this demo when explaining why `aienvmp` exists: two AI agents touch one work
 ## One Command
 
 ```bash
-npm run demo:conflict
+npx aienvmp demo
 ```
 
-The script creates a temporary workspace, onboards Codex/Claude/Gemini pointers, records two dependency intents, refreshes the env map, and prints the detected collaboration conflict.
+The command creates a temporary workspace, onboards Codex/Claude/Gemini pointers, records two dependency intents, refreshes the env map, and prints the detected collaboration conflict.
+
+For local development in this repository:
+
+```bash
+npm run demo:conflict
+```
 
 ## Setup
 
