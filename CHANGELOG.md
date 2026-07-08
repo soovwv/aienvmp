@@ -10,6 +10,8 @@
 - Added medium light-SBOM risk planning guidance to recommended actions.
 - Added `strictDecision` so AI agents and CI can distinguish local warn-only checks from optional strict gates.
 - Surfaced local `doctor --json` and scoped CI strict commands in summary, dashboard, status/context JSON, and tests.
+- Added `handoff.continuation` so the next AI receives maintenance-loop, SBOM-review, and strict-decision guidance without parsing the full preflight.
+- Added the continuation summary to plain Markdown handoff output and schema metadata.
 
 ## 0.1.66
 

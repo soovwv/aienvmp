@@ -60,7 +60,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `coordination.conflictTargets` shows where multiple agents are planning changes.
 - `agentActivity.multiActorTargets` shows where multiple agents actually recorded env changes.
 - `followUps` shows records that still need `sync`, `status`, or `handoff`.
-- `handoff` carries dependency read-set and protocol guidance for the next AI.
+- `handoff` carries continuation, dependency read-set, SBOM review, and protocol guidance for the next AI.
 - Light SBOM includes source/confidence hints; verify security claims with dedicated scanners.
 - `enforcementProfile.gate` explains when checks warn, fail, and set exit codes.
 - `strictDecision` separates local warn-only checks from optional CI strict gates.

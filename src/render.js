@@ -216,6 +216,9 @@ export function renderHandoff(handoff) {
     `- Inventory: ${handoff.inventory?.mode || "basic"}${handoff.inventory?.enabled ? " enabled" : " disabled"}`,
     `- Security: ${handoff.security?.mode || "basic"}${handoff.security?.enabled ? ` enabled (${handoff.security.summary?.total || 0} vulnerabilities)` : " disabled"}`,
     "",
+    "AI continuation:",
+    ...continuationHandoffLines(handoff.continuation),
+    "",
     "Open intents:",
     ...(handoff.openIntents.length ? handoff.openIntents.map((i) => `- ${i.actor}: ${i.action}${i.target ? ` (${i.target})` : ""}`) : ["- none"]),
     "",
@@ -244,6 +247,20 @@ export function renderHandoff(handoff) {
     ""
   ];
   return lines.join("\n");
+}
+
+function continuationHandoffLines(continuation = {}) {
+  const strict = continuation.strict || {};
+  const sbomReview = continuation.sbomReview || {};
+  const maintenance = continuation.maintenance || {};
+  return [
+    `- Next: ${continuation.nextCommand || "aienvmp status --json"}`,
+    `- Read: ${(continuation.readOrder || []).join(", ") || ".aienvmp/status.json"}`,
+    `- Local check: ${strict.localCommand || "aienvmp doctor --json"} (${strict.local || "warn-only"})`,
+    `- CI strict: ${strict.ciCommand || "aienvmp doctor --strict all --json"}`,
+    `- SBOM review: ${sbomReview.status || "unknown"} / ${sbomReview.riskLevel || "unknown"} / ${sbomReview.nextCommand || maintenance.sbomCommand || "aienvmp sbom --json"}`,
+    `- Rule: ${maintenance.rule || strict.rule || "Keep local operation advisory and lightweight."}`
+  ];
 }
 
 function coordinationHandoffLines(coordination = {}) {

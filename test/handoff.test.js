@@ -25,6 +25,18 @@ test("buildHandoff summarizes next-agent environment state", () => {
       manifests: ["package.json"]
     },
     lightSbom: {
+      riskSummary: {
+        level: "high",
+        score: 80,
+        scanner: "enabled",
+        reviewTargets: ["package.json", "lodash"]
+      },
+      aiDependencyReview: {
+        status: "review",
+        securityConfidence: "scanner-summary",
+        reviewTargets: ["package.json", "lodash"],
+        beforeDependencyChange: ["aienvmp sync --security", "aienvmp plan --write"]
+      },
       dependencyChangeHints: [{
         manifest: "package.json",
         ecosystem: "npm",
@@ -55,9 +67,19 @@ test("buildHandoff summarizes next-agent environment state", () => {
   assert.equal(handoff.dependencyHandoff.readSet[0].manifest, "package.json");
   assert.equal(handoff.dependencyHandoff.protocol.mode, "advisory");
   assert.equal(handoff.dependencyHandoff.protocol.checkpointAfterChange, "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency");
+  assert.equal(handoff.continuation.status, "clear");
+  assert.equal(handoff.continuation.maintenance.mode, "advisory");
+  assert.equal(handoff.continuation.strict.localCommand, "aienvmp doctor --json");
+  assert.equal(handoff.continuation.strict.shouldFailLocal, false);
+  assert.equal(handoff.continuation.sbomReview.status, "review");
+  assert.equal(handoff.continuation.sbomReview.securityConfidence, "scanner-summary");
+  assert.deepEqual(handoff.continuation.sbomReview.reviewTargets, ["package.json", "lodash"]);
   assert.equal(handoff.agentActivity.environmentRecordCount, 1);
   assert.match(renderHandoff(handoff), /AI Handoff/);
   assert.match(renderHandoff(handoff), /Decision: project-local-work/);
+  assert.match(renderHandoff(handoff), /AI continuation/);
+  assert.match(renderHandoff(handoff), /Local check: aienvmp doctor --json \(warn-only\)/);
+  assert.match(renderHandoff(handoff), /SBOM review: review \/ high \/ aienvmp sync --security/);
   assert.match(renderHandoff(handoff), /Agent activity/);
   assert.match(renderHandoff(handoff), /Recommended actions/);
   assert.match(renderHandoff(handoff), /Dependency handoff/);

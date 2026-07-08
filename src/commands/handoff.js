@@ -62,6 +62,7 @@ export function buildHandoff(manifest, timeline = [], warnings = [], intents = [
     inventory: inventorySummary(manifest.inventory),
     security: securitySummary(manifest.security),
     dependencyHandoff: dependencyHandoffSummary(preflight),
+    continuation: continuationSummary(preflight),
     coordination: preflight.coordination,
     agentActivity: preflight.agentActivity,
     policy: {
@@ -83,6 +84,37 @@ export function buildHandoff(manifest, timeline = [], warnings = [], intents = [
     recommendedNext: reviewRequired
       ? "review warnings and open intents before environment changes"
       : "continue with project-local work; record intent before environment changes"
+  };
+}
+
+function continuationSummary(preflight = {}) {
+  const maintenanceLoop = preflight.maintenanceLoop || {};
+  const strictDecision = preflight.enforcementProfile?.strictDecision || preflight.enforcement?.strictDecision || {};
+  const sbomReview = maintenanceLoop.sbomReview || {};
+  return {
+    status: preflight.state || "unknown",
+    nextCommand: maintenanceLoop.nextCommand || preflight.nextCommand || "aienvmp status --json",
+    readOrder: (maintenanceLoop.readOrder || preflight.readOrder || []).slice(0, 4),
+    maintenance: {
+      mode: maintenanceLoop.mode || "advisory",
+      localImpact: maintenanceLoop.localImpact || "read-only until an AI or human records a change",
+      sbomCommand: maintenanceLoop.sbomCommand || "aienvmp sbom --json",
+      rule: maintenanceLoop.rule || "Keep local operation advisory and lightweight."
+    },
+    sbomReview: {
+      status: sbomReview.status || "unknown",
+      riskLevel: sbomReview.riskLevel || "unknown",
+      securityConfidence: sbomReview.securityConfidence || "unknown",
+      nextCommand: sbomReview.nextCommand || maintenanceLoop.sbomCommand || "aienvmp sbom --json",
+      reviewTargets: (sbomReview.reviewTargets || []).slice(0, 5)
+    },
+    strict: {
+      localCommand: strictDecision.localCommand || "aienvmp doctor --json",
+      local: strictDecision.local || "warn-only",
+      shouldFailLocal: strictDecision.shouldFailLocal === true,
+      ciCommand: strictDecision.ciCommand || "aienvmp doctor --strict all --json",
+      rule: strictDecision.rule || "Local checks stay advisory; strict failure is opt-in."
+    }
   };
 }
 

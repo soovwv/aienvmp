@@ -33,7 +33,7 @@ export function schemaContract() {
       },
       handoff: {
         command: "aienvmp handoff --json",
-        rootFields: ["status", "decision", "preflight", "coordination", "dependencyHandoff", "openIntents", "warnings", "recommendedActions", "recentChanges"]
+        rootFields: ["status", "decision", "preflight", "continuation", "coordination", "dependencyHandoff", "openIntents", "warnings", "recommendedActions", "recentChanges"]
       },
       manifest: {
         file: ".aienvmp/manifest.json",

@@ -23,6 +23,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.context.rootFields.includes("agentPointers"));
   assert.ok(schema.outputs.context.rootFields.includes("aiReadiness"));
   assert.ok(schema.outputs.handoff.rootFields.includes("dependencyHandoff"));
+  assert.ok(schema.outputs.handoff.rootFields.includes("continuation"));
   assert.ok(schema.outputs.handoff.rootFields.includes("coordination"));
   assert.equal(schema.outputs.sbom.command, "aienvmp sbom --json");
   assert.ok(schema.outputs.sbom.rootFields.includes("riskSummary"));
