@@ -54,11 +54,16 @@ export function buildSbomArtifact(manifest = {}) {
 }
 
 function sbomBootstrap(nextSafeCommand, review = {}) {
+  const reviewCommand = review.beforeDependencyChange?.[0];
   return {
     purpose: "Shortest AI entry point for dependency and SBOM review.",
     readFirst: ".aienvmp/sbom.json",
     detailCommand: "aienvmp context --json",
     nextSafeCommand,
+    nextSafeCommandSource: reviewCommand && nextSafeCommand === reviewCommand ? "dependency-review" : "sbom-risk",
+    nextSafeCommandReason: review.status === "review"
+      ? "SBOM risk or package manager policy requires review before dependency changes."
+      : "No blocking SBOM signal is present; record intent before dependency or lockfile changes.",
     localMode: "advisory",
     projectLocalWork: "allowed",
     environmentChanges: review.status === "review" ? "review-first" : "intent-first",
@@ -150,6 +155,8 @@ export function buildCycloneDxLite(manifest = {}) {
         { name: "aienvmp:aiBootstrap:readFirst", value: aiBootstrap.readFirst },
         { name: "aienvmp:aiBootstrap:detailCommand", value: aiBootstrap.detailCommand },
         { name: "aienvmp:aiBootstrap:nextSafeCommand", value: aiBootstrap.nextSafeCommand },
+        { name: "aienvmp:aiBootstrap:nextSafeCommandSource", value: aiBootstrap.nextSafeCommandSource },
+        { name: "aienvmp:aiBootstrap:nextSafeCommandReason", value: aiBootstrap.nextSafeCommandReason },
         { name: "aienvmp:aiBootstrap:localMode", value: aiBootstrap.localMode },
         { name: "aienvmp:aiBootstrap:environmentChanges", value: aiBootstrap.environmentChanges }
       ]

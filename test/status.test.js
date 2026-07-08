@@ -43,6 +43,8 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.aiBootstrap.readFirst, ".aienvmp/status.json");
   assert.equal(status.aiBootstrap.detailCommand, "aienvmp context --json");
   assert.equal(status.aiBootstrap.nextSafeCommand, status.nextCommand);
+  assert.equal(status.aiBootstrap.nextSafeCommandSource, "collaboration");
+  assert.match(status.aiBootstrap.nextSafeCommandReason, /project-local work|Multiple AI agents/);
   assert.equal(status.aiBootstrap.localMode, "advisory");
   assert.equal(status.aiBootstrap.projectLocalWork, "allowed");
   assert.equal(status.aiBootstrap.environmentChanges, "intent-first");

@@ -14,6 +14,7 @@ export function schemaContract() {
     schemaVersion: 1,
     name: "aienvmp-contract",
     purpose: "Stable AI-readable contract for aienvmp outputs.",
+    aiBootstrapFields: ["purpose", "readFirst", "detailCommand", "nextSafeCommand", "nextSafeCommandSource", "nextSafeCommandReason", "localMode", "projectLocalWork", "environmentChanges", "rule"],
     aiLoop: {
       name: "AI maintenance loop",
       purpose: "Shared lightweight workflow for AI agents that maintain one workspace environment.",

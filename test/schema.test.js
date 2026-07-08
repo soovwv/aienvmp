@@ -7,6 +7,8 @@ test("schemaContract describes stable AI output contracts", () => {
   const schema = schemaContract();
 
   assert.equal(schema.name, "aienvmp-contract");
+  assert.ok(schema.aiBootstrapFields.includes("nextSafeCommandSource"));
+  assert.ok(schema.aiBootstrapFields.includes("nextSafeCommandReason"));
   assert.equal(schema.aiLoop.name, "AI maintenance loop");
   assert.equal(schema.aiLoop.localMode, "warn-only");
   assert.deepEqual(schema.aiLoop.steps.map((item) => item.step), ["sync", "status", "context", "intent", "checkpoint", "handoff"]);

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added `aiBootstrap.nextSafeCommandSource` and `nextSafeCommandReason` so AI agents can explain why a next command was chosen.
+
 ## 0.1.69
 
 - Added `aiBootstrap` to the shared preflight surfaces so AI agents can read the shortest first-read, next-command, and local-mode hint.

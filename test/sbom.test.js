@@ -27,6 +27,8 @@ test("buildSbomArtifact creates standalone AI-readable light SBOM", () => {
   assert.equal(sbom.aiBootstrap.readFirst, ".aienvmp/sbom.json");
   assert.equal(sbom.aiBootstrap.detailCommand, "aienvmp context --json");
   assert.equal(sbom.aiBootstrap.nextSafeCommand, "aienvmp sync --security");
+  assert.equal(sbom.aiBootstrap.nextSafeCommandSource, "dependency-review");
+  assert.match(sbom.aiBootstrap.nextSafeCommandReason, /requires review/);
   assert.equal(sbom.aiBootstrap.environmentChanges, "review-first");
   assert.equal(sbom.nextSafeCommand, "aienvmp sync --security");
   assert.equal(sbom.aiDependencyReview.status, "review");
@@ -80,6 +82,8 @@ test("buildCycloneDxLite exports project manifest packages with limitations", ()
   assert.equal(propertyValue(cdx.metadata.properties, "aienvmp:aiBootstrap:readFirst"), ".aienvmp/sbom.json");
   assert.equal(propertyValue(cdx.metadata.properties, "aienvmp:aiBootstrap:detailCommand"), "aienvmp context --json");
   assert.equal(propertyValue(cdx.metadata.properties, "aienvmp:aiBootstrap:nextSafeCommand"), "aienvmp intent --actor agent:id --action dependency-review --target dependency");
+  assert.equal(propertyValue(cdx.metadata.properties, "aienvmp:aiBootstrap:nextSafeCommandSource"), "dependency-review");
+  assert.match(propertyValue(cdx.metadata.properties, "aienvmp:aiBootstrap:nextSafeCommandReason"), /requires review/);
   assert.equal(propertyValue(cdx.metadata.properties, "aienvmp:aiBootstrap:localMode"), "advisory");
   assert.equal(propertyValue(cdx.metadata.properties, "aienvmp:aiBootstrap:environmentChanges"), "review-first");
   assert.match(propertyValue(cdx.properties, "aienvmp:aiBootstrap:rule"), /Review SBOM risk/);

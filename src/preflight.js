@@ -31,7 +31,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     collaboration
   });
   const nextCommand = maintenanceLoop.nextCommand || topAction?.command || decision.nextCommand;
-  const aiBootstrap = aiBootstrapSummary({ state, decision, nextCommand });
+  const aiBootstrap = aiBootstrapSummary({ state, decision, nextCommand, maintenanceLoop, topAction });
   return {
     schemaVersion: 1,
     contract: preflightContract(),
@@ -110,18 +110,46 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
   };
 }
 
-function aiBootstrapSummary({ state, decision, nextCommand }) {
+function aiBootstrapSummary({ state, decision, nextCommand, maintenanceLoop = {}, topAction = {} }) {
+  const meta = nextCommandMeta({ nextCommand, maintenanceLoop, topAction, decision });
   return {
     purpose: "Shortest AI entry point for this workspace environment.",
     readFirst: ".aienvmp/status.json",
     detailCommand: "aienvmp context --json",
     nextSafeCommand: nextCommand || "aienvmp status --json",
+    nextSafeCommandSource: meta.source,
+    nextSafeCommandReason: meta.reason,
     localMode: "advisory",
     projectLocalWork: decision.canContinueProjectLocalWork ? "allowed" : "review-first",
     environmentChanges: decision.canChangeEnvironmentWithoutReview ? "intent-first" : "review-first",
     rule: state === "clear"
       ? "Continue project-local work; record intent before shared environment changes."
       : "Review context before shared environment changes; local checks remain non-blocking."
+  };
+}
+
+function nextCommandMeta({ nextCommand, maintenanceLoop = {}, topAction = {}, decision = {} }) {
+  if (nextCommand && nextCommand === maintenanceLoop.nextCommand) {
+    return {
+      source: maintenanceLoop.nextCommandSource || "maintenance-loop",
+      reason: maintenanceLoop.nextCommandReason || maintenanceLoop.rule || "Follow the recurring AI maintenance loop."
+    };
+  }
+  if (nextCommand && topAction.command && nextCommand === topAction.command) {
+    return {
+      source: "recommended-action",
+      reason: topAction.summary || "Use the highest-priority recommended action."
+    };
+  }
+  if (nextCommand && nextCommand === decision.nextCommand) {
+    return {
+      source: "decision",
+      reason: decision.reviewRequired ? "Review is required before shared environment changes." : "Project-local work can continue; record intent before environment changes."
+    };
+  }
+  return {
+    source: "fallback",
+    reason: "Read status and context before changing shared environment state."
   };
 }
 
@@ -135,6 +163,20 @@ function maintenanceLoopSummary({ state, decision, topAction, followUps, sbomRis
     || topAction?.command
     || decision?.nextCommand
     || "aienvmp status --json";
+  const nextCommandSource = followUpCommand
+    ? "follow-up"
+    : collaboration?.nextCommand
+      ? "collaboration"
+      : topAction?.command
+        ? "recommended-action"
+        : decision?.nextCommand
+          ? "decision"
+          : "fallback";
+  const nextCommandReason = followUpCommand
+    ? "A previous environment-affecting record still needs refresh, status, or handoff follow-up."
+    : collaboration?.nextCommand
+      ? collaboration.rule || "Collaboration signals should be reviewed before shared environment changes."
+      : topAction?.summary || (decision?.reviewRequired ? "Review is required before shared environment changes." : "Project-local work can continue; record intent before environment changes.");
   const triggers = [
     "start of an AI coding session",
     "before runtime, dependency, package manager, Docker, or global tool changes",
@@ -147,6 +189,8 @@ function maintenanceLoopSummary({ state, decision, topAction, followUps, sbomRis
     localImpact: "read-only until an AI or human intentionally records intent, checkpoint, or handoff",
     state,
     nextCommand,
+    nextCommandSource,
+    nextCommandReason,
     triggers,
     readOrder: [
       ".aienvmp/status.json",
