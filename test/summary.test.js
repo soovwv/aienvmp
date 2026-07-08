@@ -58,6 +58,12 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
         ciCommand: "aienvmp doctor --strict security --json"
       }
     },
+    strictRecommendation: {
+      localCommand: "aienvmp doctor --json",
+      localBehavior: "warn-only",
+      ciCommand: "aienvmp doctor --strict security --json",
+      releaseCommand: "aienvmp doctor --strict all --json"
+    },
     agentUse: { environmentChanges: "intent-and-review-first" },
     coordination: { next: "Check open intents.", conflictTargets: ["dependency"] },
     agentActivity: { next: "Run handoff.", multiActorTargets: ["node"] },
@@ -108,6 +114,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /AI bootstrap rule: Review context before shared environment changes/);
   assert.match(markdown, /local check: aienvmp doctor --json \(warn-only\)/);
   assert.match(markdown, /CI strict: aienvmp doctor --strict security --json/);
+  assert.match(markdown, /release strict: aienvmp doctor --strict all --json/);
   assert.match(markdown, /collaboration rule: Do not install shared tools/);
   assert.match(markdown, /maintenance rule: Keep local operation advisory and lightweight/);
   assert.match(markdown, /conflict targets: dependency/);

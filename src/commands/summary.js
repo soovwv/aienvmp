@@ -71,6 +71,7 @@ export function renderSummary(status = {}, manifest = {}) {
   };
   const strictPlan = status.enforcementProfile?.strictPlan || status.enforcement?.strictPlan || {};
   const strictDecision = status.enforcementProfile?.strictDecision || status.enforcement?.strictDecision || {};
+  const strictRecommendation = status.strictRecommendation || {};
 
   return [
     "# aienvmp summary",
@@ -86,8 +87,9 @@ export function renderSummary(status = {}, manifest = {}) {
     `- AI read first: ${readFirst}, then ${detail}`,
     `- AI bootstrap rule: ${aiBootstrap.rule || "Read status first, use context for details, and keep local checks advisory."}`,
     `- mode: advisory by default; strict is opt-in with ${strict}`,
-    `- local check: ${strictDecision.localCommand || "aienvmp doctor --json"} (${strictDecision.local || "warn-only"})`,
-    `- CI strict: ${strictPlan.ciCommand || `${strict} --json`}`,
+    `- local check: ${strictRecommendation.localCommand || strictDecision.localCommand || "aienvmp doctor --json"} (${strictRecommendation.localBehavior || strictDecision.local || "warn-only"})`,
+    `- CI strict: ${strictRecommendation.ciCommand || strictPlan.ciCommand || `${strict} --json`}`,
+    `- release strict: ${strictRecommendation.releaseCommand || "aienvmp doctor --strict all --json"}`,
     "",
     `- state: ${status.state || "unknown"}`,
     `- workspace: ${workspace}`,

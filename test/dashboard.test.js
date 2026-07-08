@@ -263,6 +263,16 @@ test("renderDashboard includes the audit summary surface", () => {
         },
         mustNotDo: ["Do not switch package managers because another lockfile exists without user approval."]
       },
+      strictRecommendation: {
+        mode: "advisory-local-strict-optional",
+        localCommand: "aienvmp doctor --json",
+        localBehavior: "warn-only",
+        shouldFailLocal: false,
+        recommendedScope: "policy",
+        ciCommand: "aienvmp doctor --strict policy --json",
+        releaseCommand: "aienvmp doctor --strict all --json",
+        rule: "Keep local operation advisory; use the first failing scope only when CI or the user wants a gate."
+      },
       enforcementProfile: {
         defaultMode: "advisory",
         localOperation: "non-blocking",
@@ -310,6 +320,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const maintenanceLoop=manifest\.preflight\?\.maintenanceLoop\|\|\{\}/);
   assert.match(html, /const aiBootstrap=manifest\.preflight\?\.aiBootstrap\|\|\{\}/);
   assert.match(html, /const artifactFreshness=manifest\.preflight\?\.artifactFreshness\|\|\{\}/);
+  assert.match(html, /const strictRecommendation=manifest\.preflight\?\.strictRecommendation\|\|\{\}/);
   assert.match(html, /const artifactFreshnessValue=artifactFreshness\.state\|\|'unknown'/);
   assert.match(html, /const artifactFreshnessNext=artifactFreshness\.nextCommand\|\|artifactFreshness\.refreshCommand\|\|'aienvmp sync'/);
   assert.match(html, /const nextCommand=aiBootstrap\.nextSafeCommand\|\|manifest\.preflight\?\.nextSafeCommand/);
@@ -380,13 +391,14 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Enforcement Mode/);
   assert.match(html, /advisory/);
   assert.match(html, /warn-only/);
-  assert.match(html, /never in default mode/);
-  assert.match(html, /0 unless the command itself errors/);
+  assert.match(html, /Fail local/);
+  assert.match(html, /Recommended scope/);
+  assert.match(html, /Release/);
   assert.match(html, /doctor --strict policy/);
   assert.match(html, /aienvmp doctor --json/);
   assert.match(html, /doctor --strict policy --json/);
+  assert.match(html, /doctor --strict all --json/);
   assert.match(html, /Keep local operation advisory/);
-  assert.match(html, /narrowest failing strict scope/);
   assert.match(html, /security/);
   assert.match(html, /policy/);
   assert.match(html, /Global Inventory/);
