@@ -32,6 +32,8 @@ test("buildPlan creates a read-only action plan", () => {
   assert.equal(plan.aiBootstrap.readFirst, ".aienvmp/status.json");
   assert.equal(plan.aiBootstrap.localMode, "advisory");
   assert.equal(plan.nextSafeCommand, plan.preflight.nextSafeCommand);
+  assert.equal(plan.followUpPlan.status, "clear");
+  assert.equal(plan.followUpPlan.nextCommand, "aienvmp status --json");
   assert.equal(plan.preflight.state, "review-required");
   assert.equal(plan.preflight.artifacts.planJson, ".aienvmp/plan.json");
   assert.equal(plan.preflight.commands.recordIntent, "aienvmp intent --actor agent:id --action planned-change --target dependency");
@@ -55,6 +57,7 @@ test("buildPlan creates a read-only action plan", () => {
   assert.match(renderPlan(plan), /AI bootstrap:/);
   assert.match(renderPlan(plan), /Next safe command:/);
   assert.match(renderPlan(plan), /Read first: \.aienvmp\/status\.json -> aienvmp context --json/);
+  assert.match(renderPlan(plan), /Follow-up plan: clear \/ aienvmp status --json/);
   assert.match(renderPlan(plan), /Decision: review-first/);
   assert.match(renderPlan(plan), /Enforcement: advisory-by-default/);
   assert.match(renderPlan(plan), /lodash/);
@@ -86,6 +89,31 @@ test("buildPlan creates environment steps for runtime and policy drift", () => {
   assert.match(plan.environmentSteps[0].steps.join(" "), /checkpoint/);
   assert.match(renderPlan(plan), /Environment steps/);
   assert.match(renderPlan(plan), /package-manager/);
+});
+
+test("buildPlan exposes pending follow-up plan at the root", () => {
+  const plan = buildPlan({
+    workspace: { path: "/tmp/work", name: "work" },
+    trust: { state: "observed" },
+    security: { enabled: false },
+    dependencySnapshot: { summary: { packages: 1 } }
+  }, [], [], {}, [{
+    at: "2026-07-08T00:00:00.000Z",
+    actor: "agent:codex",
+    type: "agent-record",
+    target: "dependency",
+    summary: "dependency-change",
+    followUp: {
+      required: true,
+      target: "dependency",
+      commands: ["aienvmp sync"]
+    }
+  }]);
+
+  assert.equal(plan.followUpPlan.status, "pending");
+  assert.equal(plan.followUpPlan.nextCommand, "aienvmp sync");
+  assert.deepEqual(plan.followUpPlan.targets, ["dependency"]);
+  assert.match(renderPlan(plan), /Follow-up plan: pending \/ aienvmp sync/);
 });
 
 test("compactStepSummary returns bounded AI-facing step summaries", () => {
@@ -135,6 +163,7 @@ test("planWorkspace can write plan artifacts", async () => {
     const plan = await planWorkspace({ dir, write: true, json: true });
     assert.equal(plan.recommendedActions[0].id, "continue-project-local");
     assert.equal(plan.aiBootstrap.nextSafeCommand, plan.nextSafeCommand);
+    assert.equal(plan.followUpPlan.status, "clear");
     assert.equal(plan.preflight.state, "clear");
     assert.equal(plan.preflight.commands.handoff, "aienvmp handoff --record --actor agent:id");
     assert.equal(plan.preflight.commands.checkpoint, "aienvmp checkpoint --actor agent:id --summary what-changed --target environment");
@@ -147,11 +176,13 @@ test("planWorkspace can write plan artifacts", async () => {
   assert.match(await fs.readFile(path.join(dir, ".aienvmp", "plan.md"), "utf8"), /AI Environment Plan/);
   assert.match(await fs.readFile(path.join(dir, ".aienvmp", "plan.md"), "utf8"), /AI bootstrap:/);
   assert.match(await fs.readFile(path.join(dir, ".aienvmp", "plan.md"), "utf8"), /Next safe command:/);
+  assert.match(await fs.readFile(path.join(dir, ".aienvmp", "plan.md"), "utf8"), /Follow-up plan:/);
   assert.match(await fs.readFile(path.join(dir, ".aienvmp", "plan.md"), "utf8"), /Dependency protocol/);
   const planJson = JSON.parse(await fs.readFile(path.join(dir, ".aienvmp", "plan.json"), "utf8"));
   assert.equal(planJson.schemaVersion, 1);
   assert.equal(planJson.aiBootstrap.readFirst, ".aienvmp/status.json");
   assert.equal(planJson.nextSafeCommand, planJson.preflight.nextSafeCommand);
+  assert.equal(planJson.followUpPlan.status, "clear");
   assert.equal(planJson.preflight.readOrder[0], ".aienvmp/status.json");
   assert.equal(planJson.decision.requiredCommands.handoff, "aienvmp handoff --record --actor agent:id");
   assert.equal(planJson.decision.requiredCommands.checkpointAfterChange, "aienvmp checkpoint --actor agent:id --summary what-changed --target environment");

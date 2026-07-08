@@ -178,7 +178,7 @@ export function schemaContract() {
       plan: {
         file: ".aienvmp/plan.json",
         command: "aienvmp plan --json",
-        rootFields: ["schemaVersion", "status", "aiBootstrap", "nextSafeCommand", "preflight", "decision", "enforcement", "recommendedActions", "reviewGates", "remediationSteps", "environmentSteps"]
+        rootFields: ["schemaVersion", "status", "aiBootstrap", "nextSafeCommand", "followUpPlan", "preflight", "decision", "enforcement", "recommendedActions", "reviewGates", "remediationSteps", "environmentSteps"]
       },
       context: {
         command: "aienvmp context --json",

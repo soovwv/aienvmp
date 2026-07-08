@@ -43,6 +43,7 @@ export function buildPlan(manifest, warnings = [], intents = [], policy = {}, ti
     status,
     aiBootstrap: preflight.aiBootstrap,
     nextSafeCommand: preflight.nextSafeCommand || preflight.nextCommand,
+    followUpPlan: preflight.followUpPlan,
     preflight,
     workspace: manifest.workspace || {},
     trust: manifest.trust || {},
