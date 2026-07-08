@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { dashWorkspace } from "../src/commands/dash.js";
 import { writeJson } from "../src/fsutil.js";
-import { renderDashboard } from "../src/render.js";
+import { dashboardEssentialCards, renderDashboard } from "../src/render.js";
 
 test("renderDashboard includes the audit summary surface", () => {
   const html = renderDashboard({
@@ -352,6 +352,24 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /AI Session/);
   assert.match(html, /Before env/);
   assert.match(html, /aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency/);
+  assert.deepEqual(dashboardEssentialCards, [
+    "AI Session",
+    "Environment Health",
+    "AI Collaboration",
+    "Light SBOM",
+    "Agent Pointers",
+    "Agent Intents",
+    "Environment Ledger",
+    "Enforcement Mode",
+    "Release Readiness"
+  ]);
+  for (const title of dashboardEssentialCards) {
+    assert.match(html, new RegExp(`card\\('${title}'`));
+  }
+  assert.match(html, /const essentialCards=\["AI Session","Environment Health","AI Collaboration","Light SBOM","Agent Pointers","Agent Intents","Environment Ledger","Enforcement Mode","Release Readiness"\]/);
+  assert.match(html, /data-dashboard-priority=/);
+  assert.match(html, /cardPriority\(title\)/);
+  assert.match(html, /\.card\.essential/);
   assert.match(html, /const reviewTargets=\[\.\.\.new Set/);
   assert.match(html, /\.control-card\.review/);
   assert.match(html, /controlCard\('AI readiness'/);

@@ -2,6 +2,17 @@ import { schemaContract } from "./contract.js";
 
 const markerBegin = "<!-- aienvmp:begin -->";
 const markerEnd = "<!-- aienvmp:end -->";
+export const dashboardEssentialCards = Object.freeze([
+  "AI Session",
+  "Environment Health",
+  "AI Collaboration",
+  "Light SBOM",
+  "Agent Pointers",
+  "Agent Intents",
+  "Environment Ledger",
+  "Enforcement Mode",
+  "Release Readiness"
+]);
 
 export { markerBegin, markerEnd };
 
@@ -469,6 +480,7 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(28px,4vw,46px);line-height:1.02;margin-to
 .audit-hint{margin-top:6px;color:var(--muted);font-size:12px;line-height:1.4}
 .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0 18px}
 .metric,.card{border:1px solid var(--line);background:rgba(13,24,21,.9);border-radius:8px}
+.card.essential{border-color:rgba(71,229,141,.28)}
 .metric{padding:14px}.metric .num{font-size:28px;font-weight:800;color:var(--green);line-height:1}.metric .label{margin-top:7px;color:var(--muted);font-size:12px}
 .layout{display:grid;grid-template-columns:1.35fr .9fr;gap:14px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 .card{padding:16px;min-width:0}.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
@@ -583,7 +595,9 @@ const dependencyReadSet=manifest.preflight?.dependencyReadSet||[];
 const dependencyReadSetHtml=dependencyReadSet.length?'<div class="timeline">'+dependencyReadSet.slice(0,5).map(d=>\`<div class="event"><time>\${esc(d.ecosystem||'deps')}</time><div><b>\${esc(d.manifest||'dependency files')}</b> <code>\${esc(d.manager||'unknown')}</code><div class="path">\${esc([d.manifest,...(d.lockfiles||[])].filter(Boolean).join(', '))}</div>\${d.riskPackages?.length?\`<div class="path">risk: \${esc(d.riskPackages.join(', '))}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No dependency files detected.</div>';
 const dependencyProtocol=manifest.preflight?.dependencyChangeProtocol||{};
 const dependencyProtocolHtml=dependencyProtocol.commands?'<table><tr><th>Mode</th><td><code>'+esc(dependencyProtocol.mode||'advisory')+'</code></td></tr><tr><th>Policy</th><td><code>'+esc(dependencyProtocol.packageManagerPolicy||'not-detected')+'</code></td></tr><tr><th>Intent</th><td><code>'+esc(dependencyProtocol.commands.recordIntent)+'</code></td></tr><tr><th>After</th><td><code>'+esc(dependencyProtocol.commands.checkpointAfterChange||dependencyProtocol.commands.recordAfterChange)+'</code></td></tr></table><div class="timeline">'+(dependencyProtocol.mustNotDo||[]).slice(0,3).map(item=>\`<div class="event"><time>avoid</time><div>\${esc(item)}</div></div>\`).join('')+'</div>':'<div class="okline">No dependency change protocol available.</div>';
-const card=(title,badge,body)=>\`<section class="card"><div class="card-head"><h2>\${title}</h2>\${badge||''}</div>\${body}</section>\`;
+const essentialCards=${JSON.stringify(dashboardEssentialCards)};
+const cardPriority=title=>essentialCards.includes(title)?'essential':'support';
+const card=(title,badge,body)=>\`<section class="card \${cardPriority(title)}" data-dashboard-priority="\${cardPriority(title)}"><div class="card-head"><h2>\${title}</h2>\${badge||''}</div>\${body}</section>\`;
 const reviewRequired=warnings.length>0||intents.length>0;
 const recentChanges=timeline.slice(-8).length;
 const trustState=manifest.trust?.state||'observed';
