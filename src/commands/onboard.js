@@ -3,6 +3,11 @@ import { syncWorkspace } from "./sync.js";
 
 const defaultAgents = ["codex", "claude", "gemini"];
 const knownAgents = new Set(["agents", "codex", "claude", "gemini"]);
+const sessionStart = [
+  "read .aienvmp/status.json first",
+  "run aienvmp sync if status is missing, stale, or artifactFreshness is not fresh",
+  "continue project-local code work unless status/context requires environment review"
+];
 
 export async function onboardWorkspace(args = {}) {
   const agents = selectedAgents(args);
@@ -19,6 +24,8 @@ export async function onboardWorkspace(args = {}) {
     sync: synced ? "ok" : "skipped",
     readFirst: [".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md"],
     nextCommands: ["aienvmp status", "aienvmp context --json"],
+    sessionStart,
+    freshnessRule: "Use artifactFreshness.nextCommand; when stale or unknown, run aienvmp sync before environment-affecting work.",
     aiDiscovery: synced ? "ready" : "pointers-written",
     next: "Run aienvmp status; AI agents should read their instruction file pointer, then .aienvmp/status.json."
   };
@@ -30,6 +37,7 @@ export async function onboardWorkspace(args = {}) {
     console.log(`pointers: ${pointers.map((item) => item.file).join(", ")}`);
     console.log(`sync: ${result.sync}`);
     console.log(`read: ${result.readFirst.join(" -> ")}`);
+    console.log(`session: ${result.sessionStart.join(" | ")}`);
     console.log(`commands: ${result.nextCommands.join(" | ")}`);
     console.log(`next: ${result.next}`);
   }
