@@ -77,6 +77,7 @@ export function renderSummary(status = {}, manifest = {}) {
   const strictDecision = status.enforcementProfile?.strictDecision || status.enforcement?.strictDecision || {};
   const strictRecommendation = status.strictRecommendation || {};
   const releaseReadiness = schemaContract().releaseReadiness || {};
+  const publishDecision = releaseReadiness.publishDecision || {};
   const releaseChecks = toList(releaseReadiness.requiredBeforeStable);
 
   return [
@@ -98,7 +99,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- local check: ${strictRecommendation.localCommand || strictDecision.localCommand || "aienvmp doctor --json"} (${strictRecommendation.localBehavior || strictDecision.local || "warn-only"})`,
     `- CI strict: ${strictRecommendation.ciCommand || strictPlan.ciCommand || `${strict} --json`}`,
     `- release strict: ${strictRecommendation.releaseCommand || "aienvmp doctor --strict all --json"}`,
-    `- release readiness: ${releaseReadiness.target || "0.2.0"} / ${releaseReadiness.status || "prototype-hardening"} / ${releaseChecks[0] || "npm run release:check passes locally"}`,
+    `- release readiness: ${releaseReadiness.target || "0.2.0"} / ${releaseReadiness.status || "prototype-hardening"} / ${publishDecision.default || "hold"} / ${releaseChecks[0] || "npm run release:check passes locally"}`,
     "",
     `- state: ${status.state || "unknown"}`,
     `- workspace: ${workspace}`,
@@ -149,7 +150,10 @@ export function renderSummary(status = {}, manifest = {}) {
     "",
     `- target: ${releaseReadiness.target || "0.2.0"}`,
     `- status: ${releaseReadiness.status || "prototype-hardening"}`,
+    `- default decision: ${publishDecision.default || "hold"}`,
     `- gate: ${releaseChecks[0] || "npm run release:check passes locally"}`,
+    `- publish when: ${toList(publishDecision.publishWhen)[0] || "meaningful changes are batched"}`,
+    `- hold when: ${toList(publishDecision.holdWhen)[0] || "changes can be batched into the next release"}`,
     `- publish: ${releaseReadiness.batchRule || "Batch meaningful AI-contract, dashboard, SBOM, and release-gate changes before one npm publish."}`,
     `- stable contract: ${releaseReadiness.stableContractRule || "After 0.2.0, documented JSON fields remain additive and backward-compatible."}`,
     "",

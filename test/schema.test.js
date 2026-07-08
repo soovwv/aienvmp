@@ -56,6 +56,10 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.releaseGate.rule, /batch meaningful changes/);
   assert.equal(schema.releaseReadiness.target, "0.2.0");
   assert.equal(schema.releaseReadiness.status, "prototype-hardening");
+  assert.equal(schema.releaseReadiness.publishDecision.default, "hold");
+  assert.match(schema.releaseReadiness.publishDecision.publishWhen.join(" "), /meaningful AI contract/);
+  assert.match(schema.releaseReadiness.publishDecision.holdWhen.join(" "), /small documentation/);
+  assert.match(schema.releaseReadiness.publishDecision.emergencyException, /Security/);
   assert.ok(schema.releaseReadiness.requiredBeforeStable.includes("npm run release:check passes locally"));
   assert.ok(schema.releaseReadiness.requiredBeforeStable.includes("package metadata and CLI help match AI workspace coordination positioning"));
   assert.match(schema.releaseReadiness.stableContractRule, /backward-compatible/);

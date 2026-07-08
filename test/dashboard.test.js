@@ -351,6 +351,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const releaseChecks=releaseReadiness\?\.requiredBeforeStable\|\|\[\]/);
   assert.match(html, /Release Readiness/);
   assert.match(html, /prototype-hardening/);
+  assert.match(html, /publishDecision=releaseReadiness\?\.publishDecision\|\|\{\}/);
+  assert.match(html, /Decision/);
+  assert.match(html, /meaningful changes are batched/);
   assert.match(html, /npm run release:check passes locally/);
   assert.match(html, /Batch meaningful changes before one npm publish/);
   assert.match(html, /const artifactFreshnessValue=artifactFreshness\.state\|\|'unknown'/);

@@ -204,6 +204,7 @@ See [examples/github-action.yml](examples/github-action.yml).
 - `0.1.x` is the prototype history for fast AI-contract validation.
 - `0.2.x` starts the stabilized AI workspace contract.
 - npm releases are manually gated and batched around meaningful changes, with security fixes as the exception.
+- The default publish decision is `hold`; publish only after meaningful changes are batched and `npm run release:check` passes.
 - Run `npm run release:check` before publishing; the GitHub `Release` workflow runs the same gate.
 - `schema --json` exposes the same `releaseGate` rule for AI/CI consumers.
 - `schema --json` exposes `releaseReadiness.requiredBeforeStable` for the `0.2.0` checklist.

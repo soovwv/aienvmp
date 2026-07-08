@@ -99,6 +99,20 @@ export function schemaContract() {
     releaseReadiness: {
       target: "0.2.0",
       status: "prototype-hardening",
+      publishDecision: {
+        default: "hold",
+        publishWhen: [
+          "meaningful AI contract, dashboard, SBOM, or release-gate changes are batched",
+          "npm run release:check passes locally",
+          "package.json version is intentionally updated for the release"
+        ],
+        holdWhen: [
+          "only one small documentation or internal refactor landed",
+          "tests were not run through npm run release:check",
+          "the change can be batched into the next planned stable-contract release"
+        ],
+        emergencyException: "Security or broken-package fixes may publish sooner, but still run the release gate."
+      },
       requiredBeforeStable: [
         "npm run release:check passes locally",
         "GitHub Release workflow passes with confirm_publish=publish",
