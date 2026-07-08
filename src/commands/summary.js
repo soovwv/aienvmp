@@ -39,6 +39,7 @@ export function renderSummary(status = {}, manifest = {}) {
   const activity = status.agentActivity || {};
   const collaboration = status.collaboration || {};
   const maintenanceLoop = status.maintenanceLoop || {};
+  const sbomReview = maintenanceLoop.sbomReview || {};
   const workspace = manifest.workspace?.root || manifest.workspace?.name || ".";
   const next = status.nextCommand || status.decision?.nextCommand || "aienvmp status";
   const readFirst = status.nextAgent?.readFirst || ".aienvmp/status.json";
@@ -94,6 +95,7 @@ export function renderSummary(status = {}, manifest = {}) {
     "",
     `- source: ${manifest.lightSbom?.source?.dependencies || "project manifests"}`,
     `- confidence: transitive ${manifest.lightSbom?.confidence?.transitiveDependencies || "not-resolved"}`,
+    `- maintenance SBOM review: ${sbomReview.status || "unknown"} / ${sbomReview.securityConfidence || "unknown"} / ${sbomReview.nextCommand || maintenanceLoop.sbomCommand || "aienvmp sbom --json"}`,
     `- AI dependency review: ${aiDependencyReview.status || "unknown"} / ${aiDependencyReview.securityConfidence || "unknown"} / ${aiDependencyReview.beforeDependencyChange?.[0] || "aienvmp sbom --json"}`,
     `- signals: ${riskSignals.length ? riskSignals.join("; ") : "none"}`,
     `- verify: ${sbomRisk.next || "Use a dedicated scanner for security decisions."}`,

@@ -44,8 +44,14 @@ function sbomRiskActions(risk = {}) {
   if (risk.scanner === "off" && risk.vulnerabilityCount === 0) {
     actions.push(action("scan-sbom-risk", "medium", "security", "Run a read-only security scan before dependency or release decisions.", "aienvmp sync --security"));
   }
-  if (["urgent", "high"].includes(risk.level)) {
-    actions.push(action("review-sbom-risk", "high", "security", `Review light SBOM risk summary before dependency changes: ${(risk.signals || []).slice(0, 2).join("; ") || risk.level}.`, "aienvmp plan --write"));
+  if (["urgent", "high", "medium"].includes(risk.level)) {
+    actions.push(action(
+      "review-sbom-risk",
+      ["urgent", "high"].includes(risk.level) ? "high" : "medium",
+      "security",
+      `Review light SBOM risk summary before dependency changes: ${(risk.signals || []).slice(0, 2).join("; ") || risk.level}.`,
+      "aienvmp plan --write"
+    ));
   }
   return actions;
 }

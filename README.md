@@ -52,7 +52,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `status.json.nextAgent` tells the next AI what to read and whether to review first.
 - `aiReadiness` gives a one-field ready/review signal for AI continuation.
 - `collaboration` gives the shortest multi-agent env-change status, targets, and next command.
-- `maintenanceLoop` gives AI a recurring refresh, decide, inspect, intent, checkpoint, and handoff cycle.
+- `maintenanceLoop` gives AI a recurring refresh, decide, inspect, SBOM review, intent, checkpoint, and handoff cycle.
 - `dashboard.html` starts with a 3-card AI control strip, one next command, and a compact first-read strip.
 - `dependencyReadSet` lists manifests and lockfiles before package or security changes.
 - `sbomRisk` gives AI a compact light-SBOM risk level, signals, and next command.

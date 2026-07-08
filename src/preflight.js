@@ -20,7 +20,16 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
   const agentPointers = agentPointerSummary(manifest.agentFiles);
   const aiReadiness = aiReadinessSummary({ state, decision, coordination, agentActivity, agentPointers, sbomRisk, followUps });
   const collaboration = collaborationSummary({ state, decision, coordination, agentActivity, followUps, aiReadiness });
-  const maintenanceLoop = maintenanceLoopSummary({ state, decision, topAction, followUps, sbomRisk, dependencyReadSet, collaboration });
+  const maintenanceLoop = maintenanceLoopSummary({
+    state,
+    decision,
+    topAction,
+    followUps,
+    sbomRisk,
+    aiDependencyReview: manifest.lightSbom?.aiDependencyReview,
+    dependencyReadSet,
+    collaboration
+  });
   return {
     schemaVersion: 1,
     contract: preflightContract(),
@@ -96,10 +105,11 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
   };
 }
 
-function maintenanceLoopSummary({ state, decision, topAction, followUps, sbomRisk, dependencyReadSet, collaboration }) {
+function maintenanceLoopSummary({ state, decision, topAction, followUps, sbomRisk, aiDependencyReview = {}, dependencyReadSet, collaboration }) {
   const followUpCommand = firstFollowUpCommand(followUps);
   const dependencyAware = dependencyReadSet.length > 0;
   const securityReview = ["urgent", "high", "medium"].includes(sbomRisk?.level || "");
+  const scannerOff = sbomRisk?.scanner === "off" || aiDependencyReview.securityConfidence === "scanner-off";
   const nextCommand = followUpCommand
     || collaboration?.nextCommand
     || topAction?.command
@@ -133,8 +143,39 @@ function maintenanceLoopSummary({ state, decision, topAction, followUps, sbomRis
       { step: "checkpoint", command: dependencyAware ? "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency" : "aienvmp checkpoint --actor agent:id --summary what-changed --target environment", when: "after accepted environment-affecting changes" },
       { step: "handoff", command: "aienvmp handoff --record --actor agent:id", when: "before another AI continues environment work" }
     ],
-    sbomCommand: securityReview ? "aienvmp sync --security" : "aienvmp sbom --json",
+    sbomCommand: securityReview || scannerOff ? "aienvmp sync --security" : "aienvmp sbom --json",
+    sbomReview: sbomReviewSummary({ sbomRisk, aiDependencyReview, securityReview, scannerOff }),
     rule: "Keep local operation advisory and lightweight; use strict checks only when CI or the user explicitly asks."
+  };
+}
+
+function sbomReviewSummary({ sbomRisk = {}, aiDependencyReview = {}, securityReview = false, scannerOff = false }) {
+  const status = securityReview || aiDependencyReview.status === "review" ? "review" : "ready";
+  const before = aiDependencyReview.beforeDependencyChange?.length
+    ? aiDependencyReview.beforeDependencyChange
+    : [
+        scannerOff ? "aienvmp sync --security" : "aienvmp sbom --json",
+        "aienvmp intent --actor agent:id --action dependency-review --target dependency",
+        "aienvmp plan --write"
+      ];
+  const after = aiDependencyReview.afterDependencyChange?.length
+    ? aiDependencyReview.afterDependencyChange
+    : [
+        "run the narrowest relevant project validation",
+        "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"
+      ];
+  return {
+    status,
+    riskLevel: sbomRisk.level || "unknown",
+    score: Number(sbomRisk.score || 0),
+    securityConfidence: aiDependencyReview.securityConfidence || (scannerOff ? "scanner-off" : "unknown"),
+    reviewTargets: aiDependencyReview.reviewTargets || sbomRisk.reviewTargets || [],
+    nextCommand: before[0] || "aienvmp sbom --json",
+    beforeDependencyChange: before,
+    afterDependencyChange: after,
+    rule: status === "review"
+      ? "Review SBOM risk, package manager policy, and dependency read set before dependency changes."
+      : "Keep SBOM review lightweight; run security scan before dependency or release decisions when scanner confidence is low."
   };
 }
 

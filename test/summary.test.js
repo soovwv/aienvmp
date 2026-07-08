@@ -25,6 +25,12 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
     },
     maintenanceLoop: {
       nextCommand: "aienvmp handoff --record --actor agent:id",
+      sbomCommand: "aienvmp sync --security",
+      sbomReview: {
+        status: "review",
+        securityConfidence: "scanner-summary",
+        nextCommand: "aienvmp sync --security"
+      },
       rule: "Keep local operation advisory and lightweight; use strict checks only when CI or the user explicitly asks."
     },
     nextCommand: "aienvmp handoff",
@@ -78,6 +84,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /conflict targets: dependency/);
   assert.match(markdown, /multi-actor targets: node/);
   assert.match(markdown, /AI dependency review: review \/ scanner-summary \/ aienvmp intent --actor agent:id --action dependency-review --target dependency/);
+  assert.match(markdown, /maintenance SBOM review: review \/ scanner-summary \/ aienvmp sync --security/);
   assert.match(markdown, /## Dependency changes/);
   assert.match(markdown, /read files: package\.json, package-lock\.json/);
   assert.match(markdown, /checkpoint --actor agent:id --summary dependency-change --target dependency/);

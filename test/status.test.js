@@ -63,7 +63,10 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.maintenanceLoop.readOrder[0], ".aienvmp/status.json");
   assert.equal(status.maintenanceLoop.cycle[0].command, "aienvmp sync");
   assert.equal(status.maintenanceLoop.cycle[4].command, "aienvmp intent --actor agent:id --action planned-change --target dependency");
-  assert.equal(status.maintenanceLoop.sbomCommand, "aienvmp sbom --json");
+  assert.equal(status.maintenanceLoop.sbomCommand, "aienvmp sync --security");
+  assert.equal(status.maintenanceLoop.sbomReview.status, "ready");
+  assert.equal(status.maintenanceLoop.sbomReview.securityConfidence, "scanner-off");
+  assert.equal(status.maintenanceLoop.sbomReview.nextCommand, "aienvmp sync --security");
   assert.match(status.maintenanceLoop.rule, /strict checks only/);
   assert.equal(status.intentTargets[0].target, "dependency");
   assert.equal(status.dependencyReadSet[0].manifest, "package.json");
@@ -84,6 +87,45 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.readOrder[1], ".aienvmp/summary.md");
   assert.equal(status.commands.context, "aienvmp context --json");
   assert.equal(status.nextCommand, "aienvmp intent --actor agent:id --action planned-change --target environment");
+});
+
+test("buildStatus connects high SBOM risk to dependency review loop", () => {
+  const status = buildStatus({
+    runtimes: {},
+    dependencySnapshot: { summary: { packages: 1 }, manifests: ["package.json"] },
+    lightSbom: {
+      riskSummary: {
+        level: "high",
+        score: 80,
+        scanner: "enabled",
+        signals: ["1 high vulnerability finding(s)"],
+        reviewTargets: ["package.json", "express"]
+      },
+      aiDependencyReview: {
+        status: "review",
+        securityConfidence: "scanner-summary",
+        reviewTargets: ["package.json", "express"],
+        beforeDependencyChange: [
+          "aienvmp sync --security",
+          "aienvmp intent --actor agent:id --action dependency-review --target dependency",
+          "aienvmp plan --write"
+        ],
+        afterDependencyChange: [
+          "run the narrowest relevant project validation",
+          "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"
+        ]
+      }
+    },
+    security: { summary: { total: 1 } }
+  }, [], []);
+
+  assert.equal(status.aiReadiness.level, "review");
+  assert.equal(status.maintenanceLoop.sbomReview.status, "review");
+  assert.equal(status.maintenanceLoop.sbomReview.riskLevel, "high");
+  assert.deepEqual(status.maintenanceLoop.sbomReview.reviewTargets, ["package.json", "express"]);
+  assert.equal(status.maintenanceLoop.sbomReview.beforeDependencyChange[1], "aienvmp intent --actor agent:id --action dependency-review --target dependency");
+  assert.match(status.maintenanceLoop.sbomReview.afterDependencyChange[1], /checkpoint/);
+  assert.equal(status.maintenanceLoop.sbomCommand, "aienvmp sync --security");
 });
 
 test("buildStatus exposes pending follow-ups from timeline", () => {

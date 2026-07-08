@@ -70,6 +70,22 @@ test("recommendedActions reports light SBOM risk scans", () => {
   assert.equal(actions[0].command, "aienvmp sync --security");
 });
 
+test("recommendedActions plans medium light SBOM risk before dependency changes", () => {
+  const actions = recommendedActions({
+    lightSbom: {
+      riskSummary: {
+        level: "medium",
+        scanner: "enabled",
+        signals: ["moderate vulnerable dependency"]
+      }
+    }
+  }, { warnings: [], intents: [] });
+
+  assert.equal(actions[0].id, "review-sbom-risk");
+  assert.equal(actions[0].priority, "medium");
+  assert.equal(actions[0].command, "aienvmp plan --write");
+});
+
 test("recommendedActions suggests agent pointer installation without blocking", () => {
   const actions = recommendedActions({
     agentFiles: {
