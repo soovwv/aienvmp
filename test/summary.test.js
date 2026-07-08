@@ -17,6 +17,15 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
       signals: ["open intent conflicts", "multi-agent environment activity"],
       safeProjectLocalActions: ["read status and summary artifacts before changing the environment"]
     },
+    aiBootstrap: {
+      readFirst: ".aienvmp/status.json",
+      detailCommand: "aienvmp context --json",
+      nextSafeCommand: "aienvmp sync",
+      localMode: "advisory",
+      projectLocalWork: "allowed",
+      environmentChanges: "review-first",
+      rule: "Review context before shared environment changes; local checks remain non-blocking."
+    },
     collaboration: {
       status: "review-before-env-change",
       activeTargets: ["dependency", "node"],
@@ -75,7 +84,9 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   });
 
   assert.match(markdown, /# aienvmp summary/);
-  assert.match(markdown, /# aienvmp summary\n\n- AI readiness: review\n- AI signals: open intent conflicts; multi-agent environment activity\n- AI next: Review listed signals/);
+  assert.match(markdown, /# aienvmp summary\n\n- AI readiness: review\n- AI signals: open intent conflicts; multi-agent environment activity\n- AI bootstrap: allowed \/ review-first \/ advisory\n- AI next: aienvmp sync/);
+  assert.match(markdown, /AI bootstrap: allowed \/ review-first \/ advisory/);
+  assert.match(markdown, /AI next: aienvmp sync \(Review listed signals/);
   assert.match(markdown, /AI safe local work: read status and summary artifacts/);
   assert.match(markdown, /AI collaboration: review-before-env-change \/ dependency, node \/ aienvmp handoff --record --actor agent:id/);
   assert.match(markdown, /AI maintenance loop: aienvmp handoff --record --actor agent:id/);
@@ -83,6 +94,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /light SBOM risk: medium \(42\)/);
   assert.match(markdown, /AI readiness: review/);
   assert.match(markdown, /AI read first: \.aienvmp\/status\.json/);
+  assert.match(markdown, /AI bootstrap rule: Review context before shared environment changes/);
   assert.match(markdown, /local check: aienvmp doctor --json \(warn-only\)/);
   assert.match(markdown, /CI strict: aienvmp doctor --strict security --json/);
   assert.match(markdown, /collaboration rule: Do not install shared tools/);
@@ -110,6 +122,7 @@ test("summaryWorkspace writes summary.md after sync", async () => {
 
   assert.match(result.artifact, /\.aienvmp[\\\/]summary\.md$/);
   assert.match(summary, /## AI handoff/);
+  assert.match(summary, /AI bootstrap:/);
   assert.match(summary, /AI collaboration:/);
   assert.match(summary, /AI maintenance loop:/);
   assert.match(summary, /## SBOM/);

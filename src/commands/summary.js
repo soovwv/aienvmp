@@ -40,10 +40,11 @@ export function renderSummary(status = {}, manifest = {}) {
   const collaboration = status.collaboration || {};
   const maintenanceLoop = status.maintenanceLoop || {};
   const sbomReview = maintenanceLoop.sbomReview || {};
+  const aiBootstrap = status.aiBootstrap || {};
   const workspace = manifest.workspace?.root || manifest.workspace?.name || ".";
-  const next = status.nextCommand || status.decision?.nextCommand || "aienvmp status";
-  const readFirst = status.nextAgent?.readFirst || ".aienvmp/status.json";
-  const detail = status.quickstart?.detailCommand || "aienvmp context --json";
+  const next = aiBootstrap.nextSafeCommand || status.nextSafeCommand || status.nextCommand || status.decision?.nextCommand || "aienvmp status";
+  const readFirst = aiBootstrap.readFirst || status.nextAgent?.readFirst || ".aienvmp/status.json";
+  const detail = aiBootstrap.detailCommand || status.quickstart?.detailCommand || "aienvmp context --json";
   const strict = status.enforcement?.recommendedCommand || "aienvmp doctor --strict all";
   const riskLevel = sbomRisk.level || "unknown";
   const riskScore = valueOrZero(sbomRisk.score);
@@ -67,11 +68,13 @@ export function renderSummary(status = {}, manifest = {}) {
     "",
     `- AI readiness: ${aiReadiness.level || "unknown"}`,
     `- AI signals: ${aiSignals.length ? aiSignals.join("; ") : "none"}`,
-    `- AI next: ${aiNext}`,
+    `- AI bootstrap: ${aiBootstrap.projectLocalWork || "allowed"} / ${aiBootstrap.environmentChanges || status.agentUse?.environmentChanges || "intent-first"} / ${aiBootstrap.localMode || "advisory"}`,
+    `- AI next: ${next} (${aiNext})`,
     `- AI collaboration: ${collaboration.status || "unknown"} / ${toList(collaboration.activeTargets).join(", ") || "none"} / ${collaboration.nextCommand || "aienvmp status --json"}`,
     `- AI maintenance loop: ${maintenanceLoop.nextCommand || next}`,
     `- AI safe local work: ${toList(aiReadiness.safeProjectLocalActions)[0] || "read artifacts and avoid environment changes until reviewed"}`,
     `- AI read first: ${readFirst}, then ${detail}`,
+    `- AI bootstrap rule: ${aiBootstrap.rule || "Read status first, use context for details, and keep local checks advisory."}`,
     `- mode: advisory by default; strict is opt-in with ${strict}`,
     `- local check: ${strictDecision.localCommand || "aienvmp doctor --json"} (${strictDecision.local || "warn-only"})`,
     `- CI strict: ${strictPlan.ciCommand || `${strict} --json`}`,
