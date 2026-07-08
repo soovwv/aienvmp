@@ -1,11 +1,11 @@
 import { schemaContract } from "./contract.js";
-import { dashboardAgentClientScript, dashboardDependencyReviewClientScript, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript } from "./dashboard.js";
+import { dashboardAgentClientScript, dashboardDependencyHintsClientScript, dashboardDependencyReviewClientScript, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript } from "./dashboard.js";
 
 const markerBegin = "<!-- aienvmp:begin -->";
 const markerEnd = "<!-- aienvmp:end -->";
 
 export { markerBegin, markerEnd };
-export { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyReviewClientScript, dashboardEssentialCards, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript } from "./dashboard.js";
+export { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyReviewClientScript, dashboardEssentialCards, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript } from "./dashboard.js";
 
 export function renderAIEnv(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const lines = [];
@@ -520,7 +520,7 @@ const dependencyHints=lightSbom.dependencyChangeHints||[];
 const aiDependencyReview=lightSbom.aiDependencyReview||{};
 ${dashboardScannerGuidanceClientScript()}
 ${dashboardReviewPlanClientScript()}
-const dependencyHintsHtml=dependencyHints.length?'<div class="timeline">'+dependencyHints.slice(0,5).map(h=>\`<div class="event"><time>\${esc(h.ecosystem||'deps')}</time><div><b>\${esc(h.manifest)}</b> <code>\${esc(h.manager||'unknown')}</code> \${esc(h.packages||0)} packages\${h.riskPackages?.length?\`<div class="path">risk: \${esc(h.riskPackages.map(p=>p.name).join(', '))}</div>\`:''}<div class="path">\${esc((h.groups||[]).join(', ')||'no groups')}\${h.lockfiles?.length?\` / lockfiles: \${esc(h.lockfiles.map(l=>l.file).join(', '))}\`:''}</div></div></div>\`).join('')+'</div>':'<div class="okline">No dependency change hints available.</div>';
+${dashboardDependencyHintsClientScript()}
 ${dashboardPackageManagerPolicyClientScript()}
 ${dashboardRiskSummaryClientScript()}
 ${dashboardReviewPlanHtmlClientScript()}

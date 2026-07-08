@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { dashWorkspace } from "../src/commands/dash.js";
 import { writeJson } from "../src/fsutil.js";
-import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyReviewClientScript, dashboardEssentialCards, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
+import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyReviewClientScript, dashboardEssentialCards, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
 
 test("renderDashboard includes the audit summary surface", () => {
   const html = renderDashboard({
@@ -388,6 +388,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardRiskSummaryClientScript(), /No risk summary available/);
   assert.match(dashboardPackageManagerPolicyClientScript(), /const pmPolicyHtml=/);
   assert.match(dashboardPackageManagerPolicyClientScript(), /No lockfile policy detected/);
+  assert.match(dashboardDependencyHintsClientScript(), /const dependencyHintsHtml=dependencyHints\.length/);
+  assert.match(dashboardDependencyHintsClientScript(), /No dependency change hints available/);
+  assert.match(dashboardDependencyHintsClientScript(), /lockfiles/);
   assert.match(dashboardDependencyReviewClientScript(), /const aiDependencyReviewHtml=aiDependencyReview\.status/);
   assert.match(dashboardDependencyReviewClientScript(), /Security confidence/);
   assert.match(dashboardDependencyReviewClientScript(), /aienvmp intent --actor agent:id --action dependency-review --target dependency/);
@@ -405,6 +408,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const scannerGuidanceHtml=/);
   assert.match(html, /const riskSummaryHtml=riskSummary\.level/);
   assert.match(html, /const pmPolicyHtml=/);
+  assert.match(html, /const dependencyHintsHtml=dependencyHints\.length/);
   assert.match(html, /const aiDependencyReviewHtml=aiDependencyReview\.status/);
   assert.match(html, /\.card\.essential/);
   assert.match(html, /const reviewTargets=\[\.\.\.new Set/);

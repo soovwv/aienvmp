@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Moved dashboard dependency-hints HTML into the dashboard contract module.
 - Moved dashboard package-manager policy HTML into the dashboard contract module.
 - Moved dashboard SBOM risk summary HTML policy into the dashboard contract module.
 - Moved dashboard scanner guidance HTML policy into the dashboard contract module.
