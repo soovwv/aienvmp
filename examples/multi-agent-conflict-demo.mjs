@@ -35,6 +35,7 @@ console.log(`AI discovery: ${discovery}`);
 console.log(`collaboration: ${collaboration}`);
 console.log(`conflict targets: ${conflictTargets.join(", ")}`);
 console.log(`next command: ${status.nextSafeCommand || status.nextCommand}`);
+console.log(`start here: ${status.artifacts?.startHere || ".aienvmp/README.md"}`);
 console.log(`read first: ${status.aiBootstrap?.readFirst || ".aienvmp/status.json"}`);
 console.log(`context fields: ${Object.keys(context).filter((key) => ["status", "aiBootstrap", "collaboration", "coordination", "agentPointers", "lightSbom"].includes(key)).join(", ")}`);
 console.log(`recommendation: ${recommendation.shortPitch}`);

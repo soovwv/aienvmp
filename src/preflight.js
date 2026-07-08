@@ -105,6 +105,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     dependencyChangeProtocol,
     artifacts: preflightArtifacts(),
     readOrder: [
+      ".aienvmp/README.md",
       ".aienvmp/status.json",
       ".aienvmp/summary.md",
       "AIENV.md",
@@ -140,7 +141,7 @@ function environmentProtocol({ state, intentTargets = [], dependencyChangeProtoc
     mode: "advisory",
     appliesWhen: "Before installing, removing, upgrading, downgrading, or switching runtimes, dependencies, package managers, Docker, or global tools.",
     state,
-    readFirst: [".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+    readFirst: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
     beforeChange: [
       "Read status and context.",
       "Check collaboration.activeTargets and dependencyChangeProtocol when dependency files are involved.",
@@ -178,7 +179,7 @@ function followUpPlanSummary(followUps = []) {
     status: items.length ? "pending" : "clear",
     count: items.length,
     targets,
-    readFirst: [".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+    readFirst: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
     nextCommand,
     commands,
     reason: items.length
@@ -194,7 +195,7 @@ function aiSessionSummary({ state, nextCommand, aiBootstrap = {}, artifactFreshn
   const commands = dependencyChangeProtocol.commands || {};
   return {
     purpose: "Shortest repeatable startup routine for AI agents in this workspace.",
-    readFirst: [".aienvmp/status.json", ".aienvmp/summary.md"],
+    readFirst: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md"],
     start: [
       "aienvmp status --json",
       artifactFreshness.state === "fresh" ? "aienvmp context --json" : "aienvmp sync"

@@ -32,6 +32,7 @@ export async function demoWorkspace(args = {}) {
     collaboration: status.collaboration?.status || "unknown",
     conflictTargets: status.coordination?.conflictTargets || [],
     nextCommand: status.nextSafeCommand || status.nextCommand || "aienvmp status --json",
+    startHere: status.artifacts?.startHere || ".aienvmp/README.md",
     readFirst: status.aiBootstrap?.readFirst || ".aienvmp/status.json",
     artifactFreshness: status.artifactFreshness || {},
     contextFields: Object.keys(context).filter((key) => ["status", "aiBootstrap", "artifactFreshness", "collaboration", "coordination", "agentPointers", "lightSbom"].includes(key)),
@@ -51,6 +52,7 @@ export async function demoWorkspace(args = {}) {
     console.log(`collaboration: ${result.collaboration}`);
     console.log(`conflict targets: ${result.conflictTargets.join(", ")}`);
     console.log(`next command: ${result.nextCommand}`);
+    console.log(`start here: ${result.startHere}`);
     console.log(`read first: ${result.readFirst}`);
     console.log(`freshness: ${result.artifactFreshness.state || "unknown"} / ${result.artifactFreshness.nextCommand || "aienvmp sync"}`);
     console.log(`context fields: ${result.contextFields.join(", ")}`);

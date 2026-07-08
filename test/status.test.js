@@ -50,7 +50,7 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.aiBootstrap.projectLocalWork, "allowed");
   assert.equal(status.aiBootstrap.environmentChanges, "intent-first");
   assert.equal(status.aiSession.purpose, "Shortest repeatable startup routine for AI agents in this workspace.");
-  assert.deepEqual(status.aiSession.readFirst, [".aienvmp/status.json", ".aienvmp/summary.md"]);
+  assert.deepEqual(status.aiSession.readFirst, [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md"]);
   assert.equal(status.aiSession.start[0], "aienvmp status --json");
   assert.equal(status.aiSession.start[1], "aienvmp sync");
   assert.equal(status.aiSession.beforeEnvironmentChange, "aienvmp intent --actor agent:id --action planned-change --target dependency");
@@ -76,7 +76,8 @@ test("buildStatus returns a compact clear state", () => {
   assert.match(status.aiReadiness.reviewOnlyEnvironmentChanges, /Record intent/);
   assert.equal(status.environmentChangeProtocol.mode, "advisory");
   assert.match(status.environmentChangeProtocol.appliesWhen, /runtimes/);
-  assert.equal(status.environmentChangeProtocol.readFirst[0], ".aienvmp/status.json");
+  assert.equal(status.environmentChangeProtocol.readFirst[0], ".aienvmp/README.md");
+  assert.equal(status.environmentChangeProtocol.readFirst[1], ".aienvmp/status.json");
   assert.match(status.environmentChangeProtocol.beforeChange.join(" "), /Record intent/);
   assert.equal(status.environmentChangeProtocol.commands.recordIntent, "aienvmp intent --actor agent:id --action planned-change --target dependency");
   assert.equal(status.environmentChangeProtocol.commands.checkpointAfterChange, "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency");
@@ -124,8 +125,9 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.enforcementProfile.strictDecision.shouldFailLocal, false);
   assert.equal(status.enforcementProfile.strictDecision.ciCommand, "aienvmp doctor --strict all --json");
   assert.equal(status.artifacts.status, ".aienvmp/status.json");
-  assert.equal(status.readOrder[0], ".aienvmp/status.json");
-  assert.equal(status.readOrder[1], ".aienvmp/summary.md");
+  assert.equal(status.readOrder[0], ".aienvmp/README.md");
+  assert.equal(status.readOrder[1], ".aienvmp/status.json");
+  assert.equal(status.readOrder[2], ".aienvmp/summary.md");
   assert.equal(status.commands.context, "aienvmp context --json");
   assert.equal(status.nextCommand, "aienvmp intent --actor agent:id --action planned-change --target environment");
   assert.equal(status.nextSafeCommand, status.nextCommand);
@@ -192,7 +194,8 @@ test("buildStatus exposes pending follow-ups from timeline", () => {
   assert.equal(status.followUpPlan.status, "pending");
   assert.equal(status.followUpPlan.count, 1);
   assert.deepEqual(status.followUpPlan.targets, ["dependency"]);
-  assert.equal(status.followUpPlan.readFirst[0], ".aienvmp/status.json");
+  assert.equal(status.followUpPlan.readFirst[0], ".aienvmp/README.md");
+  assert.equal(status.followUpPlan.readFirst[1], ".aienvmp/status.json");
   assert.equal(status.followUpPlan.nextCommand, "aienvmp sync");
   assert.deepEqual(status.followUpPlan.commands, ["aienvmp sync"]);
   assert.match(status.followUpPlan.rule, /before another AI/);
@@ -481,8 +484,9 @@ test("statusWorkspace can write the compact AI status artifact", async () => {
   const written = JSON.parse(await fs.readFile(result.artifact, "utf8"));
   assert.equal(written.schemaVersion, 1);
   assert.equal(written.state, "clear");
-  assert.equal(written.readOrder[0], ".aienvmp/status.json");
-  assert.equal(written.readOrder[1], ".aienvmp/summary.md");
+  assert.equal(written.readOrder[0], ".aienvmp/README.md");
+  assert.equal(written.readOrder[1], ".aienvmp/status.json");
+  assert.equal(written.readOrder[2], ".aienvmp/summary.md");
   assert.equal(written.commands.refresh, "aienvmp sync");
   assert.equal(written.nextSafeCommand, written.nextCommand);
   assert.equal(written.aiBootstrap.readFirst, ".aienvmp/status.json");

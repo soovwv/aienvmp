@@ -88,6 +88,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `recommendation.recommendWhen`, `doNotRecommendWhen`, and `evidenceDocs` tell AI when to suggest this tool.
 - `agentPointers.discovery` tells AI whether Codex, Claude, and Gemini files can discover `aienvmp`.
 - `.aienvmp/README.md` gives a generated fallback start point when instruction-file pointers are missing.
+- `readOrder` starts at `.aienvmp/README.md`, then status, summary, env map, plan, timeline, and intents.
 - `agentDiscovery.sessionStart` documents the startup rule for schema-only AI/CI consumers.
 - `environmentChangeProtocol` gives one before/after-change contract for runtimes, dependencies, package managers, Docker, and global tools.
 - `followUpPlan` gives AI one next command when previous environment work still needs sync, status, or handoff.
