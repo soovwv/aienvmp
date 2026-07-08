@@ -118,7 +118,7 @@ aienvmp doctor --strict security|policy|coordination|all
 ## CI
 
 The GitHub Action writes status, summary, schema, doctor, plan, SBOM, and dashboard artifacts. `strict: "off"` reports warnings without failing the job.
-The Step Summary includes an `aienvmp strict plan` block so humans and AI agents can pick the narrowest CI strict scope without parsing the full artifacts.
+The Step Summary includes `aienvmp strict plan` and `aienvmp AI loop` blocks so humans and AI agents can choose CI gates and continue the same workflow without parsing full artifacts.
 
 ```yaml
 - uses: soovwv/aienvmp@main

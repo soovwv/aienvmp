@@ -35,4 +35,5 @@ test("GitHub Action writes compact status artifacts by default", async () => {
   assert.match(example, /\.aienvmp\/sbom\.cdx\.json/);
   assert.match(example, /\.aienvmp\/schema\.json/);
   assert.match(example, /\.aienvmp\/doctor\.json/);
+  assert.match(example, /strict plan, and AI loop/);
 });
