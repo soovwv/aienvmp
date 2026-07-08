@@ -14,7 +14,8 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
     aiReadiness: {
       level: "review",
       next: "Review listed signals before another AI changes the environment.",
-      signals: ["open intent conflicts", "multi-agent environment activity"]
+      signals: ["open intent conflicts", "multi-agent environment activity"],
+      safeProjectLocalActions: ["read status and summary artifacts before changing the environment"]
     },
     nextCommand: "aienvmp handoff",
     quickstart: { detailCommand: "aienvmp context --json" },
@@ -46,6 +47,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
 
   assert.match(markdown, /# aienvmp summary/);
   assert.match(markdown, /# aienvmp summary\n\n- AI readiness: review\n- AI signals: open intent conflicts; multi-agent environment activity\n- AI next: Review listed signals/);
+  assert.match(markdown, /AI safe local work: read status and summary artifacts/);
   assert.match(markdown, /state: review-required/);
   assert.match(markdown, /light SBOM risk: medium \(42\)/);
   assert.match(markdown, /AI readiness: review/);

@@ -14,6 +14,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("agentPointers"));
   assert.equal(schema.outputs.summary.command, "aienvmp summary --write");
   assert.equal(schema.outputs.summary.format, "markdown");
+  assert.deepEqual(schema.outputs.summary.startsWith, ["AI readiness", "AI signals", "AI next"]);
   assert.ok(schema.outputs.context.rootFields.includes("coordination"));
   assert.ok(schema.outputs.context.rootFields.includes("agentPointers"));
   assert.ok(schema.outputs.context.rootFields.includes("aiReadiness"));
@@ -23,6 +24,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.sbom.rootFields.includes("riskSummary"));
   assert.equal(schema.outputs.cyclonedxLite.command, "aienvmp sbom --format cyclonedx-lite --json");
   assert.equal(schema.compatibility.stability, "additive");
+  assert.match(schema.compatibility.aiReadinessRule, /project-local code work/);
 });
 
 test("schemaWorkspace prints JSON without requiring a workspace", async () => {

@@ -105,10 +105,21 @@ function aiReadinessSummary({ state, decision, coordination, agentActivity, agen
   const next = level === "ready"
     ? "AI agents can continue project-local work; record intent before environment changes."
     : "Review listed signals before another AI changes runtimes, dependencies, package managers, Docker, or global tools.";
+  const safeProjectLocalActions = [
+    "read status, summary, context, env map, SBOM, and timeline artifacts",
+    "continue code-only work that does not install, remove, upgrade, downgrade, or switch tools",
+    "write a plan or intent before changing runtimes, dependencies, package managers, Docker, or global tools"
+  ];
+  const reviewOnlyEnvironmentChanges = review.length
+    ? "Record intent and review signals before environment changes; strict failure remains opt-in."
+    : "Record intent before environment changes; strict failure remains opt-in.";
   return {
     level,
+    requiresHumanReview: review.length > 0,
     projectLocalWork: decision?.canContinueProjectLocalWork ? "allowed" : "review-first",
     environmentChanges: decision?.canChangeEnvironmentWithoutReview ? "allowed" : "intent-and-review-first",
+    safeProjectLocalActions,
+    reviewOnlyEnvironmentChanges,
     signals: review,
     blockers,
     next,

@@ -24,7 +24,8 @@ export function schemaContract() {
         file: ".aienvmp/summary.md",
         command: "aienvmp summary --write",
         format: "markdown",
-        purpose: "Compact AI and CI step summary for quick review."
+        purpose: "Compact AI and CI step summary for quick review.",
+        startsWith: ["AI readiness", "AI signals", "AI next"]
       },
       context: {
         command: "aienvmp context --json",
@@ -52,7 +53,8 @@ export function schemaContract() {
     compatibility: {
       stability: "additive",
       consumerRule: "Ignore unknown fields. Do not require optional fields unless listed in requiredFields.",
-      localBehavior: "read-only; this command does not scan, install, update, or lock anything."
+      localBehavior: "read-only; this command does not scan, install, update, or lock anything.",
+      aiReadinessRule: "When aiReadiness.level is review, project-local code work may still continue if aiReadiness.projectLocalWork is allowed; environment changes should follow intent/review guidance."
     }
   };
 }

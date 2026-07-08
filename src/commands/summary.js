@@ -62,6 +62,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- AI readiness: ${aiReadiness.level || "unknown"}`,
     `- AI signals: ${aiSignals.length ? aiSignals.join("; ") : "none"}`,
     `- AI next: ${aiNext}`,
+    `- AI safe local work: ${toList(aiReadiness.safeProjectLocalActions)[0] || "read artifacts and avoid environment changes until reviewed"}`,
     `- AI read first: ${readFirst}, then ${detail}`,
     `- mode: advisory by default; strict is opt-in with ${strict}`,
     "",

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.56
+
+- Added `aiReadiness.requiresHumanReview` so agents can distinguish review-needed signals from hard blocking.
+- Added `aiReadiness.safeProjectLocalActions` to clarify what AI agents may still do in review state.
+- Added `aiReadiness.reviewOnlyEnvironmentChanges` to keep environment changes advisory, intentional, and non-disruptive.
+- Added the safe-local-work hint to `.aienvmp/summary.md`.
+- Documented the summary top block and `aiReadiness` consumption rule in `schema --json`.
+- Added regression tests for status, context, summary, and schema outputs.
+
 ## 0.1.55
 
 - Moved `AI readiness`, readiness signals, and next action to the top of `.aienvmp/summary.md`.

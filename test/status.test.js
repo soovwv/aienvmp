@@ -39,7 +39,10 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.counts.dependencies, 2);
   assert.equal(status.agentUse.environmentChanges, "allowed");
   assert.equal(status.aiReadiness.level, "ready");
+  assert.equal(status.aiReadiness.requiresHumanReview, false);
   assert.equal(status.aiReadiness.environmentChanges, "allowed");
+  assert.match(status.aiReadiness.safeProjectLocalActions[0], /read status/);
+  assert.match(status.aiReadiness.reviewOnlyEnvironmentChanges, /Record intent/);
   assert.equal(status.quickstart.label, "10-second AI flow");
   assert.equal(status.quickstart.detailCommand, "aienvmp context --json");
   assert.equal(status.quickstart.afterEnvironmentChange, "aienvmp checkpoint --actor agent:id --summary what-changed --target environment");
@@ -148,7 +151,10 @@ test("buildStatus marks AI readiness review when no agent pointer is installed",
   }, [], []);
 
   assert.equal(status.aiReadiness.level, "review");
+  assert.equal(status.aiReadiness.requiresHumanReview, true);
   assert.match(status.aiReadiness.signals.join(" "), /pointer/);
+  assert.match(status.aiReadiness.safeProjectLocalActions.join(" "), /code-only work/);
+  assert.match(status.aiReadiness.reviewOnlyEnvironmentChanges, /review signals/);
 });
 
 test("buildStatus treats legacy boolean agent files as installed pointers", () => {

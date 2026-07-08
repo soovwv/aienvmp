@@ -124,6 +124,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: `.aienvmp/summary.md` now starts with `AI readiness`, `AI signals`, and `AI next`; the dashboard audit band includes readiness signals in its hint.
 - Verification: regression tests assert the summary top block and dashboard readiness signals; Windows and macOS package smoke checks cover generated artifacts.
 
+### AI review state could sound more blocking than intended
+
+- Issue: `aiReadiness.level: review` made risk visible, but did not explicitly tell AI agents which local actions remain safe and which environment changes need intent/review first.
+- Fix: `aiReadiness` now includes `requiresHumanReview`, `safeProjectLocalActions`, and `reviewOnlyEnvironmentChanges`; `summary.md` includes the first safe-local-work hint.
+- Verification: regression tests cover status, context, summary, and schema outputs; Windows smoke confirmed generated JSON and summary fields.
+
 ## Template
 
 ### Title
