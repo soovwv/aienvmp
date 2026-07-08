@@ -78,6 +78,7 @@ export function schemaContract() {
         "GitHub Release workflow passes with confirm_publish=publish",
         "schema --json additive contract is reviewed",
         "README quick start and AI contract are current",
+        "package metadata and CLI help match AI workspace coordination positioning",
         "multi-agent conflict demo passes",
         "0.1.x deprecation message is prepared but not run until 0.2.0 is published"
       ],

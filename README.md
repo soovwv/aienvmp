@@ -199,6 +199,7 @@ See [examples/github-action.yml](examples/github-action.yml).
 - Run `npm run release:check` before publishing; the GitHub `Release` workflow runs the same gate.
 - `schema --json` exposes the same `releaseGate` rule for AI/CI consumers.
 - `schema --json` exposes `releaseReadiness.requiredBeforeStable` for the `0.2.0` checklist.
+- The `0.2.0` checklist includes README, npm metadata, and CLI help positioning so the package tells one story.
 - Manual publish runs from GitHub Actions `Release` workflow and requires the `NPM_TOKEN` secret.
 - `0.1.x` is deprecated only after `0.2.0` is published, with a message that points users to the stable contract.
 - Broken or superseded versions are deprecated instead of unpublished.

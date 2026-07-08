@@ -42,6 +42,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.releaseReadiness.target, "0.2.0");
   assert.equal(schema.releaseReadiness.status, "prototype-hardening");
   assert.ok(schema.releaseReadiness.requiredBeforeStable.includes("npm run release:check passes locally"));
+  assert.ok(schema.releaseReadiness.requiredBeforeStable.includes("package metadata and CLI help match AI workspace coordination positioning"));
   assert.match(schema.releaseReadiness.stableContractRule, /backward-compatible/);
   assert.match(schema.releaseReadiness.batchRule, /one npm publish/);
   assert.equal(schema.outputs.status.contract.name, "aienvmp-preflight");

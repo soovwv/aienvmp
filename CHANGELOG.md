@@ -40,6 +40,7 @@
 - Moved dashboard agent pointer client logic into the dashboard contract module to keep optional AI target display policy out of the renderer.
 - Sharpened the README first screen around preventing multi-AI environment assumption drift without heavy locks.
 - Aligned npm metadata and CLI help headline with the AI workspace coordination positioning.
+- Added npm metadata and CLI help positioning to the `0.2.0` release readiness checklist.
 
 ## 0.1.69
 
