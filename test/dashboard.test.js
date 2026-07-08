@@ -241,6 +241,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /AI decision/);
   assert.match(html, /AI readiness/);
   assert.match(html, /Review listed signals/);
+  assert.match(html, /Signals: /);
+  assert.match(html, /open intent conflicts/);
   assert.match(html, /Runtime drift/);
   assert.match(html, /Open env changes/);
   assert.match(html, /Trust/);

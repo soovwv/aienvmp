@@ -34,7 +34,7 @@ Warnings are advisory by default. Use `doctor --strict <scope>` only when you wa
 ```text
 AIENV.md                 # Markdown env map for AI agents
 .aienvmp/status.json     # first AI read: clear/review, next command, nextAgent hint
-.aienvmp/summary.md      # compact AI/CI summary
+.aienvmp/summary.md      # compact AI/CI summary; starts with AI readiness
 .aienvmp/manifest.json   # runtime map + light SBOM
 .aienvmp/sbom.json       # standalone AI-readable light SBOM
 .aienvmp/sbom.cdx.json   # CycloneDX-lite export from project manifests
@@ -48,7 +48,7 @@ AIENV.md                 # Markdown env map for AI agents
 
 - `status`, `context`, `plan`, and `handoff` share one preflight contract.
 - `schema --json` prints the stable AI-readable output contract without scanning.
-- `summary.md` is the short CI/AI handoff view.
+- `summary.md` is the short CI/AI handoff view, with `AI readiness`, signals, and next action first.
 - `status.json.nextAgent` tells the next AI what to read and whether to review first.
 - `aiReadiness` gives a one-field ready/review signal for AI continuation.
 - `dependencyReadSet` lists manifests and lockfiles before package or security changes.

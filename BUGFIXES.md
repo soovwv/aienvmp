@@ -118,6 +118,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: `aiReadiness` now provides one advisory ready/review signal across status, context, doctor, summary, and dashboard.
 - Verification: regression tests cover ready/review summaries, text status output, schema metadata, and dashboard rendering.
 
+### AI readiness was visible but not first in human review surfaces
+
+- Issue: CI Step Summary and the dashboard showed readiness, but agents and humans still had to scan past broader status fields to find the main AI continuation signal.
+- Fix: `.aienvmp/summary.md` now starts with `AI readiness`, `AI signals`, and `AI next`; the dashboard audit band includes readiness signals in its hint.
+- Verification: regression tests assert the summary top block and dashboard readiness signals; Windows and macOS package smoke checks cover generated artifacts.
+
 ## Template
 
 ### Title

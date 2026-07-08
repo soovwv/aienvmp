@@ -53,9 +53,17 @@ export function renderSummary(status = {}, manifest = {}) {
   const dependencyFiles = dependencyFilesFor(status.dependencyReadSet);
   const agentPointers = status.agentPointers || {};
   const aiReadiness = status.aiReadiness || {};
+  const aiSignals = toList(aiReadiness.signals).slice(0, 5);
+  const aiNext = aiReadiness.next || "Run aienvmp context --json for details.";
 
   return [
     "# aienvmp summary",
+    "",
+    `- AI readiness: ${aiReadiness.level || "unknown"}`,
+    `- AI signals: ${aiSignals.length ? aiSignals.join("; ") : "none"}`,
+    `- AI next: ${aiNext}`,
+    `- AI read first: ${readFirst}, then ${detail}`,
+    `- mode: advisory by default; strict is opt-in with ${strict}`,
     "",
     `- state: ${status.state || "unknown"}`,
     `- workspace: ${workspace}`,
@@ -63,9 +71,6 @@ export function renderSummary(status = {}, manifest = {}) {
     `- runtimes: ${valueOrZero(counts.runtimes)} / dependencies: ${valueOrZero(counts.dependencies)} / vulnerabilities: ${valueOrZero(counts.vulnerabilities)}`,
     `- light SBOM risk: ${riskLevel} (${riskScore}) / scanner: ${scanner}`,
     `- next: ${next}`,
-    `- AI readiness: ${aiReadiness.level || "unknown"} / ${aiReadiness.next || "Run aienvmp context --json for details."}`,
-    `- AI read first: ${readFirst}, then ${detail}`,
-    `- mode: advisory by default; strict is opt-in with ${strict}`,
     "",
     "## AI handoff",
     "",

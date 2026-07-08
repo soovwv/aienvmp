@@ -494,6 +494,8 @@ const auditItem=(key,value,hint,klass='')=>\`<div class="audit-item \${klass}"><
 const driftLabel=warnings.length?'detected':'none';
 const nextAgent=manifest.preflight?.nextAgent||{};
 const aiReadiness=manifest.preflight?.aiReadiness||{};
+const aiReadinessSignals=(aiReadiness.signals||[]).slice(0,3);
+const aiReadinessHint=(aiReadiness.next||'Run aienvmp context --json for details.')+(aiReadinessSignals.length?' Signals: '+aiReadinessSignals.join('; '):'');
 const coordination=manifest.preflight?.coordination||{};
 const conflictTargets=coordination.conflictTargets||[];
 const handoffFiles=nextAgent.dependencyFiles?.length?nextAgent.dependencyFiles:(dependencyReadSet[0]?[dependencyReadSet[0].manifest,...(dependencyReadSet[0].lockfiles||[])].filter(Boolean):[]);
@@ -510,7 +512,7 @@ document.getElementById('app').innerHTML=\`
 </header>
 <section class="audit" aria-label="Audit summary">
   \${auditItem('AI decision',reviewRequired?'review required':'can proceed',nextAction,reviewRequired?'review':'primary')}
-  \${auditItem('AI readiness',aiReadiness.level||'unknown',aiReadiness.next||'Run aienvmp context --json for details.',aiReadiness.level==='ready'?'primary':'review')}
+  \${auditItem('AI readiness',aiReadiness.level||'unknown',aiReadinessHint,aiReadiness.level==='ready'?'primary':'review')}
   \${auditItem('Runtime drift',driftLabel,warnings.length?'Policy, runtime, or coordination warning detected':'No drift warnings detected',warnings.length?'review':'')}
   \${auditItem('Open env changes',String(intents.length),intents.length?'Resolve or coordinate before changes':'No pending env changes')}
   \${auditItem('Trust',trustState,trustState==='verified'?'Human or CI verified':'Machine observed; not AI-verified')}

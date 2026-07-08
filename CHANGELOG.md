@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.55
+
+- Moved `AI readiness`, readiness signals, and next action to the top of `.aienvmp/summary.md`.
+- Added `aiReadiness.signals` to the dashboard audit-band hint.
+- Kept the CI Step Summary lightweight while making the first AI review signal easier to scan.
+- Updated README and regression tests for the new summary/dashboard readiness surface.
+
 ## 0.1.54
 
 - Added `aiReadiness` to the shared preflight/status contract.
