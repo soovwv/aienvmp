@@ -17,6 +17,11 @@ test("GitHub Action writes compact status artifacts by default", async () => {
   assert.match(action, /--format cyclonedx-lite --write --quiet/);
   assert.match(action, /summary --dir.*--write --quiet/);
   assert.match(action, /GITHUB_STEP_SUMMARY/);
+  assert.match(action, /Append strict plan summary/);
+  assert.match(action, /aienvmp strict plan/);
+  assert.match(action, /enforcement\?\.strictPlan/);
+  assert.match(action, /plan\.ciCommand/);
+  assert.match(action, /mktemp/);
   assert.match(action, /schema --json >.*schema\.json/);
   assert.match(action, /doctor --dir.*--json >.*doctor\.json/);
   assert.match(example, /\.aienvmp\/status\.json/);

@@ -4,6 +4,12 @@ Short record of bugs, fixes, and follow-up checks.
 
 ## 2026-07-08
 
+### GitHub Action hid strict-plan guidance inside artifacts
+
+- Issue: the Action produced `doctor.json` and `summary.md`, but the recommended local/CI strict commands were not visible as a dedicated Step Summary block.
+- Fix: the Action now appends an `aienvmp strict plan` section sourced from advisory doctor metadata, using a temporary payload when `write-doctor-json` is disabled.
+- Verification: Action regression tests check the strict-plan block, `strictPlan` source, CI command, and temporary-file fallback.
+
 ### CLI version was hardcoded
 
 - Issue: `npm run smoke` printed `0.1.0` after the package version changed.

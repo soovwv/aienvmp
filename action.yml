@@ -91,6 +91,38 @@ runs:
           fi
         fi
 
+    - name: Append strict plan summary
+      shell: bash
+      run: |
+        if [ "${{ inputs.write-summary }}" = "true" ] && [ -n "$GITHUB_STEP_SUMMARY" ]; then
+          mkdir -p "${{ inputs.directory }}/.aienvmp"
+          plan_source="${{ inputs.directory }}/.aienvmp/doctor.json"
+          if [ ! -f "$plan_source" ]; then
+            plan_source="$(mktemp)"
+            node "$GITHUB_ACTION_PATH/bin/aienvmp.js" doctor --dir "${{ inputs.directory }}" --json > "$plan_source"
+          fi
+          node - "$plan_source" "$GITHUB_STEP_SUMMARY" <<'NODE'
+        const fs = require("node:fs");
+
+        const [doctorPath, summaryPath] = process.argv.slice(2);
+        const doctor = JSON.parse(fs.readFileSync(doctorPath, "utf8"));
+        const plan = doctor.enforcement?.strictPlan || {};
+        const local = plan.localDefault || "aienvmp doctor --json";
+        const ci = plan.ciCommand || "aienvmp doctor --strict all --json";
+        const rule = plan.rule || "Strict failure is explicit only.";
+
+        fs.appendFileSync(summaryPath, [
+          "",
+          "## aienvmp strict plan",
+          "",
+          `- local: \`${local}\``,
+          `- ci: \`${ci}\``,
+          `- rule: ${rule}`,
+          ""
+        ].join("\n"));
+        NODE
+        fi
+
     - name: Doctor
       shell: bash
       run: |

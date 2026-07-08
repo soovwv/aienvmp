@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.61
+
+- Added an `aienvmp strict plan` block to the GitHub Action Step Summary.
+- Reused advisory `doctor --json` data so CI can show local and strict commands without forcing failure.
+- Preserved `write-doctor-json: false` by using a temporary advisory doctor payload when only the summary needs strict guidance.
+- Documented the Action Step Summary strict-plan surface in the README.
+- Added regression coverage for the Action strict-plan summary contract.
+
 ## 0.1.60
 
 - Added `enforcement.strictPlan` to help AI agents and CI choose the narrowest explicit strict scope.
