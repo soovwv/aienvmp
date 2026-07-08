@@ -33,6 +33,20 @@ export function schemaContract() {
       ],
       strictRule: "Local checks are warn-only; use doctor --strict only for CI or explicit human-requested gates."
     },
+    releaseGate: {
+      mode: "manual-batched",
+      localCommand: "npm run release:check",
+      workflow: ".github/workflows/release.yml",
+      publishWorkflow: "GitHub Actions Release workflow_dispatch",
+      npmTokenSecret: "NPM_TOKEN",
+      beforePublish: [
+        "npm run release:check",
+        "verify package.json version matches the workflow input",
+        "confirm npm publish with confirm_publish=publish"
+      ],
+      afterStablePublish: "Deprecate aienvmp@<0.2.0 as prototype history after 0.2.0 is published.",
+      rule: "Do not publish every commit; batch meaningful changes and keep local operation advisory."
+    },
     outputs: {
       status: {
         file: ".aienvmp/status.json",
@@ -92,7 +106,8 @@ export function schemaContract() {
       maintenanceLoopRule: "Use maintenanceLoop as the short recurring AI workflow: refresh, decide, inspect, plan, intent, checkpoint, and handoff without blocking local operation.",
       enforcementPolicyRule: "Use enforcement.policy for the shortest local/CI/release gate summary: local stays warn-only, CI uses the recommended strict scope, release uses strict all.",
       strictDecisionRule: "Use enforcement.strictDecision or preflight.enforcementProfile.strictDecision for the shortest local warn-only vs CI strict decision.",
-      strictPlanRule: "Use enforcement.strictPlan or preflight.enforcementProfile.strictPlan to choose the narrowest explicit strict scope for CI."
+      strictPlanRule: "Use enforcement.strictPlan or preflight.enforcementProfile.strictPlan to choose the narrowest explicit strict scope for CI.",
+      releaseGateRule: "Use releaseGate.localCommand and releaseGate.workflow before npm publish; releases should be manually batched instead of published per commit."
     }
   };
 }

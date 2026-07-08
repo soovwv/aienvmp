@@ -13,6 +13,7 @@
 - Added `sbom.json.aiReviewPlan` so AI agents get one compact light-SBOM decision for risk, scanner confidence, package manager policy, and before/after dependency-change commands.
 - Mirrored the compact SBOM review plan in the dashboard Light SBOM card and summary artifact for human/AI consistency.
 - Added `npm run release:check` and wired the manual Release workflow to the same local release gate.
+- Added `schema --json` release gate metadata so AI/CI consumers can see the batched manual publish rule.
 
 ## 0.1.69
 
