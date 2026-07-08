@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Aligned the packaged aienvmp skill with schema recommendation guidance so AI agents know when to use or skip the tool.
 - Moved dashboard release-readiness rendering into the dashboard contract module.
 - Tightened the README first screen with Use/Skip/Start guidance for faster AI and human scanning.
 - Added `releaseReadiness.publishDecision` so AI and humans default to holding npm publish until meaningful changes are batched.

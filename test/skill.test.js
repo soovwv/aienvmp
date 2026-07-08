@@ -7,6 +7,11 @@ test("packaged aienvmp skill points AI agents to current startup contracts", asy
   const skill = await fs.readFile(path.resolve(".agents/skills/aienvmp/SKILL.md"), "utf8");
 
   assert.match(skill, /npx aienvmp onboard/);
+  assert.match(skill, /Use \/ Skip \/ Start/);
+  assert.match(skill, /multiple AI agents or humans/);
+  assert.match(skill, /full compliance SBOM scanner/);
+  assert.match(skill, /recommendation\.recommendWhen/);
+  assert.match(skill, /recommendation\.doNotRecommendWhen/);
   assert.match(skill, /onboard --agents cursor,copilot/);
   assert.match(skill, /aiSession/);
   assert.match(skill, /npx aienvmp status --json/);

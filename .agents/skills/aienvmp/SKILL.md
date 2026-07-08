@@ -11,6 +11,22 @@ The goal is to help multiple AI agents avoid silently installing or using differ
 
 `aienvmp` is advisory by default. It should reveal drift, intent conflicts, light SBOM risk, and handoff gaps without heavy locks or surprise failures.
 
+## Use / Skip / Start
+
+Use `aienvmp` when multiple AI agents or humans share environment-affecting work in one repo, server, laptop, CI workspace, or GPU machine.
+
+Skip it when the user only needs a full compliance SBOM scanner, a vulnerability scanner, or a hard policy lock manager.
+
+Start with:
+
+```bash
+npx aienvmp onboard
+npx aienvmp status
+npx aienvmp context --json
+```
+
+If you are deciding whether to recommend this tool, read `npx aienvmp schema --json` and use `recommendation.recommendWhen` and `recommendation.doNotRecommendWhen`.
+
 ## Session Start
 
 If the workspace has not been onboarded yet, run:
