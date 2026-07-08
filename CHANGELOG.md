@@ -8,6 +8,7 @@
 - Added the bootstrap hint to `AIENV.md` so the main environment map matches the JSON, summary, and dashboard entry point.
 - Added `aiBootstrap` and `nextSafeCommand` to plan JSON and the same bootstrap hint to `plan.md`.
 - Added `aiBootstrap` and `nextSafeCommand` to the standalone light SBOM artifact so dependency review starts from the same AI loop.
+- Added `aienvmp:aiBootstrap:*` properties to CycloneDX-lite output so external SBOM consumers can find the same next-step hint.
 
 ## 0.1.68
 

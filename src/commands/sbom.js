@@ -117,6 +117,11 @@ export function buildCycloneDxLite(manifest = {}) {
   const snapshot = manifest.dependencySnapshot || {};
   const packages = snapshot.packages || [];
   const lightSbom = manifest.lightSbom || {};
+  const dependencyReview = lightSbom.aiDependencyReview || aiDependencyReview(lightSbom);
+  const nextSafeCommand = dependencyReview.beforeDependencyChange?.[0]
+    || lightSbom.riskSummary?.commands?.[0]
+    || "aienvmp context --json";
+  const aiBootstrap = sbomBootstrap(nextSafeCommand, dependencyReview);
   return {
     bomFormat: "CycloneDX",
     specVersion: "1.6",
@@ -141,14 +146,20 @@ export function buildCycloneDxLite(manifest = {}) {
         { name: "aienvmp:source", value: lightSbom.source?.dependencies || "project manifests" },
         { name: "aienvmp:confidence:transitiveDependencies", value: lightSbom.confidence?.transitiveDependencies || "not-resolved" },
         { name: "aienvmp:risk:level", value: lightSbom.riskSummary?.level || "clear" },
-        { name: "aienvmp:risk:score", value: String(lightSbom.riskSummary?.score || 0) }
+        { name: "aienvmp:risk:score", value: String(lightSbom.riskSummary?.score || 0) },
+        { name: "aienvmp:aiBootstrap:readFirst", value: aiBootstrap.readFirst },
+        { name: "aienvmp:aiBootstrap:detailCommand", value: aiBootstrap.detailCommand },
+        { name: "aienvmp:aiBootstrap:nextSafeCommand", value: aiBootstrap.nextSafeCommand },
+        { name: "aienvmp:aiBootstrap:localMode", value: aiBootstrap.localMode },
+        { name: "aienvmp:aiBootstrap:environmentChanges", value: aiBootstrap.environmentChanges }
       ]
     },
     components: packages.slice(0, 200).map(cycloneComponent),
     vulnerabilities: (lightSbom.topRisk || []).slice(0, 50).map(cycloneVulnerability),
     properties: [
       { name: "aienvmp:limitation", value: "Light SBOM from project manifests only; no install or dependency resolver was run." },
-      { name: "aienvmp:verifyWith", value: "CycloneDX, Syft, Trivy, npm audit, pip-audit, or another dedicated scanner before security claims." }
+      { name: "aienvmp:verifyWith", value: "CycloneDX, Syft, Trivy, npm audit, pip-audit, or another dedicated scanner before security claims." },
+      { name: "aienvmp:aiBootstrap:rule", value: aiBootstrap.rule }
     ]
   };
 }

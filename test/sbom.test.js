@@ -77,6 +77,12 @@ test("buildCycloneDxLite exports project manifest packages with limitations", ()
   assert.equal(cdx.components[0].name, "express");
   assert.match(cdx.components[0].purl, /^pkg:npm\/express@/);
   assert.equal(cdx.vulnerabilities[0].ratings[0].severity, "high");
+  assert.equal(propertyValue(cdx.metadata.properties, "aienvmp:aiBootstrap:readFirst"), ".aienvmp/sbom.json");
+  assert.equal(propertyValue(cdx.metadata.properties, "aienvmp:aiBootstrap:detailCommand"), "aienvmp context --json");
+  assert.equal(propertyValue(cdx.metadata.properties, "aienvmp:aiBootstrap:nextSafeCommand"), "aienvmp intent --actor agent:id --action dependency-review --target dependency");
+  assert.equal(propertyValue(cdx.metadata.properties, "aienvmp:aiBootstrap:localMode"), "advisory");
+  assert.equal(propertyValue(cdx.metadata.properties, "aienvmp:aiBootstrap:environmentChanges"), "review-first");
+  assert.match(propertyValue(cdx.properties, "aienvmp:aiBootstrap:rule"), /Review SBOM risk/);
   assert.match(cdx.properties[0].value, /Light SBOM/);
 });
 
@@ -125,4 +131,9 @@ test("sbomWorkspace can write CycloneDX-lite artifact", async () => {
   const written = JSON.parse(await fs.readFile(result.artifact, "utf8"));
   assert.equal(written.bomFormat, "CycloneDX");
   assert.equal(written.components[0].name, "express");
+  assert.equal(propertyValue(written.metadata.properties, "aienvmp:aiBootstrap:nextSafeCommand"), "aienvmp intent --actor agent:id --action dependency-review --target dependency");
 });
+
+function propertyValue(properties = [], name) {
+  return properties.find((item) => item.name === name)?.value;
+}
