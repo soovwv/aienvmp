@@ -44,6 +44,7 @@
 - Updated the packaged AI skill with the current advisory coordination, discovery, and multi-agent demo guidance.
 - Added a positioning drift test so package metadata, README, and CLI help keep the same AI workspace coordination story.
 - Added a package metadata test that keeps the CLI runtime dependency-free for lightweight shared-machine installs.
+- Added a package publish allowlist test to keep npm contents small and intentional.
 
 ## 0.1.69
 

@@ -105,3 +105,25 @@ test("package stays runtime dependency-free for lightweight shared machines", as
   assert.equal(pkg.peerDependencies, undefined);
   assert.equal(pkg.bundledDependencies, undefined);
 });
+
+test("package publish allowlist stays small and intentional", async () => {
+  const pkg = JSON.parse(await fs.readFile(path.resolve("package.json"), "utf8"));
+
+  assert.deepEqual(pkg.files, [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "BUGFIXES.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "TROUBLESHOOTING.md",
+    "ROADMAP.md",
+    "action.yml",
+    "examples",
+    ".agents"
+  ]);
+  assert.equal(pkg.files.includes("test"), false);
+  assert.equal(pkg.files.includes(".aienvmp"), false);
+});
