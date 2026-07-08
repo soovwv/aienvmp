@@ -68,3 +68,18 @@ test("recommendedActions reports light SBOM risk scans", () => {
   assert.equal(actions[0].id, "scan-sbom-risk");
   assert.equal(actions[0].command, "aienvmp sync --security");
 });
+
+test("recommendedActions suggests agent pointer installation without blocking", () => {
+  const actions = recommendedActions({
+    agentFiles: {
+      agents: { exists: false, hasAienvmpPointer: false, installCommand: "aienvmp snippet codex --write" },
+      claude: { exists: true, hasAienvmpPointer: false, installCommand: "aienvmp snippet claude --write" },
+      gemini: { exists: false, hasAienvmpPointer: false, installCommand: "aienvmp snippet gemini --write" }
+    }
+  }, { warnings: [], intents: [] });
+
+  assert.equal(actions[0].id, "install-agent-pointer");
+  assert.equal(actions[0].priority, "low");
+  assert.equal(actions[0].category, "agent-instructions");
+  assert.equal(actions[0].command, "aienvmp snippet codex --write");
+});

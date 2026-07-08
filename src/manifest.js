@@ -205,9 +205,30 @@ async function scanAgentFiles(dir) {
   };
   const out = {};
   for (const [name, rel] of Object.entries(files)) {
-    out[name] = await exists(path.join(dir, rel));
+    const full = path.join(dir, rel);
+    const fileExists = await exists(full);
+    const content = fileExists ? await fs.readFile(full, "utf8") : "";
+    out[name] = {
+      path: rel,
+      exists: fileExists,
+      hasAienvmpPointer: content.includes("<!-- aienvmp:begin -->") && content.includes("<!-- aienvmp:end -->"),
+      installCommand: snippetCommand(name),
+      role: agentRole(name)
+    };
   }
   return out;
+}
+
+function snippetCommand(name) {
+  if (name === "agents") return "aienvmp snippet codex --write";
+  if (["claude", "gemini"].includes(name)) return `aienvmp snippet ${name} --write`;
+  return "";
+}
+
+function agentRole(name) {
+  if (name === "agents") return "codex";
+  if (["claude", "gemini"].includes(name)) return name;
+  return "external";
 }
 
 function compact(obj) {

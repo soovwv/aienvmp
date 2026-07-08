@@ -42,6 +42,9 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.deepEqual(manifest.agentProtocol.afterEnvironmentChange, ["aienvmp checkpoint --actor agent:id --summary what-changed --target environment"]);
   assert.equal(manifest.agentProtocol.handoffCommand, "aienvmp handoff");
   assert.equal(manifest.agentProtocol.intentCommand, "aienvmp intent --actor agent:id --action planned-change");
+  assert.equal(manifest.agentFiles.agents.exists, false);
+  assert.equal(manifest.agentFiles.agents.hasAienvmpPointer, false);
+  assert.equal(manifest.agentFiles.agents.installCommand, "aienvmp snippet codex --write");
 
   await assert.doesNotReject(fs.access(path.join(dir, "AIENV.md")));
   const aiEnv = await fs.readFile(path.join(dir, "AIENV.md"), "utf8");
@@ -67,6 +70,22 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.equal(sbom.schemaName, "aienvmp.light-sbom");
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "dashboard.html")));
   await assert.rejects(fs.access(path.join(dir, "AGENTS.md")));
+});
+
+test("sync detects installed aienvmp agent pointers", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-sync-pointer-"));
+  await fs.writeFile(path.join(dir, "AGENTS.md"), [
+    "<!-- aienvmp:begin -->",
+    "## aienvmp Environment Map",
+    "<!-- aienvmp:end -->"
+  ].join("\n"), "utf8");
+
+  await syncWorkspace({ dir, quiet: true });
+
+  const manifest = JSON.parse(await fs.readFile(path.join(dir, ".aienvmp", "manifest.json"), "utf8"));
+  assert.equal(manifest.agentFiles.agents.exists, true);
+  assert.equal(manifest.agentFiles.agents.hasAienvmpPointer, true);
+  assert.equal(manifest.agentFiles.agents.role, "codex");
 });
 
 test("sync can return a quiet machine-readable result", async () => {

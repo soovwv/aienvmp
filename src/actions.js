@@ -21,6 +21,7 @@ export function recommendedActions(manifest = {}, context = {}) {
 
   actions.push(...securityActions(manifest.security));
   actions.push(...sbomRiskActions(manifest.lightSbom?.riskSummary));
+  actions.push(...agentPointerActions(manifest.agentFiles));
 
   if (hasRuntimePolicyWarning(warnings)) {
     actions.push(action("review-version-policy", "medium", "runtime", "Detected runtime or package manager policy drift. Prefer project-local version files and ask before global changes."));
@@ -72,6 +73,25 @@ function securityActions(security = {}) {
       : "Review dependency read set and protocol before vulnerability remediation.",
     "aienvmp intent --actor agent:id --action planned-change --target dependency"
   )];
+}
+
+function agentPointerActions(agentFiles = {}) {
+  const known = Object.entries(agentFiles || {}).filter(([name]) => ["agents", "claude", "gemini"].includes(name));
+  if (!known.length) return [];
+  if (known.some(([, item]) => hasPointer(item))) return [];
+  const first = known.find(([, item]) => item?.installCommand) || known[0];
+  return [action(
+    "install-agent-pointer",
+    "low",
+    "agent-instructions",
+    "Install an aienvmp pointer in an agent instruction file so future AI agents discover the env map before changing runtimes or dependencies.",
+    first?.[1]?.installCommand || "aienvmp snippet codex --write"
+  )];
+}
+
+function hasPointer(item) {
+  if (typeof item === "boolean") return item;
+  return item?.hasAienvmpPointer === true;
 }
 
 function action(id, priority, category, summary, command = "") {

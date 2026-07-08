@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.52
+
+- Expanded `manifest.agentFiles` from booleans to lightweight agent instruction metadata.
+- Detected whether AGENTS.md, CLAUDE.md, and GEMINI.md contain the aienvmp pointer marker.
+- Added install commands and roles to agent instruction metadata.
+- Added a low-priority recommended action when no AI instruction pointer is installed.
+- Updated the dashboard Agent Pointers card to distinguish installed pointers, missing pointers, and missing files.
+- Updated README guidance to mention pointer detection and non-blocking doctor recommendations.
+- Added regression tests for pointer scanning, pointer recommendations, dashboard rendering, and sync output.
+
 ## 0.1.51
 
 - Updated Codex/Claude/Gemini pointer snippets to use the current `status -> summary.md -> context` read order.

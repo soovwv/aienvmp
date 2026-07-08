@@ -16,7 +16,11 @@ test("renderDashboard includes the audit summary surface", () => {
     packageManagers: { npm: "11.0.0" },
     containers: {},
     projectHints: {},
-    agentFiles: {},
+    agentFiles: {
+      agents: { path: "AGENTS.md", exists: true, hasAienvmpPointer: true, installCommand: "aienvmp snippet codex --write" },
+      claude: { path: "CLAUDE.md", exists: true, hasAienvmpPointer: false, installCommand: "aienvmp snippet claude --write" },
+      gemini: { path: "GEMINI.md", exists: false, hasAienvmpPointer: false, installCommand: "aienvmp snippet gemini --write" }
+    },
     dependencySnapshot: {
       mode: "snapshot",
       enabled: true,
@@ -288,6 +292,10 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Security Summary/);
   assert.match(html, /package\.json/);
   assert.match(html, /express/);
+  assert.match(html, /Agent Pointers/);
+  assert.match(html, /aienvmp pointer installed/);
+  assert.match(html, /file detected, pointer missing/);
+  assert.match(html, /aienvmp snippet claude --write/);
 });
 
 test("dashWorkspace links written plan artifacts", async () => {

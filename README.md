@@ -72,6 +72,7 @@ npx aienvmp snippet gemini
 ```
 
 Snippets point each AI to `status`, `summary.md`, `context --json`, intent, and checkpoint without taking over the instruction file.
+`sync` records whether those pointers are installed, and `doctor` can recommend installing one without blocking local work.
 
 ## Commands
 

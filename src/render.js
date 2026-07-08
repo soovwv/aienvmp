@@ -445,7 +445,11 @@ const securityHtml=sec.enabled?\`<table><tr><th>Total</th><td><code>\${esc(secSu
 const change=c=>c.type==='changed'?\`\${c.scope} \${c.key}: \${c.before} -> \${c.after}\`:\`\${c.scope} \${c.key}: \${c.type} \${c.after||c.before}\`;
 const timelineLabel=t=>t.change?change(t.change):(t.summary||t.action||t.type||'recorded change');
 const agentNames={agents:'Codex',claude:'Claude',gemini:'Gemini'};
-const agentCards=Object.entries(agentNames).map(([key,label])=>\`<div class="agent"><strong>\${label}</strong><span>\${manifest.agentFiles?.[key]?'instruction file detected':'not detected'}</span></div>\`).join('');
+const agentInfo=v=>typeof v==='object'&&v? v : {exists:!!v,hasAienvmpPointer:!!v,path:''};
+const agentHasPointer=v=>agentInfo(v).hasAienvmpPointer===true;
+const agentStatus=v=>agentHasPointer(v)?'aienvmp pointer installed':(agentInfo(v).exists?'file detected, pointer missing':'not detected');
+const agentCards=Object.entries(agentNames).map(([key,label])=>\`<div class="agent"><strong>\${label}</strong><span>\${esc(agentStatus(manifest.agentFiles?.[key]))}</span>\${agentInfo(manifest.agentFiles?.[key]).installCommand?\`<span class="path">\${esc(agentInfo(manifest.agentFiles?.[key]).installCommand)}</span>\`:''}</div>\`).join('');
+const agentPointerCount=entries(manifest.agentFiles).filter(([,v])=>agentHasPointer(v)).length;
 const warnHtml=warnings.length?'<div class="warnings">'+warnings.map(w=>\`<div class="warning">\${esc(w.message)}</div>\`).join('')+'</div>':'<div class="okline">No blocking environment warnings detected.</div>';
 const timelineHtml=timeline.length?'<div class="timeline">'+timeline.slice(-8).reverse().map(t=>\`<div class="event"><time>\${esc(t.at.replace('T',' ').slice(0,16))}</time><div><b>\${esc(t.actor||'system')}</b> \${esc(timelineLabel(t))}</div></div>\`).join('')+'</div>':'<div class="okline">No previous environment changes recorded.</div>';
 const intentsHtml=intents.length?'<div class="timeline">'+intents.slice(-6).reverse().map(i=>\`<div class="event"><time>\${esc(i.at.replace('T',' ').slice(0,16))}</time><div><b>\${esc(i.actor)}</b> plans \${esc(i.action)}</div></div>\`).join('')+'</div>':'<div class="okline">No pending agent intents recorded.</div>';
@@ -561,7 +565,7 @@ document.getElementById('app').innerHTML=\`
     <div style="height:14px"></div>
     \${card('AI Handoff',reviewRequired?'<span class="pill warn">review</span>':'<span class="pill">ready</span>',handoffHtml)}
     <div style="height:14px"></div>
-    \${card('Agent Pointers','<span class="pill">'+entries(manifest.agentFiles).filter(([,v])=>v).length+' detected</span>','<div class="agents">'+agentCards+'</div>')}
+    \${card('Agent Pointers','<span class="pill">'+agentPointerCount+' installed</span>','<div class="agents">'+agentCards+'</div>')}
     <div style="height:14px"></div>
     \${card('Snapshot','',\`<table><tr><th>OS</th><td>\${esc(manifest.os.platform)} \${esc(manifest.os.release)} \${esc(manifest.os.arch)}</td></tr><tr><th>Shell</th><td>\${esc(manifest.os.shell||'unknown')}</td></tr><tr><th>Workspace</th><td><div class="path">\${esc(manifest.workspace.path)}</div></td></tr></table>\`)}
   </aside>

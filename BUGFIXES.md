@@ -100,6 +100,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: snippets and the Codex skill now use the current status, summary, context, intent, and checkpoint flow with agent-specific actor examples.
 - Verification: regression tests cover snippet output for AGENTS.md, Claude, and Gemini, and summary/status tests cover the read order and dependency protocol.
 
+### AI pointer files were only detected as booleans
+
+- Issue: AI and humans could see that an instruction file existed, but not whether it actually contained the aienvmp pointer.
+- Fix: `agentFiles` now records path, existence, pointer marker state, role, and install command; recommended actions suggest installing a pointer without failing local work.
+- Verification: tests cover sync pointer scanning, recommended action output, and dashboard status labels.
+
 ## Template
 
 ### Title
