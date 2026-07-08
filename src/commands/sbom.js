@@ -51,7 +51,12 @@ export function buildSbomArtifact(manifest = {}) {
     aiUse: {
       purpose: "Standalone AI-readable light SBOM artifact.",
       readBefore: "Dependency changes, vulnerability remediation, release review, or shared AI handoff.",
+      decision: dependencyReview.status || "ready",
+      securityConfidence: dependencyReview.securityConfidence || "unknown",
+      readFirst: [".aienvmp/sbom.json", ".aienvmp/status.json", "aienvmp context --json"],
       nextCommand: nextSafeCommand,
+      beforeChange: nextSafeCommand,
+      afterChange: dependencyReview.afterDependencyChange?.slice(-1)[0] || "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency",
       rule: scannerGuidance.rule
     }
   };

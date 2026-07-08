@@ -52,6 +52,11 @@ test("buildSbomArtifact creates standalone AI-readable light SBOM", () => {
   assert.equal(sbom.aiDependencyReview.beforeDependencyChange.some((command) => command.includes("checkpoint")), false);
   assert.match(sbom.aiDependencyReview.afterDependencyChange[1], /checkpoint/);
   assert.equal(sbom.aiUse.nextCommand, "aienvmp sync --security");
+  assert.equal(sbom.aiUse.decision, "review");
+  assert.equal(sbom.aiUse.securityConfidence, "scanner-off");
+  assert.deepEqual(sbom.aiUse.readFirst, [".aienvmp/sbom.json", ".aienvmp/status.json", "aienvmp context --json"]);
+  assert.equal(sbom.aiUse.beforeChange, sbom.nextSafeCommand);
+  assert.match(sbom.aiUse.afterChange, /checkpoint/);
   assert.equal(sbom.aiUse.rule, sbom.scannerGuidance.rule);
 });
 
@@ -133,6 +138,9 @@ test("sbomWorkspace can write .aienvmp/sbom.json", async () => {
   assert.equal(written.aiDependencyReview.status, "ready");
   assert.equal(written.aiDependencyReview.securityConfidence, "scanner-summary");
   assert.ok(written.aiDependencyReview.readFirst.includes("riskSummary"));
+  assert.equal(written.aiUse.decision, "ready");
+  assert.equal(written.aiUse.securityConfidence, "scanner-summary");
+  assert.equal(written.aiUse.beforeChange, written.nextSafeCommand);
 });
 
 test("sbomWorkspace can write CycloneDX-lite artifact", async () => {
