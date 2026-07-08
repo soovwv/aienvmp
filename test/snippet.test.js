@@ -38,3 +38,28 @@ test("snippet renders agent-specific actors for Claude and Gemini", async () => 
   assert.match(gemini, /--actor agent:gemini/);
   assert.match(gemini, /dependencies, lockfiles/);
 });
+
+test("snippet can write optional Cursor and Copilot pointers", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-snippet-extended-"));
+
+  await snippetWorkspace({ dir, _: ["cursor"], write: true, quiet: true });
+  await snippetWorkspace({ dir, _: ["copilot"], write: true, quiet: true });
+
+  const cursor = await fs.readFile(path.join(dir, ".cursor", "rules", "environment.md"), "utf8");
+  const copilot = await fs.readFile(path.join(dir, ".github", "copilot-instructions.md"), "utf8");
+
+  assert.match(cursor, /Cursor should use `aienvmp`/);
+  assert.match(cursor, /--actor agent:cursor/);
+  assert.match(copilot, /GitHub Copilot should use `aienvmp`/);
+  assert.match(copilot, /--actor agent:copilot/);
+});
+
+test("snippet rejects unknown targets instead of writing AGENTS.md", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-snippet-invalid-"));
+
+  await assert.rejects(
+    snippetWorkspace({ dir, _: ["typo"], write: true, quiet: true }),
+    /agents, codex, claude, gemini, cursor, or copilot/
+  );
+  await assert.rejects(fs.readFile(path.join(dir, "AGENTS.md"), "utf8"));
+});

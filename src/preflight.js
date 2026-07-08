@@ -397,7 +397,12 @@ function agentActivitySummary(timeline = []) {
 }
 
 export function agentPointerSummary(agentFiles = {}) {
-  const entries = Object.entries(agentFiles || {}).filter(([name]) => ["agents", "claude", "gemini"].includes(name));
+  const entries = Object.entries(agentFiles || {}).filter(([name, item]) => {
+    if (["agents", "claude", "gemini"].includes(name)) return true;
+    if (!["cursor", "copilot"].includes(name)) return false;
+    const normalized = normalizeAgentFile(item);
+    return normalized.exists || normalized.hasAienvmpPointer;
+  });
   const targets = entries.map(([name, item]) => {
     const normalized = normalizeAgentFile(item);
     return {
@@ -422,7 +427,7 @@ export function agentPointerSummary(agentFiles = {}) {
       : "missing: run aienvmp onboard",
     onboardCommand: "aienvmp onboard",
     next: missing.length
-      ? `Run aienvmp onboard for Codex, Claude, and Gemini, or install one pointer with ${missing[0].installCommand}.`
+      ? `Run aienvmp onboard for Codex, Claude, and Gemini, or install one pointer with ${missing[0].installCommand}. Optional: use --agents cursor,copilot when those tools should discover aienvmp too.`
       : "Agent instruction pointers are installed for detected AI instruction files.",
     mode: "advisory"
   };
@@ -444,12 +449,16 @@ function normalizeAgentFile(item) {
 function defaultAgentFile(name) {
   if (name === "claude") return "CLAUDE.md";
   if (name === "gemini") return "GEMINI.md";
+  if (name === "cursor") return ".cursor/rules/environment.md";
+  if (name === "copilot") return ".github/copilot-instructions.md";
   return "AGENTS.md";
 }
 
 function defaultInstallCommand(name) {
   if (name === "claude") return "aienvmp snippet claude --write";
   if (name === "gemini") return "aienvmp snippet gemini --write";
+  if (name === "cursor") return "aienvmp snippet cursor --write";
+  if (name === "copilot") return "aienvmp snippet copilot --write";
   return "aienvmp snippet codex --write";
 }
 

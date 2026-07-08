@@ -2,7 +2,7 @@ import { snippetWorkspace } from "./snippet.js";
 import { syncWorkspace } from "./sync.js";
 
 const defaultAgents = ["codex", "claude", "gemini"];
-const knownAgents = new Set(["agents", "codex", "claude", "gemini"]);
+const knownAgents = new Set(["agents", "codex", "claude", "gemini", "cursor", "copilot"]);
 const sessionStart = [
   "read .aienvmp/status.json first",
   "run aienvmp sync if status is missing, stale, or artifactFreshness is not fresh",
@@ -53,6 +53,6 @@ function selectedAgents(args = {}) {
       : defaultAgents;
   const agents = raw.map((item) => String(item).trim().toLowerCase()).filter(Boolean);
   const invalid = agents.filter((item) => !knownAgents.has(item));
-  if (invalid.length) throw new Error(`unknown onboard agent "${invalid[0]}"; use codex, claude, or gemini`);
+  if (invalid.length) throw new Error(`unknown onboard agent "${invalid[0]}"; use codex, claude, gemini, cursor, or copilot`);
   return [...new Set(agents.map((item) => item === "agents" ? "codex" : item))];
 }

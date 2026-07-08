@@ -225,6 +225,25 @@ test("buildStatus exposes agent pointer discovery hints", () => {
   assert.match(status.agentPointers.next, /snippet claude/);
 });
 
+test("buildStatus includes optional detected AI pointer files without making them default noise", () => {
+  const status = buildStatus({
+    runtimes: {},
+    dependencySnapshot: { summary: { packages: 0 } },
+    security: { summary: { total: 0 } },
+    agentFiles: {
+      agents: { path: "AGENTS.md", exists: true, hasAienvmpPointer: true, installCommand: "aienvmp snippet codex --write", role: "codex" },
+      claude: { path: "CLAUDE.md", exists: false, hasAienvmpPointer: false, installCommand: "aienvmp snippet claude --write", role: "claude" },
+      gemini: { path: "GEMINI.md", exists: false, hasAienvmpPointer: false, installCommand: "aienvmp snippet gemini --write", role: "gemini" },
+      cursor: { path: ".cursor/rules/environment.md", exists: true, hasAienvmpPointer: true, installCommand: "aienvmp snippet cursor --write", role: "cursor" },
+      copilot: { path: ".github/copilot-instructions.md", exists: false, hasAienvmpPointer: false, installCommand: "aienvmp snippet copilot --write", role: "copilot" }
+    }
+  }, [], []);
+
+  assert.deepEqual(status.agentPointers.installed, ["codex", "cursor"]);
+  assert.equal(status.agentPointers.targets.some((item) => item.role === "copilot"), false);
+  assert.match(status.agentPointers.discovery, /ready: codex, cursor/);
+});
+
 test("buildStatus marks AI readiness review when no agent pointer is installed", () => {
   const status = buildStatus({
     runtimes: {},

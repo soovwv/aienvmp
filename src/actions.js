@@ -82,7 +82,11 @@ function securityActions(security = {}) {
 }
 
 function agentPointerActions(agentFiles = {}) {
-  const known = Object.entries(agentFiles || {}).filter(([name]) => ["agents", "claude", "gemini"].includes(name));
+  const known = Object.entries(agentFiles || {}).filter(([name, item]) => {
+    if (["agents", "claude", "gemini"].includes(name)) return true;
+    if (!["cursor", "copilot"].includes(name)) return false;
+    return hasPointer(item) || item?.exists === true;
+  });
   if (!known.length) return [];
   if (known.some(([, item]) => hasPointer(item))) return [];
   const first = known.find(([, item]) => item?.installCommand) || known[0];

@@ -45,6 +45,8 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.equal(manifest.agentFiles.agents.exists, false);
   assert.equal(manifest.agentFiles.agents.hasAienvmpPointer, false);
   assert.equal(manifest.agentFiles.agents.installCommand, "aienvmp snippet codex --write");
+  assert.equal(manifest.agentFiles.cursor.installCommand, "aienvmp snippet cursor --write");
+  assert.equal(manifest.agentFiles.copilot.installCommand, "aienvmp snippet copilot --write");
 
   await assert.doesNotReject(fs.access(path.join(dir, "AIENV.md")));
   const aiEnv = await fs.readFile(path.join(dir, "AIENV.md"), "utf8");

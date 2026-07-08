@@ -36,14 +36,16 @@ export function schemaContract() {
     agentDiscovery: {
       mode: "instruction-file-pointer",
       files: ["AGENTS.md", "CLAUDE.md", "GEMINI.md"],
+      optionalFiles: [".cursor/rules/environment.md", ".github/copilot-instructions.md"],
       installCommand: "aienvmp onboard",
+      optionalInstallCommand: "aienvmp onboard --agents cursor,copilot",
       sessionStart: [
         "Treat the aienvmp marker block as the live environment pointer.",
         "Run aienvmp status --json before environment-affecting work.",
         "Run aienvmp sync if .aienvmp/status.json is missing or stale.",
         "Continue project-local code work unless status/context requires environment review."
       ],
-      rule: "aienvmp does not replace agent instruction files; it gives them a shared live env map and light SBOM."
+      rule: "aienvmp does not replace agent instruction files; it gives them a shared live env map and light SBOM. Optional Cursor and Copilot pointers are opt-in."
     },
     demo: {
       command: "aienvmp demo",

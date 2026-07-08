@@ -126,14 +126,26 @@ function preflightLines(preflight = {}) {
 }
 
 export function renderAgentPointer(target = "agents") {
-  const label = target === "claude" ? "Claude" : target === "gemini" ? "Gemini" : "AI agents";
+  const label = target === "claude"
+    ? "Claude"
+    : target === "gemini"
+      ? "Gemini"
+      : target === "cursor"
+        ? "Cursor"
+        : target === "copilot"
+          ? "GitHub Copilot"
+          : "AI agents";
   const actor = target === "claude"
     ? "agent:claude"
     : target === "gemini"
       ? "agent:gemini"
-      : target === "codex"
-        ? "agent:codex"
-        : "agent:id";
+      : target === "cursor"
+        ? "agent:cursor"
+        : target === "copilot"
+          ? "agent:copilot"
+          : target === "codex"
+            ? "agent:codex"
+            : "agent:id";
   return `## aienvmp Environment Map
 
 ${label} should use \`aienvmp\` as the workspace environment source of truth.
@@ -459,7 +471,7 @@ table{width:100%;border-collapse:collapse}td,th{border-top:1px solid var(--line2
 code{color:var(--code);background:#0a2017;border:1px solid #17462f;padding:2px 6px;border-radius:5px}
 .warnings{display:grid;gap:9px}.warning{border:1px solid rgba(244,191,95,.35);background:rgba(244,191,95,.08);border-radius:8px;padding:11px;color:#ffe3a9}
 .okline{border:1px solid rgba(71,229,141,.32);background:rgba(71,229,141,.08);border-radius:8px;padding:12px;color:var(--green)}
-.agents{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.agent{border:1px solid var(--line2);border-radius:8px;padding:10px;background:#0a1412}.agent strong{display:block}.agent span{color:var(--muted);font-size:12px}
+.agents{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}.agent{border:1px solid var(--line2);border-radius:8px;padding:10px;background:#0a1412}.agent strong{display:block}.agent span{color:var(--muted);font-size:12px}
 .timeline{display:grid;gap:10px}.event{display:grid;grid-template-columns:108px 1fr;gap:12px;border-top:1px solid var(--line2);padding-top:10px}.event time{color:var(--muted);font-size:12px}.event b{color:var(--green)}
 .path{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--muted);font-size:12px;overflow-wrap:anywhere}
 @media (max-width:860px){header,.layout{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.agents{grid-template-columns:1fr}}
@@ -514,6 +526,8 @@ const timelineLabel=t=>t.change?change(t.change):(t.summary||t.action||t.type||'
 const agentNames={agents:'Codex',claude:'Claude',gemini:'Gemini'};
 const agentInfo=v=>typeof v==='object'&&v? v : {exists:!!v,hasAienvmpPointer:!!v,path:''};
 const agentHasPointer=v=>agentInfo(v).hasAienvmpPointer===true;
+if(agentInfo(manifest.agentFiles?.cursor).exists||agentHasPointer(manifest.agentFiles?.cursor))agentNames.cursor='Cursor';
+if(agentInfo(manifest.agentFiles?.copilot).exists||agentHasPointer(manifest.agentFiles?.copilot))agentNames.copilot='Copilot';
 const agentStatus=v=>agentHasPointer(v)?'aienvmp pointer installed':(agentInfo(v).exists?'file detected, pointer missing':'not detected');
 const agentCards=Object.entries(agentNames).map(([key,label])=>\`<div class="agent"><strong>\${label}</strong><span>\${esc(agentStatus(manifest.agentFiles?.[key]))}</span>\${agentInfo(manifest.agentFiles?.[key]).installCommand?\`<span class="path">\${esc(agentInfo(manifest.agentFiles?.[key]).installCommand)}</span>\`:''}</div>\`).join('');
 const agentPointerCount=entries(manifest.agentFiles).filter(([,v])=>agentHasPointer(v)).length;

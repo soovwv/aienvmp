@@ -221,13 +221,13 @@ async function scanAgentFiles(dir) {
 
 function snippetCommand(name) {
   if (name === "agents") return "aienvmp snippet codex --write";
-  if (["claude", "gemini"].includes(name)) return `aienvmp snippet ${name} --write`;
+  if (["claude", "gemini", "cursor", "copilot"].includes(name)) return `aienvmp snippet ${name} --write`;
   return "";
 }
 
 function agentRole(name) {
   if (name === "agents") return "codex";
-  if (["claude", "gemini"].includes(name)) return name;
+  if (["claude", "gemini", "cursor", "copilot"].includes(name)) return name;
   return "external";
 }
 

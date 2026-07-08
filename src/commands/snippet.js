@@ -7,11 +7,17 @@ const defaultTargets = {
   agents: "AGENTS.md",
   codex: "AGENTS.md",
   claude: "CLAUDE.md",
-  gemini: "GEMINI.md"
+  gemini: "GEMINI.md",
+  cursor: path.join(".cursor", "rules", "environment.md"),
+  copilot: path.join(".github", "copilot-instructions.md")
 };
+const knownTargets = new Set(Object.keys(defaultTargets));
 
 export async function snippetWorkspace(args) {
   const target = String(args._?.[0] || args.agent || "agents").toLowerCase();
+  if (!knownTargets.has(target)) {
+    throw new Error(`unknown snippet target "${target}"; use agents, codex, claude, gemini, cursor, or copilot`);
+  }
   const block = renderAgentPointer(target);
 
   if (args.write) {

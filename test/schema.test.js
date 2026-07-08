@@ -21,6 +21,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.aiLoop.strictRule, /warn-only/);
   assert.equal(schema.agentDiscovery.mode, "instruction-file-pointer");
   assert.equal(schema.agentDiscovery.installCommand, "aienvmp onboard");
+  assert.equal(schema.agentDiscovery.optionalInstallCommand, "aienvmp onboard --agents cursor,copilot");
+  assert.ok(schema.agentDiscovery.optionalFiles.includes(".github/copilot-instructions.md"));
   assert.deepEqual(schema.agentDiscovery.files, ["AGENTS.md", "CLAUDE.md", "GEMINI.md"]);
   assert.ok(schema.agentDiscovery.sessionStart.includes("Run aienvmp status --json before environment-affecting work."));
   assert.match(schema.agentDiscovery.rule, /shared live env map/);
@@ -121,6 +123,7 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   assert.equal(schema.outputs.sbom.file, ".aienvmp/sbom.json");
   assert.equal(schema.outputs.cyclonedxLite.file, ".aienvmp/sbom.cdx.json");
   assert.equal(schema.agentDiscovery.installCommand, "aienvmp onboard");
+  assert.ok(schema.agentDiscovery.rule.includes("Optional Cursor and Copilot"));
   assert.equal(schema.demo.command, "aienvmp demo");
   assert.equal(schema.releaseGate.localCommand, "npm run release:check");
   assert.equal(schema.releaseReadiness.target, "0.2.0");

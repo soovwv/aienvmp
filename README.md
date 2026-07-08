@@ -17,6 +17,7 @@ npx aienvmp status
 
 `onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`, refreshes the artifacts, and tells AI agents to read `.aienvmp/status.json` first.
 Its output and pointers include the same session-start rule: read status before environment work, sync only when stale or missing, and keep local coding advisory.
+Optional Cursor and Copilot pointers are available with `npx aienvmp onboard --agents cursor,copilot`.
 
 ## Why
 
@@ -102,7 +103,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `maintenanceLoop` gives AI the recurring env-management loop.
 - `sbomRisk`, `sbomReview`, and `sbom.json.aiReviewPlan` connect light SBOM risk to safe dependency-change steps.
 - `collaboration`, `coordination`, and `agentActivity` show multi-agent conflicts and shared targets.
-- `agentPointers.discovery` tells AI whether Codex, Claude, and Gemini instruction files can discover `aienvmp`; `agentPointers.onboardCommand` is the one-command fix.
+- `agentPointers.discovery` tells AI whether Codex, Claude, and Gemini instruction files can discover `aienvmp`; optional Cursor/Copilot pointers are opt-in.
 - `agentDiscovery.sessionStart` documents the same startup rule for schema-only AI/CI consumers.
 - `demo` tells AI and users how to verify the multi-agent conflict scenario in a temporary workspace.
 - The packaged `aienvmp` skill points AI agents to `onboard`, `artifactFreshness`, and `demo`.
@@ -124,6 +125,7 @@ npx aienvmp snippet codex
 npx aienvmp snippet agents
 npx aienvmp snippet claude
 npx aienvmp snippet gemini
+npx aienvmp onboard --agents cursor,copilot
 ```
 
 Snippets point each AI to `status`, `summary.md`, `context --json`, intent, and checkpoint without taking over the instruction file.
@@ -135,6 +137,7 @@ Snippets point each AI to `status`, `summary.md`, `context --json`, intent, and 
 ```bash
 aienvmp sync                    # update env map, status, summary, SBOM, dashboard
 aienvmp onboard                 # install Codex/Claude/Gemini pointers and sync
+aienvmp onboard --agents cursor,copilot
 aienvmp status                  # 5-line env decision
 aienvmp status --write          # refresh compact AI status artifact
 aienvmp status --verbose        # show command details

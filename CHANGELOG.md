@@ -25,6 +25,8 @@
 - Mirrored `strictRecommendation` in the summary and dashboard so humans see the same advisory-local and strict-CI/release split.
 - Added `releaseReadiness` to `schema --json` so AI/CI can inspect the `0.2.0` stable-contract checklist before publishing.
 - Mirrored `releaseReadiness` in the summary and dashboard so humans see the same batched-release gate before npm publish.
+- Added opt-in Cursor and GitHub Copilot instruction-file pointers while keeping default onboarding focused on Codex, Claude, and Gemini.
+- Made `snippet` reject unknown targets instead of silently writing the default agent pointer.
 
 ## 0.1.69
 

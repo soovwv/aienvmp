@@ -43,6 +43,28 @@ test("onboard can target one agent without syncing", async () => {
   await assert.rejects(fs.readFile(path.join(dir, "AGENTS.md"), "utf8"));
 });
 
+test("onboard can target optional Cursor and Copilot pointers", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-onboard-extended-"));
+
+  const result = await onboardWorkspace({ dir, agents: "cursor,copilot", no_sync: true, quiet: true });
+
+  assert.deepEqual(result.pointers.map((item) => item.file), [
+    path.join(".cursor", "rules", "environment.md"),
+    path.join(".github", "copilot-instructions.md")
+  ]);
+  await assert.doesNotReject(fs.access(path.join(dir, ".cursor", "rules", "environment.md")));
+  await assert.doesNotReject(fs.access(path.join(dir, ".github", "copilot-instructions.md")));
+});
+
+test("onboard explains all supported pointer targets on invalid input", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-onboard-invalid-"));
+
+  await assert.rejects(
+    onboardWorkspace({ dir, agents: "unknown", no_sync: true, quiet: true }),
+    /codex, claude, gemini, cursor, or copilot/
+  );
+});
+
 test("onboard text output includes the AI session start contract", async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-onboard-text-"));
   const originalLog = console.log;

@@ -123,7 +123,7 @@ Usage:
   aienvmp sbom [--dir .] [--json] [--write]
   aienvmp summary [--dir .] [--write]
   aienvmp schema [--json]
-  aienvmp onboard [codex claude gemini] [--agents codex,claude,gemini] [--no-sync]
+  aienvmp onboard [codex claude gemini] [--agents codex,claude,gemini,cursor,copilot] [--no-sync]
   aienvmp demo [conflict] [--json]
 
 Common:
@@ -148,8 +148,8 @@ Advanced:
   aienvmp resolve [--dir .] --actor human:you (--id <intent-id>|--target dependency|--all) [--status resolved|cancelled] [--json]
   aienvmp record [--dir .] --actor agent:codex --summary "updated .nvmrc" [--target node] [--before 20] [--after 24]
   aienvmp checkpoint [--dir .] --actor agent:codex --summary "updated dependency" [--target dependency]
-  aienvmp snippet [agents|codex|claude|gemini] [--write AGENTS.md]
-  aienvmp onboard [codex claude gemini] [--agents codex,claude,gemini] [--no-sync]
+  aienvmp snippet [agents|codex|claude|gemini|cursor|copilot] [--write AGENTS.md]
+  aienvmp onboard [codex claude gemini] [--agents codex,claude,gemini,cursor,copilot] [--no-sync]
   aienvmp compile [--dir .]
   aienvmp diff [--dir .]
   aienvmp doctor [--dir .] [--json] [--ci] [--strict security|policy|coordination|all]

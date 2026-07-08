@@ -51,5 +51,6 @@ export async function replaceMarkerBlock(file, begin, end, block) {
   } else {
     throw new Error(`${path.basename(file)} has a broken aienvmp marker block`);
   }
+  await fs.mkdir(path.dirname(file), { recursive: true });
   await fs.writeFile(file, next, "utf8");
 }

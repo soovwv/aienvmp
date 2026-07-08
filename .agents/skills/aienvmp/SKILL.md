@@ -17,6 +17,12 @@ If the workspace has not been onboarded yet, run:
 npx aienvmp onboard
 ```
 
+For optional Cursor or GitHub Copilot discovery pointers, use:
+
+```bash
+npx aienvmp onboard --agents cursor,copilot
+```
+
 At the start of an AI coding session, read the current status before environment-impacting work:
 
 ```bash
