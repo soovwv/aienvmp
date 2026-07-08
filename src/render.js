@@ -70,10 +70,17 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
 
 function preflightLines(preflight = {}) {
   const quickstart = preflight.quickstart;
+  const aiBootstrap = preflight.aiBootstrap || {};
   const targets = preflight.intentTargets || [];
   const maintenanceLoop = preflight.maintenanceLoop || {};
   const lines = ["## 10-Second AI Flow", ""];
-  if (quickstart) {
+  if (aiBootstrap.nextSafeCommand || aiBootstrap.readFirst) {
+    lines.push(`- AI bootstrap: ${aiBootstrap.projectLocalWork || "allowed"} / ${aiBootstrap.environmentChanges || "intent-first"} / ${aiBootstrap.localMode || "advisory"}`);
+    lines.push(`- Next safe command: \`${aiBootstrap.nextSafeCommand || preflight.nextSafeCommand || preflight.nextCommand || "aienvmp status --json"}\``);
+    lines.push(`- Read first: \`${aiBootstrap.readFirst || ".aienvmp/status.json"}\``);
+    lines.push(`- Detail: \`${aiBootstrap.detailCommand || "aienvmp context --json"}\``);
+    lines.push(`- Rule: ${aiBootstrap.rule || "Read status first, use context for details, and keep local checks advisory."}`);
+  } else if (quickstart) {
     lines.push(`- Read first: \`${quickstart.readFirst}\``);
     lines.push(`- Detail: \`${quickstart.detailCommand}\``);
     lines.push(`- Before env change: \`${quickstart.beforeEnvironmentChange}\``);
@@ -691,9 +698,13 @@ function formatTimeline(item) {
 }
 
 function contextLines(manifest, warnings, intents) {
+  const preflight = manifest.preflight || {};
+  const aiBootstrap = preflight.aiBootstrap || {};
   return [
     `- Status: ${warnings.length ? "review-required" : "clear"}`,
-    `- Next: ${warnings.length ? "review warnings before environment changes" : "continue with project-local work"}`,
+    `- Next: ${aiBootstrap.nextSafeCommand || preflight.nextSafeCommand || preflight.nextCommand || (warnings.length ? "review warnings before environment changes" : "continue with project-local work")}`,
+    `- Bootstrap: ${aiBootstrap.projectLocalWork || "allowed"} / ${aiBootstrap.environmentChanges || "intent-first"} / ${aiBootstrap.localMode || "advisory"}`,
+    `- Read first: ${aiBootstrap.readFirst || ".aienvmp/status.json"} -> ${aiBootstrap.detailCommand || "aienvmp context --json"}`,
     `- Node: ${manifest.runtimes.node || "not detected"}`,
     `- Python: ${manifest.runtimes.python || manifest.runtimes.python3 || "not detected"}`,
     `- Docker: ${manifest.containers.docker ? "available" : "not detected"}`,
