@@ -55,8 +55,15 @@ function aiDependencyReview(lightSbom = {}) {
     ? risk.reviewTargets
     : hints.map((item) => item.manifest).filter(Boolean);
   const review = ["urgent", "high", "medium"].includes(level) || policy.status === "review-required";
+  const scannerOff = risk.scanner === "off" || lightSbom.source?.vulnerabilities === "not scanned" || lightSbom.confidence?.vulnerabilities === "not-scanned";
   return {
     status: review ? "review" : "ready",
+    statusReason: review
+      ? "SBOM risk or package manager policy requires dependency review before changes."
+      : scannerOff
+        ? "No scanned vulnerability finding is present because the security scanner is off; run read-only security scan before security decisions."
+        : "No light SBOM signal requires dependency review.",
+    securityConfidence: scannerOff ? "scanner-off" : "scanner-summary",
     mode: "advisory",
     readFirst: ["riskSummary", "dependencyChangeHints", "packageManagerPolicy", "topRisk"],
     reviewTargets: [...new Set(reviewTargets)].slice(0, 8),

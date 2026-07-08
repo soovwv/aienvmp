@@ -23,6 +23,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.outputs.sbom.command, "aienvmp sbom --json");
   assert.ok(schema.outputs.sbom.rootFields.includes("riskSummary"));
   assert.ok(schema.outputs.sbom.rootFields.includes("aiDependencyReview"));
+  assert.ok(schema.outputs.sbom.aiDependencyReviewFields.includes("securityConfidence"));
+  assert.ok(schema.outputs.sbom.aiDependencyReviewFields.includes("statusReason"));
   assert.equal(schema.outputs.cyclonedxLite.command, "aienvmp sbom --format cyclonedx-lite --json");
   assert.equal(schema.compatibility.stability, "additive");
   assert.match(schema.compatibility.aiReadinessRule, /project-local code work/);

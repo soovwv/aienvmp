@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.59
+
+- Added `aiDependencyReview.statusReason` so AI agents can distinguish actual review risk from scanner-off uncertainty.
+- Added `aiDependencyReview.securityConfidence` across generated light SBOM, standalone SBOM, dashboard, summary, and schema metadata.
+- Reused the computed `riskSummary`, package-manager policy, and dependency hints when building `aiDependencyReview` to avoid drift between artifacts.
+- Updated dashboard and summary surfaces to show dependency-review confidence.
+- Updated README and regression tests for scanner-off dependency review behavior.
+
 ## 0.1.58
 
 - Added `lightSbom.aiDependencyReview` during manifest generation so all generated artifacts share the same dependency-review block.

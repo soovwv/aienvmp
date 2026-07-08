@@ -142,6 +142,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: manifest generation now includes `lightSbom.aiDependencyReview`; the dashboard Light SBOM card and `summary.md` show the AI dependency review status and commands.
 - Verification: regression tests cover generation, dashboard rendering, SBOM artifact reuse, and summary output; local sync smoke confirmed dashboard and SBOM artifacts include the block.
 
+### Scanner-off SBOM state could look safer than intended
+
+- Issue: AI agents could read `aiDependencyReview.status: ready` while the security scanner was off, making the state look more verified than it was.
+- Fix: `aiDependencyReview` now includes `statusReason` and `securityConfidence`, and generation reuses the computed risk summary instead of recalculating a weaker review signal.
+- Verification: regression tests cover scanner-off confidence, dashboard/summary rendering, schema metadata, and standalone SBOM fallback behavior; local sync smoke confirmed `scanner-off` appears in generated artifacts.
+
 ## Template
 
 ### Title

@@ -120,6 +120,8 @@ test("buildLightSbom creates an AI-ready package and risk summary", () => {
   assert.match(sbom.riskSummary.signals.join(" "), /vulnerable direct dependency/);
   assert.deepEqual(sbom.riskSummary.reviewTargets.slice(0, 2), ["package.json", "express"]);
   assert.equal(sbom.aiDependencyReview.status, "review");
+  assert.equal(sbom.aiDependencyReview.securityConfidence, "scanner-summary");
+  assert.match(sbom.aiDependencyReview.statusReason, /requires dependency review/);
   assert.ok(sbom.aiDependencyReview.readFirst.includes("packageManagerPolicy"));
   assert.ok(sbom.aiDependencyReview.beforeDependencyChange.includes("aienvmp plan --write"));
   assert.match(sbom.aiDependencyReview.afterDependencyChange[1], /checkpoint/);
@@ -146,6 +148,19 @@ test("lightSbomRiskSummary stays lightweight when scanners are off", () => {
   assert.equal(risk.scanner, "off");
   assert.match(risk.next, /security scan/);
   assert.equal(risk.commands[0], "aienvmp sync --security");
+});
+
+test("buildLightSbom explains scanner-off dependency review confidence", () => {
+  const sbom = buildLightSbom({
+    manifests: ["package.json"],
+    lockfiles: [],
+    packages: [{ ecosystem: "npm", manager: "npm", group: "dependencies", name: "express", version: "^4.18.0", manifest: "package.json" }]
+  }, { enabled: false, summary: { total: 0 }, topPackages: [] });
+
+  assert.equal(sbom.aiDependencyReview.status, "ready");
+  assert.equal(sbom.aiDependencyReview.securityConfidence, "scanner-off");
+  assert.match(sbom.aiDependencyReview.statusReason, /security scanner is off/);
+  assert.equal(sbom.aiDependencyReview.beforeDependencyChange[0], "aienvmp sync --security");
 });
 
 test("remediationPriority scores severity, direct dependency, and fix availability", () => {

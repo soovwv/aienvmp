@@ -16,7 +16,8 @@ test("buildSbomArtifact creates standalone AI-readable light SBOM", () => {
       riskSummary: { level: "high", score: 80, commands: ["aienvmp sync --security"], reviewTargets: ["package.json", "express"] },
       topRisk: [{ name: "express" }],
       packageManagerPolicy: { status: "review-required" },
-      dependencyChangeHints: [{ manifest: "package.json" }]
+      dependencyChangeHints: [{ manifest: "package.json" }],
+      confidence: { vulnerabilities: "not-scanned" }
     }
   });
 
@@ -24,6 +25,8 @@ test("buildSbomArtifact creates standalone AI-readable light SBOM", () => {
   assert.equal(sbom.summary.packages, 1);
   assert.equal(sbom.riskSummary.level, "high");
   assert.equal(sbom.aiDependencyReview.status, "review");
+  assert.equal(sbom.aiDependencyReview.securityConfidence, "scanner-off");
+  assert.match(sbom.aiDependencyReview.statusReason, /requires dependency review/);
   assert.deepEqual(sbom.aiDependencyReview.reviewTargets, ["package.json", "express"]);
   assert.match(sbom.aiDependencyReview.safeActions[1], /without installing/);
   assert.ok(sbom.aiDependencyReview.beforeDependencyChange.includes("aienvmp plan --write"));
@@ -91,6 +94,7 @@ test("sbomWorkspace can write .aienvmp/sbom.json", async () => {
   assert.equal(written.schemaName, "aienvmp.light-sbom");
   assert.equal(written.summary.packages, 1);
   assert.equal(written.aiDependencyReview.status, "ready");
+  assert.equal(written.aiDependencyReview.securityConfidence, "scanner-summary");
   assert.ok(written.aiDependencyReview.readFirst.includes("riskSummary"));
 });
 

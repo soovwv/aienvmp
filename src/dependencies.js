@@ -75,6 +75,9 @@ export function buildLightSbom(snapshot = {}, security = {}) {
     fixAvailable: pkg.fixAvailable === true || Boolean(pkg.fixVersions?.length),
     fixVersions: (pkg.fixVersions || []).slice(0, 3)
   }));
+  const riskSummary = lightSbomRiskSummary({ packages, security, directVulnerable, transitiveOrUnmatched, topRisk, lockfiles: snapshot.lockfiles || [] });
+  const pmPolicy = packageManagerPolicy(snapshot.lockfiles || []);
+  const changeHints = dependencyChangeHints(packages, topRisk, snapshot.lockfiles || []);
   return {
     schemaVersion: 1,
     mode: "light-sbom",
@@ -108,10 +111,10 @@ export function buildLightSbom(snapshot = {}, security = {}) {
       transitiveOrUnmatchedVulnerablePackages: transitiveOrUnmatched.length
     },
     topRisk,
-    riskSummary: lightSbomRiskSummary({ packages, security, directVulnerable, transitiveOrUnmatched, topRisk, lockfiles: snapshot.lockfiles || [] }),
-    packageManagerPolicy: packageManagerPolicy(snapshot.lockfiles || []),
-    dependencyChangeHints: dependencyChangeHints(packages, topRisk, snapshot.lockfiles || []),
-    aiDependencyReview: aiDependencyReview({ topRisk, lockfiles: snapshot.lockfiles || [] }),
+    riskSummary,
+    packageManagerPolicy: pmPolicy,
+    dependencyChangeHints: changeHints,
+    aiDependencyReview: aiDependencyReview({ riskSummary, packageManagerPolicy: pmPolicy, security }),
     aiUse: {
       beforeDependencyChanges: "Read lightSbom.summary and lightSbom.topRisk before changing dependencies.",
       securityMode: security.enabled ? "scanner-summary" : "scanner-off",
@@ -121,14 +124,20 @@ export function buildLightSbom(snapshot = {}, security = {}) {
   };
 }
 
-function aiDependencyReview({ topRisk = [], lockfiles = [] } = {}) {
-  const risk = lightSbomRiskSummary({ topRisk, lockfiles });
-  const review = ["urgent", "high", "medium"].includes(risk.level) || packageManagerPolicy(lockfiles).status === "review-required";
+function aiDependencyReview({ riskSummary = {}, packageManagerPolicy = {}, security = {} } = {}) {
+  const review = ["urgent", "high", "medium"].includes(riskSummary.level) || packageManagerPolicy.status === "review-required";
+  const scannerOff = security.enabled !== true;
   return {
     status: review ? "review" : "ready",
+    statusReason: review
+      ? "SBOM risk or package manager policy requires dependency review before changes."
+      : scannerOff
+        ? "No scanned vulnerability finding is present because the security scanner is off; run read-only security scan before security decisions."
+        : "No light SBOM signal requires dependency review.",
+    securityConfidence: scannerOff ? "scanner-off" : "scanner-summary",
     mode: "advisory",
     readFirst: ["riskSummary", "dependencyChangeHints", "packageManagerPolicy", "topRisk"],
-    reviewTargets: risk.reviewTargets,
+    reviewTargets: riskSummary.reviewTargets || [],
     safeActions: [
       "read SBOM, status, summary, context, and dependency manifests before dependency changes",
       "plan remediation without installing, upgrading, downgrading, or switching package managers",

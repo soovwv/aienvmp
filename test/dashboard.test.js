@@ -60,6 +60,8 @@ test("renderDashboard includes the audit summary surface", () => {
       },
       aiDependencyReview: {
         status: "review",
+        statusReason: "SBOM risk or package manager policy requires dependency review before changes.",
+        securityConfidence: "scanner-summary",
         mode: "advisory",
         readFirst: ["riskSummary", "dependencyChangeHints", "packageManagerPolicy", "topRisk"],
         reviewTargets: ["package.json", "express"],
@@ -309,6 +311,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /sbom\.json/);
   assert.match(html, /sbom\.cdx\.json/);
   assert.match(html, /AI Dependency Review/);
+  assert.match(html, /Security confidence/);
+  assert.match(html, /scanner-summary/);
+  assert.match(html, /requires dependency review/);
   assert.match(html, /dependency-review --target dependency/);
   assert.match(html, /checkpoint --actor agent:id --summary dependency-change --target dependency/);
   assert.match(html, /Risk summary/);
