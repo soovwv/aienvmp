@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
+import fs from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
 
@@ -54,4 +55,14 @@ test("CLI demo JSON gives AI consumers the same conflict signal", async () => {
   assert.equal(json.readFirst, ".aienvmp/status.json");
   assert.equal(json.artifactFreshness.state, "fresh");
   assert.ok(json.contextFields.includes("artifactFreshness"));
+});
+
+test("multi-agent conflict docs explain the shared AI workspace use case", async () => {
+  const markdown = await fs.readFile(path.resolve("examples/multi-agent-conflict.md"), "utf8");
+
+  assert.match(markdown, /shared server, repo, or CI workspace/);
+  assert.match(markdown, /Codex, Claude, Gemini, and humans/);
+  assert.match(markdown, /same environment truth/);
+  assert.match(markdown, /read `\.aienvmp\/status\.json` first/);
+  assert.match(markdown, /keep local work advisory/);
 });

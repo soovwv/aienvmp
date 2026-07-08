@@ -4,6 +4,17 @@ Use this demo when explaining why `aienvmp` exists: two AI agents touch one work
 
 `aienvmp` is an AI workspace coordination layer, not a replacement for package managers, SBOM generators, or vulnerability scanners. The light SBOM gives agents enough dependency context to coordinate; deeper scanners can stay optional.
 
+## Real Use Case
+
+A shared server, repo, or CI workspace may be touched by Codex, Claude, Gemini, and humans in the same day. One agent may upgrade a test runner, another may change the package manager, and a third may read an old environment assumption before either change is handed off.
+
+`aienvmp` gives every AI the same environment truth before work starts:
+
+- read `.aienvmp/status.json` first
+- record intent before runtime, dependency, package manager, Docker, or global tool changes
+- use the light SBOM as dependency context, not as a heavy blocking scanner
+- keep local work advisory unless a human or CI explicitly requests strict mode
+
 ## One Command
 
 ```bash

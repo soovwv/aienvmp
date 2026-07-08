@@ -45,6 +45,8 @@ Try the multi-agent conflict demo without touching your workspace:
 npx aienvmp demo
 ```
 
+The demo shows the core use case: multiple AI agents planning dependency work in one workspace, sharing one env map instead of silently drifting.
+
 For AI details:
 
 ```bash
