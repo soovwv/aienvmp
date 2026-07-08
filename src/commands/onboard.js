@@ -17,14 +17,20 @@ export async function onboardWorkspace(args = {}) {
     status: "ok",
     pointers,
     sync: synced ? "ok" : "skipped",
-    next: "Run aienvmp status, then let Codex, Claude, or Gemini read its instruction file pointer."
+    readFirst: [".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md"],
+    nextCommands: ["aienvmp status", "aienvmp context --json"],
+    aiDiscovery: synced ? "ready" : "pointers-written",
+    next: "Run aienvmp status; AI agents should read their instruction file pointer, then .aienvmp/status.json."
   };
 
   if (args.json) {
     console.log(JSON.stringify(result, null, 2));
   } else if (!args.quiet) {
-    console.log(`onboarded AI pointers: ${pointers.map((item) => item.file).join(", ")}`);
+    console.log(`AI discovery: ${result.aiDiscovery}`);
+    console.log(`pointers: ${pointers.map((item) => item.file).join(", ")}`);
     console.log(`sync: ${result.sync}`);
+    console.log(`read: ${result.readFirst.join(" -> ")}`);
+    console.log(`commands: ${result.nextCommands.join(" | ")}`);
     console.log(`next: ${result.next}`);
   }
 

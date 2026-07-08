@@ -7,6 +7,7 @@
 - Added AI contract compatibility metadata and a manual npm release workflow so `0.2.0+` releases can be gated instead of published per commit.
 - Added `aienvmp onboard` to install Codex, Claude, and Gemini pointers in one command and refresh the generated AI env artifacts.
 - Surfaced AI discovery state and `onboard` guidance in status JSON, schema metadata, and the dashboard first-read strip.
+- Made `onboard` output and the README first screen more action-oriented around AI discovery, first-read files, and next commands.
 
 ## 0.1.69
 

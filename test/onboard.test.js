@@ -12,6 +12,9 @@ test("onboard writes Codex, Claude, and Gemini pointers then syncs", async () =>
 
   assert.equal(result.status, "ok");
   assert.equal(result.sync, "ok");
+  assert.equal(result.aiDiscovery, "ready");
+  assert.deepEqual(result.readFirst, [".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md"]);
+  assert.deepEqual(result.nextCommands, ["aienvmp status", "aienvmp context --json"]);
   assert.deepEqual(result.pointers.map((item) => item.file), ["AGENTS.md", "CLAUDE.md", "GEMINI.md"]);
 
   const agents = await fs.readFile(path.join(dir, "AGENTS.md"), "utf8");
@@ -31,6 +34,7 @@ test("onboard can target one agent without syncing", async () => {
   const result = await onboardWorkspace({ dir, _: ["claude"], no_sync: true, quiet: true });
 
   assert.equal(result.sync, "skipped");
+  assert.equal(result.aiDiscovery, "pointers-written");
   assert.deepEqual(result.pointers.map((item) => item.file), ["CLAUDE.md"]);
   await assert.rejects(fs.readFile(path.join(dir, "AGENTS.md"), "utf8"));
 });

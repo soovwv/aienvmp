@@ -6,11 +6,16 @@
 
 **AI Environment Map.**
 
-`aienvmp` is a lightweight env map and light SBOM for AI coding workspaces.
+`aienvmp` gives Codex, Claude, Gemini, and humans one live env map plus a light SBOM for a shared coding workspace.
 
-It helps Codex, Claude, Gemini, and humans avoid silent runtime, package manager, dependency, Docker, and security drift on shared machines.
+Use it when multiple AI agents or people touch the same server, repo, laptop, or CI workspace and you want to avoid silent runtime, dependency, package manager, Docker, or security drift.
 
-**Use it when multiple AI agents or people touch the same server, repo, laptop, or CI workspace.**
+```bash
+npx aienvmp onboard
+npx aienvmp status
+```
+
+`onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`, refreshes the artifacts, and tells AI agents to read `.aienvmp/status.json` first.
 
 ## Why
 
@@ -24,12 +29,12 @@ It helps Codex, Claude, Gemini, and humans avoid silent runtime, package manager
 
 ```bash
 npx aienvmp onboard
-npx aienvmp sync
 npx aienvmp status
+npx aienvmp context --json
 npx aienvmp handoff
 ```
 
-`onboard` installs lightweight pointers for Codex, Claude, and Gemini, then refreshes the env map so AI agents can discover the live state from their normal instruction files.
+Run `sync` later when you only need to refresh artifacts without touching instruction-file pointers.
 
 For AI details:
 
