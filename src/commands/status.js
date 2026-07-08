@@ -23,6 +23,7 @@ export async function statusWorkspace(args) {
   } else if (!args.quiet) {
     console.log(`${output.state}: ${output.summary}`);
     console.log(`ai-readiness: ${output.aiReadiness?.level || "unknown"} - ${output.aiReadiness?.next || "Run aienvmp context --json for details."}`);
+    console.log(`collaboration: ${output.collaboration?.status || "unknown"} - ${output.collaboration?.nextCommand || "aienvmp status --json"}`);
     console.log(`next: ${output.nextCommand}`);
     console.log(`ai: ${output.quickstart.readFirst} -> ${output.quickstart.detailCommand}`);
     console.log(`intent: ${output.intentTargets[0]?.command || output.commands.recordIntent}`);

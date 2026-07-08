@@ -19,6 +19,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
   const sbomRisk = manifest.lightSbom?.riskSummary || {};
   const agentPointers = agentPointerSummary(manifest.agentFiles);
   const aiReadiness = aiReadinessSummary({ state, decision, coordination, agentActivity, agentPointers, sbomRisk, followUps });
+  const collaboration = collaborationSummary({ state, decision, coordination, agentActivity, followUps, aiReadiness });
   return {
     schemaVersion: 1,
     contract: preflightContract(),
@@ -61,6 +62,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     nextAgent: nextAgentHint(state, dependencyReadSet, dependencyChangeProtocol),
     coordination,
     agentActivity,
+    collaboration,
     agentPointers,
     aiReadiness,
     sbomRisk,
@@ -89,6 +91,45 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     },
     topAction,
     nextCommand: topAction?.command || decision.nextCommand
+  };
+}
+
+function collaborationSummary({ state, decision, coordination, agentActivity, followUps, aiReadiness }) {
+  const conflictTargets = coordination?.conflictTargets || [];
+  const multiActorTargets = agentActivity?.multiActorTargets || [];
+  const followUpTargets = (followUps || []).map((item) => item.target || "environment");
+  const activeTargets = unique([...conflictTargets, ...multiActorTargets, ...followUpTargets]);
+  const reviewSignals = [];
+  if (conflictTargets.length) reviewSignals.push("open intent conflict");
+  if (multiActorTargets.length) reviewSignals.push("multi-agent environment record");
+  if ((followUps || []).length) reviewSignals.push("pending post-change follow-up");
+  if (state !== "clear") reviewSignals.push("preflight review required");
+
+  const nextCommand = firstFollowUpCommand(followUps)
+    || (multiActorTargets.length ? "aienvmp handoff --record --actor agent:id" : "")
+    || (conflictTargets.length ? "aienvmp plan --write" : "")
+    || (decision?.canChangeEnvironmentWithoutReview
+      ? "aienvmp intent --actor agent:id --action planned-change --target environment"
+      : "aienvmp context --json");
+
+  const status = reviewSignals.length ? "review-before-env-change" : "clear";
+  return {
+    status,
+    mode: "advisory",
+    activeTargets,
+    reviewSignals,
+    projectLocalWork: aiReadiness?.projectLocalWork || (decision?.canContinueProjectLocalWork ? "allowed" : "review-first"),
+    environmentChanges: reviewSignals.length ? "intent-review-handoff-first" : "intent-first",
+    nextCommand,
+    rule: reviewSignals.length
+      ? "Do not install, remove, upgrade, downgrade, or switch shared environment tools until the listed collaboration signals are reviewed."
+      : "Multiple AI agents may continue project-local work; record intent before shared environment changes.",
+    commands: {
+      read: "aienvmp status --json",
+      plan: "aienvmp plan --write",
+      handoff: "aienvmp handoff --record --actor agent:id",
+      checkpoint: "aienvmp checkpoint --actor agent:id --summary what-changed --target environment"
+    }
   };
 }
 
@@ -427,6 +468,18 @@ function normalizeTarget(target = "") {
   if (["npm", "pnpm", "yarn"].includes(normalized)) return "package-manager";
   if (["pip", "pipx", "uv"].includes(normalized)) return "python";
   return normalized;
+}
+
+function unique(items = []) {
+  return [...new Set(items.map((item) => normalizeTarget(item)).filter(Boolean))];
+}
+
+function firstFollowUpCommand(followUps = []) {
+  for (const item of followUps || []) {
+    const command = item.commands?.find(Boolean);
+    if (command) return command;
+  }
+  return "";
 }
 
 function agentQuickstart(reviewRequired) {

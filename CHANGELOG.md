@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.62
+
+- Added a compact `collaboration` block to the shared preflight/status contract for multi-agent environment coordination.
+- Exposed `collaboration` at the root of `context --json` so AI agents can read status, active targets, and the next command without digging through multiple sections.
+- Added the collaboration status and rule to `.aienvmp/summary.md`.
+- Added a short collaboration line to plain `aienvmp status` output.
+- Added an `AI Collaboration` dashboard card with status, active targets, env-change rule, and next command.
+- Documented the collaboration block in the stable schema contract and README.
+- Added regression tests for status, context, summary, dashboard, and schema surfaces.
+
 ## 0.1.61
 
 - Added an `aienvmp strict plan` block to the GitHub Action Step Summary.

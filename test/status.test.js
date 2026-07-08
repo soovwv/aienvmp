@@ -34,6 +34,7 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.contract.name, "aienvmp-preflight");
   assert.equal(status.contract.stability, "additive");
   assert.ok(status.contract.aiEntryFields.includes("nextAgent"));
+  assert.ok(status.contract.aiEntryFields.includes("collaboration"));
   assert.ok(status.contract.aiEntryFields.includes("dependencyReadSet"));
   assert.equal(status.counts.runtimes, 1);
   assert.equal(status.counts.dependencies, 2);
@@ -41,6 +42,10 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.aiReadiness.level, "ready");
   assert.equal(status.aiReadiness.requiresHumanReview, false);
   assert.equal(status.aiReadiness.environmentChanges, "allowed");
+  assert.equal(status.collaboration.status, "clear");
+  assert.equal(status.collaboration.environmentChanges, "intent-first");
+  assert.equal(status.collaboration.nextCommand, "aienvmp intent --actor agent:id --action planned-change --target environment");
+  assert.match(status.collaboration.rule, /project-local work/);
   assert.match(status.aiReadiness.safeProjectLocalActions[0], /read status/);
   assert.match(status.aiReadiness.reviewOnlyEnvironmentChanges, /Record intent/);
   assert.equal(status.quickstart.label, "10-second AI flow");
@@ -120,6 +125,10 @@ test("buildStatus exposes multi-agent activity since last handoff", () => {
   assert.deepEqual(status.agentActivity.multiActorTargets, ["dependency"]);
   assert.deepEqual(status.agentActivity.targets[0].actors, ["agent:codex", "agent:gemini"]);
   assert.match(status.agentActivity.next, /handoff/);
+  assert.equal(status.collaboration.status, "review-before-env-change");
+  assert.deepEqual(status.collaboration.activeTargets, ["dependency"]);
+  assert.match(status.collaboration.reviewSignals.join(" "), /multi-agent/);
+  assert.equal(status.collaboration.nextCommand, "aienvmp handoff --record --actor agent:id");
 });
 
 test("buildStatus exposes agent pointer discovery hints", () => {
@@ -236,6 +245,7 @@ test("statusWorkspace text prints the next-agent handoff command", async () => {
   assert.match(lines.join("\n"), /handoff: aienvmp handoff --record --actor agent:id/);
   assert.match(lines.join("\n"), /checkpoint: aienvmp checkpoint/);
   assert.match(lines.join("\n"), /ai-readiness: ready/);
+  assert.match(lines.join("\n"), /collaboration: clear/);
 });
 
 test("buildStatus summarizes open intent coordination by target", () => {
@@ -252,6 +262,9 @@ test("buildStatus summarizes open intent coordination by target", () => {
   assert.equal(status.coordination.targets[0].target, "dependency");
   assert.deepEqual(status.coordination.targets[0].actors, ["agent:codex", "agent:claude"]);
   assert.deepEqual(status.coordination.conflictTargets, ["dependency"]);
+  assert.equal(status.collaboration.status, "review-before-env-change");
+  assert.deepEqual(status.collaboration.activeTargets, ["dependency"]);
+  assert.match(status.collaboration.nextCommand, /plan --write/);
   assert.match(status.coordination.next, /conflicting intents/);
 });
 

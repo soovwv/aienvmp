@@ -484,6 +484,8 @@ const followUpsHtml=followUps.length?'<div class="timeline">'+followUps.slice(0,
 const agentActivity=manifest.preflight?.agentActivity||{};
 const activityTargets=agentActivity.targets||[];
 const activityHtml=activityTargets.length?'<div class="timeline">'+activityTargets.slice(0,5).map(a=>\`<div class="event"><time>\${esc(a.target||'env')}</time><div><b>\${esc((a.actors||[]).join(', ')||'unknown')}</b> \${esc(a.count||0)} record(s) \${a.multiActor?'<code>multi-agent</code>':'<code>single-agent</code>'}\${a.latestSummary?\`<div class="path">\${esc(a.latestSummary)}</div>\`:''}</div></div>\`).join('')+'</div><div class="path">'+esc(agentActivity.next||'Review activity before environment changes.')+'</div>':'<div class="okline">No recorded environment activity needs coordination.</div>';
+const collaboration=manifest.preflight?.collaboration||{};
+const collaborationHtml=\`<table><tr><th>Status</th><td><code>\${esc(collaboration.status||'unknown')}</code> \${esc(collaboration.mode||'advisory')}</td></tr><tr><th>Targets</th><td>\${esc((collaboration.activeTargets||[]).join(', ')||'none')}</td></tr><tr><th>Project work</th><td><code>\${esc(collaboration.projectLocalWork||'allowed')}</code></td></tr><tr><th>Env changes</th><td><code>\${esc(collaboration.environmentChanges||'intent-first')}</code></td></tr><tr><th>Next</th><td><code>\${esc(collaboration.nextCommand||'aienvmp status --json')}</code></td></tr></table><div class="timeline">\${(collaboration.reviewSignals||[]).slice(0,4).map(signal=>\`<div class="event"><time>review</time><div>\${esc(signal)}</div></div>\`).join('')}</div><div class="path">\${esc(collaboration.rule||'Record intent before shared environment changes.')}</div>\`;
 const dependencyReadSet=manifest.preflight?.dependencyReadSet||[];
 const dependencyReadSetHtml=dependencyReadSet.length?'<div class="timeline">'+dependencyReadSet.slice(0,5).map(d=>\`<div class="event"><time>\${esc(d.ecosystem||'deps')}</time><div><b>\${esc(d.manifest||'dependency files')}</b> <code>\${esc(d.manager||'unknown')}</code><div class="path">\${esc([d.manifest,...(d.lockfiles||[])].filter(Boolean).join(', '))}</div>\${d.riskPackages?.length?\`<div class="path">risk: \${esc(d.riskPackages.join(', '))}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No dependency files detected.</div>';
 const dependencyProtocol=manifest.preflight?.dependencyChangeProtocol||{};
@@ -545,6 +547,8 @@ document.getElementById('app').innerHTML=\`
     \${card('Follow-ups',followUps.length?'<span class="pill warn">'+followUps.length+' pending</span>':'<span class="pill">clear</span>',followUpsHtml)}
     <div style="height:14px"></div>
     \${card('Agent Activity',agentActivity.multiActorTargets?.length?'<span class="pill warn">'+agentActivity.multiActorTargets.length+' shared</span>':'<span class="pill">clear</span>',activityHtml)}
+    <div style="height:14px"></div>
+    \${card('AI Collaboration',collaboration.status==='clear'?'<span class="pill">clear</span>':'<span class="pill warn">review</span>',collaborationHtml)}
     <div style="height:14px"></div>
     \${card('AI Contract','<span class="pill">'+(contract.stability||'additive')+'</span>',contractHtml)}
     <div style="height:14px"></div>

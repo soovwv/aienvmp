@@ -211,6 +211,16 @@ test("renderDashboard includes the audit summary surface", () => {
         signals: ["open intent conflicts"],
         mode: "advisory"
       },
+      collaboration: {
+        status: "review-before-env-change",
+        mode: "advisory",
+        activeTargets: ["dependency"],
+        reviewSignals: ["open intent conflict", "multi-agent environment record"],
+        projectLocalWork: "allowed",
+        environmentChanges: "intent-review-handoff-first",
+        nextCommand: "aienvmp handoff --record --actor agent:id",
+        rule: "Do not install shared tools until collaboration signals are reviewed."
+      },
       dependencyReadSet: [{
         manifest: "package.json",
         ecosystem: "npm",
@@ -284,6 +294,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Agent Activity/);
   assert.match(html, /dependency remediation/);
   assert.match(html, /multi-agent/);
+  assert.match(html, /AI Collaboration/);
+  assert.match(html, /review-before-env-change/);
+  assert.match(html, /intent-review-handoff-first/);
   assert.match(html, /AI Contract/);
   assert.match(html, /aienvmp-preflight/);
   assert.match(html, /nextAgent/);
