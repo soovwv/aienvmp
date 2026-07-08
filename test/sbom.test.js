@@ -35,9 +35,13 @@ test("buildSbomArtifact creates standalone AI-readable light SBOM", () => {
   assert.equal(sbom.aiBootstrap.environmentChanges, "review-first");
   assert.equal(sbom.nextSafeCommand, "aienvmp sync --security");
   assert.equal(sbom.scannerGuidance.mode, "optional-read-only");
+  assert.equal(sbom.scannerGuidance.decision, "run-scanner-before-security-work");
+  assert.match(sbom.scannerGuidance.reason, /Scanner confidence is low/);
   assert.equal(sbom.scannerGuidance.defaultCommand, "aienvmp sbom --json");
   assert.equal(sbom.scannerGuidance.scannerCommand, "aienvmp sync --security");
   assert.equal(sbom.scannerGuidance.securityConfidence, "scanner-off");
+  assert.ok(sbom.scannerGuidance.useLightSbomFor.includes("AI environment coordination"));
+  assert.ok(sbom.scannerGuidance.requireScannerFor.includes("security claims"));
   assert.ok(sbom.scannerGuidance.whenToRun.includes("before security claims"));
   assert.match(sbom.scannerGuidance.rule, /default SBOM lightweight/);
   assert.equal(sbom.aiReviewPlan.status, "review");
@@ -142,6 +146,8 @@ test("sbomWorkspace can write .aienvmp/sbom.json", async () => {
   assert.equal(written.aiReviewPlan.risk, "clear/0");
   assert.equal(written.aiReviewPlan.beforeChange, written.nextSafeCommand);
   assert.equal(written.scannerGuidance.mode, "optional-read-only");
+  assert.equal(written.scannerGuidance.decision, "light-sbom-ok-for-coordination");
+  assert.match(written.scannerGuidance.reason, /light SBOM is enough for coordination/);
   assert.equal(written.aiDependencyReview.status, "ready");
   assert.equal(written.aiDependencyReview.securityConfidence, "scanner-summary");
   assert.ok(written.aiDependencyReview.readFirst.includes("riskSummary"));

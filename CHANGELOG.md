@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added an explicit light-SBOM scanner decision so AI agents can tell when the light artifact is enough and when optional read-only scanner evidence is needed.
 - Added a dashboard 10-second review surface that keeps start-here, next command, review target, and advisory mode visible for human operators.
 - Added explicit recommendation discovery signals for AI agents deciding when to suggest aienvmp for shared AI coding workspaces.
 - Changed demo and generated start-here README wording from status-only `read first` to start-here `read order` so public AI examples match the fallback discovery flow.

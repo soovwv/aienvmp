@@ -418,6 +418,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardReviewPlanHtmlClientScript(), /aienvmp sbom --json/);
   assert.match(dashboardScannerGuidanceHtmlClientScript(), /const scannerGuidanceHtml=/);
   assert.match(dashboardScannerGuidanceHtmlClientScript(), /optional-read-only/);
+  assert.match(dashboardScannerGuidanceHtmlClientScript(), /Decision/);
+  assert.match(dashboardScannerGuidanceHtmlClientScript(), /scannerGuidance\.decision/);
   assert.match(dashboardScannerGuidanceHtmlClientScript(), /security-sensitive decisions/);
   assert.match(dashboardRiskSummaryClientScript(), /const riskSummaryHtml=riskSummary\.level/);
   assert.match(dashboardRiskSummaryClientScript(), /No SBOM action required/);

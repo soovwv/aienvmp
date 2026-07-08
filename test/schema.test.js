@@ -154,6 +154,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.sbom.rootFields.includes("aiBootstrap"));
   assert.ok(schema.outputs.sbom.rootFields.includes("nextSafeCommand"));
   assert.ok(schema.outputs.sbom.rootFields.includes("scannerGuidance"));
+  assert.ok(schema.outputs.sbom.scannerGuidanceFields.includes("decision"));
+  assert.ok(schema.outputs.sbom.scannerGuidanceFields.includes("requireScannerFor"));
   assert.ok(schema.outputs.sbom.scannerGuidanceFields.includes("whenToRun"));
   assert.ok(schema.outputs.sbom.rootFields.includes("aiReviewPlan"));
   assert.ok(schema.outputs.sbom.aiReviewPlanFields.includes("beforeChange"));

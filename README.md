@@ -93,7 +93,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `agentDiscovery.sessionStart` documents the startup rule for schema-only AI/CI consumers.
 - `environmentChangeProtocol` gives one before/after-change contract for runtimes, dependencies, package managers, Docker, and global tools.
 - `followUpPlan` gives AI one next command when previous environment work still needs sync, status, or handoff.
-- `sbomStrategy`, `scannerGuidance`, and `aiReviewPlan` keep SBOM review light by default and request optional read-only scanners before security-sensitive decisions.
+- `sbomStrategy`, `scannerGuidance.decision`, and `aiReviewPlan` keep SBOM review light by default and request optional read-only scanners before security-sensitive decisions.
 - `sbom --json` also carries `startHere` and `readOrder` so dependency review follows the same AI entry path.
 - `collaboration`, `coordination`, and `agentActivity` expose multi-agent conflicts and shared targets.
 - `releaseGate` and `releaseReadiness` expose the `0.2.0` batched stable-contract gate.

@@ -69,9 +69,15 @@ function sbomScannerGuidance(review = {}) {
   const lowConfidence = ["scanner-off", "unknown", "not-scanned"].includes(confidence);
   return {
     mode: "optional-read-only",
+    decision: lowConfidence ? "run-scanner-before-security-work" : "light-sbom-ok-for-coordination",
+    reason: lowConfidence
+      ? "Scanner confidence is low, so security claims, remediation, releases, and risky dependency changes need read-only scanner evidence."
+      : "Scanner summary is present; the light SBOM is enough for coordination unless findings changed or a human asks for fresh evidence.",
     defaultCommand: "aienvmp sbom --json",
     scannerCommand: "aienvmp sync --security",
     securityConfidence: confidence,
+    useLightSbomFor: ["AI environment coordination", "dependency read set", "package manager policy", "intent and handoff planning"],
+    requireScannerFor: ["security claims", "vulnerability remediation", "release decisions", "dependency changes when scanner confidence is low"],
     whenToRun: lowConfidence
       ? [
         "before security claims",
