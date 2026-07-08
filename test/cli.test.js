@@ -96,3 +96,12 @@ test("package, README, and CLI help share the AI workspace coordination position
   assert.match(readme.slice(0, 1200), /without heavy locks/);
   assert.match(stdout, /AI workspace coordination with a lightweight env map and SBOM/);
 });
+
+test("package stays runtime dependency-free for lightweight shared machines", async () => {
+  const pkg = JSON.parse(await fs.readFile(path.resolve("package.json"), "utf8"));
+
+  assert.equal(pkg.dependencies, undefined);
+  assert.equal(pkg.optionalDependencies, undefined);
+  assert.equal(pkg.peerDependencies, undefined);
+  assert.equal(pkg.bundledDependencies, undefined);
+});
