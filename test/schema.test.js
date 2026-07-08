@@ -24,6 +24,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.outputs.summary.format, "markdown");
   assert.deepEqual(schema.outputs.summary.startsWith, ["AI readiness", "AI signals", "AI next"]);
   assert.ok(schema.outputs.context.rootFields.includes("coordination"));
+  assert.ok(schema.outputs.context.rootFields.includes("nextSafeCommand"));
   assert.ok(schema.outputs.context.rootFields.includes("collaboration"));
   assert.ok(schema.outputs.context.rootFields.includes("maintenanceLoop"));
   assert.ok(schema.outputs.context.rootFields.includes("agentPointers"));

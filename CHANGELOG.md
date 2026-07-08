@@ -7,6 +7,7 @@
 - Updated the GitHub Action example and README CI notes to mention Step Summary strict-plan and AI-loop blocks.
 - Added `doctor --json` `nextSafeCommand` so AI agents can pick one advisory next command without parsing every warning.
 - Aligned the dashboard next-command fallback with `maintenanceLoop.nextCommand` so the visual surface follows the same advisory next-step chain.
+- Added `context --json` `nextSafeCommand` so AI agents get the same one-step advisory next command in the preflight payload.
 
 ## 0.1.67
 

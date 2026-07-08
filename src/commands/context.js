@@ -22,9 +22,11 @@ export async function contextWorkspace(args) {
   const actions = recommendedActions(manifest, { warnings, intents });
   const stepSummary = compactStepSummary(buildPlan(manifest, warnings, intents, policy));
   const preflight = buildPreflight(manifest, warnings, intents, timeline);
+  const nextSafeCommand = contextNextSafeCommand(actions, warnings, preflight);
   if (args.json) {
     console.log(JSON.stringify({
       status: warnings.length ? "review-required" : "clear",
+      nextSafeCommand,
       preflight,
       aiReadiness: preflight.aiReadiness,
       collaboration: preflight.collaboration,
@@ -57,6 +59,14 @@ export async function contextWorkspace(args) {
     return;
   }
   console.log(renderContext({ ...manifest, preflight }, timeline, warnings, intents, policy, actions));
+}
+
+function contextNextSafeCommand(actions = [], warnings = [], preflight = {}) {
+  const actionCommand = actions.find((item) => item.command)?.command;
+  return preflight.nextCommand
+    || preflight.maintenanceLoop?.nextCommand
+    || actionCommand
+    || (warnings.length ? "aienvmp plan --write" : "aienvmp status --json");
 }
 
 function lightSbomSummary(lightSbom = {}) {
