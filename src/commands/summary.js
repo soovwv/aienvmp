@@ -55,6 +55,7 @@ export function renderSummary(status = {}, manifest = {}) {
   const aiReadiness = status.aiReadiness || {};
   const aiSignals = toList(aiReadiness.signals).slice(0, 5);
   const aiNext = aiReadiness.next || "Run aienvmp context --json for details.";
+  const aiDependencyReview = manifest.lightSbom?.aiDependencyReview || {};
 
   return [
     "# aienvmp summary",
@@ -85,6 +86,7 @@ export function renderSummary(status = {}, manifest = {}) {
     "",
     `- source: ${manifest.lightSbom?.source?.dependencies || "project manifests"}`,
     `- confidence: transitive ${manifest.lightSbom?.confidence?.transitiveDependencies || "not-resolved"}`,
+    `- AI dependency review: ${aiDependencyReview.status || "unknown"} / ${aiDependencyReview.beforeDependencyChange?.[0] || "aienvmp sbom --json"}`,
     `- signals: ${riskSignals.length ? riskSignals.join("; ") : "none"}`,
     `- verify: ${sbomRisk.next || "Use a dedicated scanner for security decisions."}`,
     "",

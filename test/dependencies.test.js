@@ -119,6 +119,10 @@ test("buildLightSbom creates an AI-ready package and risk summary", () => {
   assert.equal(sbom.riskSummary.level, "high");
   assert.match(sbom.riskSummary.signals.join(" "), /vulnerable direct dependency/);
   assert.deepEqual(sbom.riskSummary.reviewTargets.slice(0, 2), ["package.json", "express"]);
+  assert.equal(sbom.aiDependencyReview.status, "review");
+  assert.ok(sbom.aiDependencyReview.readFirst.includes("packageManagerPolicy"));
+  assert.ok(sbom.aiDependencyReview.beforeDependencyChange.includes("aienvmp plan --write"));
+  assert.match(sbom.aiDependencyReview.afterDependencyChange[1], /checkpoint/);
   assert.equal(sbom.topRisk[0].name, "express");
   assert.equal(sbom.topRisk[0].directDependency, true);
   assert.equal(sbom.dependencyChangeHints[0].manifest, "package.json");

@@ -111,12 +111,41 @@ export function buildLightSbom(snapshot = {}, security = {}) {
     riskSummary: lightSbomRiskSummary({ packages, security, directVulnerable, transitiveOrUnmatched, topRisk, lockfiles: snapshot.lockfiles || [] }),
     packageManagerPolicy: packageManagerPolicy(snapshot.lockfiles || []),
     dependencyChangeHints: dependencyChangeHints(packages, topRisk, snapshot.lockfiles || []),
+    aiDependencyReview: aiDependencyReview({ topRisk, lockfiles: snapshot.lockfiles || [] }),
     aiUse: {
       beforeDependencyChanges: "Read lightSbom.summary and lightSbom.topRisk before changing dependencies.",
       securityMode: security.enabled ? "scanner-summary" : "scanner-off",
       dependencySource: "project manifests only; no install or resolver is run",
       trustRule: "Use lightSbom as a fast AI planning map; verify with dedicated scanners before security claims."
     }
+  };
+}
+
+function aiDependencyReview({ topRisk = [], lockfiles = [] } = {}) {
+  const risk = lightSbomRiskSummary({ topRisk, lockfiles });
+  const review = ["urgent", "high", "medium"].includes(risk.level) || packageManagerPolicy(lockfiles).status === "review-required";
+  return {
+    status: review ? "review" : "ready",
+    mode: "advisory",
+    readFirst: ["riskSummary", "dependencyChangeHints", "packageManagerPolicy", "topRisk"],
+    reviewTargets: risk.reviewTargets,
+    safeActions: [
+      "read SBOM, status, summary, context, and dependency manifests before dependency changes",
+      "plan remediation without installing, upgrading, downgrading, or switching package managers",
+      "record intent before dependency or lockfile changes when another AI may be working"
+    ],
+    beforeDependencyChange: [
+      "aienvmp sync --security",
+      "aienvmp intent --actor agent:id --action dependency-review --target dependency",
+      "aienvmp plan --write"
+    ],
+    afterDependencyChange: [
+      "run the narrowest relevant project validation",
+      "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"
+    ],
+    rule: review
+      ? "Review SBOM risk and package manager policy before dependency changes; default behavior is advisory and non-blocking."
+      : "No light SBOM signal requires action; still record intent before dependency or lockfile changes."
   };
 }
 

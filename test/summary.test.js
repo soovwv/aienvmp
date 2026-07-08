@@ -41,7 +41,11 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
     workspace: { root: "/repo" },
     lightSbom: {
       source: { dependencies: "project manifests" },
-      confidence: { transitiveDependencies: "not-resolved" }
+      confidence: { transitiveDependencies: "not-resolved" },
+      aiDependencyReview: {
+        status: "review",
+        beforeDependencyChange: ["aienvmp intent --actor agent:id --action dependency-review --target dependency"]
+      }
     }
   });
 
@@ -54,6 +58,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /AI read first: \.aienvmp\/status\.json/);
   assert.match(markdown, /conflict targets: dependency/);
   assert.match(markdown, /multi-actor targets: node/);
+  assert.match(markdown, /AI dependency review: review \/ aienvmp intent --actor agent:id --action dependency-review --target dependency/);
   assert.match(markdown, /## Dependency changes/);
   assert.match(markdown, /read files: package\.json, package-lock\.json/);
   assert.match(markdown, /checkpoint --actor agent:id --summary dependency-change --target dependency/);

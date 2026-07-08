@@ -58,6 +58,22 @@ test("renderDashboard includes the audit summary surface", () => {
         signals: ["1 high vulnerability finding(s)", "1 vulnerable direct dependency package(s)"],
         reviewTargets: ["package.json", "express"]
       },
+      aiDependencyReview: {
+        status: "review",
+        mode: "advisory",
+        readFirst: ["riskSummary", "dependencyChangeHints", "packageManagerPolicy", "topRisk"],
+        reviewTargets: ["package.json", "express"],
+        beforeDependencyChange: [
+          "aienvmp sync --security",
+          "aienvmp intent --actor agent:id --action dependency-review --target dependency",
+          "aienvmp plan --write"
+        ],
+        afterDependencyChange: [
+          "run the narrowest relevant project validation",
+          "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"
+        ],
+        rule: "Review SBOM risk and package manager policy before dependency changes; default behavior is advisory and non-blocking."
+      },
       packageManagerPolicy: {
         status: "clear",
         ecosystems: {
@@ -292,6 +308,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Light SBOM Artifact/);
   assert.match(html, /sbom\.json/);
   assert.match(html, /sbom\.cdx\.json/);
+  assert.match(html, /AI Dependency Review/);
+  assert.match(html, /dependency-review --target dependency/);
+  assert.match(html, /checkpoint --actor agent:id --summary dependency-change --target dependency/);
   assert.match(html, /Risk summary/);
   assert.match(html, /vulnerable direct dependency/);
   assert.match(html, /Direct vulnerable/);

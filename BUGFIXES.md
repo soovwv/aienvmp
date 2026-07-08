@@ -136,6 +136,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: `aiDependencyReview` now gives a top-level advisory review block with read order, safe actions, review targets, before-change commands, and after-change checkpoint guidance.
 - Verification: regression tests cover the new SBOM block and schema metadata; local sync smoke confirmed generated `sbom.json` separates before-change commands from after-change checkpoint commands.
 
+### SBOM dependency review was not visible across all review surfaces
+
+- Issue: `aiDependencyReview` was available in standalone SBOM output, but the manifest-backed dashboard and compact summary did not surface the same dependency-review guidance.
+- Fix: manifest generation now includes `lightSbom.aiDependencyReview`; the dashboard Light SBOM card and `summary.md` show the AI dependency review status and commands.
+- Verification: regression tests cover generation, dashboard rendering, SBOM artifact reuse, and summary output; local sync smoke confirmed dashboard and SBOM artifacts include the block.
+
 ## Template
 
 ### Title

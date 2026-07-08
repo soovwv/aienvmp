@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.58
+
+- Added `lightSbom.aiDependencyReview` during manifest generation so all generated artifacts share the same dependency-review block.
+- Reused generated `aiDependencyReview` in standalone `.aienvmp/sbom.json`.
+- Added an `AI Dependency Review` section to the dashboard Light SBOM card.
+- Added the AI dependency review status and first command to `.aienvmp/summary.md`.
+- Added regression tests for light SBOM generation, dashboard rendering, SBOM artifact output, and summary output.
+
 ## 0.1.57
 
 - Added `aiDependencyReview` to the standalone `.aienvmp/sbom.json` artifact.

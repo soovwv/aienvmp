@@ -36,7 +36,7 @@ export function buildSbomArtifact(manifest = {}) {
     topRisk: (lightSbom.topRisk || []).slice(0, 20),
     packageManagerPolicy: lightSbom.packageManagerPolicy || {},
     dependencyChangeHints: (lightSbom.dependencyChangeHints || []).slice(0, 20),
-    aiDependencyReview: aiDependencyReview(lightSbom),
+    aiDependencyReview: lightSbom.aiDependencyReview || aiDependencyReview(lightSbom),
     aiUse: {
       purpose: "Standalone AI-readable light SBOM artifact.",
       readBefore: "Dependency changes, vulnerability remediation, release review, or shared AI handoff.",
