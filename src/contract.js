@@ -67,6 +67,20 @@ export function schemaContract() {
       afterStablePublish: "Deprecate aienvmp@<0.2.0 as prototype history after 0.2.0 is published.",
       rule: "Do not publish every commit; batch meaningful changes and keep local operation advisory."
     },
+    releaseReadiness: {
+      target: "0.2.0",
+      status: "prototype-hardening",
+      requiredBeforeStable: [
+        "npm run release:check passes locally",
+        "GitHub Release workflow passes with confirm_publish=publish",
+        "schema --json additive contract is reviewed",
+        "README quick start and AI contract are current",
+        "multi-agent conflict demo passes",
+        "0.1.x deprecation message is prepared but not run until 0.2.0 is published"
+      ],
+      stableContractRule: "After 0.2.0, documented JSON fields are additive and backward-compatible; breaking changes require a contractVersion bump and migration note.",
+      batchRule: "Accumulate meaningful AI-contract, dashboard, SBOM, and release-gate changes before one npm publish."
+    },
     outputs: {
       status: {
         file: ".aienvmp/status.json",
@@ -130,7 +144,8 @@ export function schemaContract() {
       strictRecommendationRule: "Use strictRecommendation for the shortest local/CI/release strict guidance; local must stay warn-only unless strict is explicitly requested.",
       strictDecisionRule: "Use enforcement.strictDecision or preflight.enforcementProfile.strictDecision for the shortest local warn-only vs CI strict decision.",
       strictPlanRule: "Use enforcement.strictPlan or preflight.enforcementProfile.strictPlan to choose the narrowest explicit strict scope for CI.",
-      releaseGateRule: "Use releaseGate.localCommand and releaseGate.workflow before npm publish; releases should be manually batched instead of published per commit."
+      releaseGateRule: "Use releaseGate.localCommand and releaseGate.workflow before npm publish; releases should be manually batched instead of published per commit.",
+      releaseReadinessRule: "Use releaseReadiness.requiredBeforeStable to decide whether 0.2.0 is ready; do not publish every commit."
     }
   };
 }

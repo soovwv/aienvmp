@@ -90,6 +90,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `status`, `context`, `plan`, and `handoff` share one additive preflight contract.
 - `schema --json` exposes `schemaVersion`, `contractVersion`, and compatibility rules for AI consumers.
 - `schema --json` also exposes `releaseGate` so AI/CI can see the batched manual publish rule.
+- `schema --json` exposes `releaseReadiness` so AI/CI can check the `0.2.0` stable-contract gate.
 - After `0.2.0`, documented JSON fields stay backward-compatible; new fields are additive.
 - `aiBootstrap` gives AI the shortest read-first, next-command, and local-mode hint.
 - `aiBootstrap` also explains the next command source and reason.
@@ -191,6 +192,7 @@ See [examples/github-action.yml](examples/github-action.yml).
 - npm releases are manually gated and batched around meaningful changes, with security fixes as the exception.
 - Run `npm run release:check` before publishing; the GitHub `Release` workflow runs the same gate.
 - `schema --json` exposes the same `releaseGate` rule for AI/CI consumers.
+- `schema --json` exposes `releaseReadiness.requiredBeforeStable` for the `0.2.0` checklist.
 - Manual publish runs from GitHub Actions `Release` workflow and requires the `NPM_TOKEN` secret.
 - `0.1.x` is deprecated only after `0.2.0` is published, with a message that points users to the stable contract.
 - Broken or superseded versions are deprecated instead of unpublished.

@@ -23,6 +23,7 @@
 - Updated the packaged `aienvmp` AI skill with the current session-start, artifact freshness, and demo guidance.
 - Added `strictRecommendation` so AI agents can read one compact local warn-only, CI strict, and release strict decision without changing default advisory behavior.
 - Mirrored `strictRecommendation` in the summary and dashboard so humans see the same advisory-local and strict-CI/release split.
+- Added `releaseReadiness` to `schema --json` so AI/CI can inspect the `0.2.0` stable-contract checklist before publishing.
 
 ## 0.1.69
 

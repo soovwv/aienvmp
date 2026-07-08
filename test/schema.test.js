@@ -34,6 +34,11 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.releaseGate.workflow, ".github/workflows/release.yml");
   assert.ok(schema.releaseGate.beforePublish.includes("npm run release:check"));
   assert.match(schema.releaseGate.rule, /batch meaningful changes/);
+  assert.equal(schema.releaseReadiness.target, "0.2.0");
+  assert.equal(schema.releaseReadiness.status, "prototype-hardening");
+  assert.ok(schema.releaseReadiness.requiredBeforeStable.includes("npm run release:check passes locally"));
+  assert.match(schema.releaseReadiness.stableContractRule, /backward-compatible/);
+  assert.match(schema.releaseReadiness.batchRule, /one npm publish/);
   assert.equal(schema.outputs.status.contract.name, "aienvmp-preflight");
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("nextAgent"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("aiBootstrap"));
@@ -97,6 +102,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.compatibility.strictDecisionRule, /local warn-only vs CI strict/);
   assert.match(schema.compatibility.strictPlanRule, /narrowest explicit strict scope/);
   assert.match(schema.compatibility.releaseGateRule, /manually batched/);
+  assert.match(schema.compatibility.releaseReadinessRule, /0\.2\.0 is ready/);
 });
 
 test("schemaWorkspace prints JSON without requiring a workspace", async () => {
@@ -117,6 +123,7 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   assert.equal(schema.agentDiscovery.installCommand, "aienvmp onboard");
   assert.equal(schema.demo.command, "aienvmp demo");
   assert.equal(schema.releaseGate.localCommand, "npm run release:check");
+  assert.equal(schema.releaseReadiness.target, "0.2.0");
   assert.match(schema.compatibility.localBehavior, /read-only/);
 });
 
