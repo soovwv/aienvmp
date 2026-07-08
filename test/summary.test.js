@@ -115,6 +115,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /local check: aienvmp doctor --json \(warn-only\)/);
   assert.match(markdown, /CI strict: aienvmp doctor --strict security --json/);
   assert.match(markdown, /release strict: aienvmp doctor --strict all --json/);
+  assert.match(markdown, /release readiness: 0\.2\.0 \/ prototype-hardening \/ npm run release:check passes locally/);
   assert.match(markdown, /collaboration rule: Do not install shared tools/);
   assert.match(markdown, /maintenance rule: Keep local operation advisory and lightweight/);
   assert.match(markdown, /conflict targets: dependency/);
@@ -128,6 +129,9 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /## Agent pointers/);
   assert.match(markdown, /installed: codex/);
   assert.match(markdown, /missing: claude/);
+  assert.match(markdown, /## Release readiness/);
+  assert.match(markdown, /target: 0\.2\.0/);
+  assert.match(markdown, /publish: Accumulate meaningful AI-contract, dashboard, SBOM, and release-gate changes before one npm publish/);
   assert.match(markdown, /\.aienvmp\/sbom\.cdx\.json/);
 });
 
@@ -149,5 +153,7 @@ test("summaryWorkspace writes summary.md after sync", async () => {
   assert.match(summary, /AI SBOM plan:/);
   assert.match(summary, /## Dependency changes/);
   assert.match(summary, /## Agent pointers/);
+  assert.match(summary, /## Release readiness/);
+  assert.match(summary, /release readiness: 0\.2\.0 \/ prototype-hardening/);
   assert.match(summary, /next:/);
 });

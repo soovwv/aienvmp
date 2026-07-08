@@ -1,3 +1,5 @@
+import { schemaContract } from "./contract.js";
+
 const markerBegin = "<!-- aienvmp:begin -->";
 const markerEnd = "<!-- aienvmp:end -->";
 
@@ -403,7 +405,8 @@ function remediationLines(item) {
 }
 
 export function renderDashboard(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
-  const data = JSON.stringify({ manifest, timeline, warnings, intents, policy });
+  const releaseReadiness = schemaContract().releaseReadiness;
+  const data = JSON.stringify({ manifest, timeline, warnings, intents, policy, releaseReadiness });
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -473,7 +476,7 @@ code{color:var(--code);background:#0a2017;border:1px solid #17462f;padding:2px 6
 <main class="shell" id="app"></main>
 <script type="application/json" id="data">${escapeHtml(data)}</script>
 <script>
-const {manifest,timeline,warnings,intents,policy}=JSON.parse(document.getElementById('data').textContent);
+const {manifest,timeline,warnings,intents,policy,releaseReadiness}=JSON.parse(document.getElementById('data').textContent);
 function esc(s){return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
 const entries=o=>Object.entries(o||{});
 const rows=o=>entries(o).map(([k,v])=>\`<tr><th>\${esc(k)}</th><td><code>\${esc(String(v))}</code></td></tr>\`).join('')||'<tr><td colspan="2">None detected</td></tr>';
@@ -540,6 +543,8 @@ const strictPlan=enforcementProfile.strictPlan||{};
 const strictDecision=enforcementProfile.strictDecision||{};
 const strictRecommendation=manifest.preflight?.strictRecommendation||{};
 const enforcementHtml=\`<table><tr><th>Default</th><td><code>\${esc(gate.defaultMode||enforcementProfile.defaultMode||'advisory')}</code> \${esc(gate.localDefault||'warn-only')}</td></tr><tr><th>Local</th><td><code>\${esc(strictRecommendation.localCommand||strictDecision.localCommand||'aienvmp doctor --json')}</code> \${esc(strictRecommendation.localBehavior||strictDecision.local||'warn-only')}</td></tr><tr><th>Fail local</th><td><code>\${esc(strictRecommendation.shouldFailLocal?'yes':'no')}</code></td></tr><tr><th>Recommended scope</th><td><code>\${esc(strictRecommendation.recommendedScope||strictDecision.recommendedScope||strictPlan.recommendedStrictScope||'all')}</code></td></tr><tr><th>CI</th><td><code>\${esc(strictRecommendation.ciCommand||strictDecision.ciCommand||strictPlan.ciCommand||'aienvmp doctor --strict all --json')}</code></td></tr><tr><th>Release</th><td><code>\${esc(strictRecommendation.releaseCommand||'aienvmp doctor --strict all --json')}</code></td></tr></table><div class="timeline">\${strictCommands.slice(0,4).map(cmd=>\`<div class="event"><time>CI</time><div><code>\${esc(cmd)}</code></div></div>\`).join('')}</div><div class="path">\${esc(strictRecommendation.rule||strictDecision.rule||strictPlan.rule||gate.rule||enforcementProfile.reason||'Warnings stay advisory unless strict mode is requested.')}</div>\`;
+const releaseChecks=releaseReadiness?.requiredBeforeStable||[];
+const releaseReadinessHtml=\`<table><tr><th>Target</th><td><code>\${esc(releaseReadiness?.target||'0.2.0')}</code></td></tr><tr><th>Status</th><td><code>\${esc(releaseReadiness?.status||'prototype-hardening')}</code></td></tr><tr><th>Gate</th><td><code>\${esc(releaseChecks[0]||'npm run release:check passes locally')}</code></td></tr></table><div class="timeline">\${releaseChecks.slice(1,5).map(item=>\`<div class="event"><time>check</time><div>\${esc(item)}</div></div>\`).join('')}</div><div class="path">\${esc(releaseReadiness?.batchRule||'Batch meaningful changes before one npm publish.')}</div><div class="path">\${esc(releaseReadiness?.stableContractRule||'After 0.2.0, documented JSON fields stay additive and backward-compatible.')}</div>\`;
 const contract=manifest.preflight?.contract||{};
 const contractHtml=contract.name?\`<table><tr><th>Name</th><td><code>\${esc(contract.name)}</code></td></tr><tr><th>Version</th><td><code>\${esc(contract.version||1)}</code></td></tr><tr><th>Stability</th><td><code>\${esc(contract.stability||'additive')}</code></td></tr><tr><th>AI fields</th><td>\${esc((contract.aiEntryFields||[]).join(', ')||'none')}</td></tr></table><div class="path">\${esc(contract.rule||'Ignore unknown fields.')}</div>\`:'<div class="okline">Run <code>aienvmp status --write</code> to include AI contract metadata.</div>';
 const intentTargets=manifest.preflight?.intentTargets||[];
@@ -674,6 +679,8 @@ document.getElementById('app').innerHTML=\`
     \${card('Environment Steps',envSteps.length?'<span class="pill warn">'+envSteps.length+' items</span>':'<span class="pill off">none</span>',envStepsHtml)}
     <div style="height:14px"></div>
     \${card('Enforcement Mode','<span class="pill">advisory</span>',enforcementHtml)}
+    <div style="height:14px"></div>
+    \${card('Release Readiness','<span class="pill warn">'+esc(releaseReadiness?.target||'0.2.0')+'</span>',releaseReadinessHtml)}
     <div style="height:14px"></div>
     \${card('CI Readiness',ciHasFailure?'<span class="pill warn">review</span>':'<span class="pill">ready</span>',ciReadinessHtml)}
     <div style="height:14px"></div>

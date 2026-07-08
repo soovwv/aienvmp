@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { schemaContract } from "../contract.js";
 import { readJson } from "../fsutil.js";
 import { manifestPath, statusJsonPath, summaryMdPath, workspaceDir } from "../paths.js";
 import { statusWorkspace } from "./status.js";
@@ -72,6 +73,8 @@ export function renderSummary(status = {}, manifest = {}) {
   const strictPlan = status.enforcementProfile?.strictPlan || status.enforcement?.strictPlan || {};
   const strictDecision = status.enforcementProfile?.strictDecision || status.enforcement?.strictDecision || {};
   const strictRecommendation = status.strictRecommendation || {};
+  const releaseReadiness = schemaContract().releaseReadiness || {};
+  const releaseChecks = toList(releaseReadiness.requiredBeforeStable);
 
   return [
     "# aienvmp summary",
@@ -90,6 +93,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- local check: ${strictRecommendation.localCommand || strictDecision.localCommand || "aienvmp doctor --json"} (${strictRecommendation.localBehavior || strictDecision.local || "warn-only"})`,
     `- CI strict: ${strictRecommendation.ciCommand || strictPlan.ciCommand || `${strict} --json`}`,
     `- release strict: ${strictRecommendation.releaseCommand || "aienvmp doctor --strict all --json"}`,
+    `- release readiness: ${releaseReadiness.target || "0.2.0"} / ${releaseReadiness.status || "prototype-hardening"} / ${releaseChecks[0] || "npm run release:check passes locally"}`,
     "",
     `- state: ${status.state || "unknown"}`,
     `- workspace: ${workspace}`,
@@ -130,6 +134,14 @@ export function renderSummary(status = {}, manifest = {}) {
     `- installed: ${toList(agentPointers.installed).join(", ") || "none"}`,
     `- missing: ${toList(agentPointers.missing).join(", ") || "none"}`,
     `- next: ${agentPointers.next || "Run aienvmp snippet codex --write if AI agents need instruction-file discovery."}`,
+    "",
+    "## Release readiness",
+    "",
+    `- target: ${releaseReadiness.target || "0.2.0"}`,
+    `- status: ${releaseReadiness.status || "prototype-hardening"}`,
+    `- gate: ${releaseChecks[0] || "npm run release:check passes locally"}`,
+    `- publish: ${releaseReadiness.batchRule || "Batch meaningful AI-contract, dashboard, SBOM, and release-gate changes before one npm publish."}`,
+    `- stable contract: ${releaseReadiness.stableContractRule || "After 0.2.0, documented JSON fields remain additive and backward-compatible."}`,
     "",
     "## Artifacts",
     "",

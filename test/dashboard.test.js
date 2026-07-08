@@ -318,9 +318,15 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /\.nextbar/);
   assert.match(html, /\.brief/);
   assert.match(html, /const maintenanceLoop=manifest\.preflight\?\.maintenanceLoop\|\|\{\}/);
+  assert.match(html, /const \{manifest,timeline,warnings,intents,policy,releaseReadiness\}=JSON\.parse/);
   assert.match(html, /const aiBootstrap=manifest\.preflight\?\.aiBootstrap\|\|\{\}/);
   assert.match(html, /const artifactFreshness=manifest\.preflight\?\.artifactFreshness\|\|\{\}/);
   assert.match(html, /const strictRecommendation=manifest\.preflight\?\.strictRecommendation\|\|\{\}/);
+  assert.match(html, /const releaseChecks=releaseReadiness\?\.requiredBeforeStable\|\|\[\]/);
+  assert.match(html, /Release Readiness/);
+  assert.match(html, /prototype-hardening/);
+  assert.match(html, /npm run release:check passes locally/);
+  assert.match(html, /Batch meaningful changes before one npm publish/);
   assert.match(html, /const artifactFreshnessValue=artifactFreshness\.state\|\|'unknown'/);
   assert.match(html, /const artifactFreshnessNext=artifactFreshness\.nextCommand\|\|artifactFreshness\.refreshCommand\|\|'aienvmp sync'/);
   assert.match(html, /const nextCommand=aiBootstrap\.nextSafeCommand\|\|manifest\.preflight\?\.nextSafeCommand/);

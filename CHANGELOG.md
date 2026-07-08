@@ -24,6 +24,7 @@
 - Added `strictRecommendation` so AI agents can read one compact local warn-only, CI strict, and release strict decision without changing default advisory behavior.
 - Mirrored `strictRecommendation` in the summary and dashboard so humans see the same advisory-local and strict-CI/release split.
 - Added `releaseReadiness` to `schema --json` so AI/CI can inspect the `0.2.0` stable-contract checklist before publishing.
+- Mirrored `releaseReadiness` in the summary and dashboard so humans see the same batched-release gate before npm publish.
 
 ## 0.1.69
 

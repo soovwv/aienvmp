@@ -91,6 +91,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `schema --json` exposes `schemaVersion`, `contractVersion`, and compatibility rules for AI consumers.
 - `schema --json` also exposes `releaseGate` so AI/CI can see the batched manual publish rule.
 - `schema --json` exposes `releaseReadiness` so AI/CI can check the `0.2.0` stable-contract gate.
+- `summary.md` and the dashboard mirror `releaseReadiness` so humans see the same batched-release gate.
 - After `0.2.0`, documented JSON fields stay backward-compatible; new fields are additive.
 - `aiBootstrap` gives AI the shortest read-first, next-command, and local-mode hint.
 - `aiBootstrap` also explains the next command source and reason.
