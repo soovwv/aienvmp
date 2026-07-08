@@ -4,6 +4,7 @@
 
 ## Near Term
 
+- Prepare `0.2.0` as the stabilized AI workspace contract release
 - Strengthen trust states: observed, planned, changed, review, verified, stale
 - Detect multi-agent environment intent conflicts
 - Keep one advisory decision engine with optional strict enforcement
@@ -45,3 +46,4 @@
 - Replacing vulnerability scanners
 - Taking hard locks on shared machines by default
 - Installing or modifying runtime versions automatically
+- Unpublishing normal prototype history from npm

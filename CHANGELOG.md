@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Added `aiBootstrap.nextSafeCommandSource` and `nextSafeCommandReason` so AI agents can explain why a next command was chosen.
+- Documented the release policy: keep `0.1.x` as prototype history, stabilize the AI workspace contract in `0.2.x`, batch npm releases, and prefer deprecation over unpublish.
 
 ## 0.1.69
 

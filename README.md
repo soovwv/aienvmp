@@ -147,6 +147,13 @@ See [examples/github-action.yml](examples/github-action.yml).
 - advisory locally, strict only when requested
 - humans or CI verify; AI agents observe, plan, record, and hand off
 
+## Release Policy
+
+- `0.1.x` is the prototype history for fast AI-contract validation.
+- `0.2.x` starts the stabilized AI workspace contract.
+- npm releases are batched around meaningful changes, with security fixes as the exception.
+- Broken or superseded versions are deprecated instead of unpublished.
+
 ## Development
 
 ```bash
