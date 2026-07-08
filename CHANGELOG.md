@@ -9,6 +9,7 @@
 - Aligned the dashboard next-command fallback with `maintenanceLoop.nextCommand` so the visual surface follows the same advisory next-step chain.
 - Added `context --json` `nextSafeCommand` so AI agents get the same one-step advisory next command in the preflight payload.
 - Added `handoff --json` `nextSafeCommand` so the next AI can resume from one root-level advisory command.
+- Added `status --json` and `.aienvmp/status.json` `nextSafeCommand` as a stable alias for the preflight next command.
 
 ## 0.1.67
 

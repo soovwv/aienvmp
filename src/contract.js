@@ -4,7 +4,7 @@ export function preflightContract() {
     version: 1,
     stability: "additive",
     requiredFields: ["schemaVersion", "state", "decision", "quickstart", "commands", "artifacts"],
-    aiEntryFields: ["state", "summary", "aiReadiness", "collaboration", "maintenanceLoop", "nextAgent", "coordination", "agentActivity", "agentPointers", "sbomRisk", "followUps", "dependencyReadSet", "dependencyChangeProtocol"],
+    aiEntryFields: ["state", "summary", "nextSafeCommand", "aiReadiness", "collaboration", "maintenanceLoop", "nextAgent", "coordination", "agentActivity", "agentPointers", "sbomRisk", "followUps", "dependencyReadSet", "dependencyChangeProtocol"],
     rule: "Consumers should ignore unknown fields and treat missing optional fields as unavailable."
   };
 }
@@ -32,6 +32,7 @@ export function schemaContract() {
       status: {
         file: ".aienvmp/status.json",
         command: "aienvmp status --json",
+        rootFields: ["state", "nextCommand", "nextSafeCommand", "decision", "counts", "aiReadiness", "collaboration", "maintenanceLoop", "coordination", "agentPointers", "sbomRisk"],
         contract: preflightContract()
       },
       summary: {

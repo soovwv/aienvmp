@@ -90,6 +90,7 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.readOrder[1], ".aienvmp/summary.md");
   assert.equal(status.commands.context, "aienvmp context --json");
   assert.equal(status.nextCommand, "aienvmp intent --actor agent:id --action planned-change --target environment");
+  assert.equal(status.nextSafeCommand, status.nextCommand);
 });
 
 test("buildStatus connects high SBOM risk to dependency review loop", () => {
@@ -273,6 +274,7 @@ test("statusWorkspace JSON reports review-required and strict suggestion", async
   assert.match(json.nextAgent.rule, /review warnings/i);
   assert.equal(json.intentTargets[0].target, "node");
   assert.equal(json.artifacts.envMap, "AIENV.md");
+  assert.equal(json.nextSafeCommand, json.nextCommand);
 });
 
 test("statusWorkspace text prints a compact default decision", async () => {
@@ -405,4 +407,5 @@ test("statusWorkspace can write the compact AI status artifact", async () => {
   assert.equal(written.readOrder[0], ".aienvmp/status.json");
   assert.equal(written.readOrder[1], ".aienvmp/summary.md");
   assert.equal(written.commands.refresh, "aienvmp sync");
+  assert.equal(written.nextSafeCommand, written.nextCommand);
 });

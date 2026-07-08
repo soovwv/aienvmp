@@ -15,11 +15,13 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.aiLoop.strictRule, /warn-only/);
   assert.equal(schema.outputs.status.contract.name, "aienvmp-preflight");
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("nextAgent"));
+  assert.ok(schema.outputs.status.contract.aiEntryFields.includes("nextSafeCommand"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("aiReadiness"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("collaboration"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("maintenanceLoop"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("followUps"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("agentPointers"));
+  assert.ok(schema.outputs.status.rootFields.includes("nextSafeCommand"));
   assert.equal(schema.outputs.summary.command, "aienvmp summary --write");
   assert.equal(schema.outputs.summary.format, "markdown");
   assert.deepEqual(schema.outputs.summary.startsWith, ["AI readiness", "AI signals", "AI next"]);

@@ -30,6 +30,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     dependencyReadSet,
     collaboration
   });
+  const nextCommand = maintenanceLoop.nextCommand || topAction?.command || decision.nextCommand;
   return {
     schemaVersion: 1,
     contract: preflightContract(),
@@ -102,7 +103,8 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
       recordIntent: intentTargets[0]?.command || "aienvmp intent --actor agent:id --action planned-change"
     },
     topAction,
-    nextCommand: maintenanceLoop.nextCommand || topAction?.command || decision.nextCommand
+    nextCommand,
+    nextSafeCommand: nextCommand
   };
 }
 
