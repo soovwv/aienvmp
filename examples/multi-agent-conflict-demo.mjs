@@ -4,6 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
+import { schemaContract } from "../src/contract.js";
 
 const execFileAsync = promisify(execFile);
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -22,6 +23,7 @@ const context = JSON.parse(await run("context", ["--json"]));
 const conflictTargets = status.coordination?.conflictTargets || [];
 const collaboration = status.collaboration?.status || "unknown";
 const discovery = status.agentPointers?.discovery || "unknown";
+const recommendation = schemaContract().recommendation;
 
 if (!conflictTargets.includes("dependency")) {
   throw new Error("demo failed: dependency conflict was not detected");
@@ -35,6 +37,8 @@ console.log(`conflict targets: ${conflictTargets.join(", ")}`);
 console.log(`next command: ${status.nextSafeCommand || status.nextCommand}`);
 console.log(`read first: ${status.aiBootstrap?.readFirst || ".aienvmp/status.json"}`);
 console.log(`context fields: ${Object.keys(context).filter((key) => ["status", "aiBootstrap", "collaboration", "coordination", "agentPointers", "lightSbom"].includes(key)).join(", ")}`);
+console.log(`recommendation: ${recommendation.shortPitch}`);
+console.log(`evidence: ${recommendation.evidenceDocs.slice(0, 2).join(", ")}`);
 
 async function run(command, args = []) {
   const { stdout } = await execFileAsync(process.execPath, [bin, "--dir", workspace, command, ...args], {

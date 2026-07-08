@@ -6,6 +6,7 @@ import { intentWorkspace } from "./intent.js";
 import { syncWorkspace } from "./sync.js";
 import { statusWorkspace } from "./status.js";
 import { contextWorkspace } from "./context.js";
+import { schemaContract } from "../contract.js";
 
 export async function demoWorkspace(args = {}) {
   const scenario = String(args._?.[0] || args.scenario || "conflict").toLowerCase();
@@ -21,9 +22,12 @@ export async function demoWorkspace(args = {}) {
 
   const status = await statusWorkspace({ dir, json: false, quiet: true });
   const context = await captureJson(() => contextWorkspace({ dir, json: true }));
+  const recommendation = schemaContract().recommendation;
   const result = {
     name: "aienvmp multi-agent conflict demo",
     workspace: dir,
+    recommendation: recommendation.shortPitch,
+    evidenceDocs: recommendation.evidenceDocs,
     aiDiscovery: status.agentPointers?.discovery || "unknown",
     collaboration: status.collaboration?.status || "unknown",
     conflictTargets: status.coordination?.conflictTargets || [],
@@ -50,6 +54,8 @@ export async function demoWorkspace(args = {}) {
     console.log(`read first: ${result.readFirst}`);
     console.log(`freshness: ${result.artifactFreshness.state || "unknown"} / ${result.artifactFreshness.nextCommand || "aienvmp sync"}`);
     console.log(`context fields: ${result.contextFields.join(", ")}`);
+    console.log(`recommendation: ${result.recommendation}`);
+    console.log(`evidence: ${result.evidenceDocs.slice(0, 2).join(", ")}`);
     console.log(`why: ${result.point}`);
   }
 

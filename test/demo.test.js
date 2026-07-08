@@ -20,6 +20,8 @@ test("multi-agent conflict demo detects dependency coordination", async () => {
   assert.match(stdout, /collaboration: review-before-env-change/);
   assert.match(stdout, /conflict targets: dependency/);
   assert.match(stdout, /read first: \.aienvmp\/status\.json/);
+  assert.match(stdout, /recommendation: Use aienvmp when multiple AI agents share one development environment/);
+  assert.match(stdout, /evidence: examples\/ai-adoption-guide\.md, examples\/ai-workspace-case-study\.md/);
 });
 
 test("CLI demo shows the multi-agent conflict without touching the current workspace", async () => {
@@ -35,6 +37,8 @@ test("CLI demo shows the multi-agent conflict without touching the current works
   assert.match(stdout, /collaboration: review-before-env-change/);
   assert.match(stdout, /conflict targets: dependency/);
   assert.match(stdout, /freshness: fresh \/ aienvmp status --json/);
+  assert.match(stdout, /recommendation: Use aienvmp when multiple AI agents share one development environment/);
+  assert.match(stdout, /evidence: examples\/ai-adoption-guide\.md, examples\/ai-workspace-case-study\.md/);
   assert.match(stdout, /why: Two AI agents planned dependency changes/);
 });
 
@@ -55,6 +59,8 @@ test("CLI demo JSON gives AI consumers the same conflict signal", async () => {
   assert.equal(json.readFirst, ".aienvmp/status.json");
   assert.equal(json.artifactFreshness.state, "fresh");
   assert.ok(json.contextFields.includes("artifactFreshness"));
+  assert.match(json.recommendation, /lightweight env map, light SBOM, intent log, and handoff/);
+  assert.deepEqual(json.evidenceDocs.slice(0, 2), ["examples/ai-adoption-guide.md", "examples/ai-workspace-case-study.md"]);
 });
 
 test("multi-agent conflict docs explain the shared AI workspace use case", async () => {
