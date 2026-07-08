@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Moved dashboard AI dependency review HTML policy into the dashboard contract module.
 - Moved dashboard SBOM review-plan fallback policy into the dashboard contract module.
 - Moved dashboard SBOM scanner guidance policy into the dashboard contract module to keep the renderer simpler.
 - Mirrored SBOM scanner guidance in the dashboard Light SBOM card so humans see the same optional scanner decision as AI agents.
