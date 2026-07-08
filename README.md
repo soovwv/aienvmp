@@ -16,6 +16,7 @@ npx aienvmp status
 ```
 
 `onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`, refreshes the artifacts, and tells AI agents to read `.aienvmp/status.json` first.
+Those pointers include a session-start rule: read status before environment work, sync only when stale or missing, and keep local coding advisory.
 
 ## Why
 
@@ -98,6 +99,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `sbomRisk`, `sbomReview`, and `sbom.json.aiReviewPlan` connect light SBOM risk to safe dependency-change steps.
 - `collaboration`, `coordination`, and `agentActivity` show multi-agent conflicts and shared targets.
 - `agentPointers.discovery` tells AI whether Codex, Claude, and Gemini instruction files can discover `aienvmp`; `agentPointers.onboardCommand` is the one-command fix.
+- `agentDiscovery.sessionStart` documents the same startup rule for schema-only AI/CI consumers.
 - `enforcement.policy` summarizes local, CI, and release gates: local is warn-only, CI uses the recommended strict scope, release uses `strict all`.
 - `strictDecision` separates local warn-only checks from optional CI strict gates.
 - `status --json`, `context --json`, `handoff --json`, and `doctor --json` include `nextSafeCommand` for one advisory next step.

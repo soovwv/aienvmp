@@ -136,6 +136,13 @@ export function renderAgentPointer(target = "agents") {
 
 ${label} should use \`aienvmp\` as the workspace environment source of truth.
 
+Session start contract:
+
+1. If this file is loaded, treat the aienvmp block as the live env pointer.
+2. Run \`aienvmp status --json\` before environment-affecting work.
+3. If \`.aienvmp/status.json\` is missing or stale, run \`aienvmp sync\`.
+4. Continue project-local code work unless status/context requires environment review.
+
 Fast read order:
 
 1. Run \`aienvmp status --write\`.

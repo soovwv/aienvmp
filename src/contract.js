@@ -33,6 +33,18 @@ export function schemaContract() {
       ],
       strictRule: "Local checks are warn-only; use doctor --strict only for CI or explicit human-requested gates."
     },
+    agentDiscovery: {
+      mode: "instruction-file-pointer",
+      files: ["AGENTS.md", "CLAUDE.md", "GEMINI.md"],
+      installCommand: "aienvmp onboard",
+      sessionStart: [
+        "Treat the aienvmp marker block as the live environment pointer.",
+        "Run aienvmp status --json before environment-affecting work.",
+        "Run aienvmp sync if .aienvmp/status.json is missing or stale.",
+        "Continue project-local code work unless status/context requires environment review."
+      ],
+      rule: "aienvmp does not replace agent instruction files; it gives them a shared live env map and light SBOM."
+    },
     releaseGate: {
       mode: "manual-batched",
       localCommand: "npm run release:check",
@@ -103,6 +115,7 @@ export function schemaContract() {
       aiReadinessRule: "When aiReadiness.level is review, project-local code work may still continue if aiReadiness.projectLocalWork is allowed; environment changes should follow intent/review guidance.",
       collaborationRule: "Use collaboration.status, activeTargets, and nextCommand as the shortest multi-agent environment coordination hint.",
       agentDiscoveryRule: "Use agentPointers.discovery and agentPointers.onboardCommand to decide whether AI instruction-file pointers can discover aienvmp automatically.",
+      sessionStartRule: "Use agentDiscovery.sessionStart as the shortest AI startup routine; read status first, sync only when stale or missing, and keep local work advisory.",
       maintenanceLoopRule: "Use maintenanceLoop as the short recurring AI workflow: refresh, decide, inspect, plan, intent, checkpoint, and handoff without blocking local operation.",
       enforcementPolicyRule: "Use enforcement.policy for the shortest local/CI/release gate summary: local stays warn-only, CI uses the recommended strict scope, release uses strict all.",
       strictDecisionRule: "Use enforcement.strictDecision or preflight.enforcementProfile.strictDecision for the shortest local warn-only vs CI strict decision.",

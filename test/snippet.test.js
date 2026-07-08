@@ -12,6 +12,10 @@ test("snippet writes only an aienvmp marker block when explicitly requested", as
 
   const agents = await fs.readFile(path.join(dir, "AGENTS.md"), "utf8");
   assert.match(agents, /<!-- aienvmp:begin -->/);
+  assert.match(agents, /Session start contract/);
+  assert.match(agents, /aienvmp status --json/);
+  assert.match(agents, /aienvmp sync/);
+  assert.match(agents, /Continue project-local code work/);
   assert.match(agents, /aienvmp status --write/);
   assert.match(agents, /\.aienvmp\/summary\.md/);
   assert.match(agents, /aienvmp context --json/);
