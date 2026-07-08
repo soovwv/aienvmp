@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { dashWorkspace } from "../src/commands/dash.js";
 import { writeJson } from "../src/fsutil.js";
-import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
+import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
 
 test("renderDashboard includes the audit summary surface", () => {
   const html = renderDashboard({
@@ -412,6 +412,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardEnvironmentProtocolClientScript(), /const environmentProtocol=manifest\.preflight\?\.environmentChangeProtocol/);
   assert.match(dashboardEnvironmentProtocolClientScript(), /Before shared environment changes/);
   assert.match(dashboardEnvironmentProtocolClientScript(), /mustNotDo/);
+  assert.match(dashboardReleaseReadinessClientScript(), /const releaseChecks=releaseReadiness\?\.requiredBeforeStable\|\|\[\]/);
+  assert.match(dashboardReleaseReadinessClientScript(), /publishDecision=releaseReadiness\?\.publishDecision\|\|\{\}/);
+  assert.match(dashboardReleaseReadinessClientScript(), /Batch meaningful changes before one npm publish/);
   for (const title of dashboardEssentialCards) {
     assert.match(html, new RegExp(`card\\('${title}'`));
   }
@@ -429,6 +432,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const dependencyHintsHtml=dependencyHints\.length/);
   assert.match(html, /const aiDependencyReviewHtml=aiDependencyReview\.status/);
   assert.match(html, /const environmentProtocol=manifest\.preflight\?\.environmentChangeProtocol/);
+  assert.match(html, /const releaseReadinessHtml=/);
   assert.match(html, /Environment Protocol/);
   assert.match(html, /broad install/);
   assert.match(html, /\.card\.essential/);
