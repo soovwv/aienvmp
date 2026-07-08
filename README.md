@@ -43,7 +43,7 @@ Try the multi-agent conflict demo without touching your workspace:
 npx aienvmp demo
 ```
 
-For the real shared-server story, read [AI workspace coordination case study](examples/ai-workspace-case-study.md).
+For the real shared-server story, read [AI workspace coordination case study](examples/ai-workspace-case-study.md). For recommendation criteria, read [AI adoption guide](examples/ai-adoption-guide.md).
 
 ## What It Does
 

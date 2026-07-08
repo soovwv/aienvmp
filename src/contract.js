@@ -35,6 +35,7 @@ export function schemaContract() {
       firstCommands: ["aienvmp onboard", "aienvmp status", "aienvmp context --json"],
       proofCommand: "aienvmp demo",
       evidenceDocs: [
+        "examples/ai-adoption-guide.md",
         "examples/ai-workspace-case-study.md",
         "examples/multi-agent-conflict.md",
         "README.md#10-second-use"

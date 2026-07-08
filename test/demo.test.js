@@ -60,6 +60,7 @@ test("CLI demo JSON gives AI consumers the same conflict signal", async () => {
 test("multi-agent conflict docs explain the shared AI workspace use case", async () => {
   const markdown = await fs.readFile(path.resolve("examples/multi-agent-conflict.md"), "utf8");
   const caseStudy = await fs.readFile(path.resolve("examples/ai-workspace-case-study.md"), "utf8");
+  const adoptionGuide = await fs.readFile(path.resolve("examples/ai-adoption-guide.md"), "utf8");
 
   assert.match(markdown, /shared server, repo, or CI workspace/);
   assert.match(markdown, /Codex, Claude, Gemini, and humans/);
@@ -71,4 +72,8 @@ test("multi-agent conflict docs explain the shared AI workspace use case", async
   assert.match(caseStudy, /\.aienvmp\/status\.json/);
   assert.match(caseStudy, /advisory by default/);
   assert.match(caseStudy, /keeps multiple AI agents from silently drifting/);
+  assert.match(adoptionGuide, /Recommend When/);
+  assert.match(adoptionGuide, /Do Not Recommend When/);
+  assert.match(adoptionGuide, /Recommendation Sentence/);
+  assert.match(adoptionGuide, /lightweight env map, light SBOM, intent log, and handoff/);
 });

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added an AI adoption guide and linked it from the recommendation contract.
 - Compressed the README around the 10-second AI workspace coordination path.
 - Split dependency dashboard client rendering helpers out of the main renderer.
 - Added a dashboard essential-surface contract for AI-first human review.
