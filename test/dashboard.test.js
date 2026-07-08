@@ -515,7 +515,15 @@ test("dashWorkspace links written plan artifacts", async () => {
         lockfiles: [{ file: "uv.lock", ecosystem: "python", manager: "uv" }],
         packages: 1,
         riskPackages: []
-      }]
+      }],
+      scannerGuidance: {
+        mode: "optional-read-only",
+        defaultCommand: "aienvmp sbom --json",
+        scannerCommand: "aienvmp sync --security",
+        securityConfidence: "scanner-off",
+        whenToRun: ["before security claims", "before release decisions"],
+        rule: "Keep the default SBOM lightweight for AI coordination; use optional read-only scanners only when security confidence matters."
+      }
     },
     agentFiles: {}
   });
@@ -556,6 +564,10 @@ test("dashWorkspace links written plan artifacts", async () => {
   assert.match(html, /node-version-mismatch/);
   assert.match(html, /Dependency Snapshot/);
   assert.match(html, /Light SBOM/);
+  assert.match(html, /Scanner Guidance/);
+  assert.match(html, /optional-read-only/);
+  assert.match(html, /aienvmp sync --security/);
+  assert.match(html, /before security claims/);
   assert.match(html, /Dependency change hints/);
   assert.match(html, /requirements\.txt/);
   assert.match(html, /uv\.lock/);

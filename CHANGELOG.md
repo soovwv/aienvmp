@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Mirrored SBOM scanner guidance in the dashboard Light SBOM card so humans see the same optional scanner decision as AI agents.
 - Added SBOM scanner guidance to the AI schema and standalone light SBOM artifact so agents know when optional read-only scanners are needed.
 - Expanded the multi-agent conflict demo docs with a shared-server AI workspace use case and README link text.
 - Clarified the README first screen around dependency-free, advisory operation for lightweight shared machines.
