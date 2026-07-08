@@ -295,10 +295,16 @@ function dependencyHandoffLines(dependencyHandoff = {}) {
 }
 
 export function renderPlan(plan) {
+  const aiBootstrap = plan.aiBootstrap || plan.preflight?.aiBootstrap || {};
+  const nextSafeCommand = plan.nextSafeCommand || aiBootstrap.nextSafeCommand || plan.preflight?.nextSafeCommand || plan.preflight?.nextCommand || "aienvmp status --json";
   const lines = [
     "# AI Environment Plan",
     "",
     `Status: ${plan.status}`,
+    `AI bootstrap: ${aiBootstrap.projectLocalWork || "allowed"} / ${aiBootstrap.environmentChanges || "intent-first"} / ${aiBootstrap.localMode || "advisory"}`,
+    `Next safe command: ${nextSafeCommand}`,
+    `Read first: ${aiBootstrap.readFirst || ".aienvmp/status.json"} -> ${aiBootstrap.detailCommand || "aienvmp context --json"}`,
+    `Bootstrap rule: ${aiBootstrap.rule || "Read status first, use context for details, and keep local checks advisory."}`,
     `Decision: ${plan.decision?.mode || plan.status}`,
     `Enforcement: ${plan.enforcement?.mode || "advisory-by-default"} (${plan.enforcement?.localBehavior || "non-blocking"})`,
     `Generated: ${plan.generatedAt}`,

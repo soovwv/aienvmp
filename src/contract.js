@@ -42,6 +42,11 @@ export function schemaContract() {
         purpose: "Compact AI and CI step summary for quick review.",
         startsWith: ["AI readiness", "AI signals", "AI next"]
       },
+      plan: {
+        file: ".aienvmp/plan.json",
+        command: "aienvmp plan --json",
+        rootFields: ["schemaVersion", "status", "aiBootstrap", "nextSafeCommand", "preflight", "decision", "enforcement", "recommendedActions", "reviewGates", "remediationSteps", "environmentSteps"]
+      },
       context: {
         command: "aienvmp context --json",
         rootFields: ["status", "aiBootstrap", "nextSafeCommand", "preflight", "aiReadiness", "collaboration", "maintenanceLoop", "coordination", "agentPointers", "decision", "enforcement", "recommendedActions", "workspace", "dependencySnapshot", "lightSbom", "warnings"]

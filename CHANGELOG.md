@@ -6,6 +6,7 @@
 - Mirrored `aiBootstrap` in the dashboard first-read area so humans see the same AI entry hint.
 - Added the same bootstrap hint to `summary.md` so Markdown-first AI agents can start from the compact artifact.
 - Added the bootstrap hint to `AIENV.md` so the main environment map matches the JSON, summary, and dashboard entry point.
+- Added `aiBootstrap` and `nextSafeCommand` to plan JSON and the same bootstrap hint to `plan.md`.
 
 ## 0.1.68
 

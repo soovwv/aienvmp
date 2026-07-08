@@ -36,11 +36,14 @@ export async function planWorkspace(args) {
 export function buildPlan(manifest, warnings = [], intents = [], policy = {}, timeline = []) {
   const actions = recommendedActions(manifest, { warnings, intents });
   const status = warnings.length || intents.length ? "review-required" : "clear";
+  const preflight = buildPreflight(manifest, warnings, intents, timeline);
   return {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
     status,
-    preflight: buildPreflight(manifest, warnings, intents, timeline),
+    aiBootstrap: preflight.aiBootstrap,
+    nextSafeCommand: preflight.nextSafeCommand || preflight.nextCommand,
+    preflight,
     workspace: manifest.workspace || {},
     trust: manifest.trust || {},
     decision: aiDecision(warnings, intents),
