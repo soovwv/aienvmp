@@ -43,6 +43,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     collaboration,
     dependencyChangeProtocol
   });
+  const environmentChangeProtocol = environmentProtocol({ state, intentTargets, dependencyChangeProtocol, collaboration });
   return {
     schemaVersion: 1,
     contract: preflightContract(),
@@ -97,6 +98,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     sbomRisk,
     followUps,
     intentTargets,
+    environmentChangeProtocol,
     dependencyReadSet,
     dependencyChangeProtocol,
     artifacts: preflightArtifacts(),
@@ -121,6 +123,47 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     topAction,
     nextCommand,
     nextSafeCommand: nextCommand
+  };
+}
+
+function environmentProtocol({ state, intentTargets = [], dependencyChangeProtocol = {}, collaboration = {} }) {
+  const firstIntent = intentTargets[0];
+  const target = firstIntent?.target || "environment";
+  const intentCommand = firstIntent?.command || "aienvmp intent --actor agent:id --action planned-change --target environment";
+  const dependencyCommands = dependencyChangeProtocol.commands || {};
+  const checkpointCommand = target === "dependency"
+    ? dependencyCommands.checkpointAfterChange || "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"
+    : `aienvmp checkpoint --actor agent:id --summary what-changed --target ${target}`;
+  return {
+    mode: "advisory",
+    appliesWhen: "Before installing, removing, upgrading, downgrading, or switching runtimes, dependencies, package managers, Docker, or global tools.",
+    state,
+    readFirst: [".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+    beforeChange: [
+      "Read status and context.",
+      "Check collaboration.activeTargets and dependencyChangeProtocol when dependency files are involved.",
+      "Record intent with the recommended target before editing shared environment state."
+    ],
+    afterChange: [
+      "Run the narrowest relevant project validation.",
+      "Run aienvmp checkpoint so the env map, light SBOM, status, summary, timeline, and handoff are refreshed."
+    ],
+    commands: {
+      readStatus: "aienvmp status --json",
+      readContext: "aienvmp context --json",
+      recordIntent: intentCommand,
+      checkpointAfterChange: checkpointCommand,
+      handoff: dependencyCommands.handoff || "aienvmp handoff --record --actor agent:id"
+    },
+    mustNotDo: [
+      "Do not run broad install, update, audit fix, or lockfile rewrite commands without reading the env map first.",
+      "Do not switch package managers or runtime versions only because a tool prefers them.",
+      "Do not ignore open intents, multi-agent activity, or pending follow-ups for the same target."
+    ],
+    nextCommand: collaboration.nextCommand || intentCommand,
+    rule: state === "clear"
+      ? "Project-local work can continue; use this advisory protocol before shared environment changes."
+      : "Review status/context before shared environment changes; local code-only work can continue when allowed."
   };
 }
 

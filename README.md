@@ -62,6 +62,8 @@ npx aienvmp intent --actor agent:id --action "planned-change" --target dependenc
 npx aienvmp checkpoint --actor agent:id --summary "dependency-change" --target dependency
 ```
 
+AI can read `environmentChangeProtocol` in `status --json` or `context --json` for the same before/after-change contract across runtimes, dependencies, package managers, Docker, and global tools.
+
 Use `--dir <workspace>` when AI or CI runs outside the target project. Warnings do not block local work by default.
 
 ## AI Loop

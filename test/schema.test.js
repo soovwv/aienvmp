@@ -16,6 +16,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.aiSessionFields.includes("ifMissingOrStale"));
   assert.ok(schema.aiSessionFields.includes("beforeEnvironmentChange"));
   assert.ok(schema.aiSessionFields.includes("handoff"));
+  assert.ok(schema.environmentChangeProtocolFields.includes("beforeChange"));
+  assert.ok(schema.environmentChangeProtocolFields.includes("mustNotDo"));
   assert.equal(schema.aiLoop.name, "AI maintenance loop");
   assert.equal(schema.aiLoop.localMode, "warn-only");
   assert.deepEqual(schema.aiLoop.steps.map((item) => item.step), ["sync", "status", "context", "intent", "checkpoint", "handoff"]);
@@ -62,12 +64,14 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("collaboration"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("maintenanceLoop"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("followUps"));
+  assert.ok(schema.outputs.status.contract.aiEntryFields.includes("environmentChangeProtocol"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("agentPointers"));
   assert.ok(schema.outputs.status.rootFields.includes("nextSafeCommand"));
   assert.ok(schema.outputs.status.rootFields.includes("aiSession"));
   assert.ok(schema.outputs.status.rootFields.includes("aiBootstrap"));
   assert.ok(schema.outputs.status.rootFields.includes("artifactFreshness"));
   assert.ok(schema.outputs.status.rootFields.includes("strictRecommendation"));
+  assert.ok(schema.outputs.status.rootFields.includes("environmentChangeProtocol"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("discovery"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("onboardCommand"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("fallbackRead"));
@@ -88,6 +92,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.context.rootFields.includes("collaboration"));
   assert.ok(schema.outputs.context.rootFields.includes("maintenanceLoop"));
   assert.ok(schema.outputs.context.rootFields.includes("agentPointers"));
+  assert.ok(schema.outputs.context.rootFields.includes("environmentChangeProtocol"));
   assert.ok(schema.outputs.context.rootFields.includes("aiReadiness"));
   assert.ok(schema.outputs.handoff.rootFields.includes("dependencyHandoff"));
   assert.ok(schema.outputs.handoff.rootFields.includes("aiBootstrap"));
@@ -119,6 +124,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.compatibility.demoRule, /multi-agent conflict value proposition/);
   assert.match(schema.compatibility.sessionStartRule, /AI startup routine/);
   assert.match(schema.compatibility.aiSessionRule, /per-session routine/);
+  assert.match(schema.compatibility.environmentChangeProtocolRule, /runtime/);
   assert.match(schema.compatibility.maintenanceLoopRule, /recurring AI workflow/);
   assert.match(schema.compatibility.enforcementPolicyRule, /local\/CI\/release/);
   assert.match(schema.compatibility.strictRecommendationRule, /local\/CI\/release strict guidance/);

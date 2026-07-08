@@ -36,6 +36,7 @@ test("buildStatus returns a compact clear state", () => {
   assert.ok(status.contract.aiEntryFields.includes("nextAgent"));
   assert.ok(status.contract.aiEntryFields.includes("collaboration"));
   assert.ok(status.contract.aiEntryFields.includes("maintenanceLoop"));
+  assert.ok(status.contract.aiEntryFields.includes("environmentChangeProtocol"));
   assert.ok(status.contract.aiEntryFields.includes("dependencyReadSet"));
   assert.equal(status.counts.runtimes, 1);
   assert.equal(status.counts.dependencies, 2);
@@ -71,6 +72,14 @@ test("buildStatus returns a compact clear state", () => {
   assert.match(status.collaboration.rule, /project-local work/);
   assert.match(status.aiReadiness.safeProjectLocalActions[0], /read status/);
   assert.match(status.aiReadiness.reviewOnlyEnvironmentChanges, /Record intent/);
+  assert.equal(status.environmentChangeProtocol.mode, "advisory");
+  assert.match(status.environmentChangeProtocol.appliesWhen, /runtimes/);
+  assert.equal(status.environmentChangeProtocol.readFirst[0], ".aienvmp/status.json");
+  assert.match(status.environmentChangeProtocol.beforeChange.join(" "), /Record intent/);
+  assert.equal(status.environmentChangeProtocol.commands.recordIntent, "aienvmp intent --actor agent:id --action planned-change --target dependency");
+  assert.equal(status.environmentChangeProtocol.commands.checkpointAfterChange, "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency");
+  assert.match(status.environmentChangeProtocol.mustNotDo.join(" "), /broad install/);
+  assert.match(status.environmentChangeProtocol.rule, /Project-local work/);
   assert.equal(status.quickstart.label, "10-second AI flow");
   assert.equal(status.quickstart.detailCommand, "aienvmp context --json");
   assert.equal(status.quickstart.afterEnvironmentChange, "aienvmp checkpoint --actor agent:id --summary what-changed --target environment");

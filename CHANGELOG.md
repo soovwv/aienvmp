@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `environmentChangeProtocol` so AI agents get one advisory before/after-change contract for runtimes, dependencies, package managers, Docker, and global tools.
 - Added an AI discovery fallback contract so agents can use existing status, summary, and context artifacts even when instruction-file pointers are not installed.
 - Moved dashboard dependency-hints HTML into the dashboard contract module.
 - Moved dashboard package-manager policy HTML into the dashboard contract module.
