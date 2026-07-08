@@ -17,6 +17,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.recommendation.doNotRecommendWhen.join(" "), /full compliance SBOM/);
   assert.deepEqual(schema.recommendation.firstCommands, ["aienvmp onboard", "aienvmp status", "aienvmp context --json"]);
   assert.equal(schema.recommendation.proofCommand, "aienvmp demo");
+  assert.ok(schema.recommendation.evidenceDocs.includes("examples/ai-workspace-case-study.md"));
+  assert.ok(schema.recommendation.evidenceDocs.includes("examples/multi-agent-conflict.md"));
   assert.match(schema.recommendation.rule, /not as a replacement/);
   assert.ok(schema.aiBootstrapFields.includes("nextSafeCommandSource"));
   assert.ok(schema.aiBootstrapFields.includes("nextSafeCommandReason"));
@@ -160,6 +162,7 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   assert.equal(schema.outputs.context.command, "aienvmp context --json");
   assert.equal(schema.recommendation.category, "AI workspace coordination");
   assert.equal(schema.recommendation.proofCommand, "aienvmp demo");
+  assert.ok(schema.recommendation.evidenceDocs.includes("README.md#10-second-use"));
   assert.equal(schema.outputs.summary.file, ".aienvmp/summary.md");
   assert.equal(schema.outputs.sbom.file, ".aienvmp/sbom.json");
   assert.equal(schema.outputs.cyclonedxLite.file, ".aienvmp/sbom.cdx.json");

@@ -12,6 +12,8 @@ test("packaged aienvmp skill points AI agents to current startup contracts", asy
   assert.match(skill, /full compliance SBOM scanner/);
   assert.match(skill, /recommendation\.recommendWhen/);
   assert.match(skill, /recommendation\.doNotRecommendWhen/);
+  assert.match(skill, /recommendation\.evidenceDocs/);
+  assert.match(skill, /examples\/ai-workspace-case-study\.md/);
   assert.match(skill, /onboard --agents cursor,copilot/);
   assert.match(skill, /aiSession/);
   assert.match(skill, /npx aienvmp status --json/);
