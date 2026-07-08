@@ -49,6 +49,7 @@ export function buildHandoff(manifest, timeline = [], warnings = [], intents = [
   const preflight = buildPreflight(manifest, warnings, intents, timeline);
   return {
     status: reviewRequired ? "review-required" : "clear",
+    nextSafeCommand: preflight.nextCommand || preflight.maintenanceLoop?.nextCommand || "aienvmp status --json",
     trust: manifest.trust || {},
     schemaVersion: manifest.schemaVersion || 1,
     preflight,
