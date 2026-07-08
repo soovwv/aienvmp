@@ -22,6 +22,11 @@ export async function sbomWorkspace(args = {}) {
 
 export function buildSbomArtifact(manifest = {}) {
   const lightSbom = manifest.lightSbom || {};
+  const dependencyReview = lightSbom.aiDependencyReview || aiDependencyReview(lightSbom);
+  const nextSafeCommand = dependencyReview.beforeDependencyChange?.[0]
+    || lightSbom.riskSummary?.commands?.[0]
+    || "aienvmp context --json";
+  const aiBootstrap = sbomBootstrap(nextSafeCommand, dependencyReview);
   return {
     schemaVersion: 1,
     schemaName: "aienvmp.light-sbom",
@@ -36,13 +41,28 @@ export function buildSbomArtifact(manifest = {}) {
     topRisk: (lightSbom.topRisk || []).slice(0, 20),
     packageManagerPolicy: lightSbom.packageManagerPolicy || {},
     dependencyChangeHints: (lightSbom.dependencyChangeHints || []).slice(0, 20),
-    aiDependencyReview: lightSbom.aiDependencyReview || aiDependencyReview(lightSbom),
+    aiBootstrap,
+    nextSafeCommand,
+    aiDependencyReview: dependencyReview,
     aiUse: {
       purpose: "Standalone AI-readable light SBOM artifact.",
       readBefore: "Dependency changes, vulnerability remediation, release review, or shared AI handoff.",
-      nextCommand: lightSbom.riskSummary?.commands?.[0] || "aienvmp context --json",
+      nextCommand: nextSafeCommand,
       rule: "Use as a lightweight planning map; verify security claims with dedicated scanners."
     }
+  };
+}
+
+function sbomBootstrap(nextSafeCommand, review = {}) {
+  return {
+    purpose: "Shortest AI entry point for dependency and SBOM review.",
+    readFirst: ".aienvmp/sbom.json",
+    detailCommand: "aienvmp context --json",
+    nextSafeCommand,
+    localMode: "advisory",
+    projectLocalWork: "allowed",
+    environmentChanges: review.status === "review" ? "review-first" : "intent-first",
+    rule: review.rule || "Read SBOM risk first; record intent before dependency or lockfile changes."
   };
 }
 

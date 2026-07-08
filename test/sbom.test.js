@@ -24,6 +24,11 @@ test("buildSbomArtifact creates standalone AI-readable light SBOM", () => {
   assert.equal(sbom.schemaName, "aienvmp.light-sbom");
   assert.equal(sbom.summary.packages, 1);
   assert.equal(sbom.riskSummary.level, "high");
+  assert.equal(sbom.aiBootstrap.readFirst, ".aienvmp/sbom.json");
+  assert.equal(sbom.aiBootstrap.detailCommand, "aienvmp context --json");
+  assert.equal(sbom.aiBootstrap.nextSafeCommand, "aienvmp sync --security");
+  assert.equal(sbom.aiBootstrap.environmentChanges, "review-first");
+  assert.equal(sbom.nextSafeCommand, "aienvmp sync --security");
   assert.equal(sbom.aiDependencyReview.status, "review");
   assert.equal(sbom.aiDependencyReview.securityConfidence, "scanner-off");
   assert.match(sbom.aiDependencyReview.statusReason, /requires dependency review/);
@@ -93,6 +98,8 @@ test("sbomWorkspace can write .aienvmp/sbom.json", async () => {
   const written = JSON.parse(await fs.readFile(result.artifact, "utf8"));
   assert.equal(written.schemaName, "aienvmp.light-sbom");
   assert.equal(written.summary.packages, 1);
+  assert.equal(written.aiBootstrap.nextSafeCommand, "aienvmp intent --actor agent:id --action dependency-review --target dependency");
+  assert.equal(written.nextSafeCommand, written.aiBootstrap.nextSafeCommand);
   assert.equal(written.aiDependencyReview.status, "ready");
   assert.equal(written.aiDependencyReview.securityConfidence, "scanner-summary");
   assert.ok(written.aiDependencyReview.readFirst.includes("riskSummary"));

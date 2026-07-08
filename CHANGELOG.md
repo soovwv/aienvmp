@@ -7,6 +7,7 @@
 - Added the same bootstrap hint to `summary.md` so Markdown-first AI agents can start from the compact artifact.
 - Added the bootstrap hint to `AIENV.md` so the main environment map matches the JSON, summary, and dashboard entry point.
 - Added `aiBootstrap` and `nextSafeCommand` to plan JSON and the same bootstrap hint to `plan.md`.
+- Added `aiBootstrap` and `nextSafeCommand` to the standalone light SBOM artifact so dependency review starts from the same AI loop.
 
 ## 0.1.68
 
