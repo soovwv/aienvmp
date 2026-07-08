@@ -5,6 +5,7 @@
 - Added an `aienvmp AI loop` block to the GitHub Action Step Summary using `schema.aiLoop`.
 - Kept the Action summary advisory by default while showing the same loop documented in README and `schema --json`.
 - Updated the GitHub Action example and README CI notes to mention Step Summary strict-plan and AI-loop blocks.
+- Added `doctor --json` `nextSafeCommand` so AI agents can pick one advisory next command without parsing every warning.
 
 ## 0.1.67
 

@@ -77,6 +77,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `sbomRisk` and `sbomReview` connect light SBOM risk to safe dependency-change steps.
 - `collaboration`, `coordination`, and `agentActivity` show multi-agent conflicts and shared targets.
 - `strictDecision` separates local warn-only checks from optional CI strict gates.
+- `doctor --json` includes `nextSafeCommand` for one advisory next step.
 - `schema --json` prints the stable machine-readable contract without scanning.
 
 ## Agent Files

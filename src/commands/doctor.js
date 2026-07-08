@@ -20,6 +20,7 @@ export async function doctorWorkspace(args) {
   const actions = recommendedActions(manifest, { warnings, intents });
   const preflight = buildPreflight(manifest, warnings, intents, timeline);
   const strict = strictResult(warnings, args);
+  const nextSafeCommand = doctorNextSafeCommand(actions, warnings);
   const exitBehavior = {
     mode: strict.enabled ? "strict" : "advisory",
     willSetFailureExitCode: strict.fail,
@@ -37,6 +38,7 @@ export async function doctorWorkspace(args) {
       aiReadiness: preflight.aiReadiness,
       agentPointers: preflight.agentPointers,
       openIntentCount: intents.length,
+      nextSafeCommand,
       warnings,
       recommendedActions: actions,
       enforcement: enforcementAdvice(warnings),
@@ -62,4 +64,11 @@ export async function doctorWorkspace(args) {
   if (strict.fail) {
     process.exitCode = 1;
   }
+}
+
+function doctorNextSafeCommand(actions = [], warnings = []) {
+  const command = actions.find((item) => item.command)?.command;
+  if (command) return command;
+  if (warnings.length) return "aienvmp plan --write";
+  return "aienvmp status --json";
 }
