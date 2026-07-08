@@ -123,6 +123,36 @@ runs:
         NODE
         fi
 
+    - name: Append AI loop summary
+      shell: bash
+      run: |
+        if [ "${{ inputs.write-summary }}" = "true" ] && [ -n "$GITHUB_STEP_SUMMARY" ]; then
+          mkdir -p "${{ inputs.directory }}/.aienvmp"
+          schema_source="${{ inputs.directory }}/.aienvmp/schema.json"
+          if [ ! -f "$schema_source" ]; then
+            schema_source="$(mktemp)"
+            node "$GITHUB_ACTION_PATH/bin/aienvmp.js" schema --json > "$schema_source"
+          fi
+          node - "$schema_source" "$GITHUB_STEP_SUMMARY" <<'NODE'
+        const fs = require("node:fs");
+
+        const [schemaPath, summaryPath] = process.argv.slice(2);
+        const schema = JSON.parse(fs.readFileSync(schemaPath, "utf8"));
+        const loop = schema.aiLoop || {};
+        const steps = (loop.steps || []).slice(0, 6).map((item) => item.command).join(" -> ");
+
+        fs.appendFileSync(summaryPath, [
+          "",
+          "## aienvmp AI loop",
+          "",
+          `- mode: ${loop.localMode || "warn-only"}`,
+          `- steps: \`${steps || "aienvmp sync -> aienvmp status -> aienvmp handoff"}\``,
+          `- rule: ${loop.strictRule || "Local checks are warn-only; strict gates are explicit."}`,
+          ""
+        ].join("\n"));
+        NODE
+        fi
+
     - name: Doctor
       shell: bash
       run: |

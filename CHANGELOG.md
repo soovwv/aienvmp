@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Added an `aienvmp AI loop` block to the GitHub Action Step Summary using `schema.aiLoop`.
+- Kept the Action summary advisory by default while showing the same loop documented in README and `schema --json`.
+
 ## 0.1.67
 
 - Added a dashboard `First read` strip with status, first file, review targets, and local operation mode.
