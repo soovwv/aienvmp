@@ -23,10 +23,13 @@ It helps Codex, Claude, Gemini, and humans avoid silent runtime, package manager
 ## 10-Second Use
 
 ```bash
+npx aienvmp onboard
 npx aienvmp sync
 npx aienvmp status
 npx aienvmp handoff
 ```
+
+`onboard` installs lightweight pointers for Codex, Claude, and Gemini, then refreshes the env map so AI agents can discover the live state from their normal instruction files.
 
 For AI details:
 
@@ -92,6 +95,7 @@ AIENV.md                 # Markdown env map for AI agents
 `aienvmp` does not replace AGENTS.md, CLAUDE.md, or GEMINI.md. It gives them a live environment source of truth.
 
 ```bash
+npx aienvmp onboard
 npx aienvmp snippet codex
 npx aienvmp snippet agents
 npx aienvmp snippet claude
@@ -106,6 +110,7 @@ Snippets point each AI to `status`, `summary.md`, `context --json`, intent, and 
 
 ```bash
 aienvmp sync                    # update env map, status, summary, SBOM, dashboard
+aienvmp onboard                 # install Codex/Claude/Gemini pointers and sync
 aienvmp status                  # 5-line env decision
 aienvmp status --write          # refresh compact AI status artifact
 aienvmp status --verbose        # show command details

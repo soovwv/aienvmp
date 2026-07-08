@@ -17,6 +17,7 @@ import { schemaWorkspace } from "./commands/schema.js";
 import { checkpointWorkspace } from "./commands/checkpoint.js";
 import { sbomWorkspace } from "./commands/sbom.js";
 import { summaryWorkspace } from "./commands/summary.js";
+import { onboardWorkspace } from "./commands/onboard.js";
 import { readFileSync } from "node:fs";
 
 const commands = new Map([
@@ -38,7 +39,8 @@ const commands = new Map([
   ["schema", schemaWorkspace],
   ["checkpoint", checkpointWorkspace],
   ["sbom", sbomWorkspace],
-  ["summary", summaryWorkspace]
+  ["summary", summaryWorkspace],
+  ["onboard", onboardWorkspace]
 ]);
 
 const version = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version;
@@ -119,8 +121,10 @@ Usage:
   aienvmp sbom [--dir .] [--json] [--write]
   aienvmp summary [--dir .] [--write]
   aienvmp schema [--json]
+  aienvmp onboard [codex claude gemini] [--agents codex,claude,gemini] [--no-sync]
 
 Common:
+  aienvmp onboard   install AI instruction-file pointers and refresh outputs
   aienvmp sync      update AIENV.md, manifest, status, summary, SBOM, ledger, intents, and dashboard
   aienvmp status    print a 5-line AI/human environment decision; --verbose shows command details
   aienvmp context   print the AI preflight brief
@@ -141,6 +145,7 @@ Advanced:
   aienvmp record [--dir .] --actor agent:codex --summary "updated .nvmrc" [--target node] [--before 20] [--after 24]
   aienvmp checkpoint [--dir .] --actor agent:codex --summary "updated dependency" [--target dependency]
   aienvmp snippet [agents|codex|claude|gemini] [--write AGENTS.md]
+  aienvmp onboard [codex claude gemini] [--agents codex,claude,gemini] [--no-sync]
   aienvmp compile [--dir .]
   aienvmp diff [--dir .]
   aienvmp doctor [--dir .] [--json] [--ci] [--strict security|policy|coordination|all]
