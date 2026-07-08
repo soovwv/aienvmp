@@ -58,7 +58,7 @@ export function schemaContract() {
       purpose: "Shared lightweight workflow for AI agents that maintain one workspace environment.",
       localMode: "warn-only",
       steps: [
-        { step: "sync", command: "aienvmp sync", purpose: "refresh AIENV.md, status, summary, SBOM, ledger, and dashboard" },
+        { step: "sync", command: "aienvmp sync", purpose: "refresh AIENV.md, start-here README, status, summary, SBOM, ledger, and dashboard" },
         { step: "status", command: "aienvmp status", purpose: "read the 5-line clear/review decision" },
         { step: "context", command: "aienvmp context --json", purpose: "read the full AI preflight contract when details are needed" },
         { step: "intent", command: "aienvmp intent --actor agent:id --action planned-change --target dependency", purpose: "record planned environment-affecting changes before touching shared state" },
@@ -74,14 +74,14 @@ export function schemaContract() {
       installCommand: "aienvmp onboard",
       optionalInstallCommand: "aienvmp onboard --agents cursor,copilot",
       fallbackCommand: "aienvmp status --json",
-      fallbackRead: [".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+      fallbackRead: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
       sessionStart: [
         "Treat the aienvmp marker block as the live environment pointer.",
         "Run aienvmp status --json before environment-affecting work.",
         "Run aienvmp sync if .aienvmp/status.json is missing or stale.",
         "Continue project-local code work unless status/context requires environment review."
       ],
-      rule: "aienvmp does not replace agent instruction files; it gives them a shared live env map and light SBOM. Instruction-file pointers improve automatic discovery, while existing artifacts remain directly usable through the fallback read path. Optional Cursor and Copilot pointers are opt-in."
+      rule: "aienvmp does not replace agent instruction files; it gives them a shared live env map and light SBOM. Instruction-file pointers improve automatic discovery, while existing artifacts remain directly usable through the fallback read path starting at .aienvmp/README.md. Optional Cursor and Copilot pointers are opt-in."
     },
     demo: {
       command: "aienvmp demo",
@@ -167,6 +167,13 @@ export function schemaContract() {
         rootFields: ["state", "aiSession", "aiBootstrap", "nextCommand", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "decision", "counts", "aiReadiness", "collaboration", "maintenanceLoop", "coordination", "agentPointers", "sbomRisk", "followUpPlan", "environmentChangeProtocol"],
         agentPointerFields: ["installedCount", "missingCount", "installed", "missing", "discovery", "onboardCommand", "fallbackCommand", "fallbackRead", "next", "targets", "rule"],
         contract: preflightContract()
+      },
+      startHere: {
+        file: ".aienvmp/README.md",
+        command: "aienvmp sync",
+        format: "markdown",
+        purpose: "Generated start-here file for AI agents or humans that discover the .aienvmp directory before instruction-file pointers.",
+        startsWith: ["read first", "AI session", "next"]
       },
       summary: {
         file: ".aienvmp/summary.md",

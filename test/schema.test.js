@@ -44,7 +44,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.agentDiscovery.installCommand, "aienvmp onboard");
   assert.equal(schema.agentDiscovery.optionalInstallCommand, "aienvmp onboard --agents cursor,copilot");
   assert.equal(schema.agentDiscovery.fallbackCommand, "aienvmp status --json");
-  assert.deepEqual(schema.agentDiscovery.fallbackRead, [".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
+  assert.deepEqual(schema.agentDiscovery.fallbackRead, [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
   assert.ok(schema.agentDiscovery.optionalFiles.includes(".github/copilot-instructions.md"));
   assert.deepEqual(schema.agentDiscovery.files, ["AGENTS.md", "CLAUDE.md", "GEMINI.md"]);
   assert.ok(schema.agentDiscovery.sessionStart.includes("Run aienvmp status --json before environment-affecting work."));
@@ -105,6 +105,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.agentPointerFields.includes("onboardCommand"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("fallbackRead"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("fallbackCommand"));
+  assert.equal(schema.outputs.startHere.file, ".aienvmp/README.md");
+  assert.match(schema.outputs.startHere.purpose, /discover the \.aienvmp directory/);
   assert.ok(schema.outputs.status.agentPointerFields.includes("rule"));
   assert.equal(schema.outputs.summary.command, "aienvmp summary --write");
   assert.equal(schema.outputs.summary.format, "markdown");

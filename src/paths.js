@@ -52,6 +52,10 @@ export function summaryMdPath(dir) {
   return path.join(stateDir(dir), "summary.md");
 }
 
+export function stateReadmePath(dir) {
+  return path.join(stateDir(dir), "README.md");
+}
+
 export function aiEnvPath(dir) {
   return path.join(dir, "AIENV.md");
 }

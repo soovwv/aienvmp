@@ -249,7 +249,7 @@ test("buildStatus exposes agent pointer discovery hints", () => {
   assert.equal(status.agentPointers.targets[1].file, "CLAUDE.md");
   assert.equal(status.agentPointers.onboardCommand, "aienvmp onboard");
   assert.equal(status.agentPointers.fallbackCommand, "aienvmp status --json");
-  assert.deepEqual(status.agentPointers.fallbackRead, [".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
+  assert.deepEqual(status.agentPointers.fallbackRead, [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
   assert.match(status.agentPointers.discovery, /ready: codex/);
   assert.match(status.agentPointers.next, /aienvmp onboard/);
   assert.match(status.agentPointers.next, /snippet claude/);

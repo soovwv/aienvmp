@@ -128,7 +128,7 @@ Usage:
 
 Common:
   aienvmp onboard   install AI instruction-file pointers and refresh outputs
-  aienvmp sync      update AIENV.md, manifest, status, summary, SBOM, ledger, intents, and dashboard
+  aienvmp sync      update AIENV.md, start-here README, status, summary, SBOM, ledger, intents, and dashboard
   aienvmp status    print a 5-line AI/human environment decision; --verbose shows command details
   aienvmp context   print the AI preflight brief
   aienvmp handoff   print the next-agent handoff summary

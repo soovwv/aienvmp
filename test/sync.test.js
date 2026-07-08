@@ -69,9 +69,15 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.ok(["clear", "review-required"].includes(status.state));
   assert.equal(status.agentUse.purpose, "First AI-readable environment preflight for this workspace.");
   assert.equal(status.artifacts.dashboard, ".aienvmp/dashboard.html");
+  assert.equal(status.artifacts.startHere, ".aienvmp/README.md");
   assert.equal(status.artifacts.summary, ".aienvmp/summary.md");
   assert.equal(status.artifacts.sbom, ".aienvmp/sbom.json");
   assert.equal(status.artifacts.cyclonedx, ".aienvmp/sbom.cdx.json");
+  const startHere = await fs.readFile(path.join(dir, ".aienvmp", "README.md"), "utf8");
+  assert.match(startHere, /# aienvmp start here/);
+  assert.match(startHere, /read first: `\.aienvmp\/status\.json`/);
+  assert.match(startHere, /AI session: `aienvmp status --json -> aienvmp context --json`/);
+  assert.match(startHere, /For AI agents: use `status\.json`, `summary\.md`, then `aienvmp context --json`/);
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "summary.md")));
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "sbom.json")));
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "sbom.cdx.json")));
@@ -105,6 +111,7 @@ test("sync can return a quiet machine-readable result", async () => {
   assert.equal(result.changes, 0);
   assert.match(result.outputs.aiEnv, /AIENV\.md$/);
   assert.match(result.outputs.status, /\.aienvmp[\\\/]status\.json$/);
+  assert.match(result.outputs.startHere, /\.aienvmp[\\\/]README\.md$/);
   assert.match(result.outputs.summary, /\.aienvmp[\\\/]summary\.md$/);
   assert.match(result.outputs.sbom, /\.aienvmp[\\\/]sbom\.json$/);
   assert.match(result.outputs.cyclonedx, /\.aienvmp[\\\/]sbom\.cdx\.json$/);

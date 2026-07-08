@@ -19,7 +19,7 @@ npx aienvmp onboard
 npx aienvmp status
 ```
 
-`onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`, refreshes artifacts, and tells AI agents to read `.aienvmp/status.json` first. If pointers are not installed, AI can still read `.aienvmp/status.json`, `.aienvmp/summary.md`, then `npx aienvmp context --json`.
+`onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`, refreshes artifacts, and tells AI agents to read `.aienvmp/status.json` first. If pointers are not installed, AI can still start at `.aienvmp/README.md`, then read `.aienvmp/status.json`, `.aienvmp/summary.md`, and `npx aienvmp context --json`.
 
 ## 10-Second Use
 
@@ -55,7 +55,7 @@ For the real shared-server story, read [AI workspace coordination case study](ex
 
 ## AI Loop
 
-1. `sync` refreshes `AIENV.md`, status, summary, SBOM, ledger, and dashboard.
+1. `sync` refreshes `AIENV.md`, `.aienvmp/README.md`, status, summary, SBOM, ledger, and dashboard.
 2. `status` gives the 5-line clear/review decision.
 3. `context --json` gives AI the full preflight contract.
 4. `intent` records planned env changes before touching shared state.
@@ -69,6 +69,7 @@ Local mode is warn-only. Use `doctor --strict security|policy|coordination|all` 
 ```text
 AIENV.md                 # Markdown env map for AI agents
 .aienvmp/status.json     # first AI read: clear/review, next command, nextAgent hint
+.aienvmp/README.md       # generated start-here file when AI finds the artifact folder
 .aienvmp/summary.md      # compact AI/CI summary
 .aienvmp/manifest.json   # runtime map + light SBOM
 .aienvmp/sbom.json       # standalone AI-readable light SBOM
@@ -86,6 +87,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `schemaVersion`, `contractVersion`, `stableFrom`, and compatibility rules are explicit.
 - `recommendation.recommendWhen`, `doNotRecommendWhen`, and `evidenceDocs` tell AI when to suggest this tool.
 - `agentPointers.discovery` tells AI whether Codex, Claude, and Gemini files can discover `aienvmp`.
+- `.aienvmp/README.md` gives a generated fallback start point when instruction-file pointers are missing.
 - `agentDiscovery.sessionStart` documents the startup rule for schema-only AI/CI consumers.
 - `environmentChangeProtocol` gives one before/after-change contract for runtimes, dependencies, package managers, Docker, and global tools.
 - `followUpPlan` gives AI one next command when previous environment work still needs sync, status, or handoff.
@@ -98,7 +100,7 @@ AIENV.md                 # Markdown env map for AI agents
 
 ```bash
 aienvmp onboard                 # install Codex/Claude/Gemini pointers and sync
-aienvmp sync                    # update env map, status, summary, SBOM, dashboard
+aienvmp sync                    # update env map, start-here README, status, summary, SBOM, dashboard
 aienvmp status                  # 5-line env decision
 aienvmp context --json          # AI decision contract
 aienvmp sbom --json             # standalone light SBOM
