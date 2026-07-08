@@ -63,3 +63,9 @@ export function dashboardScannerGuidanceHtmlClientScript() {
     "const scannerGuidanceHtml=`<table><tr><th>Mode</th><td><code>${esc(scannerGuidance.mode||'optional-read-only')}</code></td></tr><tr><th>Default</th><td><code>${esc(scannerGuidance.defaultCommand||'aienvmp sbom --json')}</code></td></tr><tr><th>Scanner</th><td><code>${esc(scannerGuidance.scannerCommand||'aienvmp sync --security')}</code></td></tr><tr><th>Confidence</th><td><code>${esc(scannerGuidance.securityConfidence||'unknown')}</code></td></tr><tr><th>Run before</th><td>${esc((scannerGuidance.whenToRun||[]).join(', ')||'security-sensitive decisions')}</td></tr></table><div class=\"path\">${esc(scannerGuidance.rule||'Keep the default SBOM lightweight; use optional read-only scanners when security confidence matters.')}</div>`;"
   ].join("\n");
 }
+
+export function dashboardRiskSummaryClientScript() {
+  return [
+    "const riskSummaryHtml=riskSummary.level?`<table><tr><th>Level</th><td><code>${esc(riskSummary.level)}</code> ${esc(riskSummary.score||0)}</td></tr><tr><th>Scanner</th><td><code>${esc(riskSummary.scanner||'unknown')}</code></td></tr><tr><th>Next</th><td>${esc(riskSummary.next||'No SBOM action required.')}</td></tr><tr><th>Targets</th><td>${esc((riskSummary.reviewTargets||[]).join(', ')||'none')}</td></tr></table>${riskSummary.signals?.length?'<div class=\"timeline\">'+riskSummary.signals.slice(0,5).map(s=>`<div class=\"event\"><time>risk</time><div>${esc(s)}</div></div>`).join('')+'</div>':''}`:'<div class=\"okline\">No risk summary available.</div>';"
+  ].join("\n");
+}

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Moved dashboard SBOM risk summary HTML policy into the dashboard contract module.
 - Moved dashboard scanner guidance HTML policy into the dashboard contract module.
 - Moved dashboard AI review plan HTML policy into the dashboard contract module.
 - Moved dashboard AI dependency review HTML policy into the dashboard contract module.
