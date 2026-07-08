@@ -12,7 +12,7 @@ test("onboard writes Codex, Claude, and Gemini pointers then syncs", async () =>
 
   assert.equal(result.status, "ok");
   assert.equal(result.sync, "ok");
-  assert.equal(result.aiDiscovery, "ready");
+  assert.equal(result.aiDiscovery, "ready: codex, claude, gemini");
   assert.deepEqual(result.readFirst, [".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md"]);
   assert.deepEqual(result.nextCommands, ["aienvmp status", "aienvmp context --json"]);
   assert.match(result.sessionStart[0], /status\.json first/);
@@ -37,7 +37,7 @@ test("onboard can target one agent without syncing", async () => {
   const result = await onboardWorkspace({ dir, _: ["claude"], no_sync: true, quiet: true });
 
   assert.equal(result.sync, "skipped");
-  assert.equal(result.aiDiscovery, "pointers-written");
+  assert.equal(result.aiDiscovery, "pointers-written: claude");
   assert.match(result.sessionStart.join(" "), /project-local code work/);
   assert.deepEqual(result.pointers.map((item) => item.file), ["CLAUDE.md"]);
   await assert.rejects(fs.readFile(path.join(dir, "AGENTS.md"), "utf8"));
@@ -77,7 +77,7 @@ test("onboard text output includes the AI session start contract", async () => {
   }
 
   const text = output.join("\n");
-  assert.match(text, /AI discovery: pointers-written/);
+  assert.match(text, /AI discovery: pointers-written: gemini/);
   assert.match(text, /session: read \.aienvmp\/status\.json first/);
   assert.match(text, /artifactFreshness is not fresh/);
 });

@@ -11,6 +11,7 @@ const sessionStart = [
 
 export async function onboardWorkspace(args = {}) {
   const agents = selectedAgents(args);
+  const discoveryTargets = agents.map((agent) => agent === "agents" ? "codex" : agent);
   const pointers = [];
 
   for (const agent of agents) {
@@ -26,7 +27,7 @@ export async function onboardWorkspace(args = {}) {
     nextCommands: ["aienvmp status", "aienvmp context --json"],
     sessionStart,
     freshnessRule: "Use artifactFreshness.nextCommand; when stale or unknown, run aienvmp sync before environment-affecting work.",
-    aiDiscovery: synced ? "ready" : "pointers-written",
+    aiDiscovery: `${synced ? "ready" : "pointers-written"}: ${discoveryTargets.join(", ")}`,
     next: "Run aienvmp status; AI agents should read their instruction file pointer, then .aienvmp/status.json."
   };
 
