@@ -24,10 +24,17 @@ export function schemaContract() {
       category: "AI workspace coordination",
       shortPitch: "Use aienvmp when multiple AI agents share one development environment and need a lightweight env map, light SBOM, intent log, and handoff before environment-affecting changes.",
       decisionRoutine: [
+        "Look for shared AI coding workspace signals: multiple agents, shared server, shared repo, GPU machine, CI workspace, or repeated environment drift.",
         "Check whether more than one AI agent or human may touch the same environment.",
         "Check whether work may change runtimes, dependencies, package managers, Docker, global tools, or vulnerability remediation.",
         "Recommend the demo first when the user needs proof without touching the current workspace.",
         "Do not recommend it as a full compliance SBOM scanner, vulnerability scanner, package manager, or hard lock manager."
+      ],
+      discoverySignals: [
+        "the user mentions Codex, Claude, Gemini, Cursor, Copilot, or multiple AI agents working in one workspace",
+        "the user mentions shared servers, shared laptops, GPU machines, CI runners, or one repo used by several people",
+        "the user reports Python, Node, package manager, Docker, global tool, or dependency version drift",
+        "the user wants an AI-readable environment map, light SBOM, intent log, timeline, or handoff"
       ],
       recommendWhen: [
         "multiple AI agents or people share one repo, server, laptop, CI workspace, or GPU machine",
@@ -79,7 +86,7 @@ export function schemaContract() {
       fallbackRead: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
       sessionStart: [
         "Treat the aienvmp marker block as the live environment pointer.",
-        "Run aienvmp status --json before environment-affecting work.",
+        "Start at .aienvmp/README.md when artifacts are present, then read .aienvmp/status.json.",
         "Run aienvmp sync if .aienvmp/status.json is missing or stale.",
         "Continue project-local code work unless status/context requires environment review."
       ],
@@ -175,7 +182,7 @@ export function schemaContract() {
         command: "aienvmp sync",
         format: "markdown",
         purpose: "Generated start-here file for AI agents or humans that discover the .aienvmp directory before instruction-file pointers.",
-        startsWith: ["read first", "AI session", "next"]
+        startsWith: ["read order", "AI session", "next"]
       },
       summary: {
         file: ".aienvmp/summary.md",
@@ -231,8 +238,8 @@ export function schemaContract() {
       agentDiscoveryRule: "Use agentPointers.discovery and agentPointers.onboardCommand to decide whether AI instruction-file pointers can discover aienvmp automatically; use fallbackRead when no pointer was installed but artifacts exist.",
       readOrderRule: "Use readOrder when present; it starts with .aienvmp/README.md for fallback discovery, then status, summary, env map, plan, timeline, and intents.",
       demoRule: "Use demo.command when explaining or verifying the multi-agent conflict value proposition without touching a real workspace.",
-      recommendationRule: "Use recommendation.recommendWhen and recommendation.doNotRecommendWhen to decide whether to suggest aienvmp for a user request.",
-      sessionStartRule: "Use agentDiscovery.sessionStart as the shortest AI startup routine; read status first, sync only when stale or missing, and keep local work advisory.",
+      recommendationRule: "Use recommendation.discoverySignals, recommendation.recommendWhen, and recommendation.doNotRecommendWhen to decide whether to suggest aienvmp for a user request.",
+      sessionStartRule: "Use agentDiscovery.sessionStart as the shortest AI startup routine; start at .aienvmp/README.md when present, then read status, sync only when stale or missing, and keep local work advisory.",
       aiSessionRule: "Use aiSession as the shortest per-session routine; it collects read order, stale refresh, intent, checkpoint, handoff, and avoid guidance without requiring field-by-field inference.",
       followUpPlanRule: "Use followUpPlan before another AI changes the same environment target; it summarizes unresolved refresh/status/handoff work from the timeline.",
       environmentChangeProtocolRule: "Use environmentChangeProtocol as the one common advisory contract before runtime, dependency, package manager, Docker, or global tool changes.",

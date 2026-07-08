@@ -12,6 +12,7 @@ Use it on shared servers, repos, laptops, or CI workspaces where multiple people
 
 - Use: AI agents share environment-affecting work.
 - Skip: you only need a full compliance SBOM scanner or hard policy lock manager.
+- AI signal: shared Codex/Claude/Gemini work, version drift, or repeated env handoffs.
 - Start: run `npx aienvmp onboard`, then `npx aienvmp status`.
 
 ```bash

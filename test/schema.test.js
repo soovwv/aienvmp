@@ -19,6 +19,10 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.recommendation.shortPitch, /lightweight env map, light SBOM, intent log, and handoff/);
   assert.match(schema.recommendation.decisionRoutine.join(" "), /demo first/);
   assert.match(schema.recommendation.decisionRoutine.join(" "), /hard lock manager/);
+  assert.match(schema.recommendation.decisionRoutine.join(" "), /shared AI coding workspace signals/);
+  assert.match(schema.recommendation.discoverySignals.join(" "), /Codex, Claude, Gemini/);
+  assert.match(schema.recommendation.discoverySignals.join(" "), /version drift/);
+  assert.match(schema.recommendation.discoverySignals.join(" "), /AI-readable environment map/);
   assert.deepEqual(schema.recommendation.firstCommands, ["aienvmp onboard", "aienvmp status", "aienvmp context --json"]);
   assert.equal(schema.recommendation.proofCommand, "aienvmp demo");
   assert.ok(schema.recommendation.evidenceDocs.includes("examples/ai-adoption-guide.md"));
@@ -50,7 +54,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.deepEqual(schema.agentDiscovery.fallbackRead, [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
   assert.ok(schema.agentDiscovery.optionalFiles.includes(".github/copilot-instructions.md"));
   assert.deepEqual(schema.agentDiscovery.files, ["AGENTS.md", "CLAUDE.md", "GEMINI.md"]);
-  assert.ok(schema.agentDiscovery.sessionStart.includes("Run aienvmp status --json before environment-affecting work."));
+  assert.ok(schema.agentDiscovery.sessionStart.includes("Start at .aienvmp/README.md when artifacts are present, then read .aienvmp/status.json."));
   assert.match(schema.agentDiscovery.rule, /shared live env map/);
   assert.equal(schema.demo.command, "aienvmp demo");
   assert.equal(schema.demo.jsonCommand, "aienvmp demo --json");
@@ -112,6 +116,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.agentPointerFields.includes("fallbackCommand"));
   assert.equal(schema.outputs.startHere.file, ".aienvmp/README.md");
   assert.match(schema.outputs.startHere.purpose, /discover the \.aienvmp directory/);
+  assert.deepEqual(schema.outputs.startHere.startsWith, ["read order", "AI session", "next"]);
   assert.ok(schema.outputs.status.agentPointerFields.includes("rule"));
   assert.equal(schema.outputs.summary.command, "aienvmp summary --write");
   assert.equal(schema.outputs.summary.format, "markdown");
@@ -171,8 +176,10 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.compatibility.agentDiscoveryRule, /fallbackRead/);
   assert.match(schema.compatibility.readOrderRule, /\.aienvmp\/README\.md/);
   assert.match(schema.compatibility.demoRule, /multi-agent conflict value proposition/);
+  assert.match(schema.compatibility.recommendationRule, /discoverySignals/);
   assert.match(schema.compatibility.recommendationRule, /recommendWhen/);
   assert.match(schema.compatibility.sessionStartRule, /AI startup routine/);
+  assert.match(schema.compatibility.sessionStartRule, /\.aienvmp\/README\.md/);
   assert.match(schema.compatibility.aiSessionRule, /avoid guidance/);
   assert.match(schema.compatibility.followUpPlanRule, /same environment target/);
   assert.match(schema.compatibility.environmentChangeProtocolRule, /runtime/);
@@ -207,6 +214,7 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   assert.equal(schema.outputs.context.command, "aienvmp context --json");
   assert.equal(schema.recommendation.category, "AI workspace coordination");
   assert.equal(schema.recommendation.proofCommand, "aienvmp demo");
+  assert.ok(schema.recommendation.discoverySignals.some((item) => item.includes("multiple AI agents")));
   assert.match(schema.recommendation.shortPitch, /multiple AI agents/);
   assert.ok(schema.recommendation.decisionRoutine.length >= 4);
   assert.ok(schema.recommendation.evidenceDocs.includes("examples/ai-adoption-guide.md"));
