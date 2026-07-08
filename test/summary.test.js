@@ -40,6 +40,10 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
       nextCommand: "aienvmp handoff --record --actor agent:id",
       rule: "Do not install shared tools until collaboration signals are reviewed."
     },
+    followUpPlan: {
+      status: "pending",
+      nextCommand: "aienvmp sync"
+    },
     maintenanceLoop: {
       nextCommand: "aienvmp handoff --record --actor agent:id",
       sbomCommand: "aienvmp sync --security",
@@ -119,6 +123,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /AI next: aienvmp sync \(Review listed signals/);
   assert.match(markdown, /AI safe local work: read status and summary artifacts/);
   assert.match(markdown, /AI collaboration: review-before-env-change \/ dependency, node \/ aienvmp handoff --record --actor agent:id/);
+  assert.match(markdown, /AI follow-up: pending \/ aienvmp sync/);
   assert.match(markdown, /AI environment protocol: aienvmp intent --actor agent:id --action planned-change --target dependency -> aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency/);
   assert.match(markdown, /AI maintenance loop: aienvmp handoff --record --actor agent:id/);
   assert.match(markdown, /state: review-required/);
@@ -171,6 +176,7 @@ test("summaryWorkspace writes summary.md after sync", async () => {
   assert.match(summary, /AI session:/);
   assert.match(summary, /AI artifact freshness:/);
   assert.match(summary, /AI collaboration:/);
+  assert.match(summary, /AI follow-up:/);
   assert.match(summary, /AI environment protocol:/);
   assert.match(summary, /AI maintenance loop:/);
   assert.match(summary, /## SBOM/);

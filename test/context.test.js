@@ -149,6 +149,10 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   assert.equal(json.agentPointers.targets[0].installCommand, "aienvmp snippet codex --write");
   assert.equal(json.followUps[0].target, "dependency");
   assert.equal(json.preflight.followUps[0].commands[0], "aienvmp sync");
+  assert.equal(json.followUpPlan.status, "pending");
+  assert.equal(json.followUpPlan.nextCommand, "aienvmp sync");
+  assert.deepEqual(json.followUpPlan.targets, ["dependency"]);
+  assert.equal(json.preflight.followUpPlan.reason, "Previous environment-affecting records still need refresh, status, or handoff follow-up.");
   assert.equal(json.decision.schemaVersion, 1);
   assert.equal(json.decision.mode, "review-first");
   assert.equal(json.decision.canContinueProjectLocalWork, true);

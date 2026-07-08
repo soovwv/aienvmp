@@ -39,6 +39,7 @@ export async function contextWorkspace(args) {
       agentPointers: preflight.agentPointers,
       sbomRisk: preflight.sbomRisk,
       followUps: preflight.followUps,
+      followUpPlan: preflight.followUpPlan,
       environmentChangeProtocol: preflight.environmentChangeProtocol,
       decision,
       enforcement: enforcementAdvice(warnings),

@@ -39,6 +39,7 @@ export function renderSummary(status = {}, manifest = {}) {
   const coordination = status.coordination || {};
   const activity = status.agentActivity || {};
   const collaboration = status.collaboration || {};
+  const followUpPlan = status.followUpPlan || {};
   const environmentProtocol = status.environmentChangeProtocol || {};
   const environmentCommands = environmentProtocol.commands || {};
   const maintenanceLoop = status.maintenanceLoop || {};
@@ -90,6 +91,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- AI artifact freshness: ${artifactFreshness.state || "unknown"} / ${artifactFreshness.nextCommand || "aienvmp sync"}`,
     `- AI next: ${next} (${aiNext})`,
     `- AI collaboration: ${collaboration.status || "unknown"} / ${toList(collaboration.activeTargets).join(", ") || "none"} / ${collaboration.nextCommand || "aienvmp status --json"}`,
+    `- AI follow-up: ${followUpPlan.status || "clear"} / ${followUpPlan.nextCommand || "aienvmp status --json"}`,
     `- AI environment protocol: ${environmentCommands.recordIntent || "aienvmp intent --actor agent:id --action planned-change --target environment"} -> ${environmentCommands.checkpointAfterChange || "aienvmp checkpoint --actor agent:id --summary what-changed --target environment"}`,
     `- AI maintenance loop: ${maintenanceLoop.nextCommand || next}`,
     `- AI safe local work: ${toList(aiReadiness.safeProjectLocalActions)[0] || "read artifacts and avoid environment changes until reviewed"}`,

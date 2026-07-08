@@ -189,6 +189,13 @@ test("buildStatus exposes pending follow-ups from timeline", () => {
   assert.equal(status.followUps.length, 1);
   assert.equal(status.followUps[0].target, "dependency");
   assert.equal(status.followUps[0].commands[0], "aienvmp sync");
+  assert.equal(status.followUpPlan.status, "pending");
+  assert.equal(status.followUpPlan.count, 1);
+  assert.deepEqual(status.followUpPlan.targets, ["dependency"]);
+  assert.equal(status.followUpPlan.readFirst[0], ".aienvmp/status.json");
+  assert.equal(status.followUpPlan.nextCommand, "aienvmp sync");
+  assert.deepEqual(status.followUpPlan.commands, ["aienvmp sync"]);
+  assert.match(status.followUpPlan.rule, /before another AI/);
 });
 
 test("buildStatus exposes multi-agent activity since last handoff", () => {

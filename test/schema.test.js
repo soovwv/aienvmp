@@ -30,6 +30,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.aiSessionFields.includes("beforeEnvironmentChange"));
   assert.ok(schema.aiSessionFields.includes("handoff"));
   assert.ok(schema.aiSessionFields.includes("avoid"));
+  assert.deepEqual(schema.followUpPlanFields, ["status", "count", "targets", "readFirst", "nextCommand", "commands", "reason", "rule"]);
   assert.ok(schema.environmentChangeProtocolFields.includes("beforeChange"));
   assert.ok(schema.environmentChangeProtocolFields.includes("mustNotDo"));
   assert.equal(schema.aiLoop.name, "AI maintenance loop");
@@ -89,6 +90,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("collaboration"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("maintenanceLoop"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("followUps"));
+  assert.ok(schema.outputs.status.contract.aiEntryFields.includes("followUpPlan"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("environmentChangeProtocol"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("agentPointers"));
   assert.ok(schema.outputs.status.rootFields.includes("nextSafeCommand"));
@@ -96,6 +98,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.rootFields.includes("aiBootstrap"));
   assert.ok(schema.outputs.status.rootFields.includes("artifactFreshness"));
   assert.ok(schema.outputs.status.rootFields.includes("strictRecommendation"));
+  assert.ok(schema.outputs.status.rootFields.includes("followUpPlan"));
   assert.ok(schema.outputs.status.rootFields.includes("environmentChangeProtocol"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("discovery"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("onboardCommand"));
@@ -117,6 +120,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.context.rootFields.includes("collaboration"));
   assert.ok(schema.outputs.context.rootFields.includes("maintenanceLoop"));
   assert.ok(schema.outputs.context.rootFields.includes("agentPointers"));
+  assert.ok(schema.outputs.context.rootFields.includes("followUpPlan"));
   assert.ok(schema.outputs.context.rootFields.includes("environmentChangeProtocol"));
   assert.ok(schema.outputs.context.rootFields.includes("aiReadiness"));
   assert.ok(schema.outputs.handoff.rootFields.includes("dependencyHandoff"));
@@ -153,6 +157,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.compatibility.recommendationRule, /recommendWhen/);
   assert.match(schema.compatibility.sessionStartRule, /AI startup routine/);
   assert.match(schema.compatibility.aiSessionRule, /avoid guidance/);
+  assert.match(schema.compatibility.followUpPlanRule, /same environment target/);
   assert.match(schema.compatibility.environmentChangeProtocolRule, /runtime/);
   assert.match(schema.compatibility.maintenanceLoopRule, /recurring AI workflow/);
   assert.match(schema.compatibility.enforcementPolicyRule, /local\/CI\/release/);

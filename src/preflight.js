@@ -15,6 +15,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
   const dependencyChangeProtocol = dependencyProtocol(manifest, dependencyReadSet);
   const coordination = coordinationSummary(intents);
   const followUps = pendingFollowUps(timeline);
+  const followUpPlan = followUpPlanSummary(followUps);
   const agentActivity = agentActivitySummary(timeline);
   const sbomRisk = manifest.lightSbom?.riskSummary || {};
   const agentPointers = agentPointerSummary(manifest.agentFiles);
@@ -97,6 +98,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     aiReadiness,
     sbomRisk,
     followUps,
+    followUpPlan,
     intentTargets,
     environmentChangeProtocol,
     dependencyReadSet,
@@ -164,6 +166,27 @@ function environmentProtocol({ state, intentTargets = [], dependencyChangeProtoc
     rule: state === "clear"
       ? "Project-local work can continue; use this advisory protocol before shared environment changes."
       : "Review status/context before shared environment changes; local code-only work can continue when allowed."
+  };
+}
+
+function followUpPlanSummary(followUps = []) {
+  const items = Array.isArray(followUps) ? followUps : [];
+  const nextCommand = firstFollowUpCommand(items) || "aienvmp status --json";
+  const targets = unique(items.map((item) => item.target || "environment"));
+  const commands = uniqueCommands(items.flatMap((item) => item.commands || []));
+  return {
+    status: items.length ? "pending" : "clear",
+    count: items.length,
+    targets,
+    readFirst: [".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+    nextCommand,
+    commands,
+    reason: items.length
+      ? "Previous environment-affecting records still need refresh, status, or handoff follow-up."
+      : "No pending follow-up after environment records.",
+    rule: items.length
+      ? "Run the follow-up command before another AI changes the same environment target."
+      : "Continue project-local work; record intent before environment-affecting changes."
   };
 }
 
@@ -759,6 +782,10 @@ function normalizeTarget(target = "") {
 
 function unique(items = []) {
   return [...new Set(items.map((item) => normalizeTarget(item)).filter(Boolean))];
+}
+
+function uniqueCommands(items = []) {
+  return [...new Set(items.map((item) => String(item || "").trim()).filter(Boolean))].slice(0, 8);
 }
 
 function firstFollowUpCommand(followUps = []) {
