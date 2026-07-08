@@ -6,9 +6,9 @@
 
 **AI workspace coordination for shared development environments.**
 
-`aienvmp` keeps Codex, Claude, Gemini, and humans on the same live environment map before runtimes, dependencies, package managers, Docker, or global tools drift.
+`aienvmp` gives Codex, Claude, Gemini, and humans one lightweight env map before different AI agents install or use conflicting runtimes, dependencies, package managers, Docker, or global tools.
 
-Use it when multiple AI agents or people touch the same server, repo, laptop, or CI workspace and you want to avoid silent runtime, dependency, package manager, Docker, or security drift.
+Use it on shared servers, repos, laptops, or CI workspaces where multiple people or AI agents need the same environment truth without heavy locks.
 
 ```bash
 npx aienvmp onboard
@@ -21,13 +21,12 @@ Optional Cursor and Copilot pointers are available with `npx aienvmp onboard --a
 
 ## Why
 
-- one AI-readable environment map
-- one lightweight SBOM view
-- one append-only intent and change timeline
-- one human dashboard
-- advisory by default, strict only when requested
+- stop AI agents from silently using different environment assumptions
+- give every AI the same env map, light SBOM, intent log, and timeline
+- show humans the same state in a lightweight dashboard
+- stay advisory by default; use strict only when requested
 
-`aienvmp` is not trying to replace full SBOM or vulnerability scanners. It gives AI agents a lightweight coordination layer and can later consume deeper scanner output when you opt in.
+`aienvmp` is not a heavy lock manager or full SBOM scanner. It is a lightweight AI coordination layer that can later consume deeper scanner output when you opt in.
 
 ## 10-Second Use
 
