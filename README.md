@@ -94,6 +94,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `aiBootstrap` gives AI the shortest read-first, next-command, and local-mode hint.
 - `aiBootstrap` also explains the next command source and reason.
 - `artifactFreshness` tells AI whether `.aienvmp/status.json` is fresh or should be refreshed with `aienvmp sync`.
+- `summary.md` and the dashboard mirror `artifactFreshness` so humans and Markdown-first agents see the same refresh hint.
 - `AIENV.md`, `summary.md`, and `plan.md` start with the same bootstrap hint for Markdown-first agents.
 - `sbom.json` and CycloneDX-lite properties include the same bootstrap hint for dependency and security review loops.
 - `maintenanceLoop` gives AI the recurring env-management loop.

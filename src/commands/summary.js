@@ -41,6 +41,7 @@ export function renderSummary(status = {}, manifest = {}) {
   const maintenanceLoop = status.maintenanceLoop || {};
   const sbomReview = maintenanceLoop.sbomReview || {};
   const aiBootstrap = status.aiBootstrap || {};
+  const artifactFreshness = status.artifactFreshness || {};
   const workspace = manifest.workspace?.root || manifest.workspace?.name || ".";
   const next = aiBootstrap.nextSafeCommand || status.nextSafeCommand || status.nextCommand || status.decision?.nextCommand || "aienvmp status";
   const readFirst = aiBootstrap.readFirst || status.nextAgent?.readFirst || ".aienvmp/status.json";
@@ -77,6 +78,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- AI readiness: ${aiReadiness.level || "unknown"}`,
     `- AI signals: ${aiSignals.length ? aiSignals.join("; ") : "none"}`,
     `- AI bootstrap: ${aiBootstrap.projectLocalWork || "allowed"} / ${aiBootstrap.environmentChanges || status.agentUse?.environmentChanges || "intent-first"} / ${aiBootstrap.localMode || "advisory"}`,
+    `- AI artifact freshness: ${artifactFreshness.state || "unknown"} / ${artifactFreshness.nextCommand || "aienvmp sync"}`,
     `- AI next: ${next} (${aiNext})`,
     `- AI collaboration: ${collaboration.status || "unknown"} / ${toList(collaboration.activeTargets).join(", ") || "none"} / ${collaboration.nextCommand || "aienvmp status --json"}`,
     `- AI maintenance loop: ${maintenanceLoop.nextCommand || next}`,

@@ -564,12 +564,16 @@ const auditItem=(key,value,hint,klass='')=>\`<div class="audit-item \${klass}"><
 const controlCard=(label,value,next,klass='')=>\`<div class="control-card \${klass}"><div class="control-label">\${label}</div><div class="control-value">\${esc(value)}</div><div class="control-next">\${esc(next)}</div></div>\`;
 const driftLabel=warnings.length?'detected':'none';
 const aiBootstrap=manifest.preflight?.aiBootstrap||{};
+const artifactFreshness=manifest.preflight?.artifactFreshness||{};
 const nextAgent=manifest.preflight?.nextAgent||{};
 const aiReadiness=manifest.preflight?.aiReadiness||{};
 const aiReadinessSignals=(aiReadiness.signals||[]).slice(0,3);
 const aiReadinessHint=(aiReadiness.next||'Run aienvmp context --json for details.')+(aiReadinessSignals.length?' Signals: '+aiReadinessSignals.join('; '):'');
 const aiReadyValue=aiReadiness.level||'unknown';
 const aiReadyClass=aiReadyValue==='ready'?'ready':'review';
+const artifactFreshnessValue=artifactFreshness.state||'unknown';
+const artifactFreshnessClass=artifactFreshnessValue==='fresh'?'ready':'review';
+const artifactFreshnessNext=artifactFreshness.nextCommand||artifactFreshness.refreshCommand||'aienvmp sync';
 const collaborationValue=collaboration.status||'unknown';
 const collaborationClass=collaborationValue==='clear'?'ready':'review';
 const sbomRiskValue=riskSummary.level||'unknown';
@@ -601,6 +605,7 @@ document.getElementById('app').innerHTML=\`
 </header>
 <section class="control" aria-label="AI control strip">
   \${controlCard('AI readiness',aiReadyValue,aiReadiness.next||'Run aienvmp context --json for details.',aiReadyClass)}
+  \${controlCard('Freshness',artifactFreshnessValue,artifactFreshnessNext,artifactFreshnessClass)}
   \${controlCard('Collaboration',collaborationValue,collaboration.nextCommand||'aienvmp status --json',collaborationClass)}
   \${controlCard('SBOM risk',sbomRiskValue+sbomRiskScore,sbomRiskNext,sbomRiskClass)}
 </section>
@@ -612,6 +617,7 @@ document.getElementById('app').innerHTML=\`
 <section class="brief" aria-label="First read">
   \${briefItem('AI bootstrap',bootstrapState)}
   \${briefItem('Status',reviewRequired?'review required':'clear')}
+  \${briefItem('Freshness',artifactFreshnessValue+' / '+artifactFreshnessNext)}
   \${briefItem('Read first',firstRead)}
   \${briefItem('AI discovery',agentDiscovery)}
   \${briefItem('Review targets',reviewTargets.length?reviewTargets.slice(0,4).join(', '):'none')}

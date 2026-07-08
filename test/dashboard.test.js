@@ -309,6 +309,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /\.brief/);
   assert.match(html, /const maintenanceLoop=manifest\.preflight\?\.maintenanceLoop\|\|\{\}/);
   assert.match(html, /const aiBootstrap=manifest\.preflight\?\.aiBootstrap\|\|\{\}/);
+  assert.match(html, /const artifactFreshness=manifest\.preflight\?\.artifactFreshness\|\|\{\}/);
+  assert.match(html, /const artifactFreshnessValue=artifactFreshness\.state\|\|'unknown'/);
+  assert.match(html, /const artifactFreshnessNext=artifactFreshness\.nextCommand\|\|artifactFreshness\.refreshCommand\|\|'aienvmp sync'/);
   assert.match(html, /const nextCommand=aiBootstrap\.nextSafeCommand\|\|manifest\.preflight\?\.nextSafeCommand/);
   assert.match(html, /const nextReason=topAction\.summary\|\|aiBootstrap\.rule\|\|maintenanceLoop\.rule/);
   assert.match(html, /const firstRead=aiBootstrap\.readFirst\|\|nextAgent\.readFirst\|\|'\.aienvmp\/status\.json'/);
@@ -318,6 +321,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const reviewTargets=\[\.\.\.new Set/);
   assert.match(html, /\.control-card\.review/);
   assert.match(html, /controlCard\('AI readiness'/);
+  assert.match(html, /controlCard\('Freshness'/);
   assert.match(html, /controlCard\('Collaboration'/);
   assert.match(html, /controlCard\('SBOM risk'/);
   assert.match(html, /AI readiness/);
@@ -328,6 +332,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /aienvmp handoff --record --actor agent:id/);
   assert.match(html, /Review dependency read set and topRisk/);
   assert.match(html, /Review targets/);
+  assert.match(html, /Freshness/);
   assert.match(html, /Local mode/);
   assert.match(html, /AI decision/);
   assert.match(html, /AI readiness/);
