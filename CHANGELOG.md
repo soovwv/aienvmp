@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.60
+
+- Added `enforcement.strictPlan` to help AI agents and CI choose the narrowest explicit strict scope.
+- Added `preflight.enforcementProfile.strictPlan` so status/context consumers see the same strict guidance.
+- Added CI strict command output to `.aienvmp/summary.md`.
+- Added strict-plan CI command and rule display to the dashboard Enforcement Mode card.
+- Documented strict-plan consumption in `schema --json` and README.
+- Added regression tests for enforcement advice, doctor JSON, status/context, summary, dashboard, and schema outputs.
+
 ## 0.1.59
 
 - Added `aiDependencyReview.statusReason` so AI agents can distinguish actual review risk from scanner-off uncertainty.

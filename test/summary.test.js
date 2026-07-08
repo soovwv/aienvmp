@@ -20,7 +20,10 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
     nextCommand: "aienvmp handoff",
     quickstart: { detailCommand: "aienvmp context --json" },
     nextAgent: { readFirst: ".aienvmp/status.json" },
-    enforcement: { recommendedCommand: "aienvmp doctor --strict security" },
+    enforcement: {
+      recommendedCommand: "aienvmp doctor --strict security",
+      strictPlan: { ciCommand: "aienvmp doctor --strict security --json" }
+    },
     agentUse: { environmentChanges: "intent-and-review-first" },
     coordination: { next: "Check open intents.", conflictTargets: ["dependency"] },
     agentActivity: { next: "Run handoff.", multiActorTargets: ["node"] },
@@ -57,6 +60,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /light SBOM risk: medium \(42\)/);
   assert.match(markdown, /AI readiness: review/);
   assert.match(markdown, /AI read first: \.aienvmp\/status\.json/);
+  assert.match(markdown, /CI strict: aienvmp doctor --strict security --json/);
   assert.match(markdown, /conflict targets: dependency/);
   assert.match(markdown, /multi-actor targets: node/);
   assert.match(markdown, /AI dependency review: review \/ scanner-summary \/ aienvmp intent --actor agent:id --action dependency-review --target dependency/);

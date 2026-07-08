@@ -148,6 +148,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: `aiDependencyReview` now includes `statusReason` and `securityConfidence`, and generation reuses the computed risk summary instead of recalculating a weaker review signal.
 - Verification: regression tests cover scanner-off confidence, dashboard/summary rendering, schema metadata, and standalone SBOM fallback behavior; local sync smoke confirmed `scanner-off` appears in generated artifacts.
 
+### Strict mode guidance required too much inference
+
+- Issue: AI and CI consumers could see scoped strict results, but still had to infer which `doctor --strict` command should be used without disrupting local operation.
+- Fix: `strictPlan` now provides local advisory command, recommended strict scope, CI command, all-scope command, scope statuses, and the strict-use rule.
+- Verification: regression tests cover enforcement advice, doctor JSON, status/context, summary, dashboard, and schema outputs; local sync smoke confirmed summary emits the CI strict command.
+
 ## Template
 
 ### Title

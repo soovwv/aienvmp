@@ -65,6 +65,7 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.enforcementProfile.localOperation, "non-blocking");
   assert.equal(status.enforcementProfile.gate.localDefault, "warn-only");
   assert.equal(status.enforcementProfile.gate.failCondition, "never in default mode");
+  assert.equal(status.enforcementProfile.strictPlan.ciCommand, "aienvmp doctor --strict all --json");
   assert.equal(status.artifacts.status, ".aienvmp/status.json");
   assert.equal(status.readOrder[0], ".aienvmp/status.json");
   assert.equal(status.readOrder[1], ".aienvmp/summary.md");

@@ -235,6 +235,12 @@ test("renderDashboard includes the audit summary surface", () => {
         defaultMode: "advisory",
         localOperation: "non-blocking",
         strictUse: "CI or explicit human-requested checks only",
+        strictPlan: {
+          recommendedStrictScope: "policy",
+          recommendedStrictCommand: "aienvmp doctor --strict policy",
+          ciCommand: "aienvmp doctor --strict policy --json",
+          rule: "Use the narrowest failing strict scope first; keep local operation advisory unless CI or the user explicitly requests failure."
+        },
         gate: {
           defaultMode: "advisory",
           strictMode: "off",
@@ -302,6 +308,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /never in default mode/);
   assert.match(html, /0 unless the command itself errors/);
   assert.match(html, /doctor --strict policy/);
+  assert.match(html, /doctor --strict policy --json/);
+  assert.match(html, /narrowest failing strict scope/);
   assert.match(html, /security/);
   assert.match(html, /policy/);
   assert.match(html, /Global Inventory/);

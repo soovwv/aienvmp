@@ -127,6 +127,8 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   assert.equal(json.enforcement.mode, "advisory-by-default");
   assert.equal(json.enforcement.localBehavior, "non-blocking");
   assert.deepEqual(json.enforcement.suggestedStrictScopes, ["policy", "coordination"]);
+  assert.equal(json.enforcement.strictPlan.recommendedStrictScope, "policy");
+  assert.equal(json.enforcement.strictPlan.ciCommand, "aienvmp doctor --strict policy --json");
   assert.equal(json.dependencySnapshot.summary.packages, 1);
   assert.equal(json.dependencySnapshot.packages[0].name, "express");
   assert.equal(json.lightSbom.summary.packages, 1);

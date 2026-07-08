@@ -33,10 +33,31 @@ export function enforcementAdvice(warnings = []) {
     gate: enforcementGate(""),
     suggestedStrictScopes,
     scopes: scopeResults,
+    strictPlan: strictScopePlan(suggestedStrictScopes, scopeResults),
     recommendedCommand: suggestedStrictScopes.length
       ? `aienvmp doctor --strict ${suggestedStrictScopes[0]}`
       : "aienvmp doctor --strict all",
     note: "Use strict mode in CI or explicit checks; do not block local operation unless the user requests it."
+  };
+}
+
+export function strictScopePlan(suggestedStrictScopes = [], scopeResults = []) {
+  const firstScope = suggestedStrictScopes[0] || "all";
+  return {
+    mode: "advisory-local-strict-ci",
+    localDefault: "aienvmp doctor --json",
+    recommendedStrictScope: firstScope,
+    recommendedStrictCommand: `aienvmp doctor --strict ${firstScope}`,
+    ciCommand: `aienvmp doctor --strict ${firstScope} --json`,
+    allScopesCommand: "aienvmp doctor --strict all --json",
+    scopeStatuses: scopeResults.map((item) => ({
+      scope: item.scope,
+      status: item.status,
+      matchedWarningCodes: item.matchedWarningCodes || []
+    })),
+    rule: suggestedStrictScopes.length
+      ? "Use the narrowest failing strict scope first; keep local operation advisory unless CI or the user explicitly requests failure."
+      : "No scope currently fails; use --strict all only for explicit CI health checks."
   };
 }
 

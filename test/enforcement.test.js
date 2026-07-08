@@ -17,6 +17,18 @@ test("enforcementAdvice keeps local behavior advisory and suggests scoped strict
   assert.deepEqual(advice.suggestedStrictScopes, ["security", "policy", "coordination"]);
   assert.equal(advice.scopes.find((item) => item.scope === "all").status, "fail");
   assert.equal(advice.recommendedCommand, "aienvmp doctor --strict security");
+  assert.equal(advice.strictPlan.recommendedStrictScope, "security");
+  assert.equal(advice.strictPlan.ciCommand, "aienvmp doctor --strict security --json");
+  assert.match(advice.strictPlan.rule, /narrowest failing strict scope/);
+});
+
+test("enforcementAdvice suggests all only when no scoped warning fails", () => {
+  const advice = enforcementAdvice([]);
+
+  assert.deepEqual(advice.suggestedStrictScopes, []);
+  assert.equal(advice.strictPlan.recommendedStrictScope, "all");
+  assert.equal(advice.strictPlan.ciCommand, "aienvmp doctor --strict all --json");
+  assert.match(advice.strictPlan.rule, /explicit CI health checks/);
 });
 
 test("strictResult remains advisory unless strict or ci is requested", () => {

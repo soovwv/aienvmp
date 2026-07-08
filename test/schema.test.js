@@ -28,6 +28,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.outputs.cyclonedxLite.command, "aienvmp sbom --format cyclonedx-lite --json");
   assert.equal(schema.compatibility.stability, "additive");
   assert.match(schema.compatibility.aiReadinessRule, /project-local code work/);
+  assert.match(schema.compatibility.strictPlanRule, /narrowest explicit strict scope/);
 });
 
 test("schemaWorkspace prints JSON without requiring a workspace", async () => {
