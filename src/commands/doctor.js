@@ -5,6 +5,7 @@ import { intentsPath, manifestPath, timelinePath, workspaceDir } from "../paths.
 import { loadPolicy, policyWarnings } from "../policy.js";
 import { recommendedActions } from "../actions.js";
 import { enforcementAdvice, strictResult } from "../enforcement.js";
+import { agentPointerSummary } from "../preflight.js";
 
 export { strictResult } from "../enforcement.js";
 
@@ -32,6 +33,7 @@ export async function doctorWorkspace(args) {
       exitBehavior,
       trust: manifest.trust || {},
       policy,
+      agentPointers: agentPointerSummary(manifest.agentFiles),
       openIntentCount: intents.length,
       warnings,
       recommendedActions: actions,

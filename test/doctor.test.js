@@ -193,6 +193,10 @@ test("doctorWorkspace JSON explains advisory exit behavior", async () => {
     packageManagers: {},
     containers: {},
     projectHints: { nvmrc: "20" },
+    agentFiles: {
+      agents: { path: "AGENTS.md", exists: false, hasAienvmpPointer: false, installCommand: "aienvmp snippet codex --write", role: "codex" },
+      claude: { path: "CLAUDE.md", exists: true, hasAienvmpPointer: true, installCommand: "aienvmp snippet claude --write", role: "claude" }
+    },
     dependencySnapshot: { summary: { packages: 0 } },
     security: { enabled: false, summary: { total: 0 } }
   });
@@ -214,4 +218,6 @@ test("doctorWorkspace JSON explains advisory exit behavior", async () => {
   assert.equal(json.exitBehavior.mode, "advisory");
   assert.equal(json.exitBehavior.willSetFailureExitCode, false);
   assert.match(json.exitBehavior.reason, /strict mode is off/);
+  assert.deepEqual(json.agentPointers.installed, ["claude"]);
+  assert.deepEqual(json.agentPointers.missing, ["codex"]);
 });

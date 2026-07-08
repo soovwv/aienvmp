@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.53
+
+- Added `agentPointers` to the shared AI preflight/status contract.
+- Added `agentPointers` to `context --json` at the root for quick AI access.
+- Added `agentPointers` to `doctor --json` without making missing pointers a blocking warning.
+- Added agent pointer status to `.aienvmp/summary.md`.
+- Added `agentPointers` to the stable schema contract metadata.
+- Preserved legacy boolean `agentFiles` compatibility in preflight summaries.
+- Added regression tests for status, context, doctor, schema, and summary pointer outputs.
+
 ## 0.1.52
 
 - Expanded `manifest.agentFiles` from booleans to lightweight agent instruction metadata.

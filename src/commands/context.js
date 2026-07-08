@@ -27,6 +27,7 @@ export async function contextWorkspace(args) {
       status: warnings.length ? "review-required" : "clear",
       preflight,
       coordination: preflight.coordination,
+      agentPointers: preflight.agentPointers,
       sbomRisk: preflight.sbomRisk,
       followUps: preflight.followUps,
       decision,

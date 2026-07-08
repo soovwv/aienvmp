@@ -17,6 +17,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
   const followUps = pendingFollowUps(timeline);
   const agentActivity = agentActivitySummary(timeline);
   const sbomRisk = manifest.lightSbom?.riskSummary || {};
+  const agentPointers = agentPointerSummary(manifest.agentFiles);
   return {
     schemaVersion: 1,
     contract: preflightContract(),
@@ -58,6 +59,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     nextAgent: nextAgentHint(state, dependencyReadSet, dependencyChangeProtocol),
     coordination,
     agentActivity,
+    agentPointers,
     sbomRisk,
     followUps,
     intentTargets,
@@ -121,6 +123,59 @@ function agentActivitySummary(timeline = []) {
         ? "Run handoff before another AI continues environment work."
         : "No environment records need coordination."
   };
+}
+
+export function agentPointerSummary(agentFiles = {}) {
+  const entries = Object.entries(agentFiles || {}).filter(([name]) => ["agents", "claude", "gemini"].includes(name));
+  const targets = entries.map(([name, item]) => {
+    const normalized = normalizeAgentFile(item);
+    return {
+      name,
+      role: normalized.role || (name === "agents" ? "codex" : name),
+      file: normalized.path || defaultAgentFile(name),
+      exists: normalized.exists,
+      hasPointer: normalized.hasAienvmpPointer,
+      installCommand: normalized.installCommand || defaultInstallCommand(name)
+    };
+  });
+  const installed = targets.filter((item) => item.hasPointer);
+  const missing = targets.filter((item) => !item.hasPointer);
+  return {
+    installedCount: installed.length,
+    missingCount: missing.length,
+    installed: installed.map((item) => item.role),
+    missing: missing.map((item) => item.role),
+    targets,
+    next: missing.length
+      ? `Install a pointer with ${missing[0].installCommand} if this workspace uses that AI.`
+      : "Agent instruction pointers are installed for detected AI instruction files.",
+    mode: "advisory"
+  };
+}
+
+function normalizeAgentFile(item) {
+  if (typeof item === "boolean") {
+    return { exists: item, hasAienvmpPointer: item };
+  }
+  return {
+    path: item?.path || "",
+    exists: item?.exists === true,
+    hasAienvmpPointer: item?.hasAienvmpPointer === true,
+    installCommand: item?.installCommand || "",
+    role: item?.role || ""
+  };
+}
+
+function defaultAgentFile(name) {
+  if (name === "claude") return "CLAUDE.md";
+  if (name === "gemini") return "GEMINI.md";
+  return "AGENTS.md";
+}
+
+function defaultInstallCommand(name) {
+  if (name === "claude") return "aienvmp snippet claude --write";
+  if (name === "gemini") return "aienvmp snippet gemini --write";
+  return "aienvmp snippet codex --write";
 }
 
 function coordinationSummary(intents = []) {

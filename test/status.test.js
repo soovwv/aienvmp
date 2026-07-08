@@ -116,6 +116,36 @@ test("buildStatus exposes multi-agent activity since last handoff", () => {
   assert.match(status.agentActivity.next, /handoff/);
 });
 
+test("buildStatus exposes agent pointer discovery hints", () => {
+  const status = buildStatus({
+    runtimes: {},
+    dependencySnapshot: { summary: { packages: 0 } },
+    security: { summary: { total: 0 } },
+    agentFiles: {
+      agents: { path: "AGENTS.md", exists: true, hasAienvmpPointer: true, installCommand: "aienvmp snippet codex --write", role: "codex" },
+      claude: { path: "CLAUDE.md", exists: true, hasAienvmpPointer: false, installCommand: "aienvmp snippet claude --write", role: "claude" },
+      gemini: { path: "GEMINI.md", exists: false, hasAienvmpPointer: false, installCommand: "aienvmp snippet gemini --write", role: "gemini" }
+    }
+  }, [], []);
+
+  assert.deepEqual(status.agentPointers.installed, ["codex"]);
+  assert.deepEqual(status.agentPointers.missing, ["claude", "gemini"]);
+  assert.equal(status.agentPointers.targets[1].file, "CLAUDE.md");
+  assert.match(status.agentPointers.next, /snippet claude/);
+});
+
+test("buildStatus treats legacy boolean agent files as installed pointers", () => {
+  const status = buildStatus({
+    runtimes: {},
+    dependencySnapshot: { summary: { packages: 0 } },
+    security: { summary: { total: 0 } },
+    agentFiles: { agents: true }
+  }, [], []);
+
+  assert.deepEqual(status.agentPointers.installed, ["codex"]);
+  assert.equal(status.agentPointers.missingCount, 0);
+});
+
 test("statusWorkspace JSON reports review-required and strict suggestion", async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-status-"));
   await fs.mkdir(path.join(dir, ".aienvmp"), { recursive: true });

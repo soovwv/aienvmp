@@ -51,6 +51,7 @@ export function renderSummary(status = {}, manifest = {}) {
   const dependencyProtocol = status.dependencyChangeProtocol || {};
   const dependencyCommands = dependencyProtocol.commands || {};
   const dependencyFiles = dependencyFilesFor(status.dependencyReadSet);
+  const agentPointers = status.agentPointers || {};
 
   return [
     "# aienvmp summary",
@@ -85,6 +86,12 @@ export function renderSummary(status = {}, manifest = {}) {
     `- before: ${dependencyCommands.recordIntent || "aienvmp intent --actor agent:id --action planned-change --target dependency"}`,
     `- after: ${dependencyCommands.checkpointAfterChange || "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"}`,
     `- package manager policy: ${dependencyProtocol.packageManagerPolicy || "not-detected"}`,
+    "",
+    "## Agent pointers",
+    "",
+    `- installed: ${toList(agentPointers.installed).join(", ") || "none"}`,
+    `- missing: ${toList(agentPointers.missing).join(", ") || "none"}`,
+    `- next: ${agentPointers.next || "Run aienvmp snippet codex --write if AI agents need instruction-file discovery."}`,
     "",
     "## Artifacts",
     "",

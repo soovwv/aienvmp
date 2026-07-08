@@ -25,6 +25,11 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
         recordIntent: "aienvmp intent --actor agent:id --action planned-change --target dependency",
         checkpointAfterChange: "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"
       }
+    },
+    agentPointers: {
+      installed: ["codex"],
+      missing: ["claude"],
+      next: "Install a pointer with aienvmp snippet claude --write if this workspace uses that AI."
     }
   }, {
     workspace: { root: "/repo" },
@@ -43,6 +48,9 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /## Dependency changes/);
   assert.match(markdown, /read files: package\.json, package-lock\.json/);
   assert.match(markdown, /checkpoint --actor agent:id --summary dependency-change --target dependency/);
+  assert.match(markdown, /## Agent pointers/);
+  assert.match(markdown, /installed: codex/);
+  assert.match(markdown, /missing: claude/);
   assert.match(markdown, /\.aienvmp\/sbom\.cdx\.json/);
 });
 
@@ -58,5 +66,6 @@ test("summaryWorkspace writes summary.md after sync", async () => {
   assert.match(summary, /## AI handoff/);
   assert.match(summary, /## SBOM/);
   assert.match(summary, /## Dependency changes/);
+  assert.match(summary, /## Agent pointers/);
   assert.match(summary, /next:/);
 });

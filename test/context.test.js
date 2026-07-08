@@ -18,6 +18,9 @@ test("contextWorkspace JSON includes compact step summary", async () => {
     packageManagers: {},
     containers: {},
     projectHints: { nvmrc: "20" },
+    agentFiles: {
+      agents: { path: "AGENTS.md", exists: false, hasAienvmpPointer: false, installCommand: "aienvmp snippet codex --write", role: "codex" }
+    },
     dependencySnapshot: {
       mode: "snapshot",
       enabled: true,
@@ -105,6 +108,8 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   assert.equal(json.preflight.dependencyChangeProtocol.commands.checkpointAfterChange, "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency");
   assert.equal(json.coordination.openIntentCount, 0);
   assert.deepEqual(json.coordination.conflictTargets, []);
+  assert.deepEqual(json.agentPointers.missing, ["codex"]);
+  assert.equal(json.agentPointers.targets[0].installCommand, "aienvmp snippet codex --write");
   assert.equal(json.followUps[0].target, "dependency");
   assert.equal(json.preflight.followUps[0].commands[0], "aienvmp sync");
   assert.equal(json.decision.schemaVersion, 1);

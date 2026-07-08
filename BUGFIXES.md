@@ -106,6 +106,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: `agentFiles` now records path, existence, pointer marker state, role, and install command; recommended actions suggest installing a pointer without failing local work.
 - Verification: tests cover sync pointer scanning, recommended action output, and dashboard status labels.
 
+### AI consumers had to inspect the full manifest for pointer state
+
+- Issue: `status`, `context`, and `doctor` did not expose a compact pointer summary even after manifest scanning detected it.
+- Fix: `agentPointers` now appears in status/preflight, context JSON, doctor JSON, and summary markdown.
+- Verification: regression tests cover status, context, doctor, schema, and summary outputs.
+
 ## Template
 
 ### Title
