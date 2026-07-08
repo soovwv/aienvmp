@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { dashWorkspace } from "../src/commands/dash.js";
 import { writeJson } from "../src/fsutil.js";
-import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyReviewClientScript, dashboardEssentialCards, dashboardPriorityClientScript, dashboardReviewPlanClientScript, dashboardScannerGuidanceClientScript, renderDashboard } from "../src/render.js";
+import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyReviewClientScript, dashboardEssentialCards, dashboardPriorityClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardScannerGuidanceClientScript, renderDashboard } from "../src/render.js";
 
 test("renderDashboard includes the audit summary surface", () => {
   const html = renderDashboard({
@@ -377,6 +377,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardReviewPlanClientScript(), /const aiReviewPlan=lightSbom\.aiReviewPlan/);
   assert.match(dashboardReviewPlanClientScript(), /packageManagerPolicy/);
   assert.match(dashboardReviewPlanClientScript(), /aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency/);
+  assert.match(dashboardReviewPlanHtmlClientScript(), /const aiReviewPlanHtml=aiReviewPlan\.status/);
+  assert.match(dashboardReviewPlanHtmlClientScript(), /No AI review plan available/);
+  assert.match(dashboardReviewPlanHtmlClientScript(), /aienvmp sbom --json/);
   assert.match(dashboardDependencyReviewClientScript(), /const aiDependencyReviewHtml=aiDependencyReview\.status/);
   assert.match(dashboardDependencyReviewClientScript(), /Security confidence/);
   assert.match(dashboardDependencyReviewClientScript(), /aienvmp intent --actor agent:id --action dependency-review --target dependency/);
@@ -390,6 +393,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /agentNames\.copilot='Copilot'/);
   assert.match(html, /const scannerGuidance=lightSbom\.scannerGuidance/);
   assert.match(html, /const aiReviewPlan=lightSbom\.aiReviewPlan/);
+  assert.match(html, /const aiReviewPlanHtml=aiReviewPlan\.status/);
   assert.match(html, /const aiDependencyReviewHtml=aiDependencyReview\.status/);
   assert.match(html, /\.card\.essential/);
   assert.match(html, /const reviewTargets=\[\.\.\.new Set/);
