@@ -75,5 +75,7 @@ test("CLI schema prints the AI-readable output contract without a workspace", as
 
   const json = JSON.parse(stdout);
   assert.equal(json.name, "aienvmp-contract");
+  assert.equal(json.contractVersion, "0.1-prototype");
+  assert.equal(json.stableFrom, "0.2.0");
   assert.equal(json.outputs.status.contract.name, "aienvmp-preflight");
 });

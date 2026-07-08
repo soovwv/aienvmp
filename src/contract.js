@@ -12,8 +12,12 @@ export function preflightContract() {
 export function schemaContract() {
   return {
     schemaVersion: 1,
+    contractVersion: "0.1-prototype",
+    stableFrom: "0.2.0",
     name: "aienvmp-contract",
     purpose: "Stable AI-readable contract for aienvmp outputs.",
+    compatibilityPolicy: "Additive and backward-compatible after 0.2.0: consumers should ignore unknown fields and rely only on documented root fields.",
+    breakingChangePolicy: "Breaking JSON contract changes require a future contractVersion bump and migration notes.",
     aiBootstrapFields: ["purpose", "readFirst", "detailCommand", "nextSafeCommand", "nextSafeCommandSource", "nextSafeCommandReason", "localMode", "projectLocalWork", "environmentChanges", "rule"],
     aiLoop: {
       name: "AI maintenance loop",
@@ -74,7 +78,11 @@ export function schemaContract() {
     },
     compatibility: {
       stability: "additive",
+      contractVersion: "0.1-prototype",
+      stableFrom: "0.2.0",
       consumerRule: "Ignore unknown fields. Do not require optional fields unless listed in requiredFields.",
+      additiveRule: "After 0.2.0, new fields may be added, but existing documented fields should remain backward-compatible.",
+      breakingChangeRule: "A breaking change requires a contractVersion bump, changelog entry, and migration note.",
       localBehavior: "read-only; this command does not scan, install, update, or lock anything.",
       aiReadinessRule: "When aiReadiness.level is review, project-local code work may still continue if aiReadiness.projectLocalWork is allowed; environment changes should follow intent/review guidance.",
       collaborationRule: "Use collaboration.status, activeTargets, and nextCommand as the shortest multi-agent environment coordination hint.",

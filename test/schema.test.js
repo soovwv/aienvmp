@@ -7,6 +7,10 @@ test("schemaContract describes stable AI output contracts", () => {
   const schema = schemaContract();
 
   assert.equal(schema.name, "aienvmp-contract");
+  assert.equal(schema.contractVersion, "0.1-prototype");
+  assert.equal(schema.stableFrom, "0.2.0");
+  assert.match(schema.compatibilityPolicy, /backward-compatible/);
+  assert.match(schema.breakingChangePolicy, /contractVersion bump/);
   assert.ok(schema.aiBootstrapFields.includes("nextSafeCommandSource"));
   assert.ok(schema.aiBootstrapFields.includes("nextSafeCommandReason"));
   assert.equal(schema.aiLoop.name, "AI maintenance loop");
@@ -53,6 +57,10 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.sbom.aiDependencyReviewFields.includes("statusReason"));
   assert.equal(schema.outputs.cyclonedxLite.command, "aienvmp sbom --format cyclonedx-lite --json");
   assert.equal(schema.compatibility.stability, "additive");
+  assert.equal(schema.compatibility.contractVersion, "0.1-prototype");
+  assert.equal(schema.compatibility.stableFrom, "0.2.0");
+  assert.match(schema.compatibility.additiveRule, /After 0.2.0/);
+  assert.match(schema.compatibility.breakingChangeRule, /migration note/);
   assert.match(schema.compatibility.aiReadinessRule, /project-local code work/);
   assert.match(schema.compatibility.collaborationRule, /multi-agent environment coordination/);
   assert.match(schema.compatibility.maintenanceLoopRule, /recurring AI workflow/);

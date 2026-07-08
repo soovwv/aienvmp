@@ -73,6 +73,8 @@ AIENV.md                 # Markdown env map for AI agents
 ## AI Contract
 
 - `status`, `context`, `plan`, and `handoff` share one additive preflight contract.
+- `schema --json` exposes `schemaVersion`, `contractVersion`, and compatibility rules for AI consumers.
+- After `0.2.0`, documented JSON fields stay backward-compatible; new fields are additive.
 - `aiBootstrap` gives AI the shortest read-first, next-command, and local-mode hint.
 - `aiBootstrap` also explains the next command source and reason.
 - `AIENV.md`, `summary.md`, and `plan.md` start with the same bootstrap hint for Markdown-first agents.
@@ -151,8 +153,16 @@ See [examples/github-action.yml](examples/github-action.yml).
 
 - `0.1.x` is the prototype history for fast AI-contract validation.
 - `0.2.x` starts the stabilized AI workspace contract.
-- npm releases are batched around meaningful changes, with security fixes as the exception.
+- npm releases are manually gated and batched around meaningful changes, with security fixes as the exception.
+- Manual publish runs from GitHub Actions `Release` workflow and requires the `NPM_TOKEN` secret.
+- `0.1.x` is deprecated only after `0.2.0` is published, with a message that points users to the stable contract.
 - Broken or superseded versions are deprecated instead of unpublished.
+
+Post-`0.2.0` deprecation command:
+
+```bash
+npm deprecate 'aienvmp@<0.2.0' 'Prototype history: use aienvmp@0.2.0 or newer for the stabilized AI workspace contract.'
+```
 
 ## Development
 

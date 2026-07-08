@@ -5,6 +5,9 @@
 ## Near Term
 
 - Prepare `0.2.0` as the stabilized AI workspace contract release
+- Keep JSON contracts additive after `0.2.0`; breaking changes require a contract version bump and migration notes
+- Use manual release gating so npm publish happens only for meaningful batched changes
+- Deprecate `0.1.x` prototype versions after `0.2.0` is published
 - Strengthen trust states: observed, planned, changed, review, verified, stale
 - Detect multi-agent environment intent conflicts
 - Keep one advisory decision engine with optional strict enforcement
@@ -47,3 +50,4 @@
 - Taking hard locks on shared machines by default
 - Installing or modifying runtime versions automatically
 - Unpublishing normal prototype history from npm
+- Publishing every commit to npm
