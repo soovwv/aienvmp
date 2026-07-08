@@ -131,6 +131,12 @@ export function schemaContract() {
       status: "prototype-hardening",
       publishDecision: {
         default: "hold",
+        batchThreshold: "Hold by default until several meaningful AI-contract, dashboard, SBOM, release-gate, or bugfix changes are grouped for one release.",
+        publishCandidateSignals: [
+          "multiple user-visible AI contract or dashboard changes are grouped",
+          "SBOM or environment coordination behavior changed and release notes are current",
+          "release gate, package metadata, or onboarding behavior changed in a way users should receive together"
+        ],
         publishWhen: [
           "meaningful AI contract, dashboard, SBOM, or release-gate changes are batched",
           "npm run release:check passes locally",
@@ -167,7 +173,7 @@ export function schemaContract() {
         "manual batched release workflow"
       ],
       stableContractRule: "After 0.2.0, documented JSON fields are additive and backward-compatible; breaking changes require a contractVersion bump and migration note.",
-      batchRule: "Accumulate meaningful AI-contract, dashboard, SBOM, and release-gate changes before one npm publish."
+      batchRule: "Accumulate several meaningful AI-contract, dashboard, SBOM, release-gate, and bugfix changes before one npm publish; hold small isolated changes for the next batch."
     },
     outputs: {
       status: {

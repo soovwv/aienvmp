@@ -105,6 +105,7 @@ test("package, README, and CLI help share the AI workspace coordination position
   assert.match(readme.slice(0, 1200), /Start: run `npx aienvmp onboard`/);
   assert.ok(readme.split(/\r?\n/).length <= 170);
   assert.match(readme, /AI adoption guide/);
+  assert.match(readme, /several meaningful changes are batched/);
   assert.match(stdout, /AI workspace coordination with a lightweight env map and SBOM/);
 });
 

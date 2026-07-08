@@ -73,6 +73,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.releaseReadiness.target, "0.2.0");
   assert.equal(schema.releaseReadiness.status, "prototype-hardening");
   assert.equal(schema.releaseReadiness.publishDecision.default, "hold");
+  assert.match(schema.releaseReadiness.publishDecision.batchThreshold, /Hold by default/);
+  assert.match(schema.releaseReadiness.publishDecision.publishCandidateSignals.join(" "), /dashboard changes/);
+  assert.match(schema.releaseReadiness.publishDecision.publishCandidateSignals.join(" "), /SBOM/);
   assert.match(schema.releaseReadiness.publishDecision.publishWhen.join(" "), /meaningful AI contract/);
   assert.match(schema.releaseReadiness.publishDecision.holdWhen.join(" "), /small documentation/);
   assert.match(schema.releaseReadiness.publishDecision.emergencyException, /Security/);
@@ -82,6 +85,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.releaseReadiness.evidenceCommands.includes("node bin/aienvmp.js demo --json"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("AI session/status/context contract"));
   assert.match(schema.releaseReadiness.stableContractRule, /backward-compatible/);
+  assert.match(schema.releaseReadiness.batchRule, /several meaningful/);
   assert.match(schema.releaseReadiness.batchRule, /one npm publish/);
   assert.equal(schema.dashboard.mode, "light-human-view");
   assert.deepEqual(schema.dashboard.essentialSurfaces.controlStrip, ["AI readiness", "Freshness", "Collaboration", "SBOM risk"]);

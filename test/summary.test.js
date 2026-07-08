@@ -162,7 +162,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /default decision: hold/);
   assert.match(markdown, /publish when: meaningful AI contract/);
   assert.match(markdown, /hold when: only one small documentation/);
-  assert.match(markdown, /publish: Accumulate meaningful AI-contract, dashboard, SBOM, and release-gate changes before one npm publish/);
+  assert.match(markdown, /publish: Accumulate several meaningful AI-contract, dashboard, SBOM, release-gate, and bugfix changes before one npm publish/);
   assert.match(markdown, /\.aienvmp\/sbom\.cdx\.json/);
   assert.match(markdown, /\.aienvmp\/README\.md/);
 });
