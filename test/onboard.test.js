@@ -13,9 +13,11 @@ test("onboard writes Codex, Claude, and Gemini pointers then syncs", async () =>
   assert.equal(result.status, "ok");
   assert.equal(result.sync, "ok");
   assert.equal(result.aiDiscovery, "ready: codex, claude, gemini");
-  assert.deepEqual(result.readFirst, [".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md"]);
+  assert.equal(result.startHere, ".aienvmp/README.md");
+  assert.deepEqual(result.readFirst, [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md"]);
   assert.deepEqual(result.nextCommands, ["aienvmp status", "aienvmp context --json"]);
-  assert.match(result.sessionStart[0], /status\.json first/);
+  assert.match(result.sessionStart[0], /\.aienvmp\/README\.md/);
+  assert.match(result.sessionStart[0], /status\.json/);
   assert.match(result.sessionStart[1], /artifactFreshness/);
   assert.match(result.freshnessRule, /artifactFreshness\.nextCommand/);
   assert.deepEqual(result.pointers.map((item) => item.file), ["AGENTS.md", "CLAUDE.md", "GEMINI.md"]);
@@ -78,6 +80,7 @@ test("onboard text output includes the AI session start contract", async () => {
 
   const text = output.join("\n");
   assert.match(text, /AI discovery: pointers-written: gemini/);
-  assert.match(text, /session: read \.aienvmp\/status\.json first/);
+  assert.match(text, /read: \.aienvmp\/README\.md -> \.aienvmp\/status\.json/);
+  assert.match(text, /session: start at \.aienvmp\/README\.md/);
   assert.match(text, /artifactFreshness is not fresh/);
 });

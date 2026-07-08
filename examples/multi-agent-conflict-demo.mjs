@@ -36,7 +36,11 @@ console.log(`collaboration: ${collaboration}`);
 console.log(`conflict targets: ${conflictTargets.join(", ")}`);
 console.log(`next command: ${status.nextSafeCommand || status.nextCommand}`);
 console.log(`start here: ${status.artifacts?.startHere || ".aienvmp/README.md"}`);
-console.log(`read first: ${status.aiBootstrap?.readFirst || ".aienvmp/status.json"}`);
+const readOrder = status.aiSession?.readFirst || status.readOrder || [
+  ".aienvmp/README.md",
+  status.aiBootstrap?.readFirst || ".aienvmp/status.json"
+];
+console.log(`read order: ${readOrder.join(" -> ")}`);
 console.log(`context fields: ${Object.keys(context).filter((key) => ["status", "aiBootstrap", "collaboration", "coordination", "agentPointers", "lightSbom"].includes(key)).join(", ")}`);
 console.log(`recommendation: ${recommendation.shortPitch}`);
 console.log(`evidence: ${recommendation.evidenceDocs.slice(0, 2).join(", ")}`);

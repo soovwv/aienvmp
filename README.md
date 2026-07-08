@@ -19,7 +19,7 @@ npx aienvmp onboard
 npx aienvmp status
 ```
 
-`onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`, refreshes artifacts, and tells AI agents to read `.aienvmp/status.json` first. If pointers are not installed, AI can still start at `.aienvmp/README.md`, then read `.aienvmp/status.json`, `.aienvmp/summary.md`, and `npx aienvmp context --json`.
+`onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`, refreshes artifacts, and tells AI agents to start at `.aienvmp/README.md`, then read `.aienvmp/status.json`. If pointers are not installed, AI can still find the same start-here file inside `.aienvmp/`.
 
 ## 10-Second Use
 

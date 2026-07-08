@@ -75,9 +75,9 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.equal(status.artifacts.cyclonedx, ".aienvmp/sbom.cdx.json");
   const startHere = await fs.readFile(path.join(dir, ".aienvmp", "README.md"), "utf8");
   assert.match(startHere, /# aienvmp start here/);
-  assert.match(startHere, /read first: `\.aienvmp\/status\.json`/);
+  assert.match(startHere, /read order: `\.aienvmp\/README\.md -> \.aienvmp\/status\.json/);
   assert.match(startHere, /AI session: `aienvmp status --json -> aienvmp context --json`/);
-  assert.match(startHere, /For AI agents: use `status\.json`, `summary\.md`, then `aienvmp context --json`/);
+  assert.match(startHere, /For AI agents: start here, then use `status\.json`, `summary\.md`, and `aienvmp context --json`/);
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "summary.md")));
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "sbom.json")));
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "sbom.cdx.json")));

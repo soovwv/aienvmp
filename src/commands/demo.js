@@ -34,6 +34,10 @@ export async function demoWorkspace(args = {}) {
     nextCommand: status.nextSafeCommand || status.nextCommand || "aienvmp status --json",
     startHere: status.artifacts?.startHere || ".aienvmp/README.md",
     readFirst: status.aiBootstrap?.readFirst || ".aienvmp/status.json",
+    readOrder: status.aiSession?.readFirst || status.readOrder || [
+      status.artifacts?.startHere || ".aienvmp/README.md",
+      status.aiBootstrap?.readFirst || ".aienvmp/status.json"
+    ],
     artifactFreshness: status.artifactFreshness || {},
     contextFields: Object.keys(context).filter((key) => ["status", "aiBootstrap", "artifactFreshness", "collaboration", "coordination", "agentPointers", "lightSbom"].includes(key)),
     point: "Two AI agents planned dependency changes in one workspace, so aienvmp switches shared environment changes to review-first without blocking local code work."
@@ -53,7 +57,7 @@ export async function demoWorkspace(args = {}) {
     console.log(`conflict targets: ${result.conflictTargets.join(", ")}`);
     console.log(`next command: ${result.nextCommand}`);
     console.log(`start here: ${result.startHere}`);
-    console.log(`read first: ${result.readFirst}`);
+    console.log(`read order: ${result.readOrder.join(" -> ")}`);
     console.log(`freshness: ${result.artifactFreshness.state || "unknown"} / ${result.artifactFreshness.nextCommand || "aienvmp sync"}`);
     console.log(`context fields: ${result.contextFields.join(", ")}`);
     console.log(`recommendation: ${result.recommendation}`);

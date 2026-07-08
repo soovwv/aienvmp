@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Changed demo and generated start-here README wording from status-only `read first` to start-here `read order` so public AI examples match the fallback discovery flow.
+- Aligned `onboard` output with the `.aienvmp/README.md` start-here path so first-run agents see the same fallback entry point as status, SBOM, context, and dashboard outputs.
 - Added `followUpPlan` to status, context, summary, and schema outputs so AI agents can see one next command for unresolved environment follow-up work.
 - Documented `followUpPlan` in the README and packaged AI skill so AI agents run pending follow-up commands before touching shared environment targets.
 - Mirrored `followUpPlan` in the dashboard Follow-ups card so humans see the same pending target and next command as AI agents.
