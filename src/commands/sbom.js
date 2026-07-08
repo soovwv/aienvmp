@@ -27,6 +27,7 @@ export function buildSbomArtifact(manifest = {}) {
     || lightSbom.riskSummary?.commands?.[0]
     || "aienvmp context --json";
   const aiBootstrap = sbomBootstrap(nextSafeCommand, dependencyReview);
+  const scannerGuidance = sbomScannerGuidance(dependencyReview);
   const aiReviewPlan = sbomReviewPlan(lightSbom, dependencyReview, nextSafeCommand);
   return {
     schemaVersion: 1,
@@ -44,14 +45,39 @@ export function buildSbomArtifact(manifest = {}) {
     dependencyChangeHints: (lightSbom.dependencyChangeHints || []).slice(0, 20),
     aiBootstrap,
     nextSafeCommand,
+    scannerGuidance,
     aiReviewPlan,
     aiDependencyReview: dependencyReview,
     aiUse: {
       purpose: "Standalone AI-readable light SBOM artifact.",
       readBefore: "Dependency changes, vulnerability remediation, release review, or shared AI handoff.",
       nextCommand: nextSafeCommand,
-      rule: "Use as a lightweight planning map; verify security claims with dedicated scanners."
+      rule: scannerGuidance.rule
     }
+  };
+}
+
+function sbomScannerGuidance(review = {}) {
+  const confidence = review.securityConfidence || "unknown";
+  const lowConfidence = ["scanner-off", "unknown", "not-scanned"].includes(confidence);
+  return {
+    mode: "optional-read-only",
+    defaultCommand: "aienvmp sbom --json",
+    scannerCommand: "aienvmp sync --security",
+    securityConfidence: confidence,
+    whenToRun: lowConfidence
+      ? [
+        "before security claims",
+        "before vulnerability remediation",
+        "before release decisions",
+        "before dependency changes when scanner confidence is low"
+      ]
+      : [
+        "when security findings changed",
+        "before release decisions",
+        "when a human or CI asks for fresh scanner evidence"
+      ],
+    rule: "Keep the default SBOM lightweight for AI coordination; use optional read-only scanners only when security confidence matters."
   };
 }
 
@@ -149,6 +175,7 @@ export function buildCycloneDxLite(manifest = {}) {
     || lightSbom.riskSummary?.commands?.[0]
     || "aienvmp context --json";
   const aiBootstrap = sbomBootstrap(nextSafeCommand, dependencyReview);
+  const scannerGuidance = sbomScannerGuidance(dependencyReview);
   return {
     bomFormat: "CycloneDX",
     specVersion: "1.6",
@@ -188,6 +215,9 @@ export function buildCycloneDxLite(manifest = {}) {
     properties: [
       { name: "aienvmp:limitation", value: "Light SBOM from project manifests only; no install or dependency resolver was run." },
       { name: "aienvmp:verifyWith", value: "CycloneDX, Syft, Trivy, npm audit, pip-audit, or another dedicated scanner before security claims." },
+      { name: "aienvmp:scannerGuidance:mode", value: scannerGuidance.mode },
+      { name: "aienvmp:scannerGuidance:command", value: scannerGuidance.scannerCommand },
+      { name: "aienvmp:scannerGuidance:rule", value: scannerGuidance.rule },
       { name: "aienvmp:aiBootstrap:rule", value: aiBootstrap.rule }
     ]
   };

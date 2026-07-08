@@ -31,6 +31,12 @@ test("buildSbomArtifact creates standalone AI-readable light SBOM", () => {
   assert.match(sbom.aiBootstrap.nextSafeCommandReason, /requires review/);
   assert.equal(sbom.aiBootstrap.environmentChanges, "review-first");
   assert.equal(sbom.nextSafeCommand, "aienvmp sync --security");
+  assert.equal(sbom.scannerGuidance.mode, "optional-read-only");
+  assert.equal(sbom.scannerGuidance.defaultCommand, "aienvmp sbom --json");
+  assert.equal(sbom.scannerGuidance.scannerCommand, "aienvmp sync --security");
+  assert.equal(sbom.scannerGuidance.securityConfidence, "scanner-off");
+  assert.ok(sbom.scannerGuidance.whenToRun.includes("before security claims"));
+  assert.match(sbom.scannerGuidance.rule, /default SBOM lightweight/);
   assert.equal(sbom.aiReviewPlan.status, "review");
   assert.equal(sbom.aiReviewPlan.risk, "high/80");
   assert.equal(sbom.aiReviewPlan.securityConfidence, "scanner-off");
@@ -46,6 +52,7 @@ test("buildSbomArtifact creates standalone AI-readable light SBOM", () => {
   assert.equal(sbom.aiDependencyReview.beforeDependencyChange.some((command) => command.includes("checkpoint")), false);
   assert.match(sbom.aiDependencyReview.afterDependencyChange[1], /checkpoint/);
   assert.equal(sbom.aiUse.nextCommand, "aienvmp sync --security");
+  assert.equal(sbom.aiUse.rule, sbom.scannerGuidance.rule);
 });
 
 test("buildCycloneDxLite exports project manifest packages with limitations", () => {
@@ -93,6 +100,9 @@ test("buildCycloneDxLite exports project manifest packages with limitations", ()
   assert.equal(propertyValue(cdx.metadata.properties, "aienvmp:aiBootstrap:localMode"), "advisory");
   assert.equal(propertyValue(cdx.metadata.properties, "aienvmp:aiBootstrap:environmentChanges"), "review-first");
   assert.match(propertyValue(cdx.properties, "aienvmp:aiBootstrap:rule"), /Review SBOM risk/);
+  assert.equal(propertyValue(cdx.properties, "aienvmp:scannerGuidance:mode"), "optional-read-only");
+  assert.equal(propertyValue(cdx.properties, "aienvmp:scannerGuidance:command"), "aienvmp sync --security");
+  assert.match(propertyValue(cdx.properties, "aienvmp:scannerGuidance:rule"), /optional read-only scanners/);
   assert.match(cdx.properties[0].value, /Light SBOM/);
 });
 
@@ -119,6 +129,7 @@ test("sbomWorkspace can write .aienvmp/sbom.json", async () => {
   assert.equal(written.aiReviewPlan.status, "ready");
   assert.equal(written.aiReviewPlan.risk, "clear/0");
   assert.equal(written.aiReviewPlan.beforeChange, written.nextSafeCommand);
+  assert.equal(written.scannerGuidance.mode, "optional-read-only");
   assert.equal(written.aiDependencyReview.status, "ready");
   assert.equal(written.aiDependencyReview.securityConfidence, "scanner-summary");
   assert.ok(written.aiDependencyReview.readFirst.includes("riskSummary"));

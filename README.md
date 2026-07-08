@@ -104,6 +104,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `summary.md` and the dashboard mirror `artifactFreshness` so humans and Markdown-first agents see the same refresh hint.
 - `AIENV.md`, `summary.md`, and `plan.md` start with the same bootstrap hint for Markdown-first agents.
 - `sbom.json` and CycloneDX-lite properties include the same bootstrap hint for dependency and security review loops.
+- `sbomStrategy` and `sbom.json.scannerGuidance` keep SBOM review light by default and request optional read-only scanners before security-sensitive decisions.
 - `maintenanceLoop` gives AI the recurring env-management loop.
 - `sbomRisk`, `sbomReview`, and `sbom.json.aiReviewPlan` connect light SBOM risk to safe dependency-change steps.
 - `collaboration`, `coordination`, and `agentActivity` show multi-agent conflicts and shared targets.
