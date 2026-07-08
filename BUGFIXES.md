@@ -82,6 +82,18 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: the Action now has `write-sbom` and the example uploads both native and CycloneDX-lite SBOM artifacts.
 - Verification: Action tests cover input metadata, SBOM write commands, and example artifact paths.
 
+### CI and AI review still needed a short handoff view
+
+- Issue: `status.json` was AI-friendly, but GitHub Actions and quick human review still required opening JSON artifacts or the dashboard.
+- Fix: `aienvmp summary` now writes `.aienvmp/summary.md`, `sync` creates it by default, and the GitHub Action appends it to `GITHUB_STEP_SUMMARY`.
+- Verification: tests cover summary rendering, sync artifact creation, schema metadata, Action wiring, and example upload paths.
+
+### Windows-created JSON files could be missed
+
+- Issue: UTF-8 BOM JSON files created by some Windows tools could fail JSON parsing and make dependency snapshots look empty.
+- Fix: `readJson` now strips a leading UTF-8 BOM before parsing.
+- Verification: regression tests cover BOM JSON parsing and Windows smoke testing confirmed dependency counts in `summary.md`.
+
 ## Template
 
 ### Title

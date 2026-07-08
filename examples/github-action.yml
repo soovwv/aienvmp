@@ -17,6 +17,7 @@ jobs:
           write-schema: "true"
           write-doctor-json: "true"
           write-sbom: "true"
+          write-summary: "true"
           strict: "off" # security, policy, coordination, all, or off
 
       - uses: actions/upload-artifact@v4
@@ -27,6 +28,7 @@ jobs:
             AIENV.md
             .aienvmp/manifest.json
             .aienvmp/status.json
+            .aienvmp/summary.md
             .aienvmp/sbom.json
             .aienvmp/sbom.cdx.json
             .aienvmp/schema.json

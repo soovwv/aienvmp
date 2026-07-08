@@ -12,10 +12,14 @@ export async function exists(file) {
 
 export async function readJson(file, fallback = null) {
   try {
-    return JSON.parse(await fs.readFile(file, "utf8"));
+    return JSON.parse(stripBom(await fs.readFile(file, "utf8")));
   } catch {
     return fallback;
   }
+}
+
+export function stripBom(value) {
+  return String(value).replace(/^\uFEFF/, "");
 }
 
 export async function writeJson(file, data) {

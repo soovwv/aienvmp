@@ -34,6 +34,7 @@ Warnings are advisory by default. Use `doctor --strict <scope>` only when you wa
 ```text
 AIENV.md                 # Markdown env map for AI agents
 .aienvmp/status.json     # first AI read: clear/review, next command, nextAgent hint
+.aienvmp/summary.md      # compact AI/CI summary
 .aienvmp/manifest.json   # runtime map + light SBOM
 .aienvmp/sbom.json       # standalone AI-readable light SBOM
 .aienvmp/sbom.cdx.json   # CycloneDX-lite export from project manifests
@@ -47,6 +48,7 @@ AIENV.md                 # Markdown env map for AI agents
 
 - `status`, `context`, `plan`, and `handoff` share one preflight contract.
 - `schema --json` prints the stable AI-readable output contract without scanning.
+- `summary.md` is the short CI/AI handoff view.
 - `status.json.nextAgent` tells the next AI what to read and whether to review first.
 - `dependencyReadSet` lists manifests and lockfiles before package or security changes.
 - `sbomRisk` gives AI a compact light-SBOM risk level, signals, and next command.
@@ -71,8 +73,9 @@ npx aienvmp snippet gemini
 ## Commands
 
 ```bash
-aienvmp sync                    # update env map, status, ledger, dashboard
+aienvmp sync                    # update env map, status, summary, SBOM, dashboard
 aienvmp status --write          # refresh compact AI status
+aienvmp summary --write         # refresh compact Markdown summary
 aienvmp context --json          # AI decision contract
 aienvmp sbom --json             # standalone light SBOM
 aienvmp sbom --format cyclonedx-lite --json
@@ -87,7 +90,7 @@ aienvmp doctor --strict security|policy|coordination|all
 
 ## CI
 
-The GitHub Action writes status, schema, doctor, plan, SBOM, and dashboard artifacts. `strict: "off"` reports warnings without failing the job.
+The GitHub Action writes status, summary, schema, doctor, plan, SBOM, and dashboard artifacts. `strict: "off"` reports warnings without failing the job.
 
 ```yaml
 - uses: soovwv/aienvmp@main
@@ -95,6 +98,7 @@ The GitHub Action writes status, schema, doctor, plan, SBOM, and dashboard artif
     write-status: "true"
     write-plan: "true"
     write-sbom: "true"
+    write-summary: "true"
     strict: "off"
 ```
 

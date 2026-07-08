@@ -4,6 +4,7 @@ import { compileWorkspace } from "./compile.js";
 import { dashWorkspace } from "./dash.js";
 import { statusWorkspace } from "./status.js";
 import { sbomWorkspace } from "./sbom.js";
+import { summaryWorkspace } from "./summary.js";
 
 export async function syncWorkspace(args) {
   const quiet = args.quiet || args.json;
@@ -16,6 +17,7 @@ export async function syncWorkspace(args) {
   const status = await statusWorkspace({ ...next, json: false, write: true, quiet: true });
   const sbom = await sbomWorkspace({ ...next, json: false, write: true, quiet: true });
   const cyclonedx = await sbomWorkspace({ ...next, json: false, write: true, quiet: true, format: "cyclonedx-lite" });
+  const summary = await summaryWorkspace({ ...next, json: false, write: true, quiet: true });
 
   const result = {
     status: "ok",
@@ -26,6 +28,7 @@ export async function syncWorkspace(args) {
       status: status.artifact,
       sbom: sbom.artifact,
       cyclonedx: cyclonedx.artifact,
+      summary: summary.artifact,
       dashboard: dashboard.dashboard
     },
     changes: scanned.changes,
@@ -35,7 +38,7 @@ export async function syncWorkspace(args) {
   if (args.json) {
     console.log(JSON.stringify(result, null, 2));
   } else if (!quiet) {
-    console.log("sync complete: AIENV.md, manifest, status, ledger, intents, and dashboard are up to date");
+    console.log("sync complete: AIENV.md, manifest, status, SBOM, summary, ledger, intents, and dashboard are up to date");
   }
 
   return result;

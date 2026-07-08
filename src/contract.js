@@ -20,6 +20,12 @@ export function schemaContract() {
         command: "aienvmp status --json",
         contract: preflightContract()
       },
+      summary: {
+        file: ".aienvmp/summary.md",
+        command: "aienvmp summary --write",
+        format: "markdown",
+        purpose: "Compact AI and CI step summary for quick review."
+      },
       context: {
         command: "aienvmp context --json",
         rootFields: ["status", "preflight", "coordination", "decision", "recommendedActions", "workspace", "dependencySnapshot", "lightSbom", "warnings"]

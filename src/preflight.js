@@ -351,6 +351,7 @@ function agentQuickstart(reviewRequired) {
 export function preflightArtifacts() {
   return {
     status: ".aienvmp/status.json",
+    summary: ".aienvmp/summary.md",
     envMap: "AIENV.md",
     manifest: ".aienvmp/manifest.json",
     sbom: ".aienvmp/sbom.json",

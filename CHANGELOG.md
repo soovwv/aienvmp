@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.50
+
+- Added `aienvmp summary` for a compact Markdown AI/CI handoff view.
+- Added `.aienvmp/summary.md` writing through the default `sync` flow.
+- Added `summary` to preflight artifacts and the stable output contract.
+- Added a GitHub Action `write-summary` input.
+- Appended `.aienvmp/summary.md` to GitHub Step Summary when the Action runs in GitHub Actions.
+- Updated the GitHub Action example and README to include the summary artifact.
+- Fixed UTF-8 BOM JSON parsing so Windows-created `package.json` files are scanned correctly.
+- Added regression tests for summary rendering, sync output, schema metadata, Action Step Summary wiring, and BOM JSON parsing.
+
 ## 0.1.49
 
 - Added a `write-sbom` GitHub Action input for explicit SBOM artifact generation.

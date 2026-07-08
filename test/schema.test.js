@@ -10,6 +10,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.outputs.status.contract.name, "aienvmp-preflight");
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("nextAgent"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("followUps"));
+  assert.equal(schema.outputs.summary.command, "aienvmp summary --write");
+  assert.equal(schema.outputs.summary.format, "markdown");
   assert.ok(schema.outputs.context.rootFields.includes("coordination"));
   assert.ok(schema.outputs.handoff.rootFields.includes("dependencyHandoff"));
   assert.ok(schema.outputs.handoff.rootFields.includes("coordination"));
@@ -31,6 +33,7 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
 
   const schema = JSON.parse(output);
   assert.equal(schema.outputs.context.command, "aienvmp context --json");
+  assert.equal(schema.outputs.summary.file, ".aienvmp/summary.md");
   assert.equal(schema.outputs.sbom.file, ".aienvmp/sbom.json");
   assert.equal(schema.outputs.cyclonedxLite.file, ".aienvmp/sbom.cdx.json");
   assert.match(schema.compatibility.localBehavior, /read-only/);

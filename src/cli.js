@@ -16,6 +16,7 @@ import { statusWorkspace } from "./commands/status.js";
 import { schemaWorkspace } from "./commands/schema.js";
 import { checkpointWorkspace } from "./commands/checkpoint.js";
 import { sbomWorkspace } from "./commands/sbom.js";
+import { summaryWorkspace } from "./commands/summary.js";
 import { readFileSync } from "node:fs";
 
 const commands = new Map([
@@ -36,7 +37,8 @@ const commands = new Map([
   ["status", statusWorkspace],
   ["schema", schemaWorkspace],
   ["checkpoint", checkpointWorkspace],
-  ["sbom", sbomWorkspace]
+  ["sbom", sbomWorkspace],
+  ["summary", summaryWorkspace]
 ]);
 
 const version = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version;
@@ -115,16 +117,18 @@ Usage:
   aienvmp checkpoint [--dir .] --actor agent:id --summary "what changed" [--target dependency] [--json]
   aienvmp plan [--dir .] [--json] [--write]
   aienvmp sbom [--dir .] [--json] [--write]
+  aienvmp summary [--dir .] [--write]
   aienvmp schema [--json]
 
 Common:
-  aienvmp sync      update AIENV.md, manifest, status, ledger, intents, and dashboard
+  aienvmp sync      update AIENV.md, manifest, status, summary, SBOM, ledger, intents, and dashboard
   aienvmp status    print one simple environment decision; --write saves .aienvmp/status.json
   aienvmp context   print the AI preflight brief
   aienvmp handoff   print the next-agent handoff summary
   aienvmp checkpoint record, sync, status, and handoff after an env change
   aienvmp plan      print a read-only AI environment action plan
   aienvmp sbom      print/write standalone light SBOM artifact
+  aienvmp summary   print/write a compact Markdown summary for AI and CI
   aienvmp schema    print the stable AI-readable output contract
   aienvmp snippet   print an AGENTS.md pointer snippet
   aienvmp dash      regenerate/open the lightweight dashboard
@@ -141,6 +145,7 @@ Advanced:
   aienvmp diff [--dir .]
   aienvmp doctor [--dir .] [--json] [--ci] [--strict security|policy|coordination|all]
   aienvmp sbom [--dir .] [--json] [--write]
+  aienvmp summary [--dir .] [--write]
   aienvmp dash [--dir .] [--open]
 `);
 }

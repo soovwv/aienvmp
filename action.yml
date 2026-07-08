@@ -31,6 +31,10 @@ inputs:
     description: Write standalone light SBOM and CycloneDX-lite artifacts
     required: false
     default: "true"
+  write-summary:
+    description: Write compact Markdown summary and append it to GitHub Step Summary
+    required: false
+    default: "true"
 
 runs:
   using: composite
@@ -75,6 +79,16 @@ runs:
         if [ "${{ inputs.write-sbom }}" = "true" ]; then
           node "$GITHUB_ACTION_PATH/bin/aienvmp.js" sbom --dir "${{ inputs.directory }}" --write --quiet
           node "$GITHUB_ACTION_PATH/bin/aienvmp.js" sbom --dir "${{ inputs.directory }}" --format cyclonedx-lite --write --quiet
+        fi
+
+    - name: Write AI summary
+      shell: bash
+      run: |
+        if [ "${{ inputs.write-summary }}" = "true" ]; then
+          node "$GITHUB_ACTION_PATH/bin/aienvmp.js" summary --dir "${{ inputs.directory }}" --write --quiet
+          if [ -n "$GITHUB_STEP_SUMMARY" ]; then
+            cat "${{ inputs.directory }}/.aienvmp/summary.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
         fi
 
     - name: Doctor

@@ -48,6 +48,10 @@ export function planMdPath(dir) {
   return path.join(stateDir(dir), "plan.md");
 }
 
+export function summaryMdPath(dir) {
+  return path.join(stateDir(dir), "summary.md");
+}
+
 export function aiEnvPath(dir) {
   return path.join(dir, "AIENV.md");
 }
