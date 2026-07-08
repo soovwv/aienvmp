@@ -33,3 +33,9 @@ export function dashboardAgentClientScript() {
     "const agentPointerCount=entries(manifest.agentFiles).filter(([,v])=>agentHasPointer(v)).length;"
   ].join("\n");
 }
+
+export function dashboardScannerGuidanceClientScript() {
+  return [
+    "const scannerGuidance=lightSbom.scannerGuidance||{mode:'optional-read-only',defaultCommand:'aienvmp sbom --json',scannerCommand:'aienvmp sync --security',securityConfidence:aiDependencyReview.securityConfidence||'unknown',whenToRun:['before security claims','before vulnerability remediation','before release decisions'],rule:'Keep the default SBOM lightweight for AI coordination; use optional read-only scanners only when security confidence matters.'};"
+  ].join("\n");
+}

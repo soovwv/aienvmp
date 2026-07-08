@@ -1,11 +1,11 @@
 import { schemaContract } from "./contract.js";
-import { dashboardAgentClientScript, dashboardPriorityClientScript } from "./dashboard.js";
+import { dashboardAgentClientScript, dashboardPriorityClientScript, dashboardScannerGuidanceClientScript } from "./dashboard.js";
 
 const markerBegin = "<!-- aienvmp:begin -->";
 const markerEnd = "<!-- aienvmp:end -->";
 
 export { markerBegin, markerEnd };
-export { dashboardAgentClientScript, dashboardCardPriority, dashboardEssentialCards, dashboardPriorityClientScript } from "./dashboard.js";
+export { dashboardAgentClientScript, dashboardCardPriority, dashboardEssentialCards, dashboardPriorityClientScript, dashboardScannerGuidanceClientScript } from "./dashboard.js";
 
 export function renderAIEnv(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const lines = [];
@@ -518,7 +518,7 @@ const topRisk=lightSbom.topRisk||[];
 const riskSummary=lightSbom.riskSummary||{};
 const dependencyHints=lightSbom.dependencyChangeHints||[];
 const aiDependencyReview=lightSbom.aiDependencyReview||{};
-const scannerGuidance=lightSbom.scannerGuidance||{mode:'optional-read-only',defaultCommand:'aienvmp sbom --json',scannerCommand:'aienvmp sync --security',securityConfidence:aiDependencyReview.securityConfidence||'unknown',whenToRun:['before security claims','before vulnerability remediation','before release decisions'],rule:'Keep the default SBOM lightweight for AI coordination; use optional read-only scanners only when security confidence matters.'};
+${dashboardScannerGuidanceClientScript()}
 const aiReviewPlan=lightSbom.aiReviewPlan||{status:aiDependencyReview.status||'ready',risk:(riskSummary.level||'clear')+'/'+(riskSummary.score||0),securityConfidence:aiDependencyReview.securityConfidence||'unknown',packageManagerPolicy:pmPolicy.status||'not-detected',packages:lightSbomSummary.packages||0,vulnerabilities:lightSbomSummary.vulnerabilities||0,reviewTargets:aiDependencyReview.reviewTargets||riskSummary.reviewTargets||[],beforeChange:aiDependencyReview.beforeDependencyChange?.[0]||riskSummary.commands?.[0]||'aienvmp sbom --json',afterChange:aiDependencyReview.afterDependencyChange?.slice(-1)[0]||'aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency',rule:aiDependencyReview.rule||'Record dependency intent before dependency or lockfile changes.'};
 const dependencyHintsHtml=dependencyHints.length?'<div class="timeline">'+dependencyHints.slice(0,5).map(h=>\`<div class="event"><time>\${esc(h.ecosystem||'deps')}</time><div><b>\${esc(h.manifest)}</b> <code>\${esc(h.manager||'unknown')}</code> \${esc(h.packages||0)} packages\${h.riskPackages?.length?\`<div class="path">risk: \${esc(h.riskPackages.map(p=>p.name).join(', '))}</div>\`:''}<div class="path">\${esc((h.groups||[]).join(', ')||'no groups')}\${h.lockfiles?.length?\` / lockfiles: \${esc(h.lockfiles.map(l=>l.file).join(', '))}\`:''}</div></div></div>\`).join('')+'</div>':'<div class="okline">No dependency change hints available.</div>';
 const pmPolicyHtml='<table><tr><th>Status</th><td><code>'+esc(pmPolicy.status||'no-lockfile')+'</code></td></tr><tr><th>Guidance</th><td>'+esc(pmPolicy.guidance||'No lockfile policy detected.')+'</td></tr></table>';
