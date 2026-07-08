@@ -79,3 +79,20 @@ test("CLI schema prints the AI-readable output contract without a workspace", as
   assert.equal(json.stableFrom, "0.2.0");
   assert.equal(json.outputs.status.contract.name, "aienvmp-preflight");
 });
+
+test("package, README, and CLI help share the AI workspace coordination positioning", async () => {
+  const pkg = JSON.parse(await fs.readFile(path.resolve("package.json"), "utf8"));
+  const readme = await fs.readFile(path.resolve("README.md"), "utf8");
+  const { stdout } = await execFileAsync(process.execPath, [
+    path.resolve("bin/aienvmp.js"),
+    "--help"
+  ], { cwd: path.resolve(".") });
+
+  assert.match(pkg.description, /AI workspace coordination/);
+  assert.ok(pkg.keywords.includes("ai-workspace"));
+  assert.ok(pkg.keywords.includes("coordination"));
+  assert.ok(pkg.keywords.includes("multi-agent"));
+  assert.match(readme.slice(0, 1200), /AI workspace coordination/);
+  assert.match(readme.slice(0, 1200), /without heavy locks/);
+  assert.match(stdout, /AI workspace coordination with a lightweight env map and SBOM/);
+});

@@ -42,6 +42,7 @@
 - Aligned npm metadata and CLI help headline with the AI workspace coordination positioning.
 - Added npm metadata and CLI help positioning to the `0.2.0` release readiness checklist.
 - Updated the packaged AI skill with the current advisory coordination, discovery, and multi-agent demo guidance.
+- Added a positioning drift test so package metadata, README, and CLI help keep the same AI workspace coordination story.
 
 ## 0.1.69
 
