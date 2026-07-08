@@ -47,6 +47,7 @@ export function renderStatusText(output = {}, options = {}) {
   const sessionStart = Array.isArray(output.aiSession?.start) && output.aiSession.start.length
     ? output.aiSession.start.join(" -> ")
     : `aienvmp status --json -> ${detail}`;
+  const startHere = output.artifacts?.startHere || ".aienvmp/README.md";
   const summary = output.artifacts?.summary || ".aienvmp/summary.md";
   const discovery = output.agentPointers?.discovery || "missing: run aienvmp onboard";
   const lines = [
@@ -54,7 +55,7 @@ export function renderStatusText(output = {}, options = {}) {
     `ready: ${readiness} | collaboration: ${collaboration}`,
     `sbom: ${sbomRisk} (${sbomScore}) | warnings: ${valueOrZero(counts.warnings)} | intents: ${valueOrZero(counts.openIntents)}`,
     `next: ${output.nextCommand || "aienvmp status --json"}`,
-    `session: ${sessionStart} | summary: ${summary} | discovery: ${discovery}`
+    `session: ${sessionStart} | start: ${startHere} | summary: ${summary} | discovery: ${discovery}`
   ];
 
   if (options.verbose) {

@@ -381,6 +381,7 @@ test("statusWorkspace text prints a compact default decision", async () => {
 
   assert.match(lines.join("\n"), /ready: ready \| collaboration: clear/);
   assert.match(lines.join("\n"), /session: aienvmp status --json -> aienvmp context --json/);
+  assert.match(lines.join("\n"), /start: \.aienvmp\/README\.md/);
   assert.match(lines.join("\n"), /discovery: missing: run aienvmp onboard/);
   assert.equal(lines.join("\n").split("\n").length, 5);
 });
@@ -428,7 +429,7 @@ test("renderStatusText stays compact for default human and AI scan", () => {
     collaboration: { status: "review-before-env-change" },
     sbomRisk: { level: "medium", score: 42 },
     quickstart: { detailCommand: "aienvmp context --json" },
-    artifacts: { summary: ".aienvmp/summary.md" },
+    artifacts: { startHere: ".aienvmp/README.md", summary: ".aienvmp/summary.md" },
     agentPointers: { discovery: "ready: codex" },
     nextCommand: "aienvmp plan --write"
   });
@@ -438,7 +439,7 @@ test("renderStatusText stays compact for default human and AI scan", () => {
     "ready: review | collaboration: review-before-env-change",
     "sbom: medium (42) | warnings: 2 | intents: 1",
     "next: aienvmp plan --write",
-    "session: aienvmp status --json -> aienvmp context --json | summary: .aienvmp/summary.md | discovery: ready: codex"
+    "session: aienvmp status --json -> aienvmp context --json | start: .aienvmp/README.md | summary: .aienvmp/summary.md | discovery: ready: codex"
   ]);
 });
 
