@@ -274,9 +274,13 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Audit summary/);
   assert.match(html, /AI control strip/);
   assert.match(html, /Next command/);
+  assert.match(html, /First read/);
   assert.match(html, /\.nextbar/);
+  assert.match(html, /\.brief/);
   assert.match(html, /const nextCommand=manifest\.preflight\?\.nextCommand\|\|topAction\.command\|\|collaboration\.nextCommand/);
   assert.match(html, /const nextReason=topAction\.summary\|\|collaboration\.rule/);
+  assert.match(html, /const firstRead=nextAgent\.readFirst\|\|'\.aienvmp\/status\.json'/);
+  assert.match(html, /const reviewTargets=\[\.\.\.new Set/);
   assert.match(html, /\.control-card\.review/);
   assert.match(html, /controlCard\('AI readiness'/);
   assert.match(html, /controlCard\('Collaboration'/);
@@ -288,6 +292,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /"score":80/);
   assert.match(html, /aienvmp handoff --record --actor agent:id/);
   assert.match(html, /Review dependency read set and topRisk/);
+  assert.match(html, /Review targets/);
+  assert.match(html, /Local mode/);
   assert.match(html, /AI decision/);
   assert.match(html, /AI readiness/);
   assert.match(html, /Review listed signals/);

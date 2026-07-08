@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Added a dashboard `First read` strip with status, first file, review targets, and local operation mode.
+- Kept the detailed dashboard cards below the top decision area so humans get a faster scan without losing AI context.
+
 ## 0.1.66
 
 - Added `aienvmp resolve --target <target>` to resolve all open intents for one environment target.

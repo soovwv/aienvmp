@@ -392,6 +392,10 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(28px,4vw,46px);line-height:1.02;margin-to
 .nextbar b{color:var(--green);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
 .nextbar code{display:inline-block;max-width:100%;white-space:normal;overflow-wrap:anywhere}
 .nextbar span{color:var(--muted);font-size:12px;overflow-wrap:anywhere}
+.brief{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:0 0 14px}
+.brief-item{border:1px solid var(--line2);background:rgba(9,19,16,.9);border-radius:8px;padding:10px;min-width:0}
+.brief-k{color:var(--muted);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.brief-v{margin-top:5px;font-size:13px;font-weight:700;color:var(--text);overflow-wrap:anywhere}
 .audit{display:grid;grid-template-columns:1.2fr repeat(3,minmax(0,.8fr));gap:12px;margin:14px 0}
 .audit-item{border:1px solid var(--line);background:rgba(13,24,21,.92);border-radius:8px;padding:14px;min-width:0}
 .audit-item.primary{background:linear-gradient(135deg,rgba(19,61,42,.88),rgba(9,19,16,.95))}
@@ -417,8 +421,10 @@ code{color:var(--code);background:#0a2017;border:1px solid #17462f;padding:2px 6
 @media (max-width:860px){header,.layout{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.agents{grid-template-columns:1fr}}
 @media (max-width:860px){.control{grid-template-columns:1fr}}
 @media (max-width:860px){.nextbar{grid-template-columns:1fr}}
+@media (max-width:860px){.brief{grid-template-columns:1fr 1fr}}
 @media (max-width:860px){.audit{grid-template-columns:1fr 1fr}}
 @media (max-width:520px){.shell{padding:14px}.metrics{grid-template-columns:1fr}.event{grid-template-columns:1fr}h1{font-size:32px}}
+@media (max-width:520px){.brief{grid-template-columns:1fr}}
 @media (max-width:520px){.audit{grid-template-columns:1fr}}
 </style>
 </head>
@@ -530,6 +536,10 @@ const coordination=manifest.preflight?.coordination||{};
 const conflictTargets=coordination.conflictTargets||[];
 const handoffFiles=nextAgent.dependencyFiles?.length?nextAgent.dependencyFiles:(dependencyReadSet[0]?[dependencyReadSet[0].manifest,...(dependencyReadSet[0].lockfiles||[])].filter(Boolean):[]);
 const handoffNext=nextAgent.rule||(reviewRequired?'Review warnings and open intents':'Continue project-local work');
+const firstRead=nextAgent.readFirst||'.aienvmp/status.json';
+const reviewTargets=[...new Set([...(conflictTargets||[]),...(collaboration.activeTargets||[]),...(riskSummary.reviewTargets||[])].filter(Boolean))];
+const safeMode=enforcementProfile.gate?.localDefault||enforcementProfile.localOperation||'warn-only';
+const briefItem=(key,value)=>\`<div class="brief-item"><div class="brief-k">\${key}</div><div class="brief-v">\${esc(value)}</div></div>\`;
 const handoffHtml=\`<table><tr><th>Status</th><td>\${reviewRequired?'review-required':'clear'}</td></tr><tr><th>Trust</th><td><code>\${esc(trustState)}</code></td></tr><tr><th>Read first</th><td><code>\${esc(nextAgent.readFirst||'.aienvmp/status.json')}</code></td></tr><tr><th>Dependency files</th><td>\${handoffFiles.length?'<code>'+esc(handoffFiles.join(', '))+'</code>':'none'}</td></tr><tr><th>Conflicts</th><td>\${conflictTargets.length?'<code>'+esc(conflictTargets.join(', '))+'</code>':'none'}</td></tr><tr><th>Next</th><td>\${esc(handoffNext)}</td></tr></table>\`;
 document.getElementById('app').innerHTML=\`
 <header>
@@ -549,6 +559,12 @@ document.getElementById('app').innerHTML=\`
   <b>Next command</b>
   <code>\${esc(nextCommand)}</code>
   <span>\${esc(nextReason)}</span>
+</section>
+<section class="brief" aria-label="First read">
+  \${briefItem('Status',reviewRequired?'review required':'clear')}
+  \${briefItem('Read first',firstRead)}
+  \${briefItem('Review targets',reviewTargets.length?reviewTargets.slice(0,4).join(', '):'none')}
+  \${briefItem('Local mode',safeMode)}
 </section>
 <section class="audit" aria-label="Audit summary">
   \${auditItem('AI decision',reviewRequired?'review required':'can proceed',nextAction,reviewRequired?'review':'primary')}
