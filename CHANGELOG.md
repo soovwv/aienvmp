@@ -16,6 +16,7 @@
 - Added the start-here artifact to demo output so recommendation examples show the same AI fallback entry point.
 - Added the start-here read order to `schema --json` and the packaged AI skill so schema-only and skill-based agents share the same fallback discovery contract.
 - Added root `startHere` and `readOrder` fields to context and handoff JSON so continuation agents can find the fallback entry point without digging into preflight.
+- Added `startHere` and `readOrder` to standalone light SBOM and CycloneDX-lite metadata so dependency-review agents follow the same AI entry path.
 - Added compact light SBOM `aiUse` decision, confidence, read-first, and before/after-change fields.
 - Added release readiness evidence commands and stabilization focus for AI/CI release review.
 - Added per-session AI avoid guidance to status, context, env map, and dashboard surfaces.

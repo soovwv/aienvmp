@@ -22,6 +22,9 @@ test("buildSbomArtifact creates standalone AI-readable light SBOM", () => {
   });
 
   assert.equal(sbom.schemaName, "aienvmp.light-sbom");
+  assert.equal(sbom.startHere, ".aienvmp/README.md");
+  assert.equal(sbom.readOrder[0], ".aienvmp/README.md");
+  assert.equal(sbom.readOrder[1], ".aienvmp/sbom.json");
   assert.equal(sbom.summary.packages, 1);
   assert.equal(sbom.riskSummary.level, "high");
   assert.equal(sbom.aiBootstrap.readFirst, ".aienvmp/sbom.json");
@@ -54,7 +57,7 @@ test("buildSbomArtifact creates standalone AI-readable light SBOM", () => {
   assert.equal(sbom.aiUse.nextCommand, "aienvmp sync --security");
   assert.equal(sbom.aiUse.decision, "review");
   assert.equal(sbom.aiUse.securityConfidence, "scanner-off");
-  assert.deepEqual(sbom.aiUse.readFirst, [".aienvmp/sbom.json", ".aienvmp/status.json", "aienvmp context --json"]);
+  assert.deepEqual(sbom.aiUse.readFirst, [".aienvmp/README.md", ".aienvmp/sbom.json", ".aienvmp/status.json", "aienvmp context --json"]);
   assert.equal(sbom.aiUse.beforeChange, sbom.nextSafeCommand);
   assert.match(sbom.aiUse.afterChange, /checkpoint/);
   assert.equal(sbom.aiUse.rule, sbom.scannerGuidance.rule);
@@ -97,6 +100,8 @@ test("buildCycloneDxLite exports project manifest packages with limitations", ()
   assert.equal(cdx.components[0].name, "express");
   assert.match(cdx.components[0].purl, /^pkg:npm\/express@/);
   assert.equal(cdx.vulnerabilities[0].ratings[0].severity, "high");
+  assert.equal(propertyValue(cdx.metadata.properties, "aienvmp:startHere"), ".aienvmp/README.md");
+  assert.match(propertyValue(cdx.metadata.properties, "aienvmp:readOrder"), /\.aienvmp\/sbom\.json/);
   assert.equal(propertyValue(cdx.metadata.properties, "aienvmp:aiBootstrap:readFirst"), ".aienvmp/sbom.json");
   assert.equal(propertyValue(cdx.metadata.properties, "aienvmp:aiBootstrap:detailCommand"), "aienvmp context --json");
   assert.equal(propertyValue(cdx.metadata.properties, "aienvmp:aiBootstrap:nextSafeCommand"), "aienvmp intent --actor agent:id --action dependency-review --target dependency");
@@ -128,6 +133,8 @@ test("sbomWorkspace can write .aienvmp/sbom.json", async () => {
 
   const written = JSON.parse(await fs.readFile(result.artifact, "utf8"));
   assert.equal(written.schemaName, "aienvmp.light-sbom");
+  assert.equal(written.startHere, ".aienvmp/README.md");
+  assert.equal(written.readOrder[0], ".aienvmp/README.md");
   assert.equal(written.summary.packages, 1);
   assert.equal(written.aiBootstrap.nextSafeCommand, "aienvmp intent --actor agent:id --action dependency-review --target dependency");
   assert.equal(written.nextSafeCommand, written.aiBootstrap.nextSafeCommand);
