@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { dashWorkspace } from "../src/commands/dash.js";
 import { writeJson } from "../src/fsutil.js";
-import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyReviewClientScript, dashboardEssentialCards, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
+import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
 
 test("renderDashboard includes the audit summary surface", () => {
   const html = renderDashboard({
@@ -255,6 +255,18 @@ test("renderDashboard includes the audit summary surface", () => {
         nextCommand: "aienvmp sync",
         rule: "Keep local operation advisory and lightweight."
       },
+      environmentChangeProtocol: {
+        mode: "advisory",
+        appliesWhen: "Before installing, removing, upgrading, downgrading, or switching runtimes, dependencies, package managers, Docker, or global tools.",
+        readFirst: [".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+        commands: {
+          recordIntent: "aienvmp intent --actor agent:id --action planned-change --target dependency",
+          checkpointAfterChange: "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency",
+          handoff: "aienvmp handoff --record --actor agent:id"
+        },
+        mustNotDo: ["Do not run broad install, update, audit fix, or lockfile rewrite commands without reading the env map first."],
+        rule: "Project-local work can continue; use this advisory protocol before shared environment changes."
+      },
       dependencyReadSet: [{
         manifest: "package.json",
         ecosystem: "npm",
@@ -394,6 +406,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardDependencyReviewClientScript(), /const aiDependencyReviewHtml=aiDependencyReview\.status/);
   assert.match(dashboardDependencyReviewClientScript(), /Security confidence/);
   assert.match(dashboardDependencyReviewClientScript(), /aienvmp intent --actor agent:id --action dependency-review --target dependency/);
+  assert.match(dashboardEnvironmentProtocolClientScript(), /const environmentProtocol=manifest\.preflight\?\.environmentChangeProtocol/);
+  assert.match(dashboardEnvironmentProtocolClientScript(), /Before shared environment changes/);
+  assert.match(dashboardEnvironmentProtocolClientScript(), /mustNotDo/);
   for (const title of dashboardEssentialCards) {
     assert.match(html, new RegExp(`card\\('${title}'`));
   }
@@ -410,6 +425,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const pmPolicyHtml=/);
   assert.match(html, /const dependencyHintsHtml=dependencyHints\.length/);
   assert.match(html, /const aiDependencyReviewHtml=aiDependencyReview\.status/);
+  assert.match(html, /const environmentProtocol=manifest\.preflight\?\.environmentChangeProtocol/);
+  assert.match(html, /Environment Protocol/);
+  assert.match(html, /broad install/);
   assert.match(html, /\.card\.essential/);
   assert.match(html, /const reviewTargets=\[\.\.\.new Set/);
   assert.match(html, /\.control-card\.review/);
@@ -452,6 +470,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /AI Collaboration/);
   assert.match(html, /review-before-env-change/);
   assert.match(html, /intent-review-handoff-first/);
+  assert.match(html, /shared environment changes/);
   assert.match(html, /AI Contract/);
   assert.match(html, /aienvmp-preflight/);
   assert.match(html, /nextAgent/);

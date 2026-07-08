@@ -1,11 +1,11 @@
 import { schemaContract } from "./contract.js";
-import { dashboardAgentClientScript, dashboardDependencyHintsClientScript, dashboardDependencyReviewClientScript, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript } from "./dashboard.js";
+import { dashboardAgentClientScript, dashboardDependencyHintsClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript } from "./dashboard.js";
 
 const markerBegin = "<!-- aienvmp:begin -->";
 const markerEnd = "<!-- aienvmp:end -->";
 
 export { markerBegin, markerEnd };
-export { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyReviewClientScript, dashboardEssentialCards, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript } from "./dashboard.js";
+export { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript } from "./dashboard.js";
 
 export function renderAIEnv(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const lines = [];
@@ -578,6 +578,7 @@ const activityHtml=activityTargets.length?'<div class="timeline">'+activityTarge
 const collaboration=manifest.preflight?.collaboration||{};
 const collaborationHtml=\`<table><tr><th>Status</th><td><code>\${esc(collaboration.status||'unknown')}</code> \${esc(collaboration.mode||'advisory')}</td></tr><tr><th>Targets</th><td>\${esc((collaboration.activeTargets||[]).join(', ')||'none')}</td></tr><tr><th>Project work</th><td><code>\${esc(collaboration.projectLocalWork||'allowed')}</code></td></tr><tr><th>Env changes</th><td><code>\${esc(collaboration.environmentChanges||'intent-first')}</code></td></tr><tr><th>Next</th><td><code>\${esc(collaboration.nextCommand||'aienvmp status --json')}</code></td></tr></table><div class="timeline">\${(collaboration.reviewSignals||[]).slice(0,4).map(signal=>\`<div class="event"><time>review</time><div>\${esc(signal)}</div></div>\`).join('')}</div><div class="path">\${esc(collaboration.rule||'Record intent before shared environment changes.')}</div>\`;
 const maintenanceLoop=manifest.preflight?.maintenanceLoop||{};
+${dashboardEnvironmentProtocolClientScript()}
 const dependencyReadSet=manifest.preflight?.dependencyReadSet||[];
 const dependencyReadSetHtml=dependencyReadSet.length?'<div class="timeline">'+dependencyReadSet.slice(0,5).map(d=>\`<div class="event"><time>\${esc(d.ecosystem||'deps')}</time><div><b>\${esc(d.manifest||'dependency files')}</b> <code>\${esc(d.manager||'unknown')}</code><div class="path">\${esc([d.manifest,...(d.lockfiles||[])].filter(Boolean).join(', '))}</div>\${d.riskPackages?.length?\`<div class="path">risk: \${esc(d.riskPackages.join(', '))}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No dependency files detected.</div>';
 const dependencyProtocol=manifest.preflight?.dependencyChangeProtocol||{};
@@ -688,6 +689,8 @@ document.getElementById('app').innerHTML=\`
     \${card('Agent Activity',agentActivity.multiActorTargets?.length?'<span class="pill warn">'+agentActivity.multiActorTargets.length+' shared</span>':'<span class="pill">clear</span>',activityHtml)}
     <div style="height:14px"></div>
     \${card('AI Collaboration',collaboration.status==='clear'?'<span class="pill">clear</span>':'<span class="pill warn">review</span>',collaborationHtml)}
+    <div style="height:14px"></div>
+    \${card('Environment Protocol','<span class="pill">'+esc(environmentProtocol.mode||'advisory')+'</span>',environmentProtocolHtml)}
     <div style="height:14px"></div>
     \${card('AI Session','<span class="pill">'+esc(aiSession.localWork||'allowed')+'</span>',aiSessionHtml)}
     <div style="height:14px"></div>

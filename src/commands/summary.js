@@ -39,6 +39,8 @@ export function renderSummary(status = {}, manifest = {}) {
   const coordination = status.coordination || {};
   const activity = status.agentActivity || {};
   const collaboration = status.collaboration || {};
+  const environmentProtocol = status.environmentChangeProtocol || {};
+  const environmentCommands = environmentProtocol.commands || {};
   const maintenanceLoop = status.maintenanceLoop || {};
   const sbomReview = maintenanceLoop.sbomReview || {};
   const aiBootstrap = status.aiBootstrap || {};
@@ -87,6 +89,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- AI artifact freshness: ${artifactFreshness.state || "unknown"} / ${artifactFreshness.nextCommand || "aienvmp sync"}`,
     `- AI next: ${next} (${aiNext})`,
     `- AI collaboration: ${collaboration.status || "unknown"} / ${toList(collaboration.activeTargets).join(", ") || "none"} / ${collaboration.nextCommand || "aienvmp status --json"}`,
+    `- AI environment protocol: ${environmentCommands.recordIntent || "aienvmp intent --actor agent:id --action planned-change --target environment"} -> ${environmentCommands.checkpointAfterChange || "aienvmp checkpoint --actor agent:id --summary what-changed --target environment"}`,
     `- AI maintenance loop: ${maintenanceLoop.nextCommand || next}`,
     `- AI safe local work: ${toList(aiReadiness.safeProjectLocalActions)[0] || "read artifacts and avoid environment changes until reviewed"}`,
     `- AI read first: ${readFirst}, then ${detail}`,
@@ -112,6 +115,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- coordination: ${coordination.next || "No open environment intents."}`,
     `- recent agent activity: ${activity.next || "No environment records need coordination."}`,
     `- maintenance rule: ${maintenanceLoop.rule || "Refresh, inspect, record intent, checkpoint, and hand off without blocking local operation."}`,
+    `- environment rule: ${environmentProtocol.rule || "Read status/context, record intent, checkpoint, and hand off around shared environment changes."}`,
     `- conflict targets: ${conflictTargets.length ? conflictTargets.join(", ") : "none"}`,
     `- multi-actor targets: ${multiActorTargets.length ? multiActorTargets.join(", ") : "none"}`,
     "",
@@ -127,6 +131,9 @@ export function renderSummary(status = {}, manifest = {}) {
     "",
     "## Dependency changes",
     "",
+    `- environment read: ${toList(environmentProtocol.readFirst).join(", ") || ".aienvmp/status.json, .aienvmp/summary.md, aienvmp context --json"}`,
+    `- environment before: ${environmentCommands.recordIntent || "aienvmp intent --actor agent:id --action planned-change --target environment"}`,
+    `- environment after: ${environmentCommands.checkpointAfterChange || "aienvmp checkpoint --actor agent:id --summary what-changed --target environment"}`,
     `- read files: ${dependencyFiles.length ? dependencyFiles.join(", ") : "none detected"}`,
     `- before: ${dependencyCommands.recordIntent || "aienvmp intent --actor agent:id --action planned-change --target dependency"}`,
     `- after: ${dependencyCommands.checkpointAfterChange || "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"}`,

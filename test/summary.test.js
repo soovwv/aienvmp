@@ -50,6 +50,14 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
       },
       rule: "Keep local operation advisory and lightweight; use strict checks only when CI or the user explicitly asks."
     },
+    environmentChangeProtocol: {
+      rule: "Read status/context, record intent, checkpoint, and hand off around shared environment changes.",
+      readFirst: [".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+      commands: {
+        recordIntent: "aienvmp intent --actor agent:id --action planned-change --target dependency",
+        checkpointAfterChange: "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"
+      }
+    },
     nextCommand: "aienvmp handoff",
     quickstart: { detailCommand: "aienvmp context --json" },
     nextAgent: { readFirst: ".aienvmp/status.json" },
@@ -111,6 +119,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /AI next: aienvmp sync \(Review listed signals/);
   assert.match(markdown, /AI safe local work: read status and summary artifacts/);
   assert.match(markdown, /AI collaboration: review-before-env-change \/ dependency, node \/ aienvmp handoff --record --actor agent:id/);
+  assert.match(markdown, /AI environment protocol: aienvmp intent --actor agent:id --action planned-change --target dependency -> aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency/);
   assert.match(markdown, /AI maintenance loop: aienvmp handoff --record --actor agent:id/);
   assert.match(markdown, /state: review-required/);
   assert.match(markdown, /light SBOM risk: medium \(42\)/);
@@ -124,12 +133,16 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /release readiness: 0\.2\.0 \/ prototype-hardening \/ npm run release:check passes locally/);
   assert.match(markdown, /collaboration rule: Do not install shared tools/);
   assert.match(markdown, /maintenance rule: Keep local operation advisory and lightweight/);
+  assert.match(markdown, /environment rule: Read status\/context, record intent, checkpoint/);
   assert.match(markdown, /conflict targets: dependency/);
   assert.match(markdown, /multi-actor targets: node/);
   assert.match(markdown, /AI SBOM plan: review \/ medium\/42 \/ scanner-summary \/ aienvmp sync --security/);
   assert.match(markdown, /AI dependency review: review \/ scanner-summary \/ aienvmp intent --actor agent:id --action dependency-review --target dependency/);
   assert.match(markdown, /maintenance SBOM review: review \/ scanner-summary \/ aienvmp sync --security/);
   assert.match(markdown, /## Dependency changes/);
+  assert.match(markdown, /environment read: \.aienvmp\/status\.json, \.aienvmp\/summary\.md, aienvmp context --json/);
+  assert.match(markdown, /environment before: aienvmp intent --actor agent:id --action planned-change --target dependency/);
+  assert.match(markdown, /environment after: aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency/);
   assert.match(markdown, /read files: package\.json, package-lock\.json/);
   assert.match(markdown, /checkpoint --actor agent:id --summary dependency-change --target dependency/);
   assert.match(markdown, /## Agent pointers/);
@@ -155,10 +168,12 @@ test("summaryWorkspace writes summary.md after sync", async () => {
   assert.match(summary, /AI session:/);
   assert.match(summary, /AI artifact freshness:/);
   assert.match(summary, /AI collaboration:/);
+  assert.match(summary, /AI environment protocol:/);
   assert.match(summary, /AI maintenance loop:/);
   assert.match(summary, /## SBOM/);
   assert.match(summary, /AI SBOM plan:/);
   assert.match(summary, /## Dependency changes/);
+  assert.match(summary, /environment before:/);
   assert.match(summary, /## Agent pointers/);
   assert.match(summary, /## Release readiness/);
   assert.match(summary, /release readiness: 0\.2\.0 \/ prototype-hardening/);
