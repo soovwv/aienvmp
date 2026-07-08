@@ -31,6 +31,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.aiSessionFields.includes("beforeEnvironmentChange"));
   assert.ok(schema.aiSessionFields.includes("handoff"));
   assert.ok(schema.aiSessionFields.includes("avoid"));
+  assert.equal(schema.readOrder[0], ".aienvmp/README.md");
+  assert.equal(schema.readOrder[1], ".aienvmp/status.json");
+  assert.match(schema.readOrderRule, /instruction-file pointers/);
   assert.deepEqual(schema.followUpPlanFields, ["status", "count", "targets", "readFirst", "nextCommand", "commands", "reason", "rule"]);
   assert.ok(schema.environmentChangeProtocolFields.includes("beforeChange"));
   assert.ok(schema.environmentChangeProtocolFields.includes("mustNotDo"));
@@ -82,6 +85,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.dashboard.rule, /essential cards/);
   assert.equal(schema.outputs.status.contract.name, "aienvmp-preflight");
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("nextAgent"));
+  assert.ok(schema.outputs.status.contract.aiEntryFields.includes("readOrder"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("aiSession"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("aiBootstrap"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("nextSafeCommand"));
@@ -95,6 +99,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("environmentChangeProtocol"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("agentPointers"));
   assert.ok(schema.outputs.status.rootFields.includes("nextSafeCommand"));
+  assert.ok(schema.outputs.status.rootFields.includes("readOrder"));
   assert.ok(schema.outputs.status.rootFields.includes("aiSession"));
   assert.ok(schema.outputs.status.rootFields.includes("aiBootstrap"));
   assert.ok(schema.outputs.status.rootFields.includes("artifactFreshness"));
@@ -158,6 +163,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.compatibility.sbomStrategyRule, /optional read-only scanners/);
   assert.match(schema.compatibility.agentDiscoveryRule, /onboardCommand/);
   assert.match(schema.compatibility.agentDiscoveryRule, /fallbackRead/);
+  assert.match(schema.compatibility.readOrderRule, /\.aienvmp\/README\.md/);
   assert.match(schema.compatibility.demoRule, /multi-agent conflict value proposition/);
   assert.match(schema.compatibility.recommendationRule, /recommendWhen/);
   assert.match(schema.compatibility.sessionStartRule, /AI startup routine/);

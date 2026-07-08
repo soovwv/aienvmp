@@ -14,6 +14,7 @@
 - Added the start-here artifact to the dashboard first-read surface so humans see the same fallback entry point as AI agents.
 - Aligned AI read-order fields with `.aienvmp/README.md` so status, plan, follow-up, and environment-change protocols share the same fallback entry point.
 - Added the start-here artifact to demo output so recommendation examples show the same AI fallback entry point.
+- Added the start-here read order to `schema --json` and the packaged AI skill so schema-only and skill-based agents share the same fallback discovery contract.
 - Added compact light SBOM `aiUse` decision, confidence, read-first, and before/after-change fields.
 - Added release readiness evidence commands and stabilization focus for AI/CI release review.
 - Added per-session AI avoid guidance to status, context, env map, and dashboard surfaces.
