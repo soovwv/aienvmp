@@ -8,6 +8,7 @@ Primary positioning: AI workspace coordination first, lightweight SBOM context s
 
 - Prepare `0.2.0` as the stabilized AI workspace contract release
 - Expose `releaseReadiness` in `schema --json` so AI/CI can verify the stable-contract checklist
+- Keep `releaseReadiness.evidenceCommands` current so AI/CI can prove the release gate before npm publish
 - Keep JSON contracts additive after `0.2.0`; breaking changes require a contract version bump and migration notes
 - Use manual release gating so npm publish happens only for meaningful batched changes
 - Deprecate `0.1.x` prototype versions after `0.2.0` is published

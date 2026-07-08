@@ -69,6 +69,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.releaseReadiness.publishDecision.emergencyException, /Security/);
   assert.ok(schema.releaseReadiness.requiredBeforeStable.includes("npm run release:check passes locally"));
   assert.ok(schema.releaseReadiness.requiredBeforeStable.includes("package metadata and CLI help match AI workspace coordination positioning"));
+  assert.ok(schema.releaseReadiness.evidenceCommands.includes("npm run release:check"));
+  assert.ok(schema.releaseReadiness.evidenceCommands.includes("node bin/aienvmp.js demo --json"));
+  assert.ok(schema.releaseReadiness.stabilizationFocus.includes("AI session/status/context contract"));
   assert.match(schema.releaseReadiness.stableContractRule, /backward-compatible/);
   assert.match(schema.releaseReadiness.batchRule, /one npm publish/);
   assert.equal(schema.dashboard.mode, "light-human-view");
@@ -185,6 +188,7 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   assert.equal(schema.demo.command, "aienvmp demo");
   assert.equal(schema.releaseGate.localCommand, "npm run release:check");
   assert.equal(schema.releaseReadiness.target, "0.2.0");
+  assert.ok(schema.releaseReadiness.evidenceCommands.includes("npm pack --dry-run"));
   assert.match(schema.compatibility.localBehavior, /read-only/);
 });
 

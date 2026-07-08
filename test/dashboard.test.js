@@ -423,6 +423,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardEnvironmentProtocolClientScript(), /Before shared environment changes/);
   assert.match(dashboardEnvironmentProtocolClientScript(), /mustNotDo/);
   assert.match(dashboardReleaseReadinessClientScript(), /const releaseChecks=releaseReadiness\?\.requiredBeforeStable\|\|\[\]/);
+  assert.match(dashboardReleaseReadinessClientScript(), /const releaseEvidence=releaseReadiness\?\.evidenceCommands\|\|\[\]/);
+  assert.match(dashboardReleaseReadinessClientScript(), /const releaseFocus=releaseReadiness\?\.stabilizationFocus\|\|\[\]/);
   assert.match(dashboardReleaseReadinessClientScript(), /publishDecision=releaseReadiness\?\.publishDecision\|\|\{\}/);
   assert.match(dashboardReleaseReadinessClientScript(), /Batch meaningful changes before one npm publish/);
   for (const title of dashboardEssentialCards) {
@@ -446,6 +448,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const aiDependencyReviewHtml=aiDependencyReview\.status/);
   assert.match(html, /const environmentProtocol=manifest\.preflight\?\.environmentChangeProtocol/);
   assert.match(html, /const releaseReadinessHtml=/);
+  assert.match(html, /releaseEvidence=releaseReadiness\?\.evidenceCommands/);
+  assert.match(html, /releaseFocus=releaseReadiness\?\.stabilizationFocus/);
   assert.match(html, /Environment Protocol/);
   assert.match(html, /broad install/);
   assert.match(html, /\.card\.essential/);

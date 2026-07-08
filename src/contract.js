@@ -142,6 +142,20 @@ export function schemaContract() {
         "multi-agent conflict demo passes",
         "0.1.x deprecation message is prepared but not run until 0.2.0 is published"
       ],
+      evidenceCommands: [
+        "npm run release:check",
+        "node bin/aienvmp.js schema --json",
+        "node bin/aienvmp.js demo --json",
+        "npm pack --dry-run",
+        "npm view aienvmp version"
+      ],
+      stabilizationFocus: [
+        "AI session/status/context contract",
+        "light SBOM and dependency-change review loop",
+        "multi-agent intent, checkpoint, timeline, and handoff flow",
+        "dashboard essential surfaces and release readiness",
+        "manual batched release workflow"
+      ],
       stableContractRule: "After 0.2.0, documented JSON fields are additive and backward-compatible; breaking changes require a contractVersion bump and migration note.",
       batchRule: "Accumulate meaningful AI-contract, dashboard, SBOM, and release-gate changes before one npm publish."
     },

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added release readiness evidence commands and stabilization focus for AI/CI release review.
 - Added per-session AI avoid guidance to status, context, env map, and dashboard surfaces.
 - Added package keywords for AI coding workspace coordination and light SBOM discovery.
 - Added recommendation pitch and evidence links to the multi-agent demo output.
