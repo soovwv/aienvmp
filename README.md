@@ -4,9 +4,9 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-339933.svg)](package.json)
 
-**AI Environment Map.**
+**AI workspace coordination for shared development environments.**
 
-`aienvmp` gives Codex, Claude, Gemini, and humans one live env map plus a light SBOM for a shared coding workspace.
+`aienvmp` keeps Codex, Claude, Gemini, and humans on the same live environment map before runtimes, dependencies, package managers, Docker, or global tools drift.
 
 Use it when multiple AI agents or people touch the same server, repo, laptop, or CI workspace and you want to avoid silent runtime, dependency, package manager, Docker, or security drift.
 
@@ -26,6 +26,8 @@ Optional Cursor and Copilot pointers are available with `npx aienvmp onboard --a
 - one append-only intent and change timeline
 - one human dashboard
 - advisory by default, strict only when requested
+
+`aienvmp` is not trying to replace full SBOM or vulnerability scanners. It gives AI agents a lightweight coordination layer and can later consume deeper scanner output when you opt in.
 
 ## 10-Second Use
 

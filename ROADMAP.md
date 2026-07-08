@@ -2,6 +2,8 @@
 
 `aienvmp` focuses on AI coding workspace operations: helping multiple AI agents avoid runtime/version drift while keeping humans in control.
 
+Primary positioning: AI workspace coordination first, lightweight SBOM context second. Full SBOM generators and vulnerability scanners remain complementary optional inputs.
+
 ## Near Term
 
 - Prepare `0.2.0` as the stabilized AI workspace contract release
@@ -13,9 +15,11 @@
 - Detect multi-agent environment intent conflicts
 - Keep one advisory decision engine with optional strict enforcement
 - Keep vulnerability checks opt-in and read-only
+- Keep external SBOM/security tools optional; do not require Syft, Trivy, Grype, or similar tools for the default flow
 - Stabilize `.aienvmp/manifest.json` and JSON command schemas
 - Keep `sync`, `context`, and `handoff` as the simple core flow
-- Improve the dashboard for 10-second human review
+- Simplify the dashboard around the essential 10-second review cards: AI Session, Environment Health, Collaboration, Light SBOM, Agent Pointers, Timeline/Intents, and Release/Strict Gate
+- Keep runnable case studies that show real AI workspace coordination failures and recovery flows
 
 ## Next
 

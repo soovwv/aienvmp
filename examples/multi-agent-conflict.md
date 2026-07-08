@@ -2,6 +2,8 @@
 
 Use this demo when explaining why `aienvmp` exists: two AI agents touch one workspace and must avoid silent dependency or runtime drift.
 
+`aienvmp` is an AI workspace coordination layer, not a replacement for package managers, SBOM generators, or vulnerability scanners. The light SBOM gives agents enough dependency context to coordinate; deeper scanners can stay optional.
+
 ## One Command
 
 ```bash
@@ -48,6 +50,14 @@ npx aienvmp context --json
 ```
 
 Expected result: `status` and `context --json` surface review-needed collaboration state instead of blocking local work or silently letting both agents mutate the same target.
+
+What the next AI sees:
+
+- `aiSession.start`: run `aienvmp status --json`, then refresh or inspect context.
+- `collaboration.status`: `review-before-env-change`.
+- `coordination.conflictTargets`: `dependency`.
+- `lightSbom.riskSummary`: dependency risk context without installing packages.
+- `agentPointers.discovery`: whether Codex, Claude, Gemini, or optional pointers can find the env map.
 
 ## Safe Resolution
 

@@ -29,6 +29,7 @@
 - Made `snippet` reject unknown targets instead of silently writing the default agent pointer.
 - Added `aiSession` to status/context/preflight surfaces so AI agents get one compact startup, stale-refresh, intent, checkpoint, and handoff routine.
 - Updated compact `status` text to show the `aiSession` startup path while keeping the default output at five lines.
+- Clarified the project positioning around AI workspace coordination, optional external SBOM/security tools, dashboard essentials, and case-study driven adoption.
 
 ## 0.1.69
 
