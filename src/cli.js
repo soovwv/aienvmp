@@ -111,7 +111,7 @@ export function parseArgs(argv) {
 }
 
 function printUsage() {
-  console.log(`aienvmp - AI-first env map + lightweight runtime SBOM
+  console.log(`aienvmp - AI workspace coordination with a lightweight env map and SBOM
 
 Usage:
   aienvmp sync [--dir .] [--json] [--quiet] [--deep] [--security]

@@ -39,6 +39,7 @@
 - Moved the dashboard priority client script into the dashboard contract module so the large renderer owns less AI coordination policy.
 - Moved dashboard agent pointer client logic into the dashboard contract module to keep optional AI target display policy out of the renderer.
 - Sharpened the README first screen around preventing multi-AI environment assumption drift without heavy locks.
+- Aligned npm metadata and CLI help headline with the AI workspace coordination positioning.
 
 ## 0.1.69
 
