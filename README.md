@@ -79,6 +79,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `collaboration`, `coordination`, and `agentActivity` show multi-agent conflicts and shared targets.
 - `strictDecision` separates local warn-only checks from optional CI strict gates.
 - `status --json`, `context --json`, `handoff --json`, and `doctor --json` include `nextSafeCommand` for one advisory next step.
+- The dashboard mirrors `aiBootstrap` so humans and AI see the same first-read and next-command hint.
 - `schema --json` prints the stable machine-readable contract without scanning.
 
 ## Agent Files

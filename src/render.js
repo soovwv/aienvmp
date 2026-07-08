@@ -413,7 +413,7 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(28px,4vw,46px);line-height:1.02;margin-to
 .nextbar b{color:var(--green);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
 .nextbar code{display:inline-block;max-width:100%;white-space:normal;overflow-wrap:anywhere}
 .nextbar span{color:var(--muted);font-size:12px;overflow-wrap:anywhere}
-.brief{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:0 0 14px}
+.brief{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:0 0 14px}
 .brief-item{border:1px solid var(--line2);background:rgba(9,19,16,.9);border-radius:8px;padding:10px;min-width:0}
 .brief-k{color:var(--muted);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
 .brief-v{margin-top:5px;font-size:13px;font-weight:700;color:var(--text);overflow-wrap:anywhere}
@@ -541,6 +541,7 @@ const nextAction=reviewRequired?'Review before environment changes':'Proceed wit
 const auditItem=(key,value,hint,klass='')=>\`<div class="audit-item \${klass}"><div class="audit-k">\${key}</div><div class="audit-v">\${value}</div><div class="audit-hint">\${hint}</div></div>\`;
 const controlCard=(label,value,next,klass='')=>\`<div class="control-card \${klass}"><div class="control-label">\${label}</div><div class="control-value">\${esc(value)}</div><div class="control-next">\${esc(next)}</div></div>\`;
 const driftLabel=warnings.length?'detected':'none';
+const aiBootstrap=manifest.preflight?.aiBootstrap||{};
 const nextAgent=manifest.preflight?.nextAgent||{};
 const aiReadiness=manifest.preflight?.aiReadiness||{};
 const aiReadinessSignals=(aiReadiness.signals||[]).slice(0,3);
@@ -553,17 +554,18 @@ const sbomRiskValue=riskSummary.level||'unknown';
 const sbomRiskClass=['urgent','high','medium'].includes(sbomRiskValue)?'review':'ready';
 const sbomRiskScore=riskSummary.score!==undefined?' ('+riskSummary.score+')':'';
 const sbomRiskNext=riskSummary.next||aiDependencyReview.beforeDependencyChange?.[0]||'Run aienvmp sbom --json for dependency context.';
-const nextCommand=manifest.preflight?.nextCommand||maintenanceLoop.nextCommand||topAction.command||collaboration.nextCommand||'aienvmp status --json';
-const nextReason=topAction.summary||maintenanceLoop.rule||collaboration.rule||riskSummary.next||'Read status/context before changing shared environment state.';
+const nextCommand=aiBootstrap.nextSafeCommand||manifest.preflight?.nextSafeCommand||manifest.preflight?.nextCommand||maintenanceLoop.nextCommand||topAction.command||collaboration.nextCommand||'aienvmp status --json';
+const nextReason=topAction.summary||aiBootstrap.rule||maintenanceLoop.rule||collaboration.rule||riskSummary.next||'Read status/context before changing shared environment state.';
 const coordination=manifest.preflight?.coordination||{};
 const conflictTargets=coordination.conflictTargets||[];
 const handoffFiles=nextAgent.dependencyFiles?.length?nextAgent.dependencyFiles:(dependencyReadSet[0]?[dependencyReadSet[0].manifest,...(dependencyReadSet[0].lockfiles||[])].filter(Boolean):[]);
 const handoffNext=nextAgent.rule||(reviewRequired?'Review warnings and open intents':'Continue project-local work');
-const firstRead=nextAgent.readFirst||'.aienvmp/status.json';
+const firstRead=aiBootstrap.readFirst||nextAgent.readFirst||'.aienvmp/status.json';
 const reviewTargets=[...new Set([...(conflictTargets||[]),...(collaboration.activeTargets||[]),...(riskSummary.reviewTargets||[])].filter(Boolean))];
-const safeMode=enforcementProfile.gate?.localDefault||enforcementProfile.localOperation||'warn-only';
+const safeMode=aiBootstrap.localMode||enforcementProfile.gate?.localDefault||enforcementProfile.localOperation||'warn-only';
+const bootstrapState=[aiBootstrap.projectLocalWork||'allowed',aiBootstrap.environmentChanges||'intent-first'].join(' / ');
 const briefItem=(key,value)=>\`<div class="brief-item"><div class="brief-k">\${key}</div><div class="brief-v">\${esc(value)}</div></div>\`;
-const handoffHtml=\`<table><tr><th>Status</th><td>\${reviewRequired?'review-required':'clear'}</td></tr><tr><th>Trust</th><td><code>\${esc(trustState)}</code></td></tr><tr><th>Read first</th><td><code>\${esc(nextAgent.readFirst||'.aienvmp/status.json')}</code></td></tr><tr><th>Dependency files</th><td>\${handoffFiles.length?'<code>'+esc(handoffFiles.join(', '))+'</code>':'none'}</td></tr><tr><th>Conflicts</th><td>\${conflictTargets.length?'<code>'+esc(conflictTargets.join(', '))+'</code>':'none'}</td></tr><tr><th>Next</th><td>\${esc(handoffNext)}</td></tr></table>\`;
+const handoffHtml=\`<table><tr><th>Status</th><td>\${reviewRequired?'review-required':'clear'}</td></tr><tr><th>Trust</th><td><code>\${esc(trustState)}</code></td></tr><tr><th>Read first</th><td><code>\${esc(firstRead)}</code></td></tr><tr><th>Dependency files</th><td>\${handoffFiles.length?'<code>'+esc(handoffFiles.join(', '))+'</code>':'none'}</td></tr><tr><th>Conflicts</th><td>\${conflictTargets.length?'<code>'+esc(conflictTargets.join(', '))+'</code>':'none'}</td></tr><tr><th>Next</th><td>\${esc(handoffNext)}</td></tr></table>\`;
 document.getElementById('app').innerHTML=\`
 <header>
   <div>
@@ -584,6 +586,7 @@ document.getElementById('app').innerHTML=\`
   <span>\${esc(nextReason)}</span>
 </section>
 <section class="brief" aria-label="First read">
+  \${briefItem('AI bootstrap',bootstrapState)}
   \${briefItem('Status',reviewRequired?'review required':'clear')}
   \${briefItem('Read first',firstRead)}
   \${briefItem('Review targets',reviewTargets.length?reviewTargets.slice(0,4).join(', '):'none')}

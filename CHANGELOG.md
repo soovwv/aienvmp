@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Added `aiBootstrap` to the shared preflight surfaces so AI agents can read the shortest first-read, next-command, and local-mode hint.
+- Mirrored `aiBootstrap` in the dashboard first-read area so humans see the same AI entry hint.
 
 ## 0.1.68
 

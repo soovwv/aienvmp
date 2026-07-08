@@ -156,6 +156,15 @@ test("renderDashboard includes the audit summary surface", () => {
       matchedWarningCodes: ["node-version-mismatch"]
     }],
     preflight: {
+      aiBootstrap: {
+        readFirst: ".aienvmp/status.json",
+        detailCommand: "aienvmp context --json",
+        nextSafeCommand: "aienvmp sync",
+        localMode: "advisory",
+        projectLocalWork: "allowed",
+        environmentChanges: "review-first",
+        rule: "Review context before shared environment changes; local checks remain non-blocking."
+      },
       contract: {
         name: "aienvmp-preflight",
         version: 1,
@@ -286,12 +295,15 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /AI control strip/);
   assert.match(html, /Next command/);
   assert.match(html, /First read/);
+  assert.match(html, /AI bootstrap/);
   assert.match(html, /\.nextbar/);
   assert.match(html, /\.brief/);
   assert.match(html, /const maintenanceLoop=manifest\.preflight\?\.maintenanceLoop\|\|\{\}/);
-  assert.match(html, /const nextCommand=manifest\.preflight\?\.nextCommand\|\|maintenanceLoop\.nextCommand\|\|topAction\.command/);
-  assert.match(html, /const nextReason=topAction\.summary\|\|maintenanceLoop\.rule\|\|collaboration\.rule/);
-  assert.match(html, /const firstRead=nextAgent\.readFirst\|\|'\.aienvmp\/status\.json'/);
+  assert.match(html, /const aiBootstrap=manifest\.preflight\?\.aiBootstrap\|\|\{\}/);
+  assert.match(html, /const nextCommand=aiBootstrap\.nextSafeCommand\|\|manifest\.preflight\?\.nextSafeCommand/);
+  assert.match(html, /const nextReason=topAction\.summary\|\|aiBootstrap\.rule\|\|maintenanceLoop\.rule/);
+  assert.match(html, /const firstRead=aiBootstrap\.readFirst\|\|nextAgent\.readFirst\|\|'\.aienvmp\/status\.json'/);
+  assert.match(html, /const bootstrapState=\[aiBootstrap\.projectLocalWork\|\|'allowed',aiBootstrap\.environmentChanges\|\|'intent-first'\]/);
   assert.match(html, /const reviewTargets=\[\.\.\.new Set/);
   assert.match(html, /\.control-card\.review/);
   assert.match(html, /controlCard\('AI readiness'/);
