@@ -66,6 +66,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     artifacts: preflightArtifacts(),
     readOrder: [
       ".aienvmp/status.json",
+      ".aienvmp/summary.md",
       "AIENV.md",
       ".aienvmp/manifest.json",
       ".aienvmp/plan.json",
@@ -195,6 +196,7 @@ function nextAgentHint(state, dependencyReadSet = [], dependencyChangeProtocol =
   return {
     handoffCommand: dependencyChangeProtocol.commands?.handoff || "aienvmp handoff --record --actor agent:id",
     readFirst: ".aienvmp/status.json",
+    readSummary: ".aienvmp/summary.md",
     readNext: "aienvmp context --json",
     reviewState: state,
     dependencyFiles,

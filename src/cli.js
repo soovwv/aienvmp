@@ -140,7 +140,7 @@ Advanced:
   aienvmp resolve [--dir .] --actor human:you --id <intent-id> [--status resolved|cancelled]
   aienvmp record [--dir .] --actor agent:codex --summary "updated .nvmrc" [--target node] [--before 20] [--after 24]
   aienvmp checkpoint [--dir .] --actor agent:codex --summary "updated dependency" [--target dependency]
-  aienvmp snippet [agents|claude|gemini] [--write AGENTS.md]
+  aienvmp snippet [agents|codex|claude|gemini] [--write AGENTS.md]
   aienvmp compile [--dir .]
   aienvmp diff [--dir .]
   aienvmp doctor [--dir .] [--json] [--ci] [--strict security|policy|coordination|all]

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.51
+
+- Updated Codex/Claude/Gemini pointer snippets to use the current `status -> summary.md -> context` read order.
+- Added agent-specific actor examples for Codex, Claude, and Gemini snippet output.
+- Added dependency and lockfile changes to the snippet environment-change scope.
+- Updated the packaged Codex skill to prefer `status --write`, `summary.md`, and `checkpoint`.
+- Added `.aienvmp/summary.md` to the shared preflight read order and next-agent hint.
+- Added a Dependency changes section to `summary.md` with read files, intent command, checkpoint command, and package-manager policy.
+- Updated README agent-file guidance and added regression coverage for the AI snippet and summary protocol.
+
 ## 0.1.50
 
 - Added `aienvmp summary` for a compact Markdown AI/CI handoff view.

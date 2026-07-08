@@ -43,6 +43,7 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.quickstart.afterEnvironmentChange, "aienvmp checkpoint --actor agent:id --summary what-changed --target environment");
   assert.match(status.quickstart.rule, /Continue project-local work/);
   assert.equal(status.nextAgent.readFirst, ".aienvmp/status.json");
+  assert.equal(status.nextAgent.readSummary, ".aienvmp/summary.md");
   assert.equal(status.nextAgent.handoffCommand, "aienvmp handoff --record --actor agent:id");
   assert.deepEqual(status.nextAgent.dependencyFiles, ["package.json", "package-lock.json"]);
   assert.match(status.nextAgent.dependencyProtocol, /record dependency intent/);
@@ -61,6 +62,7 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.enforcementProfile.gate.failCondition, "never in default mode");
   assert.equal(status.artifacts.status, ".aienvmp/status.json");
   assert.equal(status.readOrder[0], ".aienvmp/status.json");
+  assert.equal(status.readOrder[1], ".aienvmp/summary.md");
   assert.equal(status.commands.context, "aienvmp context --json");
   assert.equal(status.nextCommand, "aienvmp intent --actor agent:id --action planned-change");
 });
@@ -221,5 +223,6 @@ test("statusWorkspace can write the compact AI status artifact", async () => {
   assert.equal(written.schemaVersion, 1);
   assert.equal(written.state, "clear");
   assert.equal(written.readOrder[0], ".aienvmp/status.json");
+  assert.equal(written.readOrder[1], ".aienvmp/summary.md");
   assert.equal(written.commands.refresh, "aienvmp sync");
 });

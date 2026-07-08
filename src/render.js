@@ -114,18 +114,30 @@ function preflightLines(preflight = {}) {
 
 export function renderAgentPointer(target = "agents") {
   const label = target === "claude" ? "Claude" : target === "gemini" ? "Gemini" : "AI agents";
+  const actor = target === "claude"
+    ? "agent:claude"
+    : target === "gemini"
+      ? "agent:gemini"
+      : target === "codex"
+        ? "agent:codex"
+        : "agent:id";
   return `## aienvmp Environment Map
 
 ${label} should use \`aienvmp\` as the workspace environment source of truth.
 
-Before changing runtimes, package managers, Docker settings, global packages, or environment policy:
+Fast read order:
 
 1. Run \`aienvmp status --write\`.
-2. Run \`aienvmp context --json\` for details.
-3. Read \`AIENV.md\`.
-4. If status or context says \`review-required\`, ask the user before changing the environment.
-5. Record planned environment changes with the recommended target, for example \`aienvmp intent --actor agent:id --action planned-change --target dependency\`.
-6. After environment changes, run \`aienvmp checkpoint --actor agent:id --summary what-changed --target environment\`.
+2. Read \`.aienvmp/summary.md\` for the short handoff.
+3. Run \`aienvmp context --json\` for details.
+4. Read \`AIENV.md\` when Markdown context is easier.
+
+Before changing runtimes, package managers, Docker settings, global packages, dependencies, lockfiles, or environment policy:
+
+1. If status or context says \`review-required\`, ask the user before changing the environment.
+2. Record planned environment changes with the recommended target, for example \`aienvmp intent --actor ${actor} --action planned-change --target dependency\`.
+3. Prefer project-local version files and local environments.
+4. After accepted environment changes, run \`aienvmp checkpoint --actor ${actor} --summary what-changed --target environment\`.
 
 \`aienvmp\` does not replace this instruction file. It provides the live env map, lightweight runtime SBOM, intent log, timeline, and dashboard.`;
 }

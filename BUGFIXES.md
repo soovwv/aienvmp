@@ -94,6 +94,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: `readJson` now strips a leading UTF-8 BOM before parsing.
 - Verification: regression tests cover BOM JSON parsing and Windows smoke testing confirmed dependency counts in `summary.md`.
 
+### Agent instructions lagged behind the current protocol
+
+- Issue: packaged skill and pointer snippets still emphasized older context/record flows and did not direct agents to `summary.md`.
+- Fix: snippets and the Codex skill now use the current status, summary, context, intent, and checkpoint flow with agent-specific actor examples.
+- Verification: regression tests cover snippet output for AGENTS.md, Claude, and Gemini, and summary/status tests cover the read order and dependency protocol.
+
 ## Template
 
 ### Title

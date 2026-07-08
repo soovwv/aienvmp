@@ -48,6 +48,9 @@ export function renderSummary(status = {}, manifest = {}) {
   const riskSignals = toList(sbomRisk.signals).slice(0, 3);
   const conflictTargets = toList(coordination.conflictTargets);
   const multiActorTargets = toList(activity.multiActorTargets);
+  const dependencyProtocol = status.dependencyChangeProtocol || {};
+  const dependencyCommands = dependencyProtocol.commands || {};
+  const dependencyFiles = dependencyFilesFor(status.dependencyReadSet);
 
   return [
     "# aienvmp summary",
@@ -76,6 +79,13 @@ export function renderSummary(status = {}, manifest = {}) {
     `- signals: ${riskSignals.length ? riskSignals.join("; ") : "none"}`,
     `- verify: ${sbomRisk.next || "Use a dedicated scanner for security decisions."}`,
     "",
+    "## Dependency changes",
+    "",
+    `- read files: ${dependencyFiles.length ? dependencyFiles.join(", ") : "none detected"}`,
+    `- before: ${dependencyCommands.recordIntent || "aienvmp intent --actor agent:id --action planned-change --target dependency"}`,
+    `- after: ${dependencyCommands.checkpointAfterChange || "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"}`,
+    `- package manager policy: ${dependencyProtocol.packageManagerPolicy || "not-detected"}`,
+    "",
     "## Artifacts",
     "",
     "- AIENV.md",
@@ -93,4 +103,16 @@ function valueOrZero(value) {
 
 function toList(value) {
   return Array.isArray(value) ? value.filter(Boolean) : [];
+}
+
+function dependencyFilesFor(readSet = []) {
+  const files = [];
+  for (const item of toList(readSet).slice(0, 3)) {
+    if (item.manifest) files.push(item.manifest);
+    for (const lockfile of toList(item.lockfiles).slice(0, 3)) {
+      const file = typeof lockfile === "string" ? lockfile : lockfile?.file;
+      if (file && !files.includes(file)) files.push(file);
+    }
+  }
+  return files.slice(0, 8);
 }

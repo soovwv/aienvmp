@@ -17,7 +17,15 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
     enforcement: { recommendedCommand: "aienvmp doctor --strict security" },
     agentUse: { environmentChanges: "intent-and-review-first" },
     coordination: { next: "Check open intents.", conflictTargets: ["dependency"] },
-    agentActivity: { next: "Run handoff.", multiActorTargets: ["node"] }
+    agentActivity: { next: "Run handoff.", multiActorTargets: ["node"] },
+    dependencyReadSet: [{ manifest: "package.json", lockfiles: ["package-lock.json"] }],
+    dependencyChangeProtocol: {
+      packageManagerPolicy: "clear",
+      commands: {
+        recordIntent: "aienvmp intent --actor agent:id --action planned-change --target dependency",
+        checkpointAfterChange: "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"
+      }
+    }
   }, {
     workspace: { root: "/repo" },
     lightSbom: {
@@ -32,6 +40,9 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /AI read first: \.aienvmp\/status\.json/);
   assert.match(markdown, /conflict targets: dependency/);
   assert.match(markdown, /multi-actor targets: node/);
+  assert.match(markdown, /## Dependency changes/);
+  assert.match(markdown, /read files: package\.json, package-lock\.json/);
+  assert.match(markdown, /checkpoint --actor agent:id --summary dependency-change --target dependency/);
   assert.match(markdown, /\.aienvmp\/sbom\.cdx\.json/);
 });
 
@@ -46,5 +57,6 @@ test("summaryWorkspace writes summary.md after sync", async () => {
   assert.match(result.artifact, /\.aienvmp[\\\/]summary\.md$/);
   assert.match(summary, /## AI handoff/);
   assert.match(summary, /## SBOM/);
+  assert.match(summary, /## Dependency changes/);
   assert.match(summary, /next:/);
 });

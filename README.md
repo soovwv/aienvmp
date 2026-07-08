@@ -65,10 +65,13 @@ AIENV.md                 # Markdown env map for AI agents
 `aienvmp` does not replace AGENTS.md, CLAUDE.md, or GEMINI.md. It gives them a live environment source of truth.
 
 ```bash
+npx aienvmp snippet codex
 npx aienvmp snippet agents
 npx aienvmp snippet claude
 npx aienvmp snippet gemini
 ```
+
+Snippets point each AI to `status`, `summary.md`, `context --json`, intent, and checkpoint without taking over the instruction file.
 
 ## Commands
 
