@@ -182,7 +182,7 @@ export function schemaContract() {
         command: "aienvmp summary --write",
         format: "markdown",
         purpose: "Compact AI and CI step summary for quick review.",
-        startsWith: ["AI readiness", "AI signals", "AI next"]
+        startsWith: ["AI readiness", "AI signals", "AI start here", "AI next"]
       },
       plan: {
         file: ".aienvmp/plan.json",

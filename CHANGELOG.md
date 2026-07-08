@@ -18,6 +18,7 @@
 - Added root `startHere` and `readOrder` fields to context and handoff JSON so continuation agents can find the fallback entry point without digging into preflight.
 - Added `startHere` and `readOrder` to standalone light SBOM and CycloneDX-lite metadata so dependency-review agents follow the same AI entry path.
 - Added the start-here artifact to the compact `status` text output while keeping the default scan to five lines.
+- Added the start-here artifact to the top of `summary.md` and its artifact list for Markdown-first AI agents.
 - Added compact light SBOM `aiUse` decision, confidence, read-first, and before/after-change fields.
 - Added release readiness evidence commands and stabilization focus for AI/CI release review.
 - Added per-session AI avoid guidance to status, context, env map, and dashboard surfaces.

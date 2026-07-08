@@ -49,6 +49,7 @@ export function renderSummary(status = {}, manifest = {}) {
   const aiSession = status.aiSession || {};
   const workspace = manifest.workspace?.root || manifest.workspace?.name || ".";
   const next = aiBootstrap.nextSafeCommand || status.nextSafeCommand || status.nextCommand || status.decision?.nextCommand || "aienvmp status";
+  const startHere = status.artifacts?.startHere || ".aienvmp/README.md";
   const readFirst = aiBootstrap.readFirst || status.nextAgent?.readFirst || ".aienvmp/status.json";
   const detail = aiBootstrap.detailCommand || status.quickstart?.detailCommand || "aienvmp context --json";
   const strict = status.enforcement?.recommendedCommand || "aienvmp doctor --strict all";
@@ -86,6 +87,7 @@ export function renderSummary(status = {}, manifest = {}) {
     "",
     `- AI readiness: ${aiReadiness.level || "unknown"}`,
     `- AI signals: ${aiSignals.length ? aiSignals.join("; ") : "none"}`,
+    `- AI start here: ${startHere}`,
     `- AI bootstrap: ${aiBootstrap.projectLocalWork || "allowed"} / ${aiBootstrap.environmentChanges || status.agentUse?.environmentChanges || "intent-first"} / ${aiBootstrap.localMode || "advisory"}`,
     `- AI session: ${(toList(aiSession.start)[0] || "aienvmp status --json")} -> ${(toList(aiSession.start)[1] || "aienvmp context --json")}`,
     `- AI artifact freshness: ${artifactFreshness.state || "unknown"} / ${artifactFreshness.nextCommand || "aienvmp sync"}`,
@@ -161,6 +163,7 @@ export function renderSummary(status = {}, manifest = {}) {
     "",
     "## Artifacts",
     "",
+    "- .aienvmp/README.md",
     "- AIENV.md",
     "- .aienvmp/status.json",
     "- .aienvmp/manifest.json",

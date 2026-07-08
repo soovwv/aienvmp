@@ -115,7 +115,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.agentPointerFields.includes("rule"));
   assert.equal(schema.outputs.summary.command, "aienvmp summary --write");
   assert.equal(schema.outputs.summary.format, "markdown");
-  assert.deepEqual(schema.outputs.summary.startsWith, ["AI readiness", "AI signals", "AI next"]);
+  assert.deepEqual(schema.outputs.summary.startsWith, ["AI readiness", "AI signals", "AI start here", "AI next"]);
   assert.equal(schema.outputs.plan.command, "aienvmp plan --json");
   assert.ok(schema.outputs.plan.rootFields.includes("aiBootstrap"));
   assert.ok(schema.outputs.plan.rootFields.includes("nextSafeCommand"));

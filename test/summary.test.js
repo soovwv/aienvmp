@@ -95,6 +95,9 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
       installed: ["codex"],
       missing: ["claude"],
       next: "Install a pointer with aienvmp snippet claude --write if this workspace uses that AI."
+    },
+    artifacts: {
+      startHere: ".aienvmp/README.md"
     }
   }, {
     workspace: { root: "/repo" },
@@ -116,7 +119,8 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   });
 
   assert.match(markdown, /# aienvmp summary/);
-  assert.match(markdown, /# aienvmp summary\n\n- AI readiness: review\n- AI signals: open intent conflicts; multi-agent environment activity\n- AI bootstrap: allowed \/ review-first \/ advisory\n- AI session: aienvmp status --json -> aienvmp sync\n- AI artifact freshness: stale \/ aienvmp sync\n- AI next: aienvmp sync/);
+  assert.match(markdown, /# aienvmp summary\n\n- AI readiness: review\n- AI signals: open intent conflicts; multi-agent environment activity\n- AI start here: \.aienvmp\/README\.md\n- AI bootstrap: allowed \/ review-first \/ advisory\n- AI session: aienvmp status --json -> aienvmp sync\n- AI artifact freshness: stale \/ aienvmp sync\n- AI next: aienvmp sync/);
+  assert.match(markdown, /AI start here: \.aienvmp\/README\.md/);
   assert.match(markdown, /AI bootstrap: allowed \/ review-first \/ advisory/);
   assert.match(markdown, /AI session: aienvmp status --json -> aienvmp sync/);
   assert.match(markdown, /AI artifact freshness: stale \/ aienvmp sync/);
@@ -160,6 +164,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /hold when: only one small documentation/);
   assert.match(markdown, /publish: Accumulate meaningful AI-contract, dashboard, SBOM, and release-gate changes before one npm publish/);
   assert.match(markdown, /\.aienvmp\/sbom\.cdx\.json/);
+  assert.match(markdown, /\.aienvmp\/README\.md/);
 });
 
 test("summaryWorkspace writes summary.md after sync", async () => {
@@ -173,6 +178,7 @@ test("summaryWorkspace writes summary.md after sync", async () => {
   assert.match(result.artifact, /\.aienvmp[\\\/]summary\.md$/);
   assert.match(summary, /## AI handoff/);
   assert.match(summary, /AI bootstrap:/);
+  assert.match(summary, /AI start here: \.aienvmp\/README\.md/);
   assert.match(summary, /AI session:/);
   assert.match(summary, /AI artifact freshness:/);
   assert.match(summary, /AI collaboration:/);

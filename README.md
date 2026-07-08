@@ -70,7 +70,7 @@ Local mode is warn-only. Use `doctor --strict security|policy|coordination|all` 
 AIENV.md                 # Markdown env map for AI agents
 .aienvmp/status.json     # first AI read: clear/review, next command, nextAgent hint
 .aienvmp/README.md       # generated start-here file when AI finds the artifact folder
-.aienvmp/summary.md      # compact AI/CI summary
+.aienvmp/summary.md      # compact AI/CI summary with start-here path
 .aienvmp/manifest.json   # runtime map + light SBOM
 .aienvmp/sbom.json       # standalone AI-readable light SBOM
 .aienvmp/sbom.cdx.json   # CycloneDX-lite export from project manifests
