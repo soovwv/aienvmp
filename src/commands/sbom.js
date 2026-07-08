@@ -36,12 +36,47 @@ export function buildSbomArtifact(manifest = {}) {
     topRisk: (lightSbom.topRisk || []).slice(0, 20),
     packageManagerPolicy: lightSbom.packageManagerPolicy || {},
     dependencyChangeHints: (lightSbom.dependencyChangeHints || []).slice(0, 20),
+    aiDependencyReview: aiDependencyReview(lightSbom),
     aiUse: {
       purpose: "Standalone AI-readable light SBOM artifact.",
       readBefore: "Dependency changes, vulnerability remediation, release review, or shared AI handoff.",
       nextCommand: lightSbom.riskSummary?.commands?.[0] || "aienvmp context --json",
       rule: "Use as a lightweight planning map; verify security claims with dedicated scanners."
     }
+  };
+}
+
+function aiDependencyReview(lightSbom = {}) {
+  const risk = lightSbom.riskSummary || {};
+  const hints = lightSbom.dependencyChangeHints || [];
+  const policy = lightSbom.packageManagerPolicy || {};
+  const level = risk.level || "clear";
+  const reviewTargets = (risk.reviewTargets || []).length
+    ? risk.reviewTargets
+    : hints.map((item) => item.manifest).filter(Boolean);
+  const review = ["urgent", "high", "medium"].includes(level) || policy.status === "review-required";
+  return {
+    status: review ? "review" : "ready",
+    mode: "advisory",
+    readFirst: ["riskSummary", "dependencyChangeHints", "packageManagerPolicy", "topRisk"],
+    reviewTargets: [...new Set(reviewTargets)].slice(0, 8),
+    safeActions: [
+      "read SBOM, status, summary, context, and dependency manifests before dependency changes",
+      "plan remediation without installing, upgrading, downgrading, or switching package managers",
+      "record intent before dependency or lockfile changes when another AI may be working"
+    ],
+    beforeDependencyChange: uniqueCommands([
+      ...planningCommands(risk.commands || []),
+      "aienvmp intent --actor agent:id --action dependency-review --target dependency",
+      "aienvmp plan --write"
+    ]),
+    afterDependencyChange: [
+      "run the narrowest relevant project validation",
+      "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"
+    ],
+    rule: review
+      ? "Review SBOM risk and package manager policy before dependency changes; default behavior is advisory and non-blocking."
+      : "No light SBOM signal requires action; still record intent before dependency or lockfile changes."
   };
 }
 
@@ -134,6 +169,14 @@ function normalizeFormat(format = "") {
   const value = String(format || "aienvmp").toLowerCase();
   if (["cyclonedx", "cyclonedx-lite", "cdx"].includes(value)) return "cyclonedx-lite";
   return "aienvmp";
+}
+
+function uniqueCommands(commands = []) {
+  return [...new Set(commands.filter(Boolean))];
+}
+
+function planningCommands(commands = []) {
+  return commands.filter((command) => !String(command).includes(" checkpoint "));
 }
 
 function hashText(text = "") {

@@ -130,6 +130,12 @@ Short record of bugs, fixes, and follow-up checks.
 - Fix: `aiReadiness` now includes `requiresHumanReview`, `safeProjectLocalActions`, and `reviewOnlyEnvironmentChanges`; `summary.md` includes the first safe-local-work hint.
 - Verification: regression tests cover status, context, summary, and schema outputs; Windows smoke confirmed generated JSON and summary fields.
 
+### Standalone SBOM did not expose the dependency-change loop directly
+
+- Issue: AI agents reading only `.aienvmp/sbom.json` could see risk and hints, but still had to infer the safe dependency-change sequence from several fields.
+- Fix: `aiDependencyReview` now gives a top-level advisory review block with read order, safe actions, review targets, before-change commands, and after-change checkpoint guidance.
+- Verification: regression tests cover the new SBOM block and schema metadata; local sync smoke confirmed generated `sbom.json` separates before-change commands from after-change checkpoint commands.
+
 ## Template
 
 ### Title

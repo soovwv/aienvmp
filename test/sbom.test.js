@@ -13,16 +13,22 @@ test("buildSbomArtifact creates standalone AI-readable light SBOM", () => {
     lightSbom: {
       mode: "light-sbom",
       summary: { packages: 1, vulnerabilities: 0 },
-      riskSummary: { level: "low", score: 5, commands: ["aienvmp sync --security"] },
+      riskSummary: { level: "high", score: 80, commands: ["aienvmp sync --security"], reviewTargets: ["package.json", "express"] },
       topRisk: [{ name: "express" }],
-      packageManagerPolicy: { status: "clear" },
+      packageManagerPolicy: { status: "review-required" },
       dependencyChangeHints: [{ manifest: "package.json" }]
     }
   });
 
   assert.equal(sbom.schemaName, "aienvmp.light-sbom");
   assert.equal(sbom.summary.packages, 1);
-  assert.equal(sbom.riskSummary.level, "low");
+  assert.equal(sbom.riskSummary.level, "high");
+  assert.equal(sbom.aiDependencyReview.status, "review");
+  assert.deepEqual(sbom.aiDependencyReview.reviewTargets, ["package.json", "express"]);
+  assert.match(sbom.aiDependencyReview.safeActions[1], /without installing/);
+  assert.ok(sbom.aiDependencyReview.beforeDependencyChange.includes("aienvmp plan --write"));
+  assert.equal(sbom.aiDependencyReview.beforeDependencyChange.some((command) => command.includes("checkpoint")), false);
+  assert.match(sbom.aiDependencyReview.afterDependencyChange[1], /checkpoint/);
   assert.equal(sbom.aiUse.nextCommand, "aienvmp sync --security");
 });
 
@@ -84,6 +90,8 @@ test("sbomWorkspace can write .aienvmp/sbom.json", async () => {
   const written = JSON.parse(await fs.readFile(result.artifact, "utf8"));
   assert.equal(written.schemaName, "aienvmp.light-sbom");
   assert.equal(written.summary.packages, 1);
+  assert.equal(written.aiDependencyReview.status, "ready");
+  assert.ok(written.aiDependencyReview.readFirst.includes("riskSummary"));
 });
 
 test("sbomWorkspace can write CycloneDX-lite artifact", async () => {

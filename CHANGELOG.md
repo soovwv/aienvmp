@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.57
+
+- Added `aiDependencyReview` to the standalone `.aienvmp/sbom.json` artifact.
+- Linked SBOM risk to dependency-change read order, safe actions, review targets, and before/after commands.
+- Kept dependency review advisory and non-blocking while making the AI handoff more explicit.
+- Documented `sbom.json.aiDependencyReview` in the README and schema contract.
+- Fixed dependency-review command grouping so `checkpoint` appears after dependency changes, not before.
+- Added regression tests for SBOM dependency review and schema metadata.
+
 ## 0.1.56
 
 - Added `aiReadiness.requiresHumanReview` so agents can distinguish review-needed signals from hard blocking.
