@@ -96,6 +96,8 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   const json = JSON.parse(output);
   assert.equal(json.status, "review-required");
   assert.equal(json.nextSafeCommand, "aienvmp sync");
+  assert.equal(json.aiBootstrap.nextSafeCommand, "aienvmp sync");
+  assert.equal(json.aiBootstrap.localMode, "advisory");
   assert.equal(json.preflight.state, "review-required");
   assert.equal(json.preflight.contract.name, "aienvmp-preflight");
   assert.ok(json.preflight.contract.requiredFields.includes("decision"));

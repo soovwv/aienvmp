@@ -55,6 +55,8 @@ test("buildHandoff summarizes next-agent environment state", () => {
 
   assert.equal(handoff.status, "clear");
   assert.equal(handoff.nextSafeCommand, "aienvmp intent --actor agent:id --action planned-change --target environment");
+  assert.equal(handoff.aiBootstrap.nextSafeCommand, handoff.nextSafeCommand);
+  assert.equal(handoff.aiBootstrap.readFirst, ".aienvmp/status.json");
   assert.equal(handoff.preflight.state, "clear");
   assert.equal(handoff.preflight.artifacts.envMap, "AIENV.md");
   assert.equal(handoff.decision.mode, "project-local-work");
@@ -128,6 +130,7 @@ test("buildHandoff requires review when open intents exist", () => {
 
   assert.equal(handoff.status, "review-required");
   assert.equal(handoff.nextSafeCommand, "aienvmp context --json");
+  assert.equal(handoff.aiBootstrap.nextSafeCommand, "aienvmp context --json");
   assert.equal(handoff.preflight.state, "review-required");
   assert.equal(handoff.preflight.agentUse.environmentChanges, "intent-and-review-first");
   assert.equal(handoff.decision.mode, "review-first");

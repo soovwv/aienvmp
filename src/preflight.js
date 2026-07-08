@@ -31,6 +31,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     collaboration
   });
   const nextCommand = maintenanceLoop.nextCommand || topAction?.command || decision.nextCommand;
+  const aiBootstrap = aiBootstrapSummary({ state, decision, nextCommand });
   return {
     schemaVersion: 1,
     contract: preflightContract(),
@@ -70,6 +71,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
       projectLocalWork: decision.canContinueProjectLocalWork ? "allowed" : "review-first",
       environmentChanges: decision.canChangeEnvironmentWithoutReview ? "allowed" : "intent-and-review-first"
     },
+    aiBootstrap,
     quickstart: agentQuickstart(decision.reviewRequired),
     nextAgent: nextAgentHint(state, dependencyReadSet, dependencyChangeProtocol),
     coordination,
@@ -105,6 +107,21 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     topAction,
     nextCommand,
     nextSafeCommand: nextCommand
+  };
+}
+
+function aiBootstrapSummary({ state, decision, nextCommand }) {
+  return {
+    purpose: "Shortest AI entry point for this workspace environment.",
+    readFirst: ".aienvmp/status.json",
+    detailCommand: "aienvmp context --json",
+    nextSafeCommand: nextCommand || "aienvmp status --json",
+    localMode: "advisory",
+    projectLocalWork: decision.canContinueProjectLocalWork ? "allowed" : "review-first",
+    environmentChanges: decision.canChangeEnvironmentWithoutReview ? "intent-first" : "review-first",
+    rule: state === "clear"
+      ? "Continue project-local work; record intent before shared environment changes."
+      : "Review context before shared environment changes; local checks remain non-blocking."
   };
 }
 

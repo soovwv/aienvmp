@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added `aiBootstrap` to the shared preflight surfaces so AI agents can read the shortest first-read, next-command, and local-mode hint.
+
 ## 0.1.68
 
 - Added an `aienvmp AI loop` block to the GitHub Action Step Summary using `schema.aiLoop`.

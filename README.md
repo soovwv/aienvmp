@@ -73,6 +73,7 @@ AIENV.md                 # Markdown env map for AI agents
 ## AI Contract
 
 - `status`, `context`, `plan`, and `handoff` share one additive preflight contract.
+- `aiBootstrap` gives AI the shortest read-first, next-command, and local-mode hint.
 - `maintenanceLoop` gives AI the recurring env-management loop.
 - `sbomRisk` and `sbomReview` connect light SBOM risk to safe dependency-change steps.
 - `collaboration`, `coordination`, and `agentActivity` show multi-agent conflicts and shared targets.

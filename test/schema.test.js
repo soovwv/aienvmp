@@ -15,6 +15,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.aiLoop.strictRule, /warn-only/);
   assert.equal(schema.outputs.status.contract.name, "aienvmp-preflight");
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("nextAgent"));
+  assert.ok(schema.outputs.status.contract.aiEntryFields.includes("aiBootstrap"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("nextSafeCommand"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("aiReadiness"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("collaboration"));
@@ -22,16 +23,19 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("followUps"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("agentPointers"));
   assert.ok(schema.outputs.status.rootFields.includes("nextSafeCommand"));
+  assert.ok(schema.outputs.status.rootFields.includes("aiBootstrap"));
   assert.equal(schema.outputs.summary.command, "aienvmp summary --write");
   assert.equal(schema.outputs.summary.format, "markdown");
   assert.deepEqual(schema.outputs.summary.startsWith, ["AI readiness", "AI signals", "AI next"]);
   assert.ok(schema.outputs.context.rootFields.includes("coordination"));
+  assert.ok(schema.outputs.context.rootFields.includes("aiBootstrap"));
   assert.ok(schema.outputs.context.rootFields.includes("nextSafeCommand"));
   assert.ok(schema.outputs.context.rootFields.includes("collaboration"));
   assert.ok(schema.outputs.context.rootFields.includes("maintenanceLoop"));
   assert.ok(schema.outputs.context.rootFields.includes("agentPointers"));
   assert.ok(schema.outputs.context.rootFields.includes("aiReadiness"));
   assert.ok(schema.outputs.handoff.rootFields.includes("dependencyHandoff"));
+  assert.ok(schema.outputs.handoff.rootFields.includes("aiBootstrap"));
   assert.ok(schema.outputs.handoff.rootFields.includes("nextSafeCommand"));
   assert.ok(schema.outputs.handoff.rootFields.includes("continuation"));
   assert.ok(schema.outputs.handoff.rootFields.includes("coordination"));

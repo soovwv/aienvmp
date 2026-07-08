@@ -40,6 +40,12 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.counts.runtimes, 1);
   assert.equal(status.counts.dependencies, 2);
   assert.equal(status.agentUse.environmentChanges, "allowed");
+  assert.equal(status.aiBootstrap.readFirst, ".aienvmp/status.json");
+  assert.equal(status.aiBootstrap.detailCommand, "aienvmp context --json");
+  assert.equal(status.aiBootstrap.nextSafeCommand, status.nextCommand);
+  assert.equal(status.aiBootstrap.localMode, "advisory");
+  assert.equal(status.aiBootstrap.projectLocalWork, "allowed");
+  assert.equal(status.aiBootstrap.environmentChanges, "intent-first");
   assert.equal(status.aiReadiness.level, "ready");
   assert.equal(status.aiReadiness.requiresHumanReview, false);
   assert.equal(status.aiReadiness.environmentChanges, "allowed");
@@ -275,6 +281,7 @@ test("statusWorkspace JSON reports review-required and strict suggestion", async
   assert.equal(json.intentTargets[0].target, "node");
   assert.equal(json.artifacts.envMap, "AIENV.md");
   assert.equal(json.nextSafeCommand, json.nextCommand);
+  assert.equal(json.aiBootstrap.nextSafeCommand, json.nextCommand);
 });
 
 test("statusWorkspace text prints a compact default decision", async () => {
@@ -408,4 +415,5 @@ test("statusWorkspace can write the compact AI status artifact", async () => {
   assert.equal(written.readOrder[1], ".aienvmp/summary.md");
   assert.equal(written.commands.refresh, "aienvmp sync");
   assert.equal(written.nextSafeCommand, written.nextCommand);
+  assert.equal(written.aiBootstrap.readFirst, ".aienvmp/status.json");
 });

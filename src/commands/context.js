@@ -27,6 +27,7 @@ export async function contextWorkspace(args) {
     console.log(JSON.stringify({
       status: warnings.length ? "review-required" : "clear",
       nextSafeCommand,
+      aiBootstrap: preflight.aiBootstrap,
       preflight,
       aiReadiness: preflight.aiReadiness,
       collaboration: preflight.collaboration,
