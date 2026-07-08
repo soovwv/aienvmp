@@ -1,11 +1,11 @@
 import { schemaContract } from "./contract.js";
-import { dashboardAgentClientScript, dashboardPriorityClientScript, dashboardScannerGuidanceClientScript } from "./dashboard.js";
+import { dashboardAgentClientScript, dashboardPriorityClientScript, dashboardReviewPlanClientScript, dashboardScannerGuidanceClientScript } from "./dashboard.js";
 
 const markerBegin = "<!-- aienvmp:begin -->";
 const markerEnd = "<!-- aienvmp:end -->";
 
 export { markerBegin, markerEnd };
-export { dashboardAgentClientScript, dashboardCardPriority, dashboardEssentialCards, dashboardPriorityClientScript, dashboardScannerGuidanceClientScript } from "./dashboard.js";
+export { dashboardAgentClientScript, dashboardCardPriority, dashboardEssentialCards, dashboardPriorityClientScript, dashboardReviewPlanClientScript, dashboardScannerGuidanceClientScript } from "./dashboard.js";
 
 export function renderAIEnv(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const lines = [];
@@ -519,7 +519,7 @@ const riskSummary=lightSbom.riskSummary||{};
 const dependencyHints=lightSbom.dependencyChangeHints||[];
 const aiDependencyReview=lightSbom.aiDependencyReview||{};
 ${dashboardScannerGuidanceClientScript()}
-const aiReviewPlan=lightSbom.aiReviewPlan||{status:aiDependencyReview.status||'ready',risk:(riskSummary.level||'clear')+'/'+(riskSummary.score||0),securityConfidence:aiDependencyReview.securityConfidence||'unknown',packageManagerPolicy:pmPolicy.status||'not-detected',packages:lightSbomSummary.packages||0,vulnerabilities:lightSbomSummary.vulnerabilities||0,reviewTargets:aiDependencyReview.reviewTargets||riskSummary.reviewTargets||[],beforeChange:aiDependencyReview.beforeDependencyChange?.[0]||riskSummary.commands?.[0]||'aienvmp sbom --json',afterChange:aiDependencyReview.afterDependencyChange?.slice(-1)[0]||'aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency',rule:aiDependencyReview.rule||'Record dependency intent before dependency or lockfile changes.'};
+${dashboardReviewPlanClientScript()}
 const dependencyHintsHtml=dependencyHints.length?'<div class="timeline">'+dependencyHints.slice(0,5).map(h=>\`<div class="event"><time>\${esc(h.ecosystem||'deps')}</time><div><b>\${esc(h.manifest)}</b> <code>\${esc(h.manager||'unknown')}</code> \${esc(h.packages||0)} packages\${h.riskPackages?.length?\`<div class="path">risk: \${esc(h.riskPackages.map(p=>p.name).join(', '))}</div>\`:''}<div class="path">\${esc((h.groups||[]).join(', ')||'no groups')}\${h.lockfiles?.length?\` / lockfiles: \${esc(h.lockfiles.map(l=>l.file).join(', '))}\`:''}</div></div></div>\`).join('')+'</div>':'<div class="okline">No dependency change hints available.</div>';
 const pmPolicyHtml='<table><tr><th>Status</th><td><code>'+esc(pmPolicy.status||'no-lockfile')+'</code></td></tr><tr><th>Guidance</th><td>'+esc(pmPolicy.guidance||'No lockfile policy detected.')+'</td></tr></table>';
 const riskSummaryHtml=riskSummary.level?\`<table><tr><th>Level</th><td><code>\${esc(riskSummary.level)}</code> \${esc(riskSummary.score||0)}</td></tr><tr><th>Scanner</th><td><code>\${esc(riskSummary.scanner||'unknown')}</code></td></tr><tr><th>Next</th><td>\${esc(riskSummary.next||'No SBOM action required.')}</td></tr><tr><th>Targets</th><td>\${esc((riskSummary.reviewTargets||[]).join(', ')||'none')}</td></tr></table>\${riskSummary.signals?.length?'<div class="timeline">'+riskSummary.signals.slice(0,5).map(s=>\`<div class="event"><time>risk</time><div>\${esc(s)}</div></div>\`).join('')+'</div>':''}\`:'<div class="okline">No risk summary available.</div>';

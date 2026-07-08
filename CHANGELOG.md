@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Moved dashboard SBOM review-plan fallback policy into the dashboard contract module.
 - Moved dashboard SBOM scanner guidance policy into the dashboard contract module to keep the renderer simpler.
 - Mirrored SBOM scanner guidance in the dashboard Light SBOM card so humans see the same optional scanner decision as AI agents.
 - Added SBOM scanner guidance to the AI schema and standalone light SBOM artifact so agents know when optional read-only scanners are needed.
