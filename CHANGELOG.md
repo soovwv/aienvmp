@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Split dependency dashboard client rendering helpers out of the main renderer.
 - Added a dashboard essential-surface contract for AI-first human review.
 - Added recommendation evidence document links to the AI schema and packaged skill.
 - Aligned the packaged aienvmp skill with schema recommendation guidance so AI agents know when to use or skip the tool.

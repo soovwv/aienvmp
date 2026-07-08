@@ -1,11 +1,11 @@
 import { schemaContract } from "./contract.js";
-import { dashboardAgentClientScript, dashboardDependencyHintsClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialSurfaceClientScript, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript } from "./dashboard.js";
+import { dashboardAgentClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialSurfaceClientScript, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript } from "./dashboard.js";
 
 const markerBegin = "<!-- aienvmp:begin -->";
 const markerEnd = "<!-- aienvmp:end -->";
 
 export { markerBegin, markerEnd };
-export { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript } from "./dashboard.js";
+export { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript } from "./dashboard.js";
 
 export function renderAIEnv(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const lines = [];
@@ -579,9 +579,9 @@ const collaborationHtml=\`<table><tr><th>Status</th><td><code>\${esc(collaborati
 const maintenanceLoop=manifest.preflight?.maintenanceLoop||{};
 ${dashboardEnvironmentProtocolClientScript()}
 const dependencyReadSet=manifest.preflight?.dependencyReadSet||[];
-const dependencyReadSetHtml=dependencyReadSet.length?'<div class="timeline">'+dependencyReadSet.slice(0,5).map(d=>\`<div class="event"><time>\${esc(d.ecosystem||'deps')}</time><div><b>\${esc(d.manifest||'dependency files')}</b> <code>\${esc(d.manager||'unknown')}</code><div class="path">\${esc([d.manifest,...(d.lockfiles||[])].filter(Boolean).join(', '))}</div>\${d.riskPackages?.length?\`<div class="path">risk: \${esc(d.riskPackages.join(', '))}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No dependency files detected.</div>';
 const dependencyProtocol=manifest.preflight?.dependencyChangeProtocol||{};
-const dependencyProtocolHtml=dependencyProtocol.commands?'<table><tr><th>Mode</th><td><code>'+esc(dependencyProtocol.mode||'advisory')+'</code></td></tr><tr><th>Policy</th><td><code>'+esc(dependencyProtocol.packageManagerPolicy||'not-detected')+'</code></td></tr><tr><th>Intent</th><td><code>'+esc(dependencyProtocol.commands.recordIntent)+'</code></td></tr><tr><th>After</th><td><code>'+esc(dependencyProtocol.commands.checkpointAfterChange||dependencyProtocol.commands.recordAfterChange)+'</code></td></tr></table><div class="timeline">'+(dependencyProtocol.mustNotDo||[]).slice(0,3).map(item=>\`<div class="event"><time>avoid</time><div>\${esc(item)}</div></div>\`).join('')+'</div>':'<div class="okline">No dependency change protocol available.</div>';
+${dashboardDependencyReadSetClientScript()}
+${dashboardDependencyProtocolClientScript()}
 ${dashboardEssentialSurfaceClientScript()}
 ${dashboardPriorityClientScript()}
 const card=(title,badge,body)=>\`<section class="card \${cardPriority(title)}" data-dashboard-priority="\${cardPriority(title)}"><div class="card-head"><h2>\${title}</h2>\${badge||''}</div>\${body}</section>\`;

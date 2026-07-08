@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { dashWorkspace } from "../src/commands/dash.js";
 import { writeJson } from "../src/fsutil.js";
-import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
+import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
 
 test("renderDashboard includes the audit summary surface", () => {
   const html = renderDashboard({
@@ -411,6 +411,10 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardDependencyHintsClientScript(), /const dependencyHintsHtml=dependencyHints\.length/);
   assert.match(dashboardDependencyHintsClientScript(), /No dependency change hints available/);
   assert.match(dashboardDependencyHintsClientScript(), /lockfiles/);
+  assert.match(dashboardDependencyReadSetClientScript(), /const dependencyReadSetHtml=dependencyReadSet\.length/);
+  assert.match(dashboardDependencyReadSetClientScript(), /No dependency files detected/);
+  assert.match(dashboardDependencyProtocolClientScript(), /const dependencyProtocolHtml=dependencyProtocol\.commands/);
+  assert.match(dashboardDependencyProtocolClientScript(), /No dependency change protocol available/);
   assert.match(dashboardDependencyReviewClientScript(), /const aiDependencyReviewHtml=aiDependencyReview\.status/);
   assert.match(dashboardDependencyReviewClientScript(), /Security confidence/);
   assert.match(dashboardDependencyReviewClientScript(), /aienvmp intent --actor agent:id --action dependency-review --target dependency/);
@@ -436,6 +440,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const riskSummaryHtml=riskSummary\.level/);
   assert.match(html, /const pmPolicyHtml=/);
   assert.match(html, /const dependencyHintsHtml=dependencyHints\.length/);
+  assert.match(html, /const dependencyReadSetHtml=dependencyReadSet\.length/);
+  assert.match(html, /const dependencyProtocolHtml=dependencyProtocol\.commands/);
   assert.match(html, /const aiDependencyReviewHtml=aiDependencyReview\.status/);
   assert.match(html, /const environmentProtocol=manifest\.preflight\?\.environmentChangeProtocol/);
   assert.match(html, /const releaseReadinessHtml=/);

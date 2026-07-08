@@ -96,6 +96,18 @@ export function dashboardDependencyHintsClientScript() {
   ].join("\n");
 }
 
+export function dashboardDependencyReadSetClientScript() {
+  return [
+    "const dependencyReadSetHtml=dependencyReadSet.length?'<div class=\"timeline\">'+dependencyReadSet.slice(0,5).map(d=>`<div class=\"event\"><time>${esc(d.ecosystem||'deps')}</time><div><b>${esc(d.manifest||'dependency files')}</b> <code>${esc(d.manager||'unknown')}</code><div class=\"path\">${esc([d.manifest,...(d.lockfiles||[])].filter(Boolean).join(', '))}</div>${d.riskPackages?.length?`<div class=\"path\">risk: ${esc(d.riskPackages.join(', '))}</div>`:''}</div></div>`).join('')+'</div>':'<div class=\"okline\">No dependency files detected.</div>';"
+  ].join("\n");
+}
+
+export function dashboardDependencyProtocolClientScript() {
+  return [
+    "const dependencyProtocolHtml=dependencyProtocol.commands?'<table><tr><th>Mode</th><td><code>'+esc(dependencyProtocol.mode||'advisory')+'</code></td></tr><tr><th>Policy</th><td><code>'+esc(dependencyProtocol.packageManagerPolicy||'not-detected')+'</code></td></tr><tr><th>Intent</th><td><code>'+esc(dependencyProtocol.commands.recordIntent)+'</code></td></tr><tr><th>After</th><td><code>'+esc(dependencyProtocol.commands.checkpointAfterChange||dependencyProtocol.commands.recordAfterChange)+'</code></td></tr></table><div class=\"timeline\">'+(dependencyProtocol.mustNotDo||[]).slice(0,3).map(item=>`<div class=\"event\"><time>avoid</time><div>${esc(item)}</div></div>`).join('')+'</div>':'<div class=\"okline\">No dependency change protocol available.</div>';"
+  ].join("\n");
+}
+
 export function dashboardEnvironmentProtocolClientScript() {
   return [
     "const environmentProtocol=manifest.preflight?.environmentChangeProtocol||{};",
