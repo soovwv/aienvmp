@@ -76,6 +76,15 @@ test("renderDashboard includes the audit summary surface", () => {
         ],
         rule: "Review SBOM risk and package manager policy before dependency changes; default behavior is advisory and non-blocking."
       },
+      aiReviewPlan: {
+        status: "review",
+        risk: "high/80",
+        securityConfidence: "scanner-summary",
+        packageManagerPolicy: "clear",
+        beforeChange: "aienvmp sync --security",
+        afterChange: "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency",
+        rule: "Review SBOM risk and package manager policy before dependency changes."
+      },
       packageManagerPolicy: {
         status: "clear",
         ecosystems: {
@@ -381,6 +390,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Light SBOM Artifact/);
   assert.match(html, /sbom\.json/);
   assert.match(html, /sbom\.cdx\.json/);
+  assert.match(html, /AI Review Plan/);
+  assert.match(html, /high\/80/);
   assert.match(html, /AI Dependency Review/);
   assert.match(html, /Security confidence/);
   assert.match(html, /scanner-summary/);

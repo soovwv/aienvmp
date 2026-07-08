@@ -60,6 +60,14 @@ export function renderSummary(status = {}, manifest = {}) {
   const aiSignals = toList(aiReadiness.signals).slice(0, 5);
   const aiNext = aiReadiness.next || "Run aienvmp context --json for details.";
   const aiDependencyReview = manifest.lightSbom?.aiDependencyReview || {};
+  const aiReviewPlan = manifest.lightSbom?.aiReviewPlan || {
+    status: aiDependencyReview.status || "unknown",
+    risk: `${riskLevel}/${riskScore}`,
+    securityConfidence: aiDependencyReview.securityConfidence || "unknown",
+    packageManagerPolicy: manifest.lightSbom?.packageManagerPolicy?.status || dependencyProtocol.packageManagerPolicy || "not-detected",
+    beforeChange: aiDependencyReview.beforeDependencyChange?.[0] || sbomReview.nextCommand || "aienvmp sbom --json",
+    afterChange: aiDependencyReview.afterDependencyChange?.slice(-1)[0] || "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"
+  };
   const strictPlan = status.enforcementProfile?.strictPlan || status.enforcement?.strictPlan || {};
   const strictDecision = status.enforcementProfile?.strictDecision || status.enforcement?.strictDecision || {};
 
@@ -101,6 +109,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- source: ${manifest.lightSbom?.source?.dependencies || "project manifests"}`,
     `- confidence: transitive ${manifest.lightSbom?.confidence?.transitiveDependencies || "not-resolved"}`,
     `- maintenance SBOM review: ${sbomReview.status || "unknown"} / ${sbomReview.securityConfidence || "unknown"} / ${sbomReview.nextCommand || maintenanceLoop.sbomCommand || "aienvmp sbom --json"}`,
+    `- AI SBOM plan: ${aiReviewPlan.status || "unknown"} / ${aiReviewPlan.risk || `${riskLevel}/${riskScore}`} / ${aiReviewPlan.securityConfidence || "unknown"} / ${aiReviewPlan.beforeChange || "aienvmp sbom --json"}`,
     `- AI dependency review: ${aiDependencyReview.status || "unknown"} / ${aiDependencyReview.securityConfidence || "unknown"} / ${aiDependencyReview.beforeDependencyChange?.[0] || "aienvmp sbom --json"}`,
     `- signals: ${riskSignals.length ? riskSignals.join("; ") : "none"}`,
     `- verify: ${sbomRisk.next || "Use a dedicated scanner for security decisions."}`,
