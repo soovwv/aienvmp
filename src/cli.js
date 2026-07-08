@@ -112,7 +112,7 @@ function printUsage() {
 Usage:
   aienvmp sync [--dir .] [--json] [--quiet] [--deep] [--security]
   aienvmp context [--dir .] [--json]
-  aienvmp status [--dir .] [--json] [--write] [--quiet]
+  aienvmp status [--dir .] [--json] [--write] [--quiet] [--verbose]
   aienvmp handoff [--dir .] [--json] [--record --actor agent:id]
   aienvmp checkpoint [--dir .] --actor agent:id --summary "what changed" [--target dependency] [--json]
   aienvmp plan [--dir .] [--json] [--write]
@@ -122,7 +122,7 @@ Usage:
 
 Common:
   aienvmp sync      update AIENV.md, manifest, status, summary, SBOM, ledger, intents, and dashboard
-  aienvmp status    print one simple environment decision; --write saves .aienvmp/status.json
+  aienvmp status    print a 5-line AI/human environment decision; --verbose shows command details
   aienvmp context   print the AI preflight brief
   aienvmp handoff   print the next-agent handoff summary
   aienvmp checkpoint record, sync, status, and handoff after an env change

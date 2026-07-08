@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.63
+
+- Compressed plain `aienvmp status` output into a 5-line AI/human decision view.
+- Added `aienvmp status --verbose` for detailed command hints without cluttering the default path.
+- Added a reusable `renderStatusText` helper for stable status text formatting.
+- Kept JSON/status artifacts unchanged so AI consumers retain the full preflight contract.
+- Updated CLI help to explain the compact default and verbose detail mode.
+- Updated README command guidance for default, artifact, and verbose status usage.
+- Added regression tests for compact default output, verbose output, and exact status text shape.
+
 ## 0.1.62
 
 - Added a compact `collaboration` block to the shared preflight/status contract for multi-agent environment coordination.

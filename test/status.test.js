@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { buildStatus, statusWorkspace } from "../src/commands/status.js";
+import { buildStatus, renderStatusText, statusWorkspace } from "../src/commands/status.js";
 import { writeJson } from "../src/fsutil.js";
 
 test("buildStatus returns a compact clear state", () => {
@@ -217,7 +217,7 @@ test("statusWorkspace JSON reports review-required and strict suggestion", async
   assert.equal(json.artifacts.envMap, "AIENV.md");
 });
 
-test("statusWorkspace text prints the next-agent handoff command", async () => {
+test("statusWorkspace text prints a compact default decision", async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-status-text-"));
   await fs.mkdir(path.join(dir, ".aienvmp"), { recursive: true });
   await writeJson(path.join(dir, ".aienvmp", "manifest.json"), {
@@ -242,10 +242,64 @@ test("statusWorkspace text prints the next-agent handoff command", async () => {
     console.log = originalLog;
   }
 
-  assert.match(lines.join("\n"), /handoff: aienvmp handoff --record --actor agent:id/);
-  assert.match(lines.join("\n"), /checkpoint: aienvmp checkpoint/);
-  assert.match(lines.join("\n"), /ai-readiness: ready/);
-  assert.match(lines.join("\n"), /collaboration: clear/);
+  assert.match(lines.join("\n"), /ready: ready \| collaboration: clear/);
+  assert.match(lines.join("\n"), /details: aienvmp context --json/);
+  assert.equal(lines.join("\n").split("\n").length, 5);
+});
+
+test("statusWorkspace verbose text keeps command details", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-status-verbose-"));
+  await fs.mkdir(path.join(dir, ".aienvmp"), { recursive: true });
+  await writeJson(path.join(dir, ".aienvmp", "manifest.json"), {
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    trust: { state: "observed", verified: false },
+    workspace: { path: dir, name: path.basename(dir) },
+    runtimes: {},
+    packageManagers: {},
+    containers: {},
+    projectHints: {},
+    dependencySnapshot: { summary: { packages: 0 } },
+    security: { enabled: false, summary: { total: 0 } }
+  });
+
+  const originalLog = console.log;
+  const lines = [];
+  console.log = (value) => { lines.push(value); };
+  try {
+    await statusWorkspace({ dir, verbose: true });
+  } finally {
+    console.log = originalLog;
+  }
+
+  const output = lines.join("\n");
+  assert.match(output, /intent: aienvmp intent/);
+  assert.match(output, /checkpoint: aienvmp checkpoint/);
+  assert.match(output, /handoff: aienvmp handoff --record --actor agent:id/);
+  assert.match(output, /strict: aienvmp doctor --strict all/);
+  assert.ok(output.split("\n").length > 5);
+});
+
+test("renderStatusText stays compact for default human and AI scan", () => {
+  const text = renderStatusText({
+    state: "review-required",
+    summary: "Review warnings before environment changes.",
+    counts: { warnings: 2, openIntents: 1 },
+    aiReadiness: { level: "review" },
+    collaboration: { status: "review-before-env-change" },
+    sbomRisk: { level: "medium", score: 42 },
+    quickstart: { detailCommand: "aienvmp context --json" },
+    artifacts: { summary: ".aienvmp/summary.md" },
+    nextCommand: "aienvmp plan --write"
+  });
+
+  assert.deepEqual(text.split("\n"), [
+    "review-required: Review warnings before environment changes.",
+    "ready: review | collaboration: review-before-env-change",
+    "sbom: medium (42) | warnings: 2 | intents: 1",
+    "next: aienvmp plan --write",
+    "details: aienvmp context --json | summary: .aienvmp/summary.md"
+  ]);
 });
 
 test("buildStatus summarizes open intent coordination by target", () => {

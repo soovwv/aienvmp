@@ -21,16 +21,7 @@ export async function statusWorkspace(args) {
   if (args.json) {
     console.log(JSON.stringify(output, null, 2));
   } else if (!args.quiet) {
-    console.log(`${output.state}: ${output.summary}`);
-    console.log(`ai-readiness: ${output.aiReadiness?.level || "unknown"} - ${output.aiReadiness?.next || "Run aienvmp context --json for details."}`);
-    console.log(`collaboration: ${output.collaboration?.status || "unknown"} - ${output.collaboration?.nextCommand || "aienvmp status --json"}`);
-    console.log(`next: ${output.nextCommand}`);
-    console.log(`ai: ${output.quickstart.readFirst} -> ${output.quickstart.detailCommand}`);
-    console.log(`intent: ${output.intentTargets[0]?.command || output.commands.recordIntent}`);
-    console.log(`checkpoint: ${output.commands.checkpoint}`);
-    console.log(`handoff: ${output.nextAgent.handoffCommand}`);
-    console.log(`strict: ${output.enforcement.recommendedCommand}`);
-    if (artifact) console.log(`status: ${artifact}`);
+    console.log(renderStatusText(output, { verbose: args.verbose === true, artifact }));
   }
   return output;
 }
@@ -44,4 +35,38 @@ export async function writeStatusArtifact(dir, status) {
 
 export function buildStatus(manifest = {}, warnings = [], intents = [], timeline = []) {
   return buildPreflight(manifest, warnings, intents, timeline);
+}
+
+export function renderStatusText(output = {}, options = {}) {
+  const counts = output.counts || {};
+  const readiness = output.aiReadiness?.level || "unknown";
+  const collaboration = output.collaboration?.status || "unknown";
+  const sbomRisk = output.sbomRisk?.level || "unknown";
+  const sbomScore = valueOrZero(output.sbomRisk?.score);
+  const detail = output.quickstart?.detailCommand || "aienvmp context --json";
+  const summary = output.artifacts?.summary || ".aienvmp/summary.md";
+  const lines = [
+    `${output.state || "unknown"}: ${output.summary || "Run aienvmp context --json for details."}`,
+    `ready: ${readiness} | collaboration: ${collaboration}`,
+    `sbom: ${sbomRisk} (${sbomScore}) | warnings: ${valueOrZero(counts.warnings)} | intents: ${valueOrZero(counts.openIntents)}`,
+    `next: ${output.nextCommand || "aienvmp status --json"}`,
+    `details: ${detail} | summary: ${summary}`
+  ];
+
+  if (options.verbose) {
+    lines.push(
+      `ai: ${output.quickstart?.readFirst || "aienvmp status --write"} -> ${detail}`,
+      `intent: ${output.intentTargets?.[0]?.command || output.commands?.recordIntent || "aienvmp intent --actor agent:id --action planned-change"}`,
+      `checkpoint: ${output.commands?.checkpoint || "aienvmp checkpoint --actor agent:id --summary what-changed --target environment"}`,
+      `handoff: ${output.nextAgent?.handoffCommand || "aienvmp handoff --record --actor agent:id"}`,
+      `strict: ${output.enforcement?.recommendedCommand || "aienvmp doctor --strict all"}`
+    );
+  }
+
+  if (options.artifact || output.artifact) lines.push(`status: ${options.artifact || output.artifact}`);
+  return lines.join("\n");
+}
+
+function valueOrZero(value) {
+  return Number.isFinite(Number(value)) ? Number(value) : 0;
 }

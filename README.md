@@ -82,7 +82,9 @@ Snippets point each AI to `status`, `summary.md`, `context --json`, intent, and 
 
 ```bash
 aienvmp sync                    # update env map, status, summary, SBOM, dashboard
-aienvmp status --write          # refresh compact AI status
+aienvmp status                  # 5-line env decision
+aienvmp status --write          # refresh compact AI status artifact
+aienvmp status --verbose        # show command details
 aienvmp summary --write         # refresh compact Markdown summary
 aienvmp context --json          # AI decision contract
 aienvmp sbom --json             # standalone light SBOM
