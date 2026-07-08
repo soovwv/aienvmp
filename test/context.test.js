@@ -96,6 +96,12 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   const json = JSON.parse(output);
   assert.equal(json.status, "review-required");
   assert.equal(json.nextSafeCommand, "aienvmp sync");
+  assert.equal(json.aiSession.start[0], "aienvmp status --json");
+  assert.equal(json.aiSession.start[1], "aienvmp context --json");
+  assert.equal(json.aiSession.ifMissingOrStale, "aienvmp sync");
+  assert.equal(json.aiSession.beforeEnvironmentChange, "aienvmp intent --actor agent:id --action planned-change --target dependency");
+  assert.equal(json.aiSession.afterEnvironmentChange, "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency");
+  assert.equal(json.preflight.aiSession.nextCommand, "aienvmp sync");
   assert.equal(json.aiBootstrap.nextSafeCommand, "aienvmp sync");
   assert.equal(json.aiBootstrap.localMode, "advisory");
   assert.equal(json.artifactFreshness.state, "fresh");

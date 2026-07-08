@@ -43,6 +43,7 @@ export function renderSummary(status = {}, manifest = {}) {
   const sbomReview = maintenanceLoop.sbomReview || {};
   const aiBootstrap = status.aiBootstrap || {};
   const artifactFreshness = status.artifactFreshness || {};
+  const aiSession = status.aiSession || {};
   const workspace = manifest.workspace?.root || manifest.workspace?.name || ".";
   const next = aiBootstrap.nextSafeCommand || status.nextSafeCommand || status.nextCommand || status.decision?.nextCommand || "aienvmp status";
   const readFirst = aiBootstrap.readFirst || status.nextAgent?.readFirst || ".aienvmp/status.json";
@@ -82,6 +83,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- AI readiness: ${aiReadiness.level || "unknown"}`,
     `- AI signals: ${aiSignals.length ? aiSignals.join("; ") : "none"}`,
     `- AI bootstrap: ${aiBootstrap.projectLocalWork || "allowed"} / ${aiBootstrap.environmentChanges || status.agentUse?.environmentChanges || "intent-first"} / ${aiBootstrap.localMode || "advisory"}`,
+    `- AI session: ${(toList(aiSession.start)[0] || "aienvmp status --json")} -> ${(toList(aiSession.start)[1] || "aienvmp context --json")}`,
     `- AI artifact freshness: ${artifactFreshness.state || "unknown"} / ${artifactFreshness.nextCommand || "aienvmp sync"}`,
     `- AI next: ${next} (${aiNext})`,
     `- AI collaboration: ${collaboration.status || "unknown"} / ${toList(collaboration.activeTargets).join(", ") || "none"} / ${collaboration.nextCommand || "aienvmp status --json"}`,
@@ -105,6 +107,7 @@ export function renderSummary(status = {}, manifest = {}) {
     "## AI handoff",
     "",
     `- environment changes: ${status.agentUse?.environmentChanges || "intent-and-review-first"}`,
+    `- session rule: ${aiSession.rule || "Read status first, sync only when stale or missing, and record intent before shared environment changes."}`,
     `- collaboration rule: ${collaboration.rule || "Record intent before shared environment changes."}`,
     `- coordination: ${coordination.next || "No open environment intents."}`,
     `- recent agent activity: ${activity.next || "No environment records need coordination."}`,

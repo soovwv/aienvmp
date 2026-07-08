@@ -48,6 +48,16 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.aiBootstrap.localMode, "advisory");
   assert.equal(status.aiBootstrap.projectLocalWork, "allowed");
   assert.equal(status.aiBootstrap.environmentChanges, "intent-first");
+  assert.equal(status.aiSession.purpose, "Shortest repeatable startup routine for AI agents in this workspace.");
+  assert.deepEqual(status.aiSession.readFirst, [".aienvmp/status.json", ".aienvmp/summary.md"]);
+  assert.equal(status.aiSession.start[0], "aienvmp status --json");
+  assert.equal(status.aiSession.start[1], "aienvmp sync");
+  assert.equal(status.aiSession.beforeEnvironmentChange, "aienvmp intent --actor agent:id --action planned-change --target dependency");
+  assert.equal(status.aiSession.afterEnvironmentChange, "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency");
+  assert.equal(status.aiSession.handoff, "aienvmp handoff --record --actor agent:id");
+  assert.equal(status.aiSession.localWork, "allowed");
+  assert.equal(status.aiSession.environmentChanges, "intent-first");
+  assert.match(status.aiSession.rule, /Read status first/);
   assert.equal(status.artifactFreshness.state, "unknown");
   assert.equal(status.artifactFreshness.nextCommand, "aienvmp sync");
   assert.equal(status.artifactFreshness.statusArtifact, ".aienvmp/status.json");

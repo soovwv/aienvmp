@@ -34,6 +34,15 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
   const nextCommand = maintenanceLoop.nextCommand || topAction?.command || decision.nextCommand;
   const aiBootstrap = aiBootstrapSummary({ state, decision, nextCommand, maintenanceLoop, topAction });
   const artifactFreshness = artifactFreshnessSummary(manifest, warnings);
+  const aiSession = aiSessionSummary({
+    state,
+    nextCommand,
+    aiBootstrap,
+    artifactFreshness,
+    agentPointers,
+    collaboration,
+    dependencyChangeProtocol
+  });
   return {
     schemaVersion: 1,
     contract: preflightContract(),
@@ -74,6 +83,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
       projectLocalWork: decision.canContinueProjectLocalWork ? "allowed" : "review-first",
       environmentChanges: decision.canChangeEnvironmentWithoutReview ? "allowed" : "intent-and-review-first"
     },
+    aiSession,
     aiBootstrap,
     artifactFreshness,
     quickstart: agentQuickstart(decision.reviewRequired),
@@ -111,6 +121,28 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     topAction,
     nextCommand,
     nextSafeCommand: nextCommand
+  };
+}
+
+function aiSessionSummary({ state, nextCommand, aiBootstrap = {}, artifactFreshness = {}, agentPointers = {}, collaboration = {}, dependencyChangeProtocol = {} }) {
+  const commands = dependencyChangeProtocol.commands || {};
+  return {
+    purpose: "Shortest repeatable startup routine for AI agents in this workspace.",
+    readFirst: [".aienvmp/status.json", ".aienvmp/summary.md"],
+    start: [
+      "aienvmp status --json",
+      artifactFreshness.state === "fresh" ? "aienvmp context --json" : "aienvmp sync"
+    ],
+    ifMissingOrStale: "aienvmp sync",
+    beforeEnvironmentChange: commands.recordIntent || "aienvmp intent --actor agent:id --action planned-change --target environment",
+    afterEnvironmentChange: commands.checkpointAfterChange || "aienvmp checkpoint --actor agent:id --summary what-changed --target environment",
+    handoff: commands.handoff || "aienvmp handoff --record --actor agent:id",
+    nextCommand: nextCommand || aiBootstrap.nextSafeCommand || "aienvmp status --json",
+    discovery: agentPointers.discovery || "missing: run aienvmp onboard",
+    localWork: aiBootstrap.projectLocalWork || "allowed",
+    environmentChanges: collaboration.environmentChanges || aiBootstrap.environmentChanges || "intent-first",
+    state,
+    rule: "Read status first, sync only when missing or stale, continue project-local work when allowed, and record intent before shared environment changes."
   };
 }
 

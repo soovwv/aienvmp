@@ -165,6 +165,18 @@ test("renderDashboard includes the audit summary surface", () => {
       matchedWarningCodes: ["node-version-mismatch"]
     }],
     preflight: {
+      aiSession: {
+        purpose: "Shortest repeatable startup routine for AI agents in this workspace.",
+        readFirst: [".aienvmp/status.json", ".aienvmp/summary.md"],
+        start: ["aienvmp status --json", "aienvmp sync"],
+        ifMissingOrStale: "aienvmp sync",
+        beforeEnvironmentChange: "aienvmp intent --actor agent:id --action planned-change --target dependency",
+        afterEnvironmentChange: "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency",
+        handoff: "aienvmp handoff --record --actor agent:id",
+        localWork: "allowed",
+        environmentChanges: "intent-review-handoff-first",
+        rule: "Read status first, sync only when missing or stale, continue project-local work when allowed, and record intent before shared environment changes."
+      },
       aiBootstrap: {
         readFirst: ".aienvmp/status.json",
         detailCommand: "aienvmp context --json",
@@ -319,6 +331,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /\.brief/);
   assert.match(html, /const maintenanceLoop=manifest\.preflight\?\.maintenanceLoop\|\|\{\}/);
   assert.match(html, /const \{manifest,timeline,warnings,intents,policy,releaseReadiness\}=JSON\.parse/);
+  assert.match(html, /const aiSession=manifest\.preflight\?\.aiSession\|\|\{\}/);
+  assert.match(html, /const aiSessionStart=aiSession\.start\|\|\['aienvmp status --json','aienvmp context --json'\]/);
   assert.match(html, /const aiBootstrap=manifest\.preflight\?\.aiBootstrap\|\|\{\}/);
   assert.match(html, /const artifactFreshness=manifest\.preflight\?\.artifactFreshness\|\|\{\}/);
   assert.match(html, /const strictRecommendation=manifest\.preflight\?\.strictRecommendation\|\|\{\}/);
@@ -335,6 +349,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const bootstrapState=\[aiBootstrap\.projectLocalWork\|\|'allowed',aiBootstrap\.environmentChanges\|\|'intent-first'\]/);
   assert.match(html, /const agentDiscovery=manifest\.preflight\?\.agentPointers\?\.discovery/);
   assert.match(html, /AI discovery/);
+  assert.match(html, /AI Session/);
+  assert.match(html, /Before env/);
+  assert.match(html, /aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency/);
   assert.match(html, /const reviewTargets=\[\.\.\.new Set/);
   assert.match(html, /\.control-card\.review/);
   assert.match(html, /controlCard\('AI readiness'/);

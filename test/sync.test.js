@@ -51,6 +51,8 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   await assert.doesNotReject(fs.access(path.join(dir, "AIENV.md")));
   const aiEnv = await fs.readFile(path.join(dir, "AIENV.md"), "utf8");
   assert.match(aiEnv, /10-Second AI Flow/);
+  assert.match(aiEnv, /AI session: `aienvmp status --json -> aienvmp context --json`/);
+  assert.match(aiEnv, /If stale: `aienvmp sync`/);
   assert.match(aiEnv, /AI bootstrap:/);
   assert.match(aiEnv, /Next safe command:/);
   assert.match(aiEnv, /Read first: `\.aienvmp\/status\.json`/);

@@ -29,6 +29,8 @@ At the start of an AI coding session, read the current status before environment
 npx aienvmp status --json
 ```
 
+Use `aiSession` from status/context JSON as the shortest startup routine: status, stale refresh, intent, checkpoint, and handoff.
+
 If `artifactFreshness.state` is not `fresh`, or `.aienvmp/status.json` is missing, run:
 
 ```bash

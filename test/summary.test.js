@@ -26,6 +26,10 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
       environmentChanges: "review-first",
       rule: "Review context before shared environment changes; local checks remain non-blocking."
     },
+    aiSession: {
+      start: ["aienvmp status --json", "aienvmp sync"],
+      rule: "Read status first, sync only when stale or missing, and record intent before shared environment changes."
+    },
     artifactFreshness: {
       state: "stale",
       nextCommand: "aienvmp sync"
@@ -100,8 +104,9 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   });
 
   assert.match(markdown, /# aienvmp summary/);
-  assert.match(markdown, /# aienvmp summary\n\n- AI readiness: review\n- AI signals: open intent conflicts; multi-agent environment activity\n- AI bootstrap: allowed \/ review-first \/ advisory\n- AI artifact freshness: stale \/ aienvmp sync\n- AI next: aienvmp sync/);
+  assert.match(markdown, /# aienvmp summary\n\n- AI readiness: review\n- AI signals: open intent conflicts; multi-agent environment activity\n- AI bootstrap: allowed \/ review-first \/ advisory\n- AI session: aienvmp status --json -> aienvmp sync\n- AI artifact freshness: stale \/ aienvmp sync\n- AI next: aienvmp sync/);
   assert.match(markdown, /AI bootstrap: allowed \/ review-first \/ advisory/);
+  assert.match(markdown, /AI session: aienvmp status --json -> aienvmp sync/);
   assert.match(markdown, /AI artifact freshness: stale \/ aienvmp sync/);
   assert.match(markdown, /AI next: aienvmp sync \(Review listed signals/);
   assert.match(markdown, /AI safe local work: read status and summary artifacts/);
@@ -112,6 +117,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /AI readiness: review/);
   assert.match(markdown, /AI read first: \.aienvmp\/status\.json/);
   assert.match(markdown, /AI bootstrap rule: Review context before shared environment changes/);
+  assert.match(markdown, /session rule: Read status first, sync only when stale or missing/);
   assert.match(markdown, /local check: aienvmp doctor --json \(warn-only\)/);
   assert.match(markdown, /CI strict: aienvmp doctor --strict security --json/);
   assert.match(markdown, /release strict: aienvmp doctor --strict all --json/);
@@ -146,6 +152,7 @@ test("summaryWorkspace writes summary.md after sync", async () => {
   assert.match(result.artifact, /\.aienvmp[\\\/]summary\.md$/);
   assert.match(summary, /## AI handoff/);
   assert.match(summary, /AI bootstrap:/);
+  assert.match(summary, /AI session:/);
   assert.match(summary, /AI artifact freshness:/);
   assert.match(summary, /AI collaboration:/);
   assert.match(summary, /AI maintenance loop:/);

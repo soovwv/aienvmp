@@ -73,9 +73,17 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
 function preflightLines(preflight = {}) {
   const quickstart = preflight.quickstart;
   const aiBootstrap = preflight.aiBootstrap || {};
+  const aiSession = preflight.aiSession || {};
   const targets = preflight.intentTargets || [];
   const maintenanceLoop = preflight.maintenanceLoop || {};
   const lines = ["## 10-Second AI Flow", ""];
+  if (aiSession.start?.length) {
+    lines.push(`- AI session: \`${aiSession.start.join(" -> ")}\``);
+    lines.push(`- If stale: \`${aiSession.ifMissingOrStale || "aienvmp sync"}\``);
+    lines.push(`- Before env change: \`${aiSession.beforeEnvironmentChange || "aienvmp intent --actor agent:id --action planned-change --target environment"}\``);
+    lines.push(`- After env change: \`${aiSession.afterEnvironmentChange || "aienvmp checkpoint --actor agent:id --summary what-changed --target environment"}\``);
+    lines.push(`- Rule: ${aiSession.rule || "Read status first, sync only when stale or missing, and record intent before shared environment changes."}`);
+  }
   if (aiBootstrap.nextSafeCommand || aiBootstrap.readFirst) {
     lines.push(`- AI bootstrap: ${aiBootstrap.projectLocalWork || "allowed"} / ${aiBootstrap.environmentChanges || "intent-first"} / ${aiBootstrap.localMode || "advisory"}`);
     lines.push(`- Next safe command: \`${aiBootstrap.nextSafeCommand || preflight.nextSafeCommand || preflight.nextCommand || "aienvmp status --json"}\``);
@@ -583,6 +591,8 @@ const nextAction=reviewRequired?'Review before environment changes':'Proceed wit
 const auditItem=(key,value,hint,klass='')=>\`<div class="audit-item \${klass}"><div class="audit-k">\${key}</div><div class="audit-v">\${value}</div><div class="audit-hint">\${hint}</div></div>\`;
 const controlCard=(label,value,next,klass='')=>\`<div class="control-card \${klass}"><div class="control-label">\${label}</div><div class="control-value">\${esc(value)}</div><div class="control-next">\${esc(next)}</div></div>\`;
 const driftLabel=warnings.length?'detected':'none';
+const aiSession=manifest.preflight?.aiSession||{};
+const aiSessionStart=aiSession.start||['aienvmp status --json','aienvmp context --json'];
 const aiBootstrap=manifest.preflight?.aiBootstrap||{};
 const artifactFreshness=manifest.preflight?.artifactFreshness||{};
 const nextAgent=manifest.preflight?.nextAgent||{};
@@ -614,6 +624,7 @@ const agentDiscovery=manifest.preflight?.agentPointers?.discovery||((agentPointe
 const agentDiscoveryNext=manifest.preflight?.agentPointers?.next||'Run aienvmp onboard to install AI instruction-file pointers.';
 const briefItem=(key,value)=>\`<div class="brief-item"><div class="brief-k">\${key}</div><div class="brief-v">\${esc(value)}</div></div>\`;
 const handoffHtml=\`<table><tr><th>Status</th><td>\${reviewRequired?'review-required':'clear'}</td></tr><tr><th>Trust</th><td><code>\${esc(trustState)}</code></td></tr><tr><th>Read first</th><td><code>\${esc(firstRead)}</code></td></tr><tr><th>Dependency files</th><td>\${handoffFiles.length?'<code>'+esc(handoffFiles.join(', '))+'</code>':'none'}</td></tr><tr><th>Conflicts</th><td>\${conflictTargets.length?'<code>'+esc(conflictTargets.join(', '))+'</code>':'none'}</td></tr><tr><th>Next</th><td>\${esc(handoffNext)}</td></tr></table>\`;
+const aiSessionHtml=\`<table><tr><th>Start</th><td><code>\${esc(aiSessionStart.join(' -> '))}</code></td></tr><tr><th>If stale</th><td><code>\${esc(aiSession.ifMissingOrStale||'aienvmp sync')}</code></td></tr><tr><th>Before env</th><td><code>\${esc(aiSession.beforeEnvironmentChange||'aienvmp intent --actor agent:id --action planned-change --target environment')}</code></td></tr><tr><th>After env</th><td><code>\${esc(aiSession.afterEnvironmentChange||'aienvmp checkpoint --actor agent:id --summary what-changed --target environment')}</code></td></tr><tr><th>Handoff</th><td><code>\${esc(aiSession.handoff||'aienvmp handoff --record --actor agent:id')}</code></td></tr></table><div class="path">\${esc(aiSession.rule||'Read status first, sync only when stale or missing, and record intent before shared environment changes.')}</div>\`;
 document.getElementById('app').innerHTML=\`
 <header>
   <div>
@@ -677,6 +688,8 @@ document.getElementById('app').innerHTML=\`
     \${card('Agent Activity',agentActivity.multiActorTargets?.length?'<span class="pill warn">'+agentActivity.multiActorTargets.length+' shared</span>':'<span class="pill">clear</span>',activityHtml)}
     <div style="height:14px"></div>
     \${card('AI Collaboration',collaboration.status==='clear'?'<span class="pill">clear</span>':'<span class="pill warn">review</span>',collaborationHtml)}
+    <div style="height:14px"></div>
+    \${card('AI Session','<span class="pill">'+esc(aiSession.localWork||'allowed')+'</span>',aiSessionHtml)}
     <div style="height:14px"></div>
     \${card('AI Contract','<span class="pill">'+(contract.stability||'additive')+'</span>',contractHtml)}
     <div style="height:14px"></div>

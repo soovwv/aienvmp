@@ -27,6 +27,7 @@
 - Mirrored `releaseReadiness` in the summary and dashboard so humans see the same batched-release gate before npm publish.
 - Added opt-in Cursor and GitHub Copilot instruction-file pointers while keeping default onboarding focused on Codex, Claude, and Gemini.
 - Made `snippet` reject unknown targets instead of silently writing the default agent pointer.
+- Added `aiSession` to status/context/preflight surfaces so AI agents get one compact startup, stale-refresh, intent, checkpoint, and handoff routine.
 
 ## 0.1.69
 
