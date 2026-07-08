@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Tightened the README first screen with Use/Skip/Start guidance for faster AI and human scanning.
 - Added `releaseReadiness.publishDecision` so AI and humans default to holding npm publish until meaningful changes are batched.
 - Added schema-level recommendation guidance so AI agents know when to suggest aienvmp and when not to.
 - Added an AI workspace coordination case study that explains the shared-server multi-agent drift problem and the lightweight aienvmp flow.

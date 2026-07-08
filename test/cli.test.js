@@ -95,6 +95,9 @@ test("package, README, and CLI help share the AI workspace coordination position
   assert.match(readme.slice(0, 1200), /AI workspace coordination/);
   assert.match(readme.slice(0, 1200), /dependency-free/);
   assert.match(readme.slice(0, 1200), /without heavy locks/);
+  assert.match(readme.slice(0, 1200), /Use: AI agents share environment-affecting work/);
+  assert.match(readme.slice(0, 1200), /Skip: you only need a full compliance SBOM scanner/);
+  assert.match(readme.slice(0, 1200), /Start: run `npx aienvmp onboard`/);
   assert.match(stdout, /AI workspace coordination with a lightweight env map and SBOM/);
 });
 
