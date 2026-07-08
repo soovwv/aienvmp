@@ -225,8 +225,63 @@ test("doctorWorkspace JSON explains advisory exit behavior", async () => {
   assert.equal(json.nextSafeCommand, "aienvmp plan --write");
   assert.equal(json.aiReadiness.level, "review");
   assert.match(json.aiReadiness.next, /Review/);
+  assert.equal(json.followUpPlan.status, "clear");
   assert.deepEqual(json.agentPointers.installed, ["claude"]);
   assert.deepEqual(json.agentPointers.missing, ["codex"]);
+});
+
+test("doctorWorkspace exposes pending follow-up plan", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-doctor-followup-"));
+  await fs.mkdir(path.join(dir, ".aienvmp"), { recursive: true });
+  await writeJson(path.join(dir, ".aienvmp", "manifest.json"), {
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    trust: { state: "observed", verified: false },
+    workspace: { path: dir, name: path.basename(dir) },
+    runtimes: {},
+    packageManagers: {},
+    containers: {},
+    projectHints: {},
+    dependencySnapshot: { summary: { packages: 1 } },
+    security: { enabled: false, summary: { total: 0 } }
+  });
+  await fs.writeFile(path.join(dir, ".aienvmp", "timeline.jsonl"), `${JSON.stringify({
+    at: "2026-07-08T00:00:00.000Z",
+    actor: "agent:codex",
+    type: "agent-record",
+    target: "dependency",
+    summary: "dependency-change",
+    followUp: {
+      required: true,
+      target: "dependency",
+      commands: ["aienvmp sync"]
+    }
+  })}\n`, "utf8");
+
+  const originalLog = console.log;
+  let jsonOutput = "";
+  console.log = (value) => { jsonOutput = value; };
+  try {
+    await doctorWorkspace({ dir, json: true });
+  } finally {
+    console.log = originalLog;
+  }
+
+  const json = JSON.parse(jsonOutput);
+  assert.equal(json.followUpPlan.status, "pending");
+  assert.equal(json.followUpPlan.nextCommand, "aienvmp sync");
+  assert.deepEqual(json.followUpPlan.targets, ["dependency"]);
+  assert.equal(json.nextSafeCommand, "aienvmp sync");
+
+  const textOutput = [];
+  console.log = (value) => { textOutput.push(value); };
+  try {
+    await doctorWorkspace({ dir });
+  } finally {
+    console.log = originalLog;
+  }
+
+  assert.match(textOutput.join("\n"), /follow-up: aienvmp sync targets: dependency/);
 });
 
 test("doctorWorkspace text shows advisory AI discovery action without blocking warnings", async () => {

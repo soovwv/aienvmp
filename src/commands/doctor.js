@@ -20,7 +20,9 @@ export async function doctorWorkspace(args) {
   const actions = recommendedActions(manifest, { warnings, intents });
   const preflight = buildPreflight(manifest, warnings, intents, timeline);
   const strict = strictResult(warnings, args);
-  const nextSafeCommand = doctorNextSafeCommand(actions, warnings);
+  const nextSafeCommand = preflight.followUpPlan?.status === "pending"
+    ? preflight.followUpPlan.nextCommand
+    : doctorNextSafeCommand(actions, warnings);
   const exitBehavior = {
     mode: strict.enabled ? "strict" : "advisory",
     willSetFailureExitCode: strict.fail,
@@ -37,6 +39,7 @@ export async function doctorWorkspace(args) {
       policy,
       aiReadiness: preflight.aiReadiness,
       agentPointers: preflight.agentPointers,
+      followUpPlan: preflight.followUpPlan,
       openIntentCount: intents.length,
       nextSafeCommand,
       warnings,
@@ -51,6 +54,7 @@ export async function doctorWorkspace(args) {
   }
   if (!warnings.length) {
     console.log("doctor: no blocking environment warnings detected");
+    printFollowUpPlan(preflight.followUpPlan);
     const advisoryActions = actions.filter((item) => item.id !== "continue-project-local");
     if (advisoryActions.length) printRecommendedActions(advisoryActions);
     return;
@@ -58,11 +62,18 @@ export async function doctorWorkspace(args) {
   for (const warning of warnings) {
     console.log(`[${warning.code}] ${warning.message}`);
   }
+  printFollowUpPlan(preflight.followUpPlan);
   printRecommendedActions(actions);
   console.log(`doctor: warnings are non-blocking by default; pass --ci or --strict ${strict.availableScopes.join("|")} to fail automation.`);
   if (strict.fail) {
     process.exitCode = 1;
   }
+}
+
+function printFollowUpPlan(followUpPlan = {}) {
+  if (followUpPlan.status !== "pending") return;
+  const targets = followUpPlan.targets?.length ? ` targets: ${followUpPlan.targets.join(", ")}` : "";
+  console.log(`follow-up: ${followUpPlan.nextCommand || "aienvmp status --json"}${targets}`);
 }
 
 function printRecommendedActions(actions = []) {
