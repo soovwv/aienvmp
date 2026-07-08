@@ -88,6 +88,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `agentPointers.discovery` tells AI whether Codex, Claude, and Gemini files can discover `aienvmp`.
 - `agentDiscovery.sessionStart` documents the startup rule for schema-only AI/CI consumers.
 - `environmentChangeProtocol` gives one before/after-change contract for runtimes, dependencies, package managers, Docker, and global tools.
+- `followUpPlan` gives AI one next command when previous environment work still needs sync, status, or handoff.
 - `sbomStrategy`, `scannerGuidance`, and `aiReviewPlan` keep SBOM review light by default and request optional read-only scanners before security-sensitive decisions.
 - `collaboration`, `coordination`, and `agentActivity` expose multi-agent conflicts and shared targets.
 - `releaseGate` and `releaseReadiness` expose the `0.2.0` batched stable-contract gate.

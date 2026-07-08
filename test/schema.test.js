@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs/promises";
 import { schemaWorkspace } from "../src/commands/schema.js";
 import { schemaContract } from "../src/contract.js";
 
@@ -166,6 +167,14 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.compatibility.strictPlanRule, /narrowest explicit strict scope/);
   assert.match(schema.compatibility.releaseGateRule, /manually batched/);
   assert.match(schema.compatibility.releaseReadinessRule, /0\.2\.0 is ready/);
+});
+
+test("README documents the compact follow-up plan contract", async () => {
+  const readme = await fs.readFile("README.md", "utf8");
+
+  assert.match(readme, /followUpPlan/);
+  assert.match(readme, /sync, status, or handoff/);
+  assert.ok(readme.split(/\r?\n/).length <= 170);
 });
 
 test("schemaWorkspace prints JSON without requiring a workspace", async () => {

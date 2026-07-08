@@ -23,6 +23,8 @@ test("packaged aienvmp skill points AI agents to current startup contracts", asy
   assert.match(skill, /artifactFreshness\.state/);
   assert.match(skill, /agentPointers\.discovery/);
   assert.match(skill, /discovery:/);
+  assert.match(skill, /followUpPlan/);
+  assert.match(skill, /nextCommand/);
   assert.match(skill, /npx aienvmp sync/);
   assert.match(skill, /npx aienvmp demo/);
   assert.match(skill, /review-before-env-change/);
