@@ -13,10 +13,11 @@ test("snippet writes only an aienvmp marker block when explicitly requested", as
   const agents = await fs.readFile(path.join(dir, "AGENTS.md"), "utf8");
   assert.match(agents, /<!-- aienvmp:begin -->/);
   assert.match(agents, /Session start contract/);
+  assert.match(agents, /Read `\.aienvmp\/status\.json` before environment-affecting work/);
   assert.match(agents, /aienvmp status --json/);
-  assert.match(agents, /aienvmp sync/);
+  assert.match(agents, /aienvmp sync` only when refresh is required/);
   assert.match(agents, /Continue project-local code work/);
-  assert.match(agents, /aienvmp status --write/);
+  assert.match(agents, /Run `aienvmp status --write` only when status artifacts are missing/);
   assert.match(agents, /\.aienvmp\/summary\.md/);
   assert.match(agents, /aienvmp context --json/);
   assert.match(agents, /planned-change --target dependency/);

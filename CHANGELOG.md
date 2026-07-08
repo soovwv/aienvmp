@@ -31,6 +31,8 @@
 - Updated compact `status` text to show the `aiSession` startup path while keeping the default output at five lines.
 - Clarified the project positioning around AI workspace coordination, optional external SBOM/security tools, dashboard essentials, and case-study driven adoption.
 - Marked the dashboard's 10-second review cards as essential in code and tests so new dashboard detail does not hide the core AI coordination surface.
+- Split the dashboard essential-card contract into a small module with direct priority tests to keep the growing dashboard renderer easier to maintain.
+- Tightened agent pointer snippets around read-first behavior so AI agents read existing status artifacts before running refresh commands.
 
 ## 0.1.69
 

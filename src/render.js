@@ -1,20 +1,11 @@
 import { schemaContract } from "./contract.js";
+import { dashboardEssentialCards } from "./dashboard.js";
 
 const markerBegin = "<!-- aienvmp:begin -->";
 const markerEnd = "<!-- aienvmp:end -->";
-export const dashboardEssentialCards = Object.freeze([
-  "AI Session",
-  "Environment Health",
-  "AI Collaboration",
-  "Light SBOM",
-  "Agent Pointers",
-  "Agent Intents",
-  "Environment Ledger",
-  "Enforcement Mode",
-  "Release Readiness"
-]);
 
 export { markerBegin, markerEnd };
+export { dashboardEssentialCards, dashboardCardPriority } from "./dashboard.js";
 
 export function renderAIEnv(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const lines = [];
@@ -172,16 +163,17 @@ ${label} should use \`aienvmp\` as the workspace environment source of truth.
 Session start contract:
 
 1. If this file is loaded, treat the aienvmp block as the live env pointer.
-2. Run \`aienvmp status --json\` before environment-affecting work.
-3. If \`.aienvmp/status.json\` is missing or stale, run \`aienvmp sync\`.
+2. Read \`.aienvmp/status.json\` before environment-affecting work when it exists.
+3. If \`.aienvmp/status.json\` is missing or stale, run \`aienvmp status --json\`, then \`aienvmp sync\` only when refresh is required.
 4. Continue project-local code work unless status/context requires environment review.
 
 Fast read order:
 
-1. Run \`aienvmp status --write\`.
+1. Read \`.aienvmp/status.json\`.
 2. Read \`.aienvmp/summary.md\` for the short handoff.
 3. Run \`aienvmp context --json\` for details.
-4. Read \`AIENV.md\` when Markdown context is easier.
+4. Run \`aienvmp status --write\` only when status artifacts are missing.
+5. Read \`AIENV.md\` when Markdown context is easier.
 
 Before changing runtimes, package managers, Docker settings, global packages, dependencies, lockfiles, or environment policy:
 
