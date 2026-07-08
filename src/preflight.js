@@ -32,6 +32,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
   });
   const nextCommand = maintenanceLoop.nextCommand || topAction?.command || decision.nextCommand;
   const aiBootstrap = aiBootstrapSummary({ state, decision, nextCommand, maintenanceLoop, topAction });
+  const artifactFreshness = artifactFreshnessSummary(manifest, warnings);
   return {
     schemaVersion: 1,
     contract: preflightContract(),
@@ -72,6 +73,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
       environmentChanges: decision.canChangeEnvironmentWithoutReview ? "allowed" : "intent-and-review-first"
     },
     aiBootstrap,
+    artifactFreshness,
     quickstart: agentQuickstart(decision.reviewRequired),
     nextAgent: nextAgentHint(state, dependencyReadSet, dependencyChangeProtocol),
     coordination,
@@ -107,6 +109,28 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     topAction,
     nextCommand,
     nextSafeCommand: nextCommand
+  };
+}
+
+function artifactFreshnessSummary(manifest = {}, warnings = [], now = new Date()) {
+  const generatedAt = manifest.generatedAt || "";
+  const generatedMs = generatedAt ? new Date(generatedAt).getTime() : NaN;
+  const ageHours = Number.isFinite(generatedMs)
+    ? Math.max(0, Math.round(((now.getTime() - generatedMs) / 36e5) * 10) / 10)
+    : null;
+  const stale = warnings.some((warning) => warning.code === "manifest-stale");
+  const state = !generatedAt ? "unknown" : stale ? "stale" : "fresh";
+  return {
+    state,
+    generatedAt,
+    ageHours,
+    staleAfterHours: 24,
+    statusArtifact: ".aienvmp/status.json",
+    refreshCommand: "aienvmp sync",
+    nextCommand: state === "fresh" ? "aienvmp status --json" : "aienvmp sync",
+    rule: state === "fresh"
+      ? "Use the current status artifact before environment-affecting work."
+      : "Refresh artifacts before environment-affecting work; local code-only work can continue."
   };
 }
 

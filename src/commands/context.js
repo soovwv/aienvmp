@@ -28,6 +28,7 @@ export async function contextWorkspace(args) {
       status: warnings.length ? "review-required" : "clear",
       nextSafeCommand,
       aiBootstrap: preflight.aiBootstrap,
+      artifactFreshness: preflight.artifactFreshness,
       preflight,
       aiReadiness: preflight.aiReadiness,
       collaboration: preflight.collaboration,

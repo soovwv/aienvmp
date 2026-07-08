@@ -48,6 +48,10 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.aiBootstrap.localMode, "advisory");
   assert.equal(status.aiBootstrap.projectLocalWork, "allowed");
   assert.equal(status.aiBootstrap.environmentChanges, "intent-first");
+  assert.equal(status.artifactFreshness.state, "unknown");
+  assert.equal(status.artifactFreshness.nextCommand, "aienvmp sync");
+  assert.equal(status.artifactFreshness.statusArtifact, ".aienvmp/status.json");
+  assert.equal(status.artifactFreshness.staleAfterHours, 24);
   assert.equal(status.aiReadiness.level, "ready");
   assert.equal(status.aiReadiness.requiresHumanReview, false);
   assert.equal(status.aiReadiness.environmentChanges, "allowed");

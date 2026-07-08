@@ -98,6 +98,10 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   assert.equal(json.nextSafeCommand, "aienvmp sync");
   assert.equal(json.aiBootstrap.nextSafeCommand, "aienvmp sync");
   assert.equal(json.aiBootstrap.localMode, "advisory");
+  assert.equal(json.artifactFreshness.state, "fresh");
+  assert.equal(json.artifactFreshness.nextCommand, "aienvmp status --json");
+  assert.equal(json.artifactFreshness.refreshCommand, "aienvmp sync");
+  assert.equal(json.preflight.artifactFreshness.state, "fresh");
   assert.equal(json.preflight.state, "review-required");
   assert.equal(json.preflight.contract.name, "aienvmp-preflight");
   assert.ok(json.preflight.contract.requiredFields.includes("decision"));

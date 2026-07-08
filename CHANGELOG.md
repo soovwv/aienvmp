@@ -15,6 +15,7 @@
 - Added `npm run release:check` and wired the manual Release workflow to the same local release gate.
 - Added `schema --json` release gate metadata so AI/CI consumers can see the batched manual publish rule.
 - Added a session-start contract to agent pointers and schema metadata so Codex, Claude, and Gemini know how to enter the env map without extra prompts.
+- Added `artifactFreshness` to AI preflight surfaces so agents can decide when to refresh stale env artifacts with `aienvmp sync`.
 
 ## 0.1.69
 
