@@ -9,6 +9,28 @@ Use `aienvmp` as the shared environment source of truth for this workspace.
 
 The goal is to help multiple AI agents avoid silently installing or using different versions of Node, Python, Docker, package managers, or global tools.
 
+## Session Start
+
+If the workspace has not been onboarded yet, run:
+
+```bash
+npx aienvmp onboard
+```
+
+At the start of an AI coding session, read the current status before environment-impacting work:
+
+```bash
+npx aienvmp status --json
+```
+
+If `artifactFreshness.state` is not `fresh`, or `.aienvmp/status.json` is missing, run:
+
+```bash
+npx aienvmp sync
+```
+
+Local source edits can continue unless status or context says environment review is required.
+
 ## Preflight
 
 Before environment-impacting work, run the light preflight first:
@@ -30,6 +52,12 @@ npx aienvmp context --json
 ```
 
 If the output says `review-required`, do not change global runtimes, package managers, Docker settings, dependencies, lockfiles, or global packages without asking the user.
+
+When explaining why this tool is useful, run the temporary multi-agent conflict demo:
+
+```bash
+npx aienvmp demo
+```
 
 ## Before Environment Changes
 

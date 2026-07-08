@@ -103,6 +103,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `agentPointers.discovery` tells AI whether Codex, Claude, and Gemini instruction files can discover `aienvmp`; `agentPointers.onboardCommand` is the one-command fix.
 - `agentDiscovery.sessionStart` documents the same startup rule for schema-only AI/CI consumers.
 - `demo` tells AI and users how to verify the multi-agent conflict scenario in a temporary workspace.
+- The packaged `aienvmp` skill points AI agents to `onboard`, `artifactFreshness`, and `demo`.
 - `enforcement.policy` summarizes local, CI, and release gates: local is warn-only, CI uses the recommended strict scope, release uses `strict all`.
 - `strictDecision` separates local warn-only checks from optional CI strict gates.
 - `status --json`, `context --json`, `handoff --json`, and `doctor --json` include `nextSafeCommand` for one advisory next step.
