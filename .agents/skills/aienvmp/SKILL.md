@@ -5,9 +5,11 @@ description: Use before changing runtimes, package managers, Docker settings, gl
 
 # aienvmp
 
-Use `aienvmp` as the shared environment source of truth for this workspace.
+Use `aienvmp` as the shared AI workspace coordination layer and environment source of truth for this workspace.
 
-The goal is to help multiple AI agents avoid silently installing or using different versions of Node, Python, Docker, package managers, or global tools.
+The goal is to help multiple AI agents avoid silently installing or using different versions of Node, Python, Docker, package managers, dependencies, lockfiles, or global tools.
+
+`aienvmp` is advisory by default. It should reveal drift, intent conflicts, light SBOM risk, and handoff gaps without heavy locks or surprise failures.
 
 ## Session Start
 
@@ -30,6 +32,8 @@ npx aienvmp status --json
 ```
 
 Use `aiSession` from status/context JSON as the shortest startup routine: status, stale refresh, intent, checkpoint, and handoff.
+
+Use `agentPointers.discovery` or the compact `status` line containing `discovery:` to decide whether Codex, Claude, Gemini, or optional agent pointers can find the env map.
 
 If `artifactFreshness.state` is not `fresh`, or `.aienvmp/status.json` is missing, run:
 
@@ -66,6 +70,8 @@ When explaining why this tool is useful, run the temporary multi-agent conflict 
 ```bash
 npx aienvmp demo
 ```
+
+The demo should show a `review-before-env-change` collaboration state when multiple AI agents target the same dependency or environment surface.
 
 ## Before Environment Changes
 
