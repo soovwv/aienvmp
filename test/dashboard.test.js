@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { dashWorkspace } from "../src/commands/dash.js";
 import { writeJson } from "../src/fsutil.js";
-import { dashboardCardPriority, dashboardEssentialCards, renderDashboard } from "../src/render.js";
+import { dashboardCardPriority, dashboardEssentialCards, dashboardPriorityClientScript, renderDashboard } from "../src/render.js";
 
 test("renderDashboard includes the audit summary surface", () => {
   const html = renderDashboard({
@@ -365,6 +365,8 @@ test("renderDashboard includes the audit summary surface", () => {
   ]);
   assert.equal(dashboardCardPriority("AI Session"), "essential");
   assert.equal(dashboardCardPriority("Runtimes"), "support");
+  assert.match(dashboardPriorityClientScript(), /const essentialCards=\["AI Session"/);
+  assert.match(dashboardPriorityClientScript(), /const cardPriority=title=>essentialCards\.includes\(title\)\?'essential':'support'/);
   for (const title of dashboardEssentialCards) {
     assert.match(html, new RegExp(`card\\('${title}'`));
   }

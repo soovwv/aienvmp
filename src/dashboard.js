@@ -13,3 +13,10 @@ export const dashboardEssentialCards = Object.freeze([
 export function dashboardCardPriority(title) {
   return dashboardEssentialCards.includes(title) ? "essential" : "support";
 }
+
+export function dashboardPriorityClientScript() {
+  return [
+    `const essentialCards=${JSON.stringify(dashboardEssentialCards)};`,
+    "const cardPriority=title=>essentialCards.includes(title)?'essential':'support';"
+  ].join("\n");
+}
