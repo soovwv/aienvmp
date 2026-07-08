@@ -38,6 +38,7 @@ export function renderSummary(status = {}, manifest = {}) {
   const coordination = status.coordination || {};
   const activity = status.agentActivity || {};
   const collaboration = status.collaboration || {};
+  const maintenanceLoop = status.maintenanceLoop || {};
   const workspace = manifest.workspace?.root || manifest.workspace?.name || ".";
   const next = status.nextCommand || status.decision?.nextCommand || "aienvmp status";
   const readFirst = status.nextAgent?.readFirst || ".aienvmp/status.json";
@@ -66,6 +67,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- AI signals: ${aiSignals.length ? aiSignals.join("; ") : "none"}`,
     `- AI next: ${aiNext}`,
     `- AI collaboration: ${collaboration.status || "unknown"} / ${toList(collaboration.activeTargets).join(", ") || "none"} / ${collaboration.nextCommand || "aienvmp status --json"}`,
+    `- AI maintenance loop: ${maintenanceLoop.nextCommand || next}`,
     `- AI safe local work: ${toList(aiReadiness.safeProjectLocalActions)[0] || "read artifacts and avoid environment changes until reviewed"}`,
     `- AI read first: ${readFirst}, then ${detail}`,
     `- mode: advisory by default; strict is opt-in with ${strict}`,
@@ -84,6 +86,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- collaboration rule: ${collaboration.rule || "Record intent before shared environment changes."}`,
     `- coordination: ${coordination.next || "No open environment intents."}`,
     `- recent agent activity: ${activity.next || "No environment records need coordination."}`,
+    `- maintenance rule: ${maintenanceLoop.rule || "Refresh, inspect, record intent, checkpoint, and hand off without blocking local operation."}`,
     `- conflict targets: ${conflictTargets.length ? conflictTargets.join(", ") : "none"}`,
     `- multi-actor targets: ${multiActorTargets.length ? multiActorTargets.join(", ") : "none"}`,
     "",

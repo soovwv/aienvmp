@@ -23,6 +23,10 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
       nextCommand: "aienvmp handoff --record --actor agent:id",
       rule: "Do not install shared tools until collaboration signals are reviewed."
     },
+    maintenanceLoop: {
+      nextCommand: "aienvmp handoff --record --actor agent:id",
+      rule: "Keep local operation advisory and lightweight; use strict checks only when CI or the user explicitly asks."
+    },
     nextCommand: "aienvmp handoff",
     quickstart: { detailCommand: "aienvmp context --json" },
     nextAgent: { readFirst: ".aienvmp/status.json" },
@@ -63,12 +67,14 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /# aienvmp summary\n\n- AI readiness: review\n- AI signals: open intent conflicts; multi-agent environment activity\n- AI next: Review listed signals/);
   assert.match(markdown, /AI safe local work: read status and summary artifacts/);
   assert.match(markdown, /AI collaboration: review-before-env-change \/ dependency, node \/ aienvmp handoff --record --actor agent:id/);
+  assert.match(markdown, /AI maintenance loop: aienvmp handoff --record --actor agent:id/);
   assert.match(markdown, /state: review-required/);
   assert.match(markdown, /light SBOM risk: medium \(42\)/);
   assert.match(markdown, /AI readiness: review/);
   assert.match(markdown, /AI read first: \.aienvmp\/status\.json/);
   assert.match(markdown, /CI strict: aienvmp doctor --strict security --json/);
   assert.match(markdown, /collaboration rule: Do not install shared tools/);
+  assert.match(markdown, /maintenance rule: Keep local operation advisory and lightweight/);
   assert.match(markdown, /conflict targets: dependency/);
   assert.match(markdown, /multi-actor targets: node/);
   assert.match(markdown, /AI dependency review: review \/ scanner-summary \/ aienvmp intent --actor agent:id --action dependency-review --target dependency/);
@@ -92,6 +98,7 @@ test("summaryWorkspace writes summary.md after sync", async () => {
   assert.match(result.artifact, /\.aienvmp[\\\/]summary\.md$/);
   assert.match(summary, /## AI handoff/);
   assert.match(summary, /AI collaboration:/);
+  assert.match(summary, /AI maintenance loop:/);
   assert.match(summary, /## SBOM/);
   assert.match(summary, /## Dependency changes/);
   assert.match(summary, /## Agent pointers/);

@@ -108,6 +108,11 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   assert.equal(json.collaboration.status, "review-before-env-change");
   assert.deepEqual(json.collaboration.activeTargets, ["dependency"]);
   assert.equal(json.collaboration.nextCommand, "aienvmp sync");
+  assert.equal(json.maintenanceLoop.mode, "advisory");
+  assert.equal(json.maintenanceLoop.nextCommand, "aienvmp sync");
+  assert.equal(json.maintenanceLoop.cycle[5].command, "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency");
+  assert.match(json.maintenanceLoop.triggers.join(" "), /AI coding session/);
+  assert.match(json.maintenanceLoop.rule, /lightweight/);
   assert.match(json.collaboration.reviewSignals.join(" "), /pending post-change follow-up/);
   assert.equal(json.preflight.quickstart.beforeEnvironmentChange, "aienvmp intent --actor agent:id --action planned-change --target <runtime|package-manager|docker|dependency>");
   assert.equal(json.preflight.intentTargets[0].target, "node");

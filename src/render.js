@@ -71,6 +71,7 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
 function preflightLines(preflight = {}) {
   const quickstart = preflight.quickstart;
   const targets = preflight.intentTargets || [];
+  const maintenanceLoop = preflight.maintenanceLoop || {};
   const lines = ["## 10-Second AI Flow", ""];
   if (quickstart) {
     lines.push(`- Read first: \`${quickstart.readFirst}\``);
@@ -81,6 +82,9 @@ function preflightLines(preflight = {}) {
     lines.push(`- Rule: ${quickstart.rule}`);
   } else {
     lines.push("- Run `aienvmp status --write`, then `aienvmp context --json` before environment changes.");
+  }
+  if (maintenanceLoop.nextCommand) {
+    lines.push(`- Maintenance loop: \`${maintenanceLoop.nextCommand}\` - ${maintenanceLoop.rule || "refresh, inspect, record intent, checkpoint, and hand off"}`);
   }
   lines.push("", "## Recommended Intent Targets", "");
   if (targets.length) {

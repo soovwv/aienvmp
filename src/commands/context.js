@@ -28,6 +28,7 @@ export async function contextWorkspace(args) {
       preflight,
       aiReadiness: preflight.aiReadiness,
       collaboration: preflight.collaboration,
+      maintenanceLoop: preflight.maintenanceLoop,
       coordination: preflight.coordination,
       agentPointers: preflight.agentPointers,
       sbomRisk: preflight.sbomRisk,

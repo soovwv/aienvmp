@@ -20,6 +20,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
   const agentPointers = agentPointerSummary(manifest.agentFiles);
   const aiReadiness = aiReadinessSummary({ state, decision, coordination, agentActivity, agentPointers, sbomRisk, followUps });
   const collaboration = collaborationSummary({ state, decision, coordination, agentActivity, followUps, aiReadiness });
+  const maintenanceLoop = maintenanceLoopSummary({ state, decision, topAction, followUps, sbomRisk, dependencyReadSet, collaboration });
   return {
     schemaVersion: 1,
     contract: preflightContract(),
@@ -63,6 +64,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     coordination,
     agentActivity,
     collaboration,
+    maintenanceLoop,
     agentPointers,
     aiReadiness,
     sbomRisk,
@@ -90,7 +92,49 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
       recordIntent: intentTargets[0]?.command || "aienvmp intent --actor agent:id --action planned-change"
     },
     topAction,
-    nextCommand: topAction?.command || decision.nextCommand
+    nextCommand: maintenanceLoop.nextCommand || topAction?.command || decision.nextCommand
+  };
+}
+
+function maintenanceLoopSummary({ state, decision, topAction, followUps, sbomRisk, dependencyReadSet, collaboration }) {
+  const followUpCommand = firstFollowUpCommand(followUps);
+  const dependencyAware = dependencyReadSet.length > 0;
+  const securityReview = ["urgent", "high", "medium"].includes(sbomRisk?.level || "");
+  const nextCommand = followUpCommand
+    || collaboration?.nextCommand
+    || topAction?.command
+    || decision?.nextCommand
+    || "aienvmp status --json";
+  const triggers = [
+    "start of an AI coding session",
+    "before runtime, dependency, package manager, Docker, or global tool changes",
+    "after accepted environment changes",
+    "before handing work to another AI or human"
+  ];
+  if (securityReview) triggers.push("before dependency or release decisions when SBOM risk is not clear");
+  return {
+    mode: "advisory",
+    localImpact: "read-only until an AI or human intentionally records intent, checkpoint, or handoff",
+    state,
+    nextCommand,
+    triggers,
+    readOrder: [
+      ".aienvmp/status.json",
+      ".aienvmp/summary.md",
+      "aienvmp context --json",
+      "AIENV.md"
+    ],
+    cycle: [
+      { step: "refresh", command: "aienvmp sync", when: "workspace env map may be stale" },
+      { step: "decide", command: "aienvmp status --json", when: "first AI read or quick gate" },
+      { step: "inspect", command: "aienvmp context --json", when: "status is review-required or details are needed" },
+      { step: "plan", command: "aienvmp plan --write", when: "warnings, SBOM risk, or multi-agent activity need a read-only plan" },
+      { step: "intent", command: dependencyAware ? "aienvmp intent --actor agent:id --action planned-change --target dependency" : "aienvmp intent --actor agent:id --action planned-change --target environment", when: "before environment-affecting changes" },
+      { step: "checkpoint", command: dependencyAware ? "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency" : "aienvmp checkpoint --actor agent:id --summary what-changed --target environment", when: "after accepted environment-affecting changes" },
+      { step: "handoff", command: "aienvmp handoff --record --actor agent:id", when: "before another AI continues environment work" }
+    ],
+    sbomCommand: securityReview ? "aienvmp sync --security" : "aienvmp sbom --json",
+    rule: "Keep local operation advisory and lightweight; use strict checks only when CI or the user explicitly asks."
   };
 }
 

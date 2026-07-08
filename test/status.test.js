@@ -35,6 +35,7 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.contract.stability, "additive");
   assert.ok(status.contract.aiEntryFields.includes("nextAgent"));
   assert.ok(status.contract.aiEntryFields.includes("collaboration"));
+  assert.ok(status.contract.aiEntryFields.includes("maintenanceLoop"));
   assert.ok(status.contract.aiEntryFields.includes("dependencyReadSet"));
   assert.equal(status.counts.runtimes, 1);
   assert.equal(status.counts.dependencies, 2);
@@ -57,6 +58,13 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.nextAgent.handoffCommand, "aienvmp handoff --record --actor agent:id");
   assert.deepEqual(status.nextAgent.dependencyFiles, ["package.json", "package-lock.json"]);
   assert.match(status.nextAgent.dependencyProtocol, /record dependency intent/);
+  assert.equal(status.maintenanceLoop.mode, "advisory");
+  assert.match(status.maintenanceLoop.localImpact, /read-only/);
+  assert.equal(status.maintenanceLoop.readOrder[0], ".aienvmp/status.json");
+  assert.equal(status.maintenanceLoop.cycle[0].command, "aienvmp sync");
+  assert.equal(status.maintenanceLoop.cycle[4].command, "aienvmp intent --actor agent:id --action planned-change --target dependency");
+  assert.equal(status.maintenanceLoop.sbomCommand, "aienvmp sbom --json");
+  assert.match(status.maintenanceLoop.rule, /strict checks only/);
   assert.equal(status.intentTargets[0].target, "dependency");
   assert.equal(status.dependencyReadSet[0].manifest, "package.json");
   assert.deepEqual(status.dependencyReadSet[0].lockfiles, ["package-lock.json"]);
@@ -75,7 +83,7 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.readOrder[0], ".aienvmp/status.json");
   assert.equal(status.readOrder[1], ".aienvmp/summary.md");
   assert.equal(status.commands.context, "aienvmp context --json");
-  assert.equal(status.nextCommand, "aienvmp intent --actor agent:id --action planned-change");
+  assert.equal(status.nextCommand, "aienvmp intent --actor agent:id --action planned-change --target environment");
 });
 
 test("buildStatus exposes pending follow-ups from timeline", () => {
@@ -129,6 +137,7 @@ test("buildStatus exposes multi-agent activity since last handoff", () => {
   assert.deepEqual(status.collaboration.activeTargets, ["dependency"]);
   assert.match(status.collaboration.reviewSignals.join(" "), /multi-agent/);
   assert.equal(status.collaboration.nextCommand, "aienvmp handoff --record --actor agent:id");
+  assert.equal(status.maintenanceLoop.nextCommand, "aienvmp handoff --record --actor agent:id");
 });
 
 test("buildStatus exposes agent pointer discovery hints", () => {
@@ -211,6 +220,8 @@ test("statusWorkspace JSON reports review-required and strict suggestion", async
   assert.equal(json.counts.warnings, 1);
   assert.equal(json.counts.dependencies, 1);
   assert.equal(json.agentUse.environmentChanges, "intent-and-review-first");
+  assert.equal(json.maintenanceLoop.state, "review-required");
+  assert.equal(json.maintenanceLoop.readOrder[2], "aienvmp context --json");
   assert.match(json.quickstart.rule, /Review warnings/);
   assert.match(json.nextAgent.rule, /review warnings/i);
   assert.equal(json.intentTargets[0].target, "node");

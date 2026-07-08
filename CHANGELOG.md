@@ -4,6 +4,8 @@
 
 - Added a dashboard `First read` strip with status, first file, review targets, and local operation mode.
 - Kept the detailed dashboard cards below the top decision area so humans get a faster scan without losing AI context.
+- Added `maintenanceLoop` to the AI preflight contract so agents can repeat refresh, decide, inspect, plan, intent, checkpoint, and handoff steps.
+- Surfaced the maintenance loop in `context --json`, `summary.md`, `AIENV.md`, schema metadata, and regression tests.
 
 ## 0.1.66
 
