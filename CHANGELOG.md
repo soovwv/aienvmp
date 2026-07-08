@@ -34,6 +34,7 @@
 - Split the dashboard essential-card contract into a small module with direct priority tests to keep the growing dashboard renderer easier to maintain.
 - Tightened agent pointer snippets around read-first behavior so AI agents read existing status artifacts before running refresh commands.
 - Added agent discovery state to the compact five-line `status` output so humans and AI can see when `onboard` is still needed without opening JSON.
+- Made text `doctor` output show non-blocking AI discovery recommendations even when there are no blocking environment warnings.
 
 ## 0.1.69
 

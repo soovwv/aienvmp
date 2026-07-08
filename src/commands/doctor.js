@@ -51,18 +51,25 @@ export async function doctorWorkspace(args) {
   }
   if (!warnings.length) {
     console.log("doctor: no blocking environment warnings detected");
+    const advisoryActions = actions.filter((item) => item.id !== "continue-project-local");
+    if (advisoryActions.length) printRecommendedActions(advisoryActions);
     return;
   }
   for (const warning of warnings) {
     console.log(`[${warning.code}] ${warning.message}`);
   }
-  console.log("recommended actions:");
-  for (const item of actions) {
-    console.log(`- [${item.priority}] ${item.summary}${item.command ? ` (${item.command})` : ""}`);
-  }
+  printRecommendedActions(actions);
   console.log(`doctor: warnings are non-blocking by default; pass --ci or --strict ${strict.availableScopes.join("|")} to fail automation.`);
   if (strict.fail) {
     process.exitCode = 1;
+  }
+}
+
+function printRecommendedActions(actions = []) {
+  if (!actions.length) return;
+  console.log("recommended actions:");
+  for (const item of actions) {
+    console.log(`- [${item.priority}] ${item.summary}${item.command ? ` (${item.command})` : ""}`);
   }
 }
 

@@ -228,3 +228,39 @@ test("doctorWorkspace JSON explains advisory exit behavior", async () => {
   assert.deepEqual(json.agentPointers.installed, ["claude"]);
   assert.deepEqual(json.agentPointers.missing, ["codex"]);
 });
+
+test("doctorWorkspace text shows advisory AI discovery action without blocking warnings", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-doctor-discovery-"));
+  await fs.mkdir(path.join(dir, ".aienvmp"), { recursive: true });
+  await writeJson(path.join(dir, ".aienvmp", "manifest.json"), {
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    trust: { state: "observed", verified: false },
+    workspace: { path: dir, name: path.basename(dir) },
+    runtimes: {},
+    packageManagers: {},
+    containers: {},
+    projectHints: {},
+    agentFiles: {
+      agents: { path: "AGENTS.md", exists: false, hasAienvmpPointer: false, installCommand: "aienvmp snippet codex --write", role: "codex" },
+      claude: { path: "CLAUDE.md", exists: true, hasAienvmpPointer: false, installCommand: "aienvmp snippet claude --write", role: "claude" }
+    },
+    dependencySnapshot: { summary: { packages: 0 } },
+    security: { enabled: false, summary: { total: 0 } }
+  });
+
+  const originalLog = console.log;
+  const output = [];
+  console.log = (value) => { output.push(value); };
+  try {
+    await doctorWorkspace({ dir });
+  } finally {
+    console.log = originalLog;
+  }
+
+  const text = output.join("\n");
+  assert.match(text, /doctor: no blocking environment warnings detected/);
+  assert.match(text, /recommended actions:/);
+  assert.match(text, /future AI agents discover the env map/);
+  assert.match(text, /aienvmp snippet codex --write/);
+});
