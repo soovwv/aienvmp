@@ -571,7 +571,9 @@ const contractHtml=contract.name?\`<table><tr><th>Name</th><td><code>\${esc(cont
 const intentTargets=manifest.preflight?.intentTargets||[];
 const intentTargetsHtml=intentTargets.length?'<div class="timeline">'+intentTargets.slice(0,5).map(t=>\`<div class="event"><time>\${esc(t.target)}</time><div><b>\${esc(t.target)}</b> \${esc(t.reason||'Record this target before environment changes.')}\${t.command?\`<div class="path">\${esc(t.command)}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No specific target recommendation. Use <code>aienvmp intent --actor agent:id --action planned-change</code>.</div>';
 const followUps=manifest.preflight?.followUps||[];
-const followUpsHtml=followUps.length?'<div class="timeline">'+followUps.slice(0,5).map(f=>\`<div class="event"><time>\${esc(f.target||'env')}</time><div><b>\${esc(f.summary||'follow-up')}</b> \${esc(f.reason||'Refresh shared context.')}\${f.commands?.length?\`<div class="path">\${esc(f.commands.join(' -> '))}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No pending follow-ups after environment records.</div>';
+const followUpPlan=manifest.preflight?.followUpPlan||{};
+const followUpPlanHtml=followUpPlan.status?\`<table><tr><th>Status</th><td><code>\${esc(followUpPlan.status)}</code></td></tr><tr><th>Targets</th><td>\${esc((followUpPlan.targets||[]).join(', ')||'none')}</td></tr><tr><th>Next</th><td><code>\${esc(followUpPlan.nextCommand||'aienvmp status --json')}</code></td></tr></table><div class="path">\${esc(followUpPlan.rule||followUpPlan.reason||'Resolve follow-ups before shared environment changes.')}</div>\`:'';
+const followUpsHtml=(followUpPlanHtml||'')+(followUps.length?'<div class="timeline">'+followUps.slice(0,5).map(f=>\`<div class="event"><time>\${esc(f.target||'env')}</time><div><b>\${esc(f.summary||'follow-up')}</b> \${esc(f.reason||'Refresh shared context.')}\${f.commands?.length?\`<div class="path">\${esc(f.commands.join(' -> '))}</div>\`:''}</div></div>\`).join('')+'</div>':'<div class="okline">No pending follow-ups after environment records.</div>');
 const agentActivity=manifest.preflight?.agentActivity||{};
 const activityTargets=agentActivity.targets||[];
 const activityHtml=activityTargets.length?'<div class="timeline">'+activityTargets.slice(0,5).map(a=>\`<div class="event"><time>\${esc(a.target||'env')}</time><div><b>\${esc((a.actors||[]).join(', ')||'unknown')}</b> \${esc(a.count||0)} record(s) \${a.multiActor?'<code>multi-agent</code>':'<code>single-agent</code>'}\${a.latestSummary?\`<div class="path">\${esc(a.latestSummary)}</div>\`:''}</div></div>\`).join('')+'</div><div class="path">'+esc(agentActivity.next||'Review activity before environment changes.')+'</div>':'<div class="okline">No recorded environment activity needs coordination.</div>';
@@ -685,7 +687,7 @@ document.getElementById('app').innerHTML=\`
     <div style="height:14px"></div>
     \${card('AI Intent Targets','<span class="pill">'+intentTargets.length+' targets</span>',intentTargetsHtml)}
     <div style="height:14px"></div>
-    \${card('Follow-ups',followUps.length?'<span class="pill warn">'+followUps.length+' pending</span>':'<span class="pill">clear</span>',followUpsHtml)}
+    \${card('Follow-ups',(followUpPlan.status==='pending'||followUps.length)?'<span class="pill warn">'+(followUpPlan.count||followUps.length)+' pending</span>':'<span class="pill">clear</span>',followUpsHtml)}
     <div style="height:14px"></div>
     \${card('Agent Activity',agentActivity.multiActorTargets?.length?'<span class="pill warn">'+agentActivity.multiActorTargets.length+' shared</span>':'<span class="pill">clear</span>',activityHtml)}
     <div style="height:14px"></div>

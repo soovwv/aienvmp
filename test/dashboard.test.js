@@ -223,6 +223,13 @@ test("renderDashboard includes the audit summary surface", () => {
         reason: "Dependency or security records should refresh the env map and handoff context.",
         commands: ["aienvmp sync", "aienvmp status --write", "aienvmp handoff --record --actor agent:id"]
       }],
+      followUpPlan: {
+        status: "pending",
+        count: 1,
+        targets: ["dependency"],
+        nextCommand: "aienvmp sync",
+        rule: "Run the follow-up command before another AI changes the same environment target."
+      },
       agentActivity: {
         environmentRecordCount: 2,
         multiActorTargets: ["dependency"],
@@ -486,6 +493,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /Review express/);
   assert.match(html, /AI Intent Targets/);
   assert.match(html, /Follow-ups/);
+  assert.match(html, /followUpPlan=manifest\.preflight\?\.followUpPlan/);
+  assert.match(html, /<th>Targets<\/th><td>\$\{esc\(\(followUpPlan\.targets/);
+  assert.match(html, /Run the follow-up command before another AI changes the same environment target/);
   assert.match(html, /dependency-change/);
   assert.match(html, /aienvmp status --write/);
   assert.match(html, /Agent Activity/);
