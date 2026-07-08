@@ -7,6 +7,12 @@ test("schemaContract describes stable AI output contracts", () => {
   const schema = schemaContract();
 
   assert.equal(schema.name, "aienvmp-contract");
+  assert.equal(schema.aiLoop.name, "AI maintenance loop");
+  assert.equal(schema.aiLoop.localMode, "warn-only");
+  assert.deepEqual(schema.aiLoop.steps.map((item) => item.step), ["sync", "status", "context", "intent", "checkpoint", "handoff"]);
+  assert.equal(schema.aiLoop.steps[0].command, "aienvmp sync");
+  assert.equal(schema.aiLoop.steps[5].command, "aienvmp handoff");
+  assert.match(schema.aiLoop.strictRule, /warn-only/);
   assert.equal(schema.outputs.status.contract.name, "aienvmp-preflight");
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("nextAgent"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("aiReadiness"));
@@ -55,4 +61,18 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   assert.equal(schema.outputs.sbom.file, ".aienvmp/sbom.json");
   assert.equal(schema.outputs.cyclonedxLite.file, ".aienvmp/sbom.cdx.json");
   assert.match(schema.compatibility.localBehavior, /read-only/);
+});
+
+test("schemaWorkspace text prints the AI loop", async () => {
+  const originalLog = console.log;
+  const output = [];
+  console.log = (value) => { output.push(value); };
+  try {
+    await schemaWorkspace({});
+  } finally {
+    console.log = originalLog;
+  }
+
+  assert.match(output.join("\n"), /loop: aienvmp sync -> aienvmp status -> aienvmp context --json/);
+  assert.match(output.join("\n"), /aienvmp handoff/);
 });

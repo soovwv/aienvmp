@@ -14,6 +14,20 @@ export function schemaContract() {
     schemaVersion: 1,
     name: "aienvmp-contract",
     purpose: "Stable AI-readable contract for aienvmp outputs.",
+    aiLoop: {
+      name: "AI maintenance loop",
+      purpose: "Shared lightweight workflow for AI agents that maintain one workspace environment.",
+      localMode: "warn-only",
+      steps: [
+        { step: "sync", command: "aienvmp sync", purpose: "refresh AIENV.md, status, summary, SBOM, ledger, and dashboard" },
+        { step: "status", command: "aienvmp status", purpose: "read the 5-line clear/review decision" },
+        { step: "context", command: "aienvmp context --json", purpose: "read the full AI preflight contract when details are needed" },
+        { step: "intent", command: "aienvmp intent --actor agent:id --action planned-change --target dependency", purpose: "record planned environment-affecting changes before touching shared state" },
+        { step: "checkpoint", command: "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency", purpose: "record accepted changes, refresh outputs, and write handoff context" },
+        { step: "handoff", command: "aienvmp handoff", purpose: "tell the next AI what to read, avoid, and review" }
+      ],
+      strictRule: "Local checks are warn-only; use doctor --strict only for CI or explicit human-requested gates."
+    },
     outputs: {
       status: {
         file: ".aienvmp/status.json",

@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.67
 
 - Added a dashboard `First read` strip with status, first file, review targets, and local operation mode.
 - Kept the detailed dashboard cards below the top decision area so humans get a faster scan without losing AI context.
@@ -13,6 +13,7 @@
 - Added `handoff.continuation` so the next AI receives maintenance-loop, SBOM-review, and strict-decision guidance without parsing the full preflight.
 - Added the continuation summary to plain Markdown handoff output and schema metadata.
 - Reworked the README first-read flow around shared AI workspaces, the 10-second command path, and the AI maintenance loop.
+- Added `aiLoop` to `schema --json` and plain schema output so AI consumers see the same loop described in the README.
 
 ## 0.1.66
 
