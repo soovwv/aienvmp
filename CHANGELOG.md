@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added an AI workspace coordination case study that explains the shared-server multi-agent drift problem and the lightweight aienvmp flow.
 - Mirrored `environmentChangeProtocol` in the dashboard and summary artifact so humans see the same environment-change contract as AI agents.
 - Added `environmentChangeProtocol` so AI agents get one advisory before/after-change contract for runtimes, dependencies, package managers, Docker, and global tools.
 - Added an AI discovery fallback contract so agents can use existing status, summary, and context artifacts even when instruction-file pointers are not installed.
