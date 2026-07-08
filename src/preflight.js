@@ -180,6 +180,11 @@ function aiSessionSummary({ state, nextCommand, aiBootstrap = {}, artifactFreshn
     beforeEnvironmentChange: commands.recordIntent || "aienvmp intent --actor agent:id --action planned-change --target environment",
     afterEnvironmentChange: commands.checkpointAfterChange || "aienvmp checkpoint --actor agent:id --summary what-changed --target environment",
     handoff: commands.handoff || "aienvmp handoff --record --actor agent:id",
+    avoid: [
+      "Do not run broad install, update, audit fix, or lockfile rewrite commands before reading status/context.",
+      "Do not switch runtimes, package managers, Docker, or global tools only because an agent prefers them.",
+      "Do not ignore open intents, multi-agent activity, pending follow-ups, or light SBOM review signals."
+    ],
     nextCommand: nextCommand || aiBootstrap.nextSafeCommand || "aienvmp status --json",
     discovery: agentPointers.discovery || "missing: run aienvmp onboard",
     localWork: aiBootstrap.projectLocalWork || "allowed",

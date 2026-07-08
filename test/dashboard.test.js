@@ -366,6 +366,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /AI discovery/);
   assert.match(html, /AI Session/);
   assert.match(html, /Before env/);
+  assert.match(html, /<th>Avoid<\/th>/);
   assert.match(html, /aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency/);
   assert.deepEqual(dashboardEssentialCards, [
     "AI Session",

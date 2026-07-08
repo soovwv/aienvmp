@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added per-session AI avoid guidance to status, context, env map, and dashboard surfaces.
 - Added package keywords for AI coding workspace coordination and light SBOM discovery.
 - Added recommendation pitch and evidence links to the multi-agent demo output.
 - Added schema recommendation pitch and decision routine fields for AI recommenders.

@@ -101,6 +101,8 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   assert.equal(json.aiSession.ifMissingOrStale, "aienvmp sync");
   assert.equal(json.aiSession.beforeEnvironmentChange, "aienvmp intent --actor agent:id --action planned-change --target dependency");
   assert.equal(json.aiSession.afterEnvironmentChange, "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency");
+  assert.match(json.aiSession.avoid.join(" "), /lockfile rewrite/);
+  assert.match(json.aiSession.avoid.join(" "), /light SBOM review/);
   assert.equal(json.preflight.aiSession.nextCommand, "aienvmp sync");
   assert.equal(json.aiBootstrap.nextSafeCommand, "aienvmp sync");
   assert.equal(json.aiBootstrap.localMode, "advisory");

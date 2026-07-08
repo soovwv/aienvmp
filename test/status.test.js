@@ -56,6 +56,8 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.aiSession.beforeEnvironmentChange, "aienvmp intent --actor agent:id --action planned-change --target dependency");
   assert.equal(status.aiSession.afterEnvironmentChange, "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency");
   assert.equal(status.aiSession.handoff, "aienvmp handoff --record --actor agent:id");
+  assert.match(status.aiSession.avoid.join(" "), /broad install/);
+  assert.match(status.aiSession.avoid.join(" "), /multi-agent activity/);
   assert.equal(status.aiSession.localWork, "allowed");
   assert.equal(status.aiSession.environmentChanges, "intent-first");
   assert.match(status.aiSession.rule, /Read status first/);
