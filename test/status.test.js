@@ -72,6 +72,9 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.collaboration.environmentChanges, "intent-first");
   assert.equal(status.collaboration.nextCommand, "aienvmp intent --actor agent:id --action planned-change --target environment");
   assert.match(status.collaboration.rule, /project-local work/);
+  assert.equal(status.coordinationResolution.status, "clear");
+  assert.equal(status.coordinationResolution.nextCommand, "aienvmp status --json");
+  assert.match(status.coordinationResolution.rule, /No coordination conflict/);
   assert.match(status.aiReadiness.safeProjectLocalActions[0], /read status/);
   assert.match(status.aiReadiness.reviewOnlyEnvironmentChanges, /Record intent/);
   assert.equal(status.environmentChangeProtocol.mode, "advisory");
@@ -461,6 +464,11 @@ test("buildStatus summarizes open intent coordination by target", () => {
   assert.deepEqual(status.collaboration.activeTargets, ["dependency"]);
   assert.match(status.collaboration.nextCommand, /plan --write/);
   assert.match(status.coordination.next, /conflicting intents/);
+  assert.equal(status.coordinationResolution.status, "review");
+  assert.deepEqual(status.coordinationResolution.targets, ["dependency"]);
+  assert.equal(status.coordinationResolution.nextCommand, "aienvmp plan --write");
+  assert.match(status.coordinationResolution.commands.resolveTarget, /--target dependency --status resolved/);
+  assert.match(status.coordinationResolution.mustNotDo.join(" "), /silently/);
 });
 
 test("statusWorkspace can write the compact AI status artifact", async () => {

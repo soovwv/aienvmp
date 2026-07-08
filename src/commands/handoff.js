@@ -68,6 +68,7 @@ export function buildHandoff(manifest, timeline = [], warnings = [], intents = [
     dependencyHandoff: dependencyHandoffSummary(preflight),
     continuation: continuationSummary(preflight),
     coordination: preflight.coordination,
+    coordinationResolution: preflight.coordinationResolution,
     agentActivity: preflight.agentActivity,
     policy: {
       node: policy.node || "not set",
@@ -96,6 +97,7 @@ function continuationSummary(preflight = {}) {
   const strictDecision = preflight.enforcementProfile?.strictDecision || preflight.enforcement?.strictDecision || {};
   const sbomReview = maintenanceLoop.sbomReview || {};
   const followUpPlan = preflight.followUpPlan || {};
+  const coordinationResolution = preflight.coordinationResolution || {};
   return {
     status: preflight.state || "unknown",
     nextCommand: maintenanceLoop.nextCommand || preflight.nextCommand || "aienvmp status --json",
@@ -106,6 +108,12 @@ function continuationSummary(preflight = {}) {
       targets: (followUpPlan.targets || []).slice(0, 5),
       nextCommand: followUpPlan.nextCommand || "aienvmp status --json",
       rule: followUpPlan.rule || followUpPlan.reason || "Resolve follow-ups before shared environment changes."
+    },
+    coordinationResolution: {
+      status: coordinationResolution.status || "clear",
+      targets: (coordinationResolution.targets || []).slice(0, 5),
+      nextCommand: coordinationResolution.nextCommand || "aienvmp status --json",
+      rule: coordinationResolution.rule || "Use advisory coordination before shared environment changes."
     },
     maintenance: {
       mode: maintenanceLoop.mode || "advisory",

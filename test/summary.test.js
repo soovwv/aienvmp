@@ -82,6 +82,12 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
     },
     agentUse: { environmentChanges: "intent-and-review-first" },
     coordination: { next: "Check open intents.", conflictTargets: ["dependency"] },
+    coordinationResolution: {
+      status: "review",
+      targets: ["dependency"],
+      nextCommand: "aienvmp plan --write",
+      rule: "Use this advisory resolution routine before another AI changes the same shared environment target."
+    },
     agentActivity: { next: "Run handoff.", multiActorTargets: ["node"] },
     dependencyReadSet: [{ manifest: "package.json", lockfiles: ["package-lock.json"] }],
     dependencyChangeProtocol: {
@@ -127,6 +133,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /AI next: aienvmp sync \(Review listed signals/);
   assert.match(markdown, /AI safe local work: read status and summary artifacts/);
   assert.match(markdown, /AI collaboration: review-before-env-change \/ dependency, node \/ aienvmp handoff --record --actor agent:id/);
+  assert.match(markdown, /AI coordination resolution: review \/ dependency \/ aienvmp plan --write/);
   assert.match(markdown, /AI follow-up: pending \/ aienvmp sync/);
   assert.match(markdown, /AI environment protocol: aienvmp intent --actor agent:id --action planned-change --target dependency -> aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency/);
   assert.match(markdown, /AI maintenance loop: aienvmp handoff --record --actor agent:id/);
@@ -141,6 +148,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /release strict: aienvmp doctor --strict all --json/);
   assert.match(markdown, /release readiness: 0\.2\.0 \/ prototype-hardening \/ hold \/ npm run release:check passes locally/);
   assert.match(markdown, /collaboration rule: Do not install shared tools/);
+  assert.match(markdown, /resolution rule:/);
   assert.match(markdown, /maintenance rule: Keep local operation advisory and lightweight/);
   assert.match(markdown, /environment rule: Read status\/context, record intent, checkpoint/);
   assert.match(markdown, /conflict targets: dependency/);

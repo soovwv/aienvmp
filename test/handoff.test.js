@@ -155,6 +155,9 @@ test("buildHandoff exposes coordination summary for next agents", () => {
   ], {});
 
   assert.deepEqual(handoff.coordination.conflictTargets, ["dependency"]);
+  assert.equal(handoff.coordinationResolution.status, "review");
+  assert.deepEqual(handoff.continuation.coordinationResolution.targets, ["dependency"]);
+  assert.equal(handoff.continuation.coordinationResolution.nextCommand, "aienvmp plan --write");
   assert.match(renderHandoff(handoff), /Coordination/);
   assert.match(renderHandoff(handoff), /Conflicts: dependency/);
 });

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `coordinationResolution` to the AI preflight surfaces so multiple AI agents get one advisory conflict-resolution routine for shared environment targets.
 - Added explicit batched-release threshold and publish-candidate signals to the AI-readable release readiness contract.
 - Added an explicit light-SBOM scanner decision so AI agents can tell when the light artifact is enough and when optional read-only scanner evidence is needed.
 - Added a dashboard 10-second review surface that keeps start-here, next command, review target, and advisory mode visible for human operators.

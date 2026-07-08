@@ -37,6 +37,7 @@ export function renderSummary(status = {}, manifest = {}) {
   const counts = status.counts || {};
   const sbomRisk = status.sbomRisk || manifest.lightSbom?.riskSummary || {};
   const coordination = status.coordination || {};
+  const coordinationResolution = status.coordinationResolution || {};
   const activity = status.agentActivity || {};
   const collaboration = status.collaboration || {};
   const followUpPlan = status.followUpPlan || {};
@@ -93,6 +94,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- AI artifact freshness: ${artifactFreshness.state || "unknown"} / ${artifactFreshness.nextCommand || "aienvmp sync"}`,
     `- AI next: ${next} (${aiNext})`,
     `- AI collaboration: ${collaboration.status || "unknown"} / ${toList(collaboration.activeTargets).join(", ") || "none"} / ${collaboration.nextCommand || "aienvmp status --json"}`,
+    `- AI coordination resolution: ${coordinationResolution.status || "clear"} / ${toList(coordinationResolution.targets).join(", ") || "none"} / ${coordinationResolution.nextCommand || "aienvmp status --json"}`,
     `- AI follow-up: ${followUpPlan.status || "clear"} / ${followUpPlan.nextCommand || "aienvmp status --json"}`,
     `- AI environment protocol: ${environmentCommands.recordIntent || "aienvmp intent --actor agent:id --action planned-change --target environment"} -> ${environmentCommands.checkpointAfterChange || "aienvmp checkpoint --actor agent:id --summary what-changed --target environment"}`,
     `- AI maintenance loop: ${maintenanceLoop.nextCommand || next}`,
@@ -117,6 +119,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- environment changes: ${status.agentUse?.environmentChanges || "intent-and-review-first"}`,
     `- session rule: ${aiSession.rule || "Read status first, sync only when stale or missing, and record intent before shared environment changes."}`,
     `- collaboration rule: ${collaboration.rule || "Record intent before shared environment changes."}`,
+    `- resolution rule: ${coordinationResolution.rule || "Use advisory coordination before shared environment changes."}`,
     `- coordination: ${coordination.next || "No open environment intents."}`,
     `- recent agent activity: ${activity.next || "No environment records need coordination."}`,
     `- maintenance rule: ${maintenanceLoop.rule || "Refresh, inspect, record intent, checkpoint, and hand off without blocking local operation."}`,

@@ -21,6 +21,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
   const agentPointers = agentPointerSummary(manifest.agentFiles);
   const aiReadiness = aiReadinessSummary({ state, decision, coordination, agentActivity, agentPointers, sbomRisk, followUps });
   const collaboration = collaborationSummary({ state, decision, coordination, agentActivity, followUps, aiReadiness });
+  const coordinationResolution = coordinationResolutionSummary({ coordination, agentActivity, followUpPlan, collaboration });
   const strictRecommendation = strictRecommendationSummary(enforcement);
   const maintenanceLoop = maintenanceLoopSummary({
     state,
@@ -91,6 +92,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     quickstart: agentQuickstart(decision.reviewRequired),
     nextAgent: nextAgentHint(state, dependencyReadSet, dependencyChangeProtocol),
     coordination,
+    coordinationResolution,
     agentActivity,
     collaboration,
     maintenanceLoop,
@@ -126,6 +128,53 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     topAction,
     nextCommand,
     nextSafeCommand: nextCommand
+  };
+}
+
+function coordinationResolutionSummary({ coordination = {}, agentActivity = {}, followUpPlan = {}, collaboration = {} }) {
+  const targets = unique([
+    ...(coordination.conflictTargets || []),
+    ...(agentActivity.multiActorTargets || []),
+    ...(followUpPlan.targets || [])
+  ]);
+  const needsReview = targets.length > 0 || collaboration.status === "review-before-env-change";
+  const target = targets[0] || "<target>";
+  return {
+    status: needsReview ? "review" : "clear",
+    mode: "advisory",
+    targets,
+    readFirst: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+    nextCommand: followUpPlan.status === "pending"
+      ? followUpPlan.nextCommand
+      : needsReview
+        ? "aienvmp plan --write"
+        : "aienvmp status --json",
+    steps: needsReview
+      ? [
+        "Read the start-here file, status, summary, and context before shared environment changes.",
+        "Run a read-only plan to compare open intents, multi-agent records, follow-ups, and SBOM risk.",
+        "Ask the human owner or next AI to choose one environment direction when targets conflict.",
+        "Resolve stale or superseded intents only after the chosen direction is clear.",
+        "Record checkpoint and handoff after accepted environment changes."
+      ]
+      : [
+        "Continue project-local work.",
+        "Record intent before shared environment changes."
+      ],
+    commands: {
+      plan: "aienvmp plan --write",
+      resolveTarget: `aienvmp resolve --actor human:owner --target ${target} --status resolved`,
+      handoff: "aienvmp handoff --record --actor agent:id",
+      checkpoint: `aienvmp checkpoint --actor agent:id --summary environment-change --target ${target === "<target>" ? "environment" : target}`
+    },
+    mustNotDo: [
+      "Do not pick one AI agent's environment change silently when another open intent targets the same surface.",
+      "Do not resolve another agent's intent as completed unless the user or project owner chose that direction.",
+      "Do not install, remove, upgrade, downgrade, or switch shared tools while coordination status is review."
+    ],
+    rule: needsReview
+      ? "Use this advisory resolution routine before another AI changes the same shared environment target."
+      : "No coordination conflict is active; keep using intent and checkpoint for environment changes."
   };
 }
 

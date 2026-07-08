@@ -6,7 +6,7 @@ export function preflightContract() {
     version: 1,
     stability: "additive",
     requiredFields: ["schemaVersion", "state", "decision", "quickstart", "commands", "artifacts"],
-    aiEntryFields: ["state", "summary", "readOrder", "aiSession", "aiBootstrap", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "aiReadiness", "collaboration", "maintenanceLoop", "nextAgent", "coordination", "agentActivity", "agentPointers", "sbomRisk", "followUps", "followUpPlan", "environmentChangeProtocol", "dependencyReadSet", "dependencyChangeProtocol"],
+    aiEntryFields: ["state", "summary", "readOrder", "aiSession", "aiBootstrap", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "aiReadiness", "collaboration", "coordinationResolution", "maintenanceLoop", "nextAgent", "coordination", "agentActivity", "agentPointers", "sbomRisk", "followUps", "followUpPlan", "environmentChangeProtocol", "dependencyReadSet", "dependencyChangeProtocol"],
     rule: "Consumers should ignore unknown fields and treat missing optional fields as unavailable."
   };
 }
@@ -61,6 +61,7 @@ export function schemaContract() {
     readOrder: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md", ".aienvmp/manifest.json", ".aienvmp/plan.json", ".aienvmp/timeline.jsonl", ".aienvmp/intents.jsonl"],
     readOrderRule: "When instruction-file pointers are missing or uncertain, start at .aienvmp/README.md, then use status.json for the machine decision and context --json for details.",
     followUpPlanFields: ["status", "count", "targets", "readFirst", "nextCommand", "commands", "reason", "rule"],
+    coordinationResolutionFields: ["status", "mode", "targets", "readFirst", "nextCommand", "steps", "commands", "mustNotDo", "rule"],
     environmentChangeProtocolFields: ["mode", "appliesWhen", "state", "readFirst", "beforeChange", "afterChange", "commands", "mustNotDo", "nextCommand", "rule"],
     aiLoop: {
       name: "AI maintenance loop",
@@ -179,7 +180,7 @@ export function schemaContract() {
       status: {
         file: ".aienvmp/status.json",
         command: "aienvmp status --json",
-        rootFields: ["state", "readOrder", "aiSession", "aiBootstrap", "nextCommand", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "decision", "counts", "aiReadiness", "collaboration", "maintenanceLoop", "coordination", "agentPointers", "sbomRisk", "followUpPlan", "environmentChangeProtocol"],
+        rootFields: ["state", "readOrder", "aiSession", "aiBootstrap", "nextCommand", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "decision", "counts", "aiReadiness", "collaboration", "coordinationResolution", "maintenanceLoop", "coordination", "agentPointers", "sbomRisk", "followUpPlan", "environmentChangeProtocol"],
         agentPointerFields: ["installedCount", "missingCount", "installed", "missing", "discovery", "onboardCommand", "fallbackCommand", "fallbackRead", "next", "targets", "rule"],
         contract: preflightContract()
       },
@@ -204,12 +205,12 @@ export function schemaContract() {
       },
       context: {
         command: "aienvmp context --json",
-        rootFields: ["status", "startHere", "readOrder", "aiSession", "aiBootstrap", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "preflight", "aiReadiness", "collaboration", "maintenanceLoop", "coordination", "agentPointers", "followUpPlan", "environmentChangeProtocol", "decision", "enforcement", "recommendedActions", "workspace", "dependencySnapshot", "lightSbom", "warnings"]
+        rootFields: ["status", "startHere", "readOrder", "aiSession", "aiBootstrap", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "preflight", "aiReadiness", "collaboration", "coordinationResolution", "maintenanceLoop", "coordination", "agentPointers", "followUpPlan", "environmentChangeProtocol", "decision", "enforcement", "recommendedActions", "workspace", "dependencySnapshot", "lightSbom", "warnings"]
       },
       handoff: {
         command: "aienvmp handoff --json",
-        rootFields: ["status", "startHere", "readOrder", "aiBootstrap", "nextSafeCommand", "decision", "preflight", "continuation", "coordination", "dependencyHandoff", "openIntents", "warnings", "recommendedActions", "recentChanges"],
-        continuationFields: ["status", "nextCommand", "readOrder", "followUpPlan", "maintenance", "sbomReview", "strict"]
+        rootFields: ["status", "startHere", "readOrder", "aiBootstrap", "nextSafeCommand", "decision", "preflight", "continuation", "coordination", "coordinationResolution", "dependencyHandoff", "openIntents", "warnings", "recommendedActions", "recentChanges"],
+        continuationFields: ["status", "nextCommand", "readOrder", "followUpPlan", "coordinationResolution", "maintenance", "sbomReview", "strict"]
       },
       manifest: {
         file: ".aienvmp/manifest.json",
@@ -240,6 +241,7 @@ export function schemaContract() {
       localBehavior: "read-only; this command does not scan, install, update, or lock anything.",
       aiReadinessRule: "When aiReadiness.level is review, project-local code work may still continue if aiReadiness.projectLocalWork is allowed; environment changes should follow intent/review guidance.",
       collaborationRule: "Use collaboration.status, activeTargets, and nextCommand as the shortest multi-agent environment coordination hint.",
+      coordinationResolutionRule: "Use coordinationResolution when collaboration is review-before-env-change; it gives the advisory plan, resolve, handoff, checkpoint, and must-not-do routine for conflicting shared environment targets.",
       sbomStrategyRule: "Use sbomStrategy and sbom.scannerGuidance to keep default SBOM review lightweight while requesting optional read-only scanners before security-sensitive decisions.",
       agentDiscoveryRule: "Use agentPointers.discovery and agentPointers.onboardCommand to decide whether AI instruction-file pointers can discover aienvmp automatically; use fallbackRead when no pointer was installed but artifacts exist.",
       readOrderRule: "Use readOrder when present; it starts with .aienvmp/README.md for fallback discovery, then status, summary, env map, plan, timeline, and intents.",

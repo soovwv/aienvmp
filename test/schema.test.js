@@ -39,6 +39,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.readOrder[1], ".aienvmp/status.json");
   assert.match(schema.readOrderRule, /instruction-file pointers/);
   assert.deepEqual(schema.followUpPlanFields, ["status", "count", "targets", "readFirst", "nextCommand", "commands", "reason", "rule"]);
+  assert.deepEqual(schema.coordinationResolutionFields, ["status", "mode", "targets", "readFirst", "nextCommand", "steps", "commands", "mustNotDo", "rule"]);
   assert.ok(schema.environmentChangeProtocolFields.includes("beforeChange"));
   assert.ok(schema.environmentChangeProtocolFields.includes("mustNotDo"));
   assert.equal(schema.aiLoop.name, "AI maintenance loop");
@@ -102,6 +103,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("strictRecommendation"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("aiReadiness"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("collaboration"));
+  assert.ok(schema.outputs.status.contract.aiEntryFields.includes("coordinationResolution"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("maintenanceLoop"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("followUps"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("followUpPlan"));
@@ -115,6 +117,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.rootFields.includes("strictRecommendation"));
   assert.ok(schema.outputs.status.rootFields.includes("followUpPlan"));
   assert.ok(schema.outputs.status.rootFields.includes("environmentChangeProtocol"));
+  assert.ok(schema.outputs.status.rootFields.includes("coordinationResolution"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("discovery"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("onboardCommand"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("fallbackRead"));
@@ -139,6 +142,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.context.rootFields.includes("artifactFreshness"));
   assert.ok(schema.outputs.context.rootFields.includes("strictRecommendation"));
   assert.ok(schema.outputs.context.rootFields.includes("collaboration"));
+  assert.ok(schema.outputs.context.rootFields.includes("coordinationResolution"));
   assert.ok(schema.outputs.context.rootFields.includes("maintenanceLoop"));
   assert.ok(schema.outputs.context.rootFields.includes("agentPointers"));
   assert.ok(schema.outputs.context.rootFields.includes("followUpPlan"));
@@ -151,7 +155,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.handoff.rootFields.includes("nextSafeCommand"));
   assert.ok(schema.outputs.handoff.rootFields.includes("continuation"));
   assert.ok(schema.outputs.handoff.continuationFields.includes("followUpPlan"));
+  assert.ok(schema.outputs.handoff.continuationFields.includes("coordinationResolution"));
   assert.ok(schema.outputs.handoff.rootFields.includes("coordination"));
+  assert.ok(schema.outputs.handoff.rootFields.includes("coordinationResolution"));
   assert.equal(schema.outputs.sbom.command, "aienvmp sbom --json");
   assert.ok(schema.outputs.sbom.rootFields.includes("startHere"));
   assert.ok(schema.outputs.sbom.rootFields.includes("readOrder"));
@@ -178,6 +184,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.compatibility.breakingChangeRule, /migration note/);
   assert.match(schema.compatibility.aiReadinessRule, /project-local code work/);
   assert.match(schema.compatibility.collaborationRule, /multi-agent environment coordination/);
+  assert.match(schema.compatibility.coordinationResolutionRule, /resolve/);
   assert.match(schema.compatibility.sbomStrategyRule, /optional read-only scanners/);
   assert.match(schema.compatibility.agentDiscoveryRule, /onboardCommand/);
   assert.match(schema.compatibility.agentDiscoveryRule, /fallbackRead/);
