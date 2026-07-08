@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added a dashboard essential-surface contract for AI-first human review.
 - Added recommendation evidence document links to the AI schema and packaged skill.
 - Aligned the packaged aienvmp skill with schema recommendation guidance so AI agents know when to use or skip the tool.
 - Moved dashboard release-readiness rendering into the dashboard contract module.

@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { dashWorkspace } from "../src/commands/dash.js";
 import { writeJson } from "../src/fsutil.js";
-import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
+import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
 
 test("renderDashboard includes the audit summary surface", () => {
   const html = renderDashboard({
@@ -380,6 +380,11 @@ test("renderDashboard includes the audit summary surface", () => {
   ]);
   assert.equal(dashboardCardPriority("AI Session"), "essential");
   assert.equal(dashboardCardPriority("Runtimes"), "support");
+  assert.deepEqual(dashboardEssentialSurfaces.controlStrip, ["AI readiness", "Freshness", "Collaboration", "SBOM risk"]);
+  assert.equal(dashboardEssentialSurfaces.nextCommand, "Next command");
+  assert.ok(dashboardEssentialSurfaces.essentialCards.includes("Light SBOM"));
+  assert.match(dashboardEssentialSurfaces.rule, /AI startup contract/);
+  assert.match(dashboardEssentialSurfaceClientScript(), /const essentialSurfaces=/);
   assert.match(dashboardPriorityClientScript(), /const essentialCards=\["AI Session"/);
   assert.match(dashboardPriorityClientScript(), /const cardPriority=title=>essentialCards\.includes\(title\)\?'essential':'support'/);
   assert.match(dashboardAgentClientScript(), /const agentNames=\{agents:'Codex',claude:'Claude',gemini:'Gemini'\}/);
@@ -419,6 +424,7 @@ test("renderDashboard includes the audit summary surface", () => {
     assert.match(html, new RegExp(`card\\('${title}'`));
   }
   assert.match(html, /const essentialCards=\["AI Session","Environment Health","AI Collaboration","Light SBOM","Agent Pointers","Agent Intents","Environment Ledger","Enforcement Mode","Release Readiness"\]/);
+  assert.match(html, /const essentialSurfaces=\{"controlStrip":\["AI readiness","Freshness","Collaboration","SBOM risk"\]/);
   assert.match(html, /data-dashboard-priority=/);
   assert.match(html, /cardPriority\(title\)/);
   assert.match(html, /const agentNames=\{agents:'Codex',claude:'Claude',gemini:'Gemini'\}/);

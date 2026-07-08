@@ -1,3 +1,5 @@
+import { dashboardEssentialSurfaces } from "./dashboard.js";
+
 export function preflightContract() {
   return {
     name: "aienvmp-preflight",
@@ -86,6 +88,11 @@ export function schemaContract() {
       scannerCommand: "aienvmp sync --security",
       scannerPolicy: "Optional, read-only scanner summaries are used for security confidence; they are not required for local coding.",
       aiRule: "Use the light SBOM for dependency coordination. Run optional scanners before security claims, vulnerability remediation, release decisions, or dependency changes when scanner confidence is low."
+    },
+    dashboard: {
+      mode: "light-human-view",
+      essentialSurfaces: dashboardEssentialSurfaces,
+      rule: "Dashboard support cards may grow, but the control strip, next command, first-read brief, and essential cards should stay visible and aligned with AI outputs."
     },
     releaseGate: {
       mode: "manual-batched",

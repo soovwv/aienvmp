@@ -10,8 +10,22 @@ export const dashboardEssentialCards = Object.freeze([
   "Release Readiness"
 ]);
 
+export const dashboardEssentialSurfaces = Object.freeze({
+  controlStrip: ["AI readiness", "Freshness", "Collaboration", "SBOM risk"],
+  nextCommand: "Next command",
+  firstRead: ["AI bootstrap", "Status", "Freshness", "Read first", "AI discovery", "Review targets", "Local mode"],
+  essentialCards: dashboardEssentialCards,
+  rule: "Keep these surfaces visible before adding support cards; the dashboard is a human view of the AI startup contract."
+});
+
 export function dashboardCardPriority(title) {
   return dashboardEssentialCards.includes(title) ? "essential" : "support";
+}
+
+export function dashboardEssentialSurfaceClientScript() {
+  return [
+    `const essentialSurfaces=${JSON.stringify(dashboardEssentialSurfaces)};`
+  ].join("\n");
 }
 
 export function dashboardPriorityClientScript() {
