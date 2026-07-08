@@ -93,10 +93,18 @@ function continuationSummary(preflight = {}) {
   const maintenanceLoop = preflight.maintenanceLoop || {};
   const strictDecision = preflight.enforcementProfile?.strictDecision || preflight.enforcement?.strictDecision || {};
   const sbomReview = maintenanceLoop.sbomReview || {};
+  const followUpPlan = preflight.followUpPlan || {};
   return {
     status: preflight.state || "unknown",
     nextCommand: maintenanceLoop.nextCommand || preflight.nextCommand || "aienvmp status --json",
     readOrder: (maintenanceLoop.readOrder || preflight.readOrder || []).slice(0, 4),
+    followUpPlan: {
+      status: followUpPlan.status || "clear",
+      count: Number(followUpPlan.count || 0),
+      targets: (followUpPlan.targets || []).slice(0, 5),
+      nextCommand: followUpPlan.nextCommand || "aienvmp status --json",
+      rule: followUpPlan.rule || followUpPlan.reason || "Resolve follow-ups before shared environment changes."
+    },
     maintenance: {
       mode: maintenanceLoop.mode || "advisory",
       localImpact: maintenanceLoop.localImpact || "read-only until an AI or human records a change",

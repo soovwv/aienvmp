@@ -6,6 +6,7 @@
 - Documented `followUpPlan` in the README and packaged AI skill so AI agents run pending follow-up commands before touching shared environment targets.
 - Mirrored `followUpPlan` in the dashboard Follow-ups card so humans see the same pending target and next command as AI agents.
 - Added `followUpPlan` to AIENV and plain context Markdown so Markdown-first agents see the same follow-up next command.
+- Added `followUpPlan` to handoff continuation so the next AI receives pending follow-up targets and commands directly.
 - Added compact light SBOM `aiUse` decision, confidence, read-first, and before/after-change fields.
 - Added release readiness evidence commands and stabilization focus for AI/CI release review.
 - Added per-session AI avoid guidance to status, context, env map, and dashboard surfaces.

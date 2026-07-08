@@ -128,6 +128,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.handoff.rootFields.includes("aiBootstrap"));
   assert.ok(schema.outputs.handoff.rootFields.includes("nextSafeCommand"));
   assert.ok(schema.outputs.handoff.rootFields.includes("continuation"));
+  assert.ok(schema.outputs.handoff.continuationFields.includes("followUpPlan"));
   assert.ok(schema.outputs.handoff.rootFields.includes("coordination"));
   assert.equal(schema.outputs.sbom.command, "aienvmp sbom --json");
   assert.ok(schema.outputs.sbom.rootFields.includes("aiBootstrap"));

@@ -300,9 +300,12 @@ function continuationHandoffLines(continuation = {}) {
   const strict = continuation.strict || {};
   const sbomReview = continuation.sbomReview || {};
   const maintenance = continuation.maintenance || {};
+  const followUpPlan = continuation.followUpPlan || {};
+  const followUpTargets = followUpPlan.targets?.length ? ` / ${followUpPlan.targets.join(", ")}` : "";
   return [
     `- Next: ${continuation.nextCommand || "aienvmp status --json"}`,
     `- Read: ${(continuation.readOrder || []).join(", ") || ".aienvmp/status.json"}`,
+    `- Follow-up: ${followUpPlan.status || "clear"} / ${followUpPlan.nextCommand || "aienvmp status --json"}${followUpTargets}`,
     `- Local check: ${strict.localCommand || "aienvmp doctor --json"} (${strict.local || "warn-only"})`,
     `- CI strict: ${strict.ciCommand || "aienvmp doctor --strict all --json"}`,
     `- SBOM review: ${sbomReview.status || "unknown"} / ${sbomReview.riskLevel || "unknown"} / ${sbomReview.nextCommand || maintenance.sbomCommand || "aienvmp sbom --json"}`,

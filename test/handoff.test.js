@@ -183,3 +183,29 @@ test("buildHandoff exposes multi-agent activity for next agents", () => {
   assert.deepEqual(handoff.agentActivity.multiActorTargets, ["dependency"]);
   assert.match(renderHandoff(handoff), /multi-agent/);
 });
+
+test("buildHandoff carries follow-up plan into continuation", () => {
+  const handoff = buildHandoff({
+    trust: { state: "observed", verified: false },
+    workspace: { path: "/tmp/work", name: "work" },
+    runtimes: {},
+    containers: {},
+    dependencySnapshot: { summary: { packages: 1 } }
+  }, [{
+    at: "2026-07-08T00:00:00.000Z",
+    actor: "agent:codex",
+    type: "agent-record",
+    target: "dependency",
+    summary: "dependency-change",
+    followUp: {
+      required: true,
+      target: "dependency",
+      commands: ["aienvmp sync", "aienvmp status --write"]
+    }
+  }], [], [], {});
+
+  assert.equal(handoff.continuation.followUpPlan.status, "pending");
+  assert.equal(handoff.continuation.followUpPlan.nextCommand, "aienvmp sync");
+  assert.deepEqual(handoff.continuation.followUpPlan.targets, ["dependency"]);
+  assert.match(renderHandoff(handoff), /Follow-up: pending \/ aienvmp sync \/ dependency/);
+});
