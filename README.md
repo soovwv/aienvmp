@@ -94,7 +94,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `AIENV.md`, `summary.md`, and `plan.md` start with the same bootstrap hint for Markdown-first agents.
 - `sbom.json` and CycloneDX-lite properties include the same bootstrap hint for dependency and security review loops.
 - `maintenanceLoop` gives AI the recurring env-management loop.
-- `sbomRisk` and `sbomReview` connect light SBOM risk to safe dependency-change steps.
+- `sbomRisk`, `sbomReview`, and `sbom.json.aiReviewPlan` connect light SBOM risk to safe dependency-change steps.
 - `collaboration`, `coordination`, and `agentActivity` show multi-agent conflicts and shared targets.
 - `agentPointers.discovery` tells AI whether Codex, Claude, and Gemini instruction files can discover `aienvmp`; `agentPointers.onboardCommand` is the one-command fix.
 - `enforcement.policy` summarizes local, CI, and release gates: local is warn-only, CI uses the recommended strict scope, release uses `strict all`.

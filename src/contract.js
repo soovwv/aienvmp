@@ -68,7 +68,8 @@ export function schemaContract() {
       sbom: {
         file: ".aienvmp/sbom.json",
         command: "aienvmp sbom --json",
-        rootFields: ["schemaVersion", "schemaName", "workspace", "aiBootstrap", "nextSafeCommand", "summary", "riskSummary", "topRisk", "packageManagerPolicy", "dependencyChangeHints", "aiDependencyReview"],
+        rootFields: ["schemaVersion", "schemaName", "workspace", "aiBootstrap", "nextSafeCommand", "aiReviewPlan", "summary", "riskSummary", "topRisk", "packageManagerPolicy", "dependencyChangeHints", "aiDependencyReview"],
+        aiReviewPlanFields: ["status", "risk", "securityConfidence", "packageManagerPolicy", "packages", "vulnerabilities", "reviewTargets", "beforeChange", "afterChange", "rule"],
         aiDependencyReviewFields: ["status", "statusReason", "securityConfidence", "readFirst", "reviewTargets", "beforeDependencyChange", "afterDependencyChange", "rule"]
       },
       cyclonedxLite: {

@@ -27,6 +27,7 @@ export function buildSbomArtifact(manifest = {}) {
     || lightSbom.riskSummary?.commands?.[0]
     || "aienvmp context --json";
   const aiBootstrap = sbomBootstrap(nextSafeCommand, dependencyReview);
+  const aiReviewPlan = sbomReviewPlan(lightSbom, dependencyReview, nextSafeCommand);
   return {
     schemaVersion: 1,
     schemaName: "aienvmp.light-sbom",
@@ -43,6 +44,7 @@ export function buildSbomArtifact(manifest = {}) {
     dependencyChangeHints: (lightSbom.dependencyChangeHints || []).slice(0, 20),
     aiBootstrap,
     nextSafeCommand,
+    aiReviewPlan,
     aiDependencyReview: dependencyReview,
     aiUse: {
       purpose: "Standalone AI-readable light SBOM artifact.",
@@ -68,6 +70,26 @@ function sbomBootstrap(nextSafeCommand, review = {}) {
     projectLocalWork: "allowed",
     environmentChanges: review.status === "review" ? "review-first" : "intent-first",
     rule: review.rule || "Read SBOM risk first; record intent before dependency or lockfile changes."
+  };
+}
+
+function sbomReviewPlan(lightSbom = {}, review = {}, nextSafeCommand = "aienvmp context --json") {
+  const risk = lightSbom.riskSummary || {};
+  const policy = lightSbom.packageManagerPolicy || {};
+  const summary = lightSbom.summary || {};
+  return {
+    status: review.status || "ready",
+    risk: `${risk.level || "clear"}/${risk.score || 0}`,
+    securityConfidence: review.securityConfidence || "unknown",
+    packageManagerPolicy: policy.status || "not-detected",
+    packages: Number(summary.packages || 0),
+    vulnerabilities: Number(summary.vulnerabilities || 0),
+    reviewTargets: (review.reviewTargets || risk.reviewTargets || []).slice(0, 8),
+    beforeChange: nextSafeCommand,
+    afterChange: review.afterDependencyChange?.slice(-1)[0] || "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency",
+    rule: review.status === "review"
+      ? "Review SBOM risk and package manager policy before dependency changes."
+      : "Record dependency intent before dependency or lockfile changes; security claims still need scanner verification."
   };
 }
 
