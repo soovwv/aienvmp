@@ -221,6 +221,10 @@ test("renderDashboard includes the audit summary surface", () => {
         nextCommand: "aienvmp handoff --record --actor agent:id",
         rule: "Do not install shared tools until collaboration signals are reviewed."
       },
+      maintenanceLoop: {
+        nextCommand: "aienvmp sync",
+        rule: "Keep local operation advisory and lightweight."
+      },
       dependencyReadSet: [{
         manifest: "package.json",
         ecosystem: "npm",
@@ -284,8 +288,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /First read/);
   assert.match(html, /\.nextbar/);
   assert.match(html, /\.brief/);
-  assert.match(html, /const nextCommand=manifest\.preflight\?\.nextCommand\|\|topAction\.command\|\|collaboration\.nextCommand/);
-  assert.match(html, /const nextReason=topAction\.summary\|\|collaboration\.rule/);
+  assert.match(html, /const maintenanceLoop=manifest\.preflight\?\.maintenanceLoop\|\|\{\}/);
+  assert.match(html, /const nextCommand=manifest\.preflight\?\.nextCommand\|\|maintenanceLoop\.nextCommand\|\|topAction\.command/);
+  assert.match(html, /const nextReason=topAction\.summary\|\|maintenanceLoop\.rule\|\|collaboration\.rule/);
   assert.match(html, /const firstRead=nextAgent\.readFirst\|\|'\.aienvmp\/status\.json'/);
   assert.match(html, /const reviewTargets=\[\.\.\.new Set/);
   assert.match(html, /\.control-card\.review/);
