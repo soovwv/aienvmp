@@ -47,6 +47,7 @@ export async function demoWorkspace(args = {}) {
       reviewTargets: dependencyQuickCheck.reviewTargets || []
     },
     nextCommand: status.nextSafeCommand || status.nextCommand || "aienvmp status --json",
+    aiEntry: status.artifacts?.discovery || ".aienvmp/discovery.json",
     startHere: status.artifacts?.startHere || ".aienvmp/README.md",
     readFirst: status.aiBootstrap?.readFirst || ".aienvmp/status.json",
     readOrder: status.aiSession?.readFirst || status.readOrder || [
@@ -72,6 +73,7 @@ export async function demoWorkspace(args = {}) {
     console.log(`conflict targets: ${result.conflictTargets.join(", ")}`);
     console.log(`dependency quick check: ${result.dependencyQuickCheck.status} / ${result.dependencyQuickCheck.scannerEvidence} / ${result.dependencyQuickCheck.nextCommand}`);
     console.log(`next command: ${result.nextCommand}`);
+    console.log(`AI entry: ${result.aiEntry}`);
     console.log(`start here: ${result.startHere}`);
     console.log(`read order: ${result.readOrder.join(" -> ")}`);
     console.log(`freshness: ${result.artifactFreshness.state || "unknown"} / ${result.artifactFreshness.nextCommand || "aienvmp sync"}`);

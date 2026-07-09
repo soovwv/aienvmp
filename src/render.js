@@ -671,6 +671,7 @@ const coordination=manifest.preflight?.coordination||{};
 const conflictTargets=coordination.conflictTargets||[];
 const handoffFiles=nextAgent.dependencyFiles?.length?nextAgent.dependencyFiles:(dependencyReadSet[0]?[dependencyReadSet[0].manifest,...(dependencyReadSet[0].lockfiles||[])].filter(Boolean):[]);
 const handoffNext=nextAgent.rule||(reviewRequired?'Review warnings and open intents':'Continue project-local work');
+const aiEntry=manifest.preflight?.artifacts?.discovery||'.aienvmp/discovery.json';
 const startHere=manifest.preflight?.artifacts?.startHere||'.aienvmp/README.md';
 const firstRead=aiBootstrap.readFirst||nextAgent.readFirst||'.aienvmp/status.json';
 const reviewTargets=[...new Set([...(conflictTargets||[]),...(collaboration.activeTargets||[]),...(riskSummary.reviewTargets||[])].filter(Boolean))];
@@ -708,7 +709,7 @@ document.getElementById('app').innerHTML=\`
     <div class="cockpit-rule">For humans: check this before any shared environment change.</div>
   </div>
   <div class="cockpit-grid">
-    <div class="cockpit-item"><div class="cockpit-k">Start here</div><div class="cockpit-v">\${esc(startHere)}</div></div>
+    <div class="cockpit-item"><div class="cockpit-k">AI entry</div><div class="cockpit-v">\${esc(aiEntry)}</div></div>
     <div class="cockpit-item"><div class="cockpit-k">Next command</div><div class="cockpit-v"><code>\${esc(nextCommand)}</code></div></div>
     <div class="cockpit-item"><div class="cockpit-k">Review target</div><div class="cockpit-v">\${esc(primaryReviewTarget)}</div></div>
     <div class="cockpit-item"><div class="cockpit-k">Mode</div><div class="cockpit-v">\${esc(safeMode)}</div></div>
@@ -718,6 +719,7 @@ document.getElementById('app').innerHTML=\`
   \${briefItem('AI bootstrap',bootstrapState)}
   \${briefItem('Status',reviewRequired?'review required':'clear')}
   \${briefItem('Freshness',artifactFreshnessValue+' / '+artifactFreshnessNext)}
+  \${briefItem('AI entry',aiEntry)}
   \${briefItem('Start here',startHere)}
   \${briefItem('Read first',firstRead)}
   \${briefItem('AI discovery',agentDiscoveryDecision+' / '+agentDiscovery)}

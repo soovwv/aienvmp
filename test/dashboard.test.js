@@ -394,6 +394,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const artifactFreshnessNext=artifactFreshness\.nextCommand\|\|artifactFreshness\.refreshCommand\|\|'aienvmp sync'/);
   assert.match(html, /const nextCommand=aiBootstrap\.nextSafeCommand\|\|manifest\.preflight\?\.nextSafeCommand/);
   assert.match(html, /const nextReason=topAction\.summary\|\|aiBootstrap\.rule\|\|maintenanceLoop\.rule/);
+  assert.match(html, /const aiEntry=manifest\.preflight\?\.artifacts\?\.discovery\|\|'\.aienvmp\/discovery\.json'/);
   assert.match(html, /const startHere=manifest\.preflight\?\.artifacts\?\.startHere\|\|'\.aienvmp\/README\.md'/);
   assert.match(html, /const firstRead=aiBootstrap\.readFirst\|\|nextAgent\.readFirst\|\|'\.aienvmp\/status\.json'/);
   assert.match(html, /const bootstrapState=\[aiBootstrap\.projectLocalWork\|\|'allowed',aiBootstrap\.environmentChanges\|\|'intent-first'\]/);
@@ -401,12 +402,14 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const dashboardDiscoveryFallback=/);
   assert.match(html, /const agentDiscoveryFallbackRead=manifest\.preflight\?\.agentPointers\?\.fallbackRead/);
   assert.match(html, /agentDiscoveryDecision/);
+  assert.match(html, /agentDiscoveryEntry/);
   assert.match(html, /agentDiscoverySetup/);
   assert.match(html, /startup/);
   assert.match(html, /aienvmp start --json/);
   assert.match(html, /fallback-required/);
   assert.match(html, /auto-ready/);
   assert.match(html, /AI discovery/);
+  assert.match(html, /AI entry/);
   assert.match(html, /AI Session/);
   assert.match(html, /Before env/);
   assert.match(html, /<th>Avoid<\/th>/);
@@ -425,18 +428,21 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.equal(dashboardCardPriority("AI Session"), "essential");
   assert.equal(dashboardCardPriority("Runtimes"), "support");
   assert.deepEqual(dashboardEssentialSurfaces.controlStrip, ["AI readiness", "Freshness", "Collaboration", "SBOM risk"]);
-  assert.deepEqual(dashboardEssentialSurfaces.tenSecondReview, ["Start here", "Next command", "Review target", "Mode"]);
+  assert.deepEqual(dashboardEssentialSurfaces.tenSecondReview, ["AI entry", "Next command", "Review target", "Mode"]);
   assert.equal(dashboardDiscoveryFallback.command, "aienvmp start --json");
+  assert.equal(dashboardDiscoveryFallback.entry, ".aienvmp/discovery.json");
   assert.deepEqual(dashboardDiscoveryFallback.decisionValues, ["auto-ready", "fallback-required"]);
   assert.equal(dashboardDiscoveryFallback.nextSetupCommand, "aienvmp onboard");
   assert.match(dashboardDiscoveryFallback.startupChecklist.join(" "), /checkpoint and hand off/);
   assert.deepEqual(dashboardDiscoveryFallback.read, [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
   assert.match(dashboardDiscoveryFallbackClientScript(), /aienvmp start --json/);
+  assert.match(dashboardDiscoveryFallbackClientScript(), /agentDiscoveryEntry/);
   assert.match(dashboardDiscoveryFallbackClientScript(), /agentDiscoveryDecision=/);
   assert.match(dashboardDiscoveryFallbackClientScript(), /fallback-required/);
   assert.match(dashboardDiscoveryFallbackClientScript(), /agentDiscoverySetup/);
   assert.match(dashboardDiscoveryFallbackClientScript(), /startup/);
   assert.ok(dashboardEssentialSurfaces.firstRead.includes("Start here"));
+  assert.ok(dashboardEssentialSurfaces.firstRead.includes("AI entry"));
   assert.equal(dashboardEssentialSurfaces.nextCommand, "Next command");
   assert.ok(dashboardEssentialSurfaces.essentialCards.includes("Light SBOM"));
   assert.match(dashboardEssentialSurfaces.rule, /AI startup contract/);
@@ -518,7 +524,7 @@ test("renderDashboard includes the audit summary surface", () => {
     assert.match(html, new RegExp(`card\\('${title}'`));
   }
   assert.match(html, /const essentialCards=\["AI Session","Environment Health","AI Collaboration","Light SBOM","Agent Pointers","Agent Intents","Environment Ledger","Enforcement Mode","Release Readiness"\]/);
-  assert.match(html, /const essentialSurfaces=\{"controlStrip":\["AI readiness","Freshness","Collaboration","SBOM risk"\],"tenSecondReview":\["Start here","Next command","Review target","Mode"\]/);
+  assert.match(html, /const essentialSurfaces=\{"controlStrip":\["AI readiness","Freshness","Collaboration","SBOM risk"\],"tenSecondReview":\["AI entry","Next command","Review target","Mode"\]/);
   assert.match(html, /data-dashboard-priority=/);
   assert.match(html, /cardPriority\(title\)/);
   assert.match(html, /const agentNames=\{agents:'Codex',claude:'Claude',gemini:'Gemini'\}/);

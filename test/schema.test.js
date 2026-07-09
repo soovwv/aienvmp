@@ -167,6 +167,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.releaseReadiness.batchRule, /one npm publish/);
   assert.equal(schema.dashboard.mode, "light-human-view");
   assert.equal(schema.dashboard.discoveryFallback.command, "aienvmp start --json");
+  assert.equal(schema.dashboard.discoveryFallback.entry, ".aienvmp/discovery.json");
   assert.ok(schema.dashboard.discoveryFallback.decisionValues.includes("fallback-required"));
   assert.equal(schema.dashboard.discoveryFallback.nextSetupCommand, "aienvmp onboard");
   assert.match(schema.dashboard.discoveryFallback.startupChecklist.join(" "), /record intent before/);
@@ -175,7 +176,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.dashboard.releaseDefaults.evidence, "npm run release:check");
   assert.equal(schema.dashboard.qualityDefaults.evidence, "aienvmp start --json && aienvmp context --json");
   assert.deepEqual(schema.dashboard.essentialSurfaces.controlStrip, ["AI readiness", "Freshness", "Collaboration", "SBOM risk"]);
-  assert.deepEqual(schema.dashboard.essentialSurfaces.tenSecondReview, ["Start here", "Next command", "Review target", "Mode"]);
+  assert.deepEqual(schema.dashboard.essentialSurfaces.tenSecondReview, ["AI entry", "Next command", "Review target", "Mode"]);
   assert.ok(schema.dashboard.essentialSurfaces.essentialCards.includes("Light SBOM"));
   assert.equal(schema.dashboard.surfaceBudget.mode, "essential-first");
   assert.equal(schema.dashboard.surfaceBudget.primaryReviewTime, "10 seconds");

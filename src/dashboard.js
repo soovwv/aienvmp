@@ -12,9 +12,9 @@ export const dashboardEssentialCards = Object.freeze([
 
 export const dashboardEssentialSurfaces = Object.freeze({
   controlStrip: ["AI readiness", "Freshness", "Collaboration", "SBOM risk"],
-  tenSecondReview: ["Start here", "Next command", "Review target", "Mode"],
+  tenSecondReview: ["AI entry", "Next command", "Review target", "Mode"],
   nextCommand: "Next command",
-  firstRead: ["AI bootstrap", "Status", "Freshness", "Start here", "Read first", "AI discovery", "Review targets", "Local mode"],
+  firstRead: ["AI bootstrap", "Status", "Freshness", "AI entry", "Start here", "Read first", "AI discovery", "Review targets", "Local mode"],
   essentialCards: dashboardEssentialCards,
   rule: "Keep the control strip, 10-second review, next command, first-read brief, and essential cards visible before adding support cards; the dashboard is a human view of the AI startup contract."
 });
@@ -29,6 +29,7 @@ export const dashboardSurfaceBudget = Object.freeze({
 
 export const dashboardDiscoveryFallback = Object.freeze({
   command: "aienvmp start --json",
+  entry: ".aienvmp/discovery.json",
   decisionValues: ["auto-ready", "fallback-required"],
   nextSetupCommand: "aienvmp onboard",
   startupChecklist: [
@@ -89,10 +90,11 @@ export function dashboardDiscoveryFallbackClientScript() {
     `const dashboardDiscoveryFallback=${JSON.stringify(dashboardDiscoveryFallback)};`,
     "const agentDiscoveryFallbackRead=manifest.preflight?.agentPointers?.fallbackRead||dashboardDiscoveryFallback.read;",
     "const agentDiscoveryFallbackCommand=manifest.preflight?.agentPointers?.fallbackCommand||dashboardDiscoveryFallback.command;",
+    "const agentDiscoveryEntry=manifest.preflight?.artifacts?.discovery||dashboardDiscoveryFallback.entry;",
     "const agentDiscoveryDecision=(agentPointerCount||0)>0?'auto-ready':'fallback-required';",
     "const agentDiscoverySetup=agentDiscoveryDecision==='auto-ready'?'none':dashboardDiscoveryFallback.nextSetupCommand;",
     "const agentDiscoveryChecklist=dashboardDiscoveryFallback.startupChecklist||[];",
-    "const agentDiscoveryFallbackHtml=`<table><tr><th>Decision</th><td><code>${esc(agentDiscoveryDecision)}</code></td></tr><tr><th>Setup</th><td><code>${esc(agentDiscoverySetup)}</code></td></tr><tr><th>Fallback</th><td><code>${esc(agentDiscoveryFallbackCommand)}</code></td></tr><tr><th>Read</th><td><code>${esc(agentDiscoveryFallbackRead.slice(0,4).join(' -> '))}</code></td></tr></table><div class=\"timeline\">${agentDiscoveryChecklist.slice(0,4).map(item=>`<div class=\"event\"><time>startup</time><div>${esc(item)}</div></div>`).join('')}</div>`;"
+    "const agentDiscoveryFallbackHtml=`<table><tr><th>Entry</th><td><code>${esc(agentDiscoveryEntry)}</code></td></tr><tr><th>Decision</th><td><code>${esc(agentDiscoveryDecision)}</code></td></tr><tr><th>Setup</th><td><code>${esc(agentDiscoverySetup)}</code></td></tr><tr><th>Fallback</th><td><code>${esc(agentDiscoveryFallbackCommand)}</code></td></tr><tr><th>Read</th><td><code>${esc(agentDiscoveryFallbackRead.slice(0,4).join(' -> '))}</code></td></tr></table><div class=\"timeline\">${agentDiscoveryChecklist.slice(0,4).map(item=>`<div class=\"event\"><time>startup</time><div>${esc(item)}</div></div>`).join('')}</div>`;"
   ].join("\n");
 }
 
