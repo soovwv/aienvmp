@@ -187,6 +187,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /installed: codex/);
   assert.match(markdown, /missing: claude/);
   assert.match(markdown, /discovery: auto-ready \/ ready: codex \/ none/);
+  assert.match(markdown, /aiEntry: aienvmp start --json \/ read aiEntry for readFirst, nextCommand, setup, intent, checkpoint, handoff, and copyPastePrompt/);
   assert.match(markdown, /## Quality signals/);
   assert.match(markdown, /status: prototype-hardening/);
   assert.match(markdown, /first check: AI entry path \/ aienvmp discover --json && aienvmp status --json && aienvmp context --json/);
@@ -228,6 +229,7 @@ test("summaryWorkspace writes summary.md after sync", async () => {
   assert.match(summary, /environment before:/);
   assert.match(summary, /## Agent pointers/);
   assert.match(summary, /discovery: fallback-required \/ missing: run aienvmp onboard \/ aienvmp onboard/);
+  assert.match(summary, /aiEntry: aienvmp start --json \/ read aiEntry/);
   assert.match(summary, /## Quality signals/);
   assert.match(summary, /quality signals: prototype-hardening/);
   assert.match(summary, /## Release readiness/);

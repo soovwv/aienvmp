@@ -153,6 +153,7 @@ async function writeStateReadme(dir, status = {}) {
     `- freshness: ${freshness}`,
     `- discovery: ${discovery}`,
     `- discovery decision: ${discoveryDecision}`,
+    "- aiEntry: read `.aienvmp/discovery.json` `aiEntry`, then follow `readFirst`, `nextCommand`, `beforeEnvironmentChange`, `afterEnvironmentChange`, and `handoff`",
     `- next setup: \`${nextSetup}\``,
     "- discovery mode: best-effort; use `aienvmp discover --json` when automatic pickup is uncertain",
     "- startup checklist: `start --json` -> read `status.json` -> record `intent` before env changes -> `checkpoint` and `handoff` after changes",
