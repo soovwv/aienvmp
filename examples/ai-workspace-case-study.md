@@ -48,6 +48,7 @@ npx aienvmp checkpoint --actor agent:id --summary "dependency-change" --target d
 - `.aienvmp/summary.md`: compact human/AI handoff
 - `.aienvmp/discovery.json`: smallest fallback entry when an AI host missed an instruction-file pointer
 - `aienvmp discover --json` `aiDiscovery.decision`: `auto-ready` when pointers can be picked up, `fallback-required` when the AI should use the fallback read path
+- `aienvmp discover --json` `aiDiscovery.aiEntry`: one small object with read order, next command, setup command, intent/checkpoint commands, handoff, and copy-paste prompt
 - `aienvmp start --json` `copyPastePrompt`: short text a human can paste into Codex, Claude, Gemini, Cursor, Copilot, or another AI when automatic pickup failed
 - `AIENV.md`: Markdown environment map
 - `.aienvmp/sbom.json`: light SBOM and dependency review hints
@@ -77,6 +78,7 @@ The next AI can answer these before touching the environment:
 - What does `dependencyCoordination` require before dependency or security remediation?
 - What command records the accepted change and handoff?
 - If a new AI did not auto-load the pointer, what `copyPastePrompt` should the human paste?
+- What does `aiEntry` say to read, run next, set up, record before changes, checkpoint after changes, and hand off?
 - Does `aiDiscovery.decision` say automatic pickup is ready, or should this AI use the fallback startup path?
 - Does the dashboard show the same discovery decision for the human operator?
 

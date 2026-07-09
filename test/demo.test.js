@@ -107,6 +107,7 @@ test("multi-agent conflict docs explain the shared AI workspace use case", async
   assert.match(caseStudy, /\.aienvmp\/discovery\.json/);
   assert.match(caseStudy, /\.aienvmp\/status\.json/);
   assert.match(caseStudy, /aiDiscovery\.decision/);
+  assert.match(caseStudy, /aiDiscovery\.aiEntry/);
   assert.match(caseStudy, /copyPastePrompt/);
   assert.match(caseStudy, /Codex, Claude, Gemini, Cursor, Copilot/);
   assert.match(caseStudy, /fallback-required/);
@@ -126,9 +127,9 @@ test("multi-agent conflict docs explain the shared AI workspace use case", async
   assert.match(adoptionGuide, /Do Not Recommend When/);
   assert.match(adoptionGuide, /Discovery Signals/);
   assert.match(adoptionGuide, /\.aienvmp\/README\.md/);
-  assert.match(adoptionGuide, /`start --json` root `discoveryDecision`, `startupChecklist`, `resume`, `copyPastePrompt`, `fallbackPrompt`/);
+  assert.match(adoptionGuide, /`start --json` root `discoveryDecision`, `aiEntry`, `startupChecklist`, `copyPastePrompt`, `fallbackPrompt`/);
   assert.match(adoptionGuide, /paste `copyPastePrompt`/);
-  assert.match(adoptionGuide, /aiDiscovery\.resume/);
+  assert.match(adoptionGuide, /aiDiscovery\.aiEntry/);
   assert.match(adoptionGuide, /aiDiscovery\.copyPastePrompt/);
   assert.match(adoptionGuide, /aiDiscovery\.decision/);
   assert.match(adoptionGuide, /startupChecklist/);

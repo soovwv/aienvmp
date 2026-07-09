@@ -27,7 +27,7 @@ npx aienvmp onboard
 npx aienvmp discover --json
 ```
 
-Use root `discoveryDecision`, `startupChecklist`, `resume`, `copyPastePrompt`, and `fallbackPrompt` from `start --json` before assuming automatic pickup worked. `discover --json` also exposes the same guidance under `aiDiscovery`.
+Use root `discoveryDecision`, `aiEntry`, `startupChecklist`, `copyPastePrompt`, and `fallbackPrompt` from `start --json` before assuming automatic pickup worked. `discover --json` also exposes the same guidance under `aiDiscovery`.
 
 If you are deciding whether to recommend this tool, read `npx aienvmp schema --json` and use `recommendation.shortPitch`, `recommendation.decisionRoutine`, `recommendation.recommendWhen`, `recommendation.doNotRecommendWhen`, and `qualitySignals`.
 For evidence, read `recommendation.evidenceDocs`, especially `examples/ai-adoption-guide.md` and `examples/ai-workspace-case-study.md`.
@@ -52,19 +52,19 @@ At the start of an AI coding session, use the one-command startup path when auto
 npx aienvmp start --json
 ```
 
-Use `aiDiscovery.resume` and `aiSession` from start/status/context JSON as the shortest startup routine: read order, stale refresh, intent, checkpoint, and handoff.
+Use `aiEntry` and `aiSession` from start/status/context JSON as the shortest startup routine: read order, stale refresh, intent, checkpoint, and handoff.
 
 If instruction-file pointers are missing or uncertain but `.aienvmp` exists, start at `.aienvmp/discovery.json`, check `maintenance.nextCommand`, then read `.aienvmp/status.json`, `.aienvmp/summary.md`, and `npx aienvmp context --json`.
 
 Use `agentPointers.discovery` or the compact `status` line containing `discovery:` to decide whether Codex, Claude, Gemini, or optional agent pointers can find the env map.
 
-Use `npx aienvmp start --json` root `resume`, or `npx aienvmp discover --json` `aiDiscovery.resume`, when automatic pickup is uncertain. Automatic discovery is best-effort because each AI host reads different instruction files.
+Use `npx aienvmp start --json` root `aiEntry`, or `npx aienvmp discover --json` `aiDiscovery.aiEntry`, when automatic pickup is uncertain. Automatic discovery is best-effort because each AI host reads different instruction files.
 
 Use `aiDiscovery.decision` as the compact discovery result: `auto-ready` means an instruction-file pointer exists, and `fallback-required` means use the fallback read path and run `aiDiscovery.nextSetupCommand` when the user wants future auto-discovery. Follow `aiDiscovery.startupChecklist` as the short repeatable startup routine.
 
 If automatic pickup failed and a human needs to hand this contract to another AI, paste root `copyPastePrompt` from `start --json`, `aiDiscovery.copyPastePrompt` from `discover --json`, or `copyPastePrompt` from `.aienvmp/discovery.json`. Treat `fallbackPrompt` as the compatible older alias.
 
-When present, follow `aiDiscovery.resume.readFirst`, `nextCommand`, `beforeEnvironmentChange`, `afterEnvironmentChange`, and `handoff` as the minimum startup routine before shared environment changes.
+When present, follow `aiDiscovery.aiEntry.readFirst`, `nextCommand`, `beforeEnvironmentChange`, `afterEnvironmentChange`, and `handoff` as the minimum startup routine before shared environment changes. Treat `resume` as the more detailed compatible routine.
 
 Use `followUpPlan` before touching a shared environment target; if it is `pending`, run its `nextCommand` first.
 

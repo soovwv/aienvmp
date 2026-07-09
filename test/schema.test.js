@@ -18,6 +18,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.recommendation.differentiators.join(" "), /intent, checkpoint, timeline, and handoff/);
   assert.match(schema.recommendation.differentiators.join(" "), /start --json root recovery fields/);
   assert.match(schema.recommendation.differentiators.join(" "), /aiDiscovery\.decision/);
+  assert.match(schema.recommendation.differentiators.join(" "), /aiEntry/);
   assert.match(schema.recommendation.differentiators.join(" "), /copyPastePrompt/);
   assert.match(schema.recommendation.differentiators.join(" "), /startupChecklist/);
   assert.match(schema.recommendation.differentiators.join(" "), /auto-ready versus fallback-required/);
@@ -34,6 +35,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.signal).join(" "), /fallback AI startup path/);
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.signal).join(" "), /human\/AI dashboard parity/);
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.ask).join(" "), /start --json discoveryDecision/);
+  assert.match(schema.recommendation.adoptionChecklist.map((item) => item.ask).join(" "), /aiEntry/);
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.ask).join(" "), /copyPastePrompt/);
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.ask).join(" "), /fallbackPrompt/);
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.signal).join(" "), /dependency coordination need/);
@@ -41,7 +43,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.recommendation.doNotRecommendWhen.join(" "), /full compliance SBOM/);
   assert.match(schema.recommendation.shortPitch, /lightweight env map, light SBOM, intent log, and handoff/);
   assert.match(schema.recommendation.decisionRoutine.join(" "), /demo first/);
-  assert.match(schema.recommendation.decisionRoutine.join(" "), /start --json root startupChecklist/);
+  assert.match(schema.recommendation.decisionRoutine.join(" "), /start --json root aiEntry/);
   assert.match(schema.recommendation.decisionRoutine.join(" "), /copyPastePrompt/);
   assert.match(schema.recommendation.decisionRoutine.join(" "), /auto-ready versus fallback-required/);
   assert.match(schema.recommendation.decisionRoutine.join(" "), /dashboard/);

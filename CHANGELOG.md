@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Aligned the adoption guide, shared-server case study, packaged AI skill, and recommendation contract around `aiEntry` as the shortest fallback startup routine.
 - Added compact `aiEntry` recovery fields to `discover --json`, `start --json`, and generated `.aienvmp/discovery.json` so AI hosts can recover from missed automatic discovery with one small object.
 - Updated CLI help and README command wording so the copy-paste fallback prompt is discoverable before reading JSON.
 - Added `copy-paste prompt:` to default `start` and `discover` text output so humans can hand the fallback instruction to another AI without parsing JSON.
