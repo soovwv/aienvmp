@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Moved dashboard release and quality fallback defaults into the dashboard contract so humans and AI see the same batched-release and startup-quality policy.
 - Moved dashboard discovery fallback defaults into the dashboard contract module so the renderer owns less AI startup policy.
 - Added `aienvmp start` as a one-command AI startup path that discovers artifacts, syncs only when needed, and prints status when automatic instruction-file discovery is uncertain.
 - Added demo `AI proof signals` so the first proof run surfaces fallback discovery, dependency coordination, and lightweight operation strengths.

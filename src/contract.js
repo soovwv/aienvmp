@@ -1,4 +1,4 @@
-import { dashboardDiscoveryFallback, dashboardEssentialSurfaces, dashboardSurfaceBudget } from "./dashboard.js";
+import { dashboardDiscoveryFallback, dashboardEssentialSurfaces, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardSurfaceBudget } from "./dashboard.js";
 
 export function preflightContract() {
   return {
@@ -261,6 +261,8 @@ export function schemaContract() {
       essentialSurfaces: dashboardEssentialSurfaces,
       surfaceBudget: dashboardSurfaceBudget,
       discoveryFallback: dashboardDiscoveryFallback,
+      releaseDefaults: dashboardReleaseDefaults,
+      qualityDefaults: dashboardQualityDefaults,
       rule: "Dashboard support cards may grow, but the control strip, 10-second review, next command, first-read brief, and essential cards should stay visible and aligned with AI outputs."
     },
     releaseGate: {

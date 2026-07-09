@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { dashWorkspace } from "../src/commands/dash.js";
 import { writeJson } from "../src/fsutil.js";
-import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallback, dashboardDiscoveryFallbackClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
+import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallback, dashboardDiscoveryFallbackClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
 
 test("renderDashboard includes the audit summary surface", () => {
   const html = renderDashboard({
@@ -475,6 +475,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardEnvironmentProtocolClientScript(), /Before shared environment changes/);
   assert.match(dashboardEnvironmentProtocolClientScript(), /mustNotDo/);
   assert.match(dashboardReleaseReadinessClientScript(), /const releaseChecks=releaseReadiness\?\.requiredBeforeStable\|\|\[\]/);
+  assert.match(dashboardReleaseReadinessClientScript(), /const dashboardReleaseDefaults=/);
   assert.match(dashboardReleaseReadinessClientScript(), /const currentBatch=releaseReadiness\?\.currentBatch\|\|\{\}/);
   assert.match(dashboardReleaseReadinessClientScript(), /const releaseEvidence=releaseReadiness\?\.evidenceCommands\|\|\[\]/);
   assert.match(dashboardReleaseReadinessClientScript(), /const releaseFocus=releaseReadiness\?\.stabilizationFocus\|\|\[\]/);
@@ -483,8 +484,12 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardReleaseReadinessClientScript(), /single AI-readable/);
   assert.match(dashboardReleaseReadinessClientScript(), /Batch meaningful changes before one npm publish/);
   assert.match(dashboardReleaseReadinessClientScript(), /currentBatch\.themes/);
+  assert.equal(dashboardReleaseDefaults.target, "0.2.0");
+  assert.equal(dashboardReleaseDefaults.evidence, "npm run release:check");
   assert.match(dashboardQualitySignalsClientScript(), /const qualitySignals=manifest\.preflight\?\.qualitySignals/);
+  assert.match(dashboardQualitySignalsClientScript(), /const dashboardQualityDefaults=/);
   assert.match(dashboardQualitySignalsClientScript(), /AI-friendly/);
+  assert.equal(dashboardQualityDefaults.evidence, "aienvmp start --json && aienvmp context --json");
   assert.match(dashboardQualitySignalsClientScript(), /First check/);
   assert.match(dashboardQualitySignalsClientScript(), /do not require background services/);
   for (const title of dashboardEssentialCards) {

@@ -33,6 +33,32 @@ export const dashboardDiscoveryFallback = Object.freeze({
   rule: "When automatic instruction-file discovery is uncertain, show the one-command AI startup fallback before lower-level discovery details."
 });
 
+export const dashboardReleaseDefaults = Object.freeze({
+  target: "0.2.0",
+  status: "prototype-hardening",
+  decision: "hold",
+  next: "Keep accumulating tested changes until the batch is intentionally versioned.",
+  batchStatus: "accumulating",
+  batchType: "stability-batch",
+  gate: "npm run release:check passes locally",
+  evidence: "npm run release:check",
+  focus: "AI contract stabilization",
+  publishWhen: "meaningful changes are batched",
+  holdWhen: "changes can be batched",
+  batchRule: "Batch meaningful changes before one npm publish.",
+  publishRule: "Treat publishGate.status as the single AI-readable npm publish decision; local commits may continue while npm publish remains held.",
+  stableContractRule: "After 0.2.0, documented JSON fields stay additive and backward-compatible."
+});
+
+export const dashboardQualityDefaults = Object.freeze({
+  status: "prototype-hardening",
+  principles: ["AI-friendly", "simple", "lightweight", "advisory-first", "batched-release"],
+  firstCheck: "AI entry path",
+  evidence: "aienvmp start --json && aienvmp context --json",
+  mustStayTrue: "do not require background services, daemons, or lock managers for the default flow",
+  rule: "Keep the default product lightweight and AI-readable before adding deeper integrations."
+});
+
 export function dashboardCardPriority(title) {
   return dashboardEssentialCards.includes(title) ? "essential" : "support";
 }
@@ -150,21 +176,23 @@ export function dashboardEnvironmentProtocolClientScript() {
 
 export function dashboardReleaseReadinessClientScript() {
   return [
+    `const dashboardReleaseDefaults=${JSON.stringify(dashboardReleaseDefaults)};`,
     "const releaseChecks=releaseReadiness?.requiredBeforeStable||[];",
     "const publishDecision=releaseReadiness?.publishDecision||{};",
     "const currentBatch=releaseReadiness?.currentBatch||{};",
     "const releaseEvidence=releaseReadiness?.evidenceCommands||[];",
     "const releaseFocus=releaseReadiness?.stabilizationFocus||[];",
     "const publishGate=releaseReadiness?.publishGate||{};",
-    "const releaseReadinessHtml=`<table><tr><th>Target</th><td><code>${esc(releaseReadiness?.target||'0.2.0')}</code></td></tr><tr><th>Status</th><td><code>${esc(releaseReadiness?.status||'prototype-hardening')}</code></td></tr><tr><th>Decision</th><td><code>${esc(publishGate.status||publishDecision.default||'hold')}</code></td></tr><tr><th>Next</th><td>${esc(publishGate.nextAction||'Keep accumulating tested changes until the batch is intentionally versioned.')}</td></tr><tr><th>Batch</th><td><code>${esc(currentBatch.status||'accumulating')}</code> ${esc(currentBatch.releaseType||'stability-batch')}</td></tr><tr><th>Gate</th><td><code>${esc(releaseChecks[0]||'npm run release:check passes locally')}</code></td></tr><tr><th>Evidence</th><td><code>${esc((publishGate.requiredEvidence||releaseEvidence)[0]||'npm run release:check')}</code></td></tr><tr><th>Focus</th><td>${esc(releaseFocus[0]||'AI contract stabilization')}</td></tr><tr><th>Publish when</th><td>${esc((publishGate.readyWhen||publishDecision.publishWhen||[])[0]||'meaningful changes are batched')}</td></tr><tr><th>Hold when</th><td>${esc((publishGate.holdWhen||publishDecision.holdWhen||[])[0]||'changes can be batched')}</td></tr></table><div class=\"timeline\">${(currentBatch.themes||[]).slice(0,5).map(item=>`<div class=\"event\"><time>batch</time><div>${esc(item)}</div></div>`).join('')}</div><div class=\"timeline\">${(publishGate.readyWhen||releaseChecks).slice(1,5).map(item=>`<div class=\"event\"><time>ready</time><div>${esc(item)}</div></div>`).join('')}</div><div class=\"timeline\">${(publishGate.requiredEvidence||releaseEvidence).slice(1,4).map(cmd=>`<div class=\"event\"><time>proof</time><div><code>${esc(cmd)}</code></div></div>`).join('')}</div><div class=\"path\">${esc(publishGate.reason||currentBatch.reason||releaseReadiness?.batchRule||'Batch meaningful changes before one npm publish.')}</div><div class=\"path\">${esc(publishGate.rule||'Treat publishGate.status as the single AI-readable npm publish decision; local commits may continue while npm publish remains held.')}</div><div class=\"path\">${esc(releaseReadiness?.stableContractRule||'After 0.2.0, documented JSON fields stay additive and backward-compatible.')}</div>`;"
+    "const releaseReadinessHtml=`<table><tr><th>Target</th><td><code>${esc(releaseReadiness?.target||dashboardReleaseDefaults.target)}</code></td></tr><tr><th>Status</th><td><code>${esc(releaseReadiness?.status||dashboardReleaseDefaults.status)}</code></td></tr><tr><th>Decision</th><td><code>${esc(publishGate.status||publishDecision.default||dashboardReleaseDefaults.decision)}</code></td></tr><tr><th>Next</th><td>${esc(publishGate.nextAction||dashboardReleaseDefaults.next)}</td></tr><tr><th>Batch</th><td><code>${esc(currentBatch.status||dashboardReleaseDefaults.batchStatus)}</code> ${esc(currentBatch.releaseType||dashboardReleaseDefaults.batchType)}</td></tr><tr><th>Gate</th><td><code>${esc(releaseChecks[0]||dashboardReleaseDefaults.gate)}</code></td></tr><tr><th>Evidence</th><td><code>${esc((publishGate.requiredEvidence||releaseEvidence)[0]||dashboardReleaseDefaults.evidence)}</code></td></tr><tr><th>Focus</th><td>${esc(releaseFocus[0]||dashboardReleaseDefaults.focus)}</td></tr><tr><th>Publish when</th><td>${esc((publishGate.readyWhen||publishDecision.publishWhen||[])[0]||dashboardReleaseDefaults.publishWhen)}</td></tr><tr><th>Hold when</th><td>${esc((publishGate.holdWhen||publishDecision.holdWhen||[])[0]||dashboardReleaseDefaults.holdWhen)}</td></tr></table><div class=\"timeline\">${(currentBatch.themes||[]).slice(0,5).map(item=>`<div class=\"event\"><time>batch</time><div>${esc(item)}</div></div>`).join('')}</div><div class=\"timeline\">${(publishGate.readyWhen||releaseChecks).slice(1,5).map(item=>`<div class=\"event\"><time>ready</time><div>${esc(item)}</div></div>`).join('')}</div><div class=\"timeline\">${(publishGate.requiredEvidence||releaseEvidence).slice(1,4).map(cmd=>`<div class=\"event\"><time>proof</time><div><code>${esc(cmd)}</code></div></div>`).join('')}</div><div class=\"path\">${esc(publishGate.reason||currentBatch.reason||releaseReadiness?.batchRule||dashboardReleaseDefaults.batchRule)}</div><div class=\"path\">${esc(publishGate.rule||dashboardReleaseDefaults.publishRule)}</div><div class=\"path\">${esc(releaseReadiness?.stableContractRule||dashboardReleaseDefaults.stableContractRule)}</div>`;"
   ].join("\n");
 }
 
 export function dashboardQualitySignalsClientScript() {
   return [
+    `const dashboardQualityDefaults=${JSON.stringify(dashboardQualityDefaults)};`,
     "const qualitySignals=manifest.preflight?.qualitySignals||schemaQualitySignals||{};",
-    "const qualityPrinciples=qualitySignals.principles||['AI-friendly','simple','lightweight','advisory-first','batched-release'];",
+    "const qualityPrinciples=qualitySignals.principles||dashboardQualityDefaults.principles;",
     "const qualityChecks=qualitySignals.checks||[];",
-    "const qualitySignalsHtml=`<table><tr><th>Status</th><td><code>${esc(qualitySignals.status||'prototype-hardening')}</code></td></tr><tr><th>Principles</th><td>${esc(qualityPrinciples.join(', '))}</td></tr><tr><th>First check</th><td>${esc(qualityChecks[0]?.name||'AI entry path')}</td></tr><tr><th>Evidence</th><td><code>${esc(qualityChecks[0]?.evidence||'aienvmp discover --json && aienvmp status --json && aienvmp context --json')}</code></td></tr></table><div class=\"timeline\">${qualityChecks.slice(0,5).map(item=>`<div class=\"event\"><time>quality</time><div><b>${esc(item.name)}</b> ${esc(item.signal||'')}</div></div>`).join('')}</div><div class=\"path\">${esc((qualitySignals.mustStayTrue||[])[0]||'do not require background services, daemons, or lock managers for the default flow')}</div><div class=\"path\">${esc(qualitySignals.rule||'Keep the default product lightweight and AI-readable before adding deeper integrations.')}</div>`;"
+    "const qualitySignalsHtml=`<table><tr><th>Status</th><td><code>${esc(qualitySignals.status||dashboardQualityDefaults.status)}</code></td></tr><tr><th>Principles</th><td>${esc(qualityPrinciples.join(', '))}</td></tr><tr><th>First check</th><td>${esc(qualityChecks[0]?.name||dashboardQualityDefaults.firstCheck)}</td></tr><tr><th>Evidence</th><td><code>${esc(qualityChecks[0]?.evidence||dashboardQualityDefaults.evidence)}</code></td></tr></table><div class=\"timeline\">${qualityChecks.slice(0,5).map(item=>`<div class=\"event\"><time>quality</time><div><b>${esc(item.name)}</b> ${esc(item.signal||'')}</div></div>`).join('')}</div><div class=\"path\">${esc((qualitySignals.mustStayTrue||[])[0]||dashboardQualityDefaults.mustStayTrue)}</div><div class=\"path\">${esc(qualitySignals.rule||dashboardQualityDefaults.rule)}</div>`;"
   ].join("\n");
 }

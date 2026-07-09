@@ -149,6 +149,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.dashboard.mode, "light-human-view");
   assert.equal(schema.dashboard.discoveryFallback.command, "aienvmp start --json");
   assert.deepEqual(schema.dashboard.discoveryFallback.read, [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
+  assert.equal(schema.dashboard.releaseDefaults.target, "0.2.0");
+  assert.equal(schema.dashboard.releaseDefaults.evidence, "npm run release:check");
+  assert.equal(schema.dashboard.qualityDefaults.evidence, "aienvmp start --json && aienvmp context --json");
   assert.deepEqual(schema.dashboard.essentialSurfaces.controlStrip, ["AI readiness", "Freshness", "Collaboration", "SBOM risk"]);
   assert.deepEqual(schema.dashboard.essentialSurfaces.tenSecondReview, ["Start here", "Next command", "Review target", "Mode"]);
   assert.ok(schema.dashboard.essentialSurfaces.essentialCards.includes("Light SBOM"));
