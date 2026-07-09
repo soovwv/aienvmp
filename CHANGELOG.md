@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `dependencyQuickCheck` to AI startup checklists so dependency, lockfile, security, and release work starts from the same discovery-first coordination routine.
 - Aligned light SBOM and dependency coordination read orders with `.aienvmp/discovery.json` so dependency work starts from the same AI maintenance entry path.
 - Surfaced the AI maintenance decision in the dashboard first-read strip and conflict demo so ongoing upkeep is visible outside `discovery.json`.
 - Added `discovery.json.maintenance` so AI agents get one compact ongoing environment upkeep decision from the smallest fallback entry artifact.

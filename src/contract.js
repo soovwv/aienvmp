@@ -239,8 +239,8 @@ export function schemaContract() {
       startupChecklist: [
         "run aienvmp start --json when automatic discovery is uncertain",
         "read .aienvmp/discovery.json, .aienvmp/status.json, and .aienvmp/summary.md",
-        "record intent before runtime, dependency, package manager, Docker, or global-tool changes",
-        "checkpoint and hand off after accepted environment changes"
+        "check dependencyQuickCheck before dependency, lockfile, security, or release work",
+        "record intent before shared environment changes, then checkpoint and hand off after accepted changes"
       ],
       sessionStart: [
         "Treat the aienvmp marker block as the live environment pointer.",

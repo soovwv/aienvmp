@@ -133,9 +133,9 @@ function aiDiscoverySummary({ detected = false, stale = true, agentPointers = {}
   const nextSetupCommand = installed.length ? "none" : "npx aienvmp onboard";
   const startupChecklist = [
     "run npx aienvmp start --json when automatic discovery is uncertain",
-    "read .aienvmp/README.md, .aienvmp/status.json, and .aienvmp/summary.md",
-    "record intent before runtime, dependency, package manager, Docker, or global-tool changes",
-    "checkpoint and hand off after accepted environment changes"
+    "read .aienvmp/discovery.json, .aienvmp/status.json, and .aienvmp/summary.md",
+    "check dependencyQuickCheck before dependency, lockfile, security, or release work",
+    "record intent before shared environment changes, then checkpoint and hand off after accepted changes"
   ];
   return {
     mode: "best-effort",

@@ -35,8 +35,8 @@ export const dashboardDiscoveryFallback = Object.freeze({
   startupChecklist: [
     "run aienvmp start --json when automatic discovery is uncertain",
     "read .aienvmp/discovery.json, .aienvmp/status.json, and .aienvmp/summary.md",
-    "record intent before shared environment changes",
-    "checkpoint and hand off after accepted environment changes"
+    "check dependencyQuickCheck before dependency, lockfile, security, or release work",
+    "record intent before shared environment changes, then checkpoint and hand off after accepted changes"
   ],
   read: [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
   rule: "When automatic instruction-file discovery is uncertain, show the one-command AI startup fallback before lower-level discovery details."

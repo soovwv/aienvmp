@@ -24,6 +24,7 @@ test("discover reports missing aienvmp artifacts without writing files", async (
   assert.equal(result.aiDiscovery.safeStart, "npx aienvmp sync");
   assert.equal(result.aiDiscovery.resume.nextCommand, "npx aienvmp sync");
   assert.equal(result.aiDiscovery.resume.readFirst[0], ".aienvmp/discovery.json");
+  assert.match(result.aiDiscovery.startupChecklist.join(" "), /dependencyQuickCheck/);
   assert.match(result.aiDiscovery.startupChecklist.join(" "), /checkpoint and hand off/);
   assert.match(result.aiDiscovery.resume.beforeEnvironmentChange, /planned-change/);
   assert.match(result.aiDiscovery.resume.afterEnvironmentChange, /checkpoint/);
@@ -93,6 +94,7 @@ test("discover JSON output is machine-readable for AI agents", async () => {
   assert.equal(json.aiDiscovery.nextSetupCommand, "npx aienvmp onboard");
   assert.equal(json.aiDiscovery.resume.handoff, "aienvmp handoff --record --actor agent:id");
   assert.match(json.aiDiscovery.startupChecklist.join(" "), /record intent before/);
+  assert.match(json.aiDiscovery.startupChecklist.join(" "), /dependencyQuickCheck/);
   assert.match(json.aiDiscovery.resume.allowed, /project-local code work/);
   assert.ok(json.aiDiscovery.sessionStart.some((item) => item.includes("Record intent")));
   assert.match(json.aiDiscovery.fallbackPrompt, /aienvmp context --json/);

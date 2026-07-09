@@ -286,6 +286,7 @@ test("buildStatus exposes agent pointer discovery hints", () => {
   assert.equal(status.agentPointers.onboardCommand, "aienvmp onboard");
   assert.equal(status.agentPointers.discoveryDecision, "auto-ready");
   assert.equal(status.agentPointers.nextSetupCommand, "none");
+  assert.match(status.agentPointers.startupChecklist.join(" "), /dependencyQuickCheck/);
   assert.match(status.agentPointers.startupChecklist.join(" "), /checkpoint and hand off/);
   assert.equal(status.agentPointers.fallbackCommand, "aienvmp start --json");
   assert.deepEqual(status.agentPointers.fallbackRead, [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);

@@ -97,9 +97,9 @@ async function writeDiscoveryArtifact(dir, status = {}) {
     },
     startupChecklist: status.agentPointers?.startupChecklist || [
       "run npx aienvmp start --json when automatic discovery is uncertain",
-      "read .aienvmp/status.json before environment-affecting work",
-      "record intent before shared environment changes",
-      "checkpoint and hand off after accepted environment changes"
+      "read .aienvmp/discovery.json and .aienvmp/status.json before environment-affecting work",
+      "check dependencyQuickCheck before dependency, lockfile, security, or release work",
+      "record intent before shared environment changes, then checkpoint and hand off after accepted changes"
     ],
     resume: {
       readFirst: readOrder,

@@ -100,6 +100,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.deepEqual(schema.agentDiscovery.fallbackRead, [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
   assert.ok(schema.agentDiscovery.optionalFiles.includes(".github/copilot-instructions.md"));
   assert.deepEqual(schema.agentDiscovery.files, ["AGENTS.md", "CLAUDE.md", "GEMINI.md"]);
+  assert.match(schema.agentDiscovery.startupChecklist.join(" "), /dependencyQuickCheck/);
   assert.match(schema.agentDiscovery.startupChecklist.join(" "), /record intent before/);
   assert.ok(schema.agentDiscovery.sessionStart.includes("Start at .aienvmp/discovery.json when artifacts are present, then read .aienvmp/status.json."));
   assert.match(schema.agentDiscovery.rule, /shared live env map/);
