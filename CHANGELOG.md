@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Converted the dashboard main grid cards to a `mainCards` client-side list so core card order and labels are easier to review and test.
 - Moved dashboard card markup into `dashboardCardClientScript` so card priority rendering is centralized before further card-list simplification.
 - Split dashboard CSS into `dashboardStyle` so the essential human review surfaces can be tested separately from the HTML shell.
 - Split dashboard document shell rendering into `dashboardDocument` so payload, HTML shell, and client script responsibilities are easier to test separately.

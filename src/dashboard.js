@@ -104,6 +104,22 @@ export function dashboardCardClientScript() {
   ].join("\n");
 }
 
+export function dashboardMainCardsClientScript() {
+  return [
+    "const mainCards=[",
+    "['Runtimes',`<span class=\"pill\">${entries(manifest.runtimes).length} found</span>`,`<table>${rows(manifest.runtimes)}</table>`],",
+    "['Package Managers',`<span class=\"pill\">${entries(manifest.packageManagers).length} found</span>`,`<table>${rows(manifest.packageManagers)}</table>`],",
+    "['Containers',manifest.containers?.docker?'<span class=\"pill\">available</span>':'<span class=\"pill off\">not detected</span>',`<table>${rows(manifest.containers)}</table>`],",
+    "['Project Hints',`<span class=\"pill\">${entries(manifest.projectHints).length} hints</span>`,`<table>${rows(manifest.projectHints)}</table>`],",
+    "['Global Inventory',manifest.inventory?.enabled?'<span class=\"pill\">deep</span>':'<span class=\"pill off\">basic</span>',inventoryHtml],",
+    "['Dependency Snapshot','<span class=\"pill\">'+(depSummary.packages||0)+' packages</span>',depHtml],",
+    "['Light SBOM','<span class=\"pill\">'+(lightSbomSummary.packages||0)+' packages</span>',lightSbomHtml],",
+    "['Security Summary',sec.enabled?'<span class=\"pill warn\">security</span>':'<span class=\"pill off\">basic</span>',securityHtml]",
+    "];",
+    "const mainCardsHtml=mainCards.map(([title,badge,body])=>card(title,badge,body)).join('');"
+  ].join("\n");
+}
+
 export function dashboardDiscoveryFallbackClientScript() {
   return [
     `const dashboardDiscoveryFallback=${JSON.stringify(dashboardDiscoveryFallback)};`,
