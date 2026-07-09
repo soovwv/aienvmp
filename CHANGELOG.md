@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added demo `AI proof signals` so the first proof run surfaces fallback discovery, dependency coordination, and lightweight operation strengths.
 - Updated AI recommendation guidance with `aiDiscovery.resume`, `sbom.dependencyCoordination`, and `releaseReadiness.publishGate` adoption signals.
 - Added `releaseReadiness.publishGate` so AI/CI have one hold-or-publish decision for the batched 0.2.0 stability release.
 - Mirrored `sbom.dependencyCoordination` in the dashboard Light SBOM card so humans see the same dependency-change coordination loop as AI agents.

@@ -23,11 +23,18 @@ export async function demoWorkspace(args = {}) {
   const status = await statusWorkspace({ dir, json: false, quiet: true });
   const context = await captureJson(() => contextWorkspace({ dir, json: true }));
   const recommendation = schemaContract().recommendation;
+  const adoptionSignals = (recommendation.adoptionChecklist || []).map((item) => item.signal);
+  const aiProofSignals = adoptionSignals.filter((item) => [
+    "fallback AI startup path",
+    "dependency coordination need",
+    "lightweight operation required"
+  ].includes(item));
   const result = {
     name: "aienvmp multi-agent conflict demo",
     workspace: dir,
     recommendation: recommendation.shortPitch,
-    adoptionSignals: (recommendation.adoptionChecklist || []).map((item) => item.signal),
+    adoptionSignals,
+    aiProofSignals,
     evidenceDocs: recommendation.evidenceDocs,
     aiDiscovery: status.agentPointers?.discovery || "unknown",
     collaboration: status.collaboration?.status || "unknown",
@@ -63,6 +70,7 @@ export async function demoWorkspace(args = {}) {
     console.log(`context fields: ${result.contextFields.join(", ")}`);
     console.log(`recommendation: ${result.recommendation}`);
     console.log(`adoption signals: ${result.adoptionSignals.slice(0, 3).join(", ")}`);
+    console.log(`AI proof signals: ${result.aiProofSignals.join(", ")}`);
     console.log(`evidence: ${result.evidenceDocs.slice(0, 2).join(", ")}`);
     console.log(`why: ${result.point}`);
   }

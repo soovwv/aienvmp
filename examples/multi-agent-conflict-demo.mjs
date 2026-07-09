@@ -24,6 +24,12 @@ const conflictTargets = status.coordination?.conflictTargets || [];
 const collaboration = status.collaboration?.status || "unknown";
 const discovery = status.agentPointers?.discovery || "unknown";
 const recommendation = schemaContract().recommendation;
+const adoptionSignals = (recommendation.adoptionChecklist || []).map((item) => item.signal);
+const aiProofSignals = adoptionSignals.filter((item) => [
+  "fallback AI startup path",
+  "dependency coordination need",
+  "lightweight operation required"
+].includes(item));
 
 if (!conflictTargets.includes("dependency")) {
   throw new Error("demo failed: dependency conflict was not detected");
@@ -43,7 +49,8 @@ const readOrder = status.aiSession?.readFirst || status.readOrder || [
 console.log(`read order: ${readOrder.join(" -> ")}`);
 console.log(`context fields: ${Object.keys(context).filter((key) => ["status", "aiBootstrap", "collaboration", "coordination", "agentPointers", "lightSbom"].includes(key)).join(", ")}`);
 console.log(`recommendation: ${recommendation.shortPitch}`);
-console.log(`adoption signals: ${(recommendation.adoptionChecklist || []).map((item) => item.signal).slice(0, 3).join(", ")}`);
+console.log(`adoption signals: ${adoptionSignals.slice(0, 3).join(", ")}`);
+console.log(`AI proof signals: ${aiProofSignals.join(", ")}`);
 console.log(`evidence: ${recommendation.evidenceDocs.slice(0, 2).join(", ")}`);
 
 async function run(command, args = []) {
