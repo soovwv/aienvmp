@@ -113,6 +113,7 @@ test("multi-agent conflict docs explain the shared AI workspace use case", async
   assert.match(adoptionGuide, /Adoption Checklist/);
   assert.match(adoptionGuide, /most answers are yes/);
   assert.match(adoptionGuide, /lockfiles, or vulnerability remediation/);
+  assert.match(adoptionGuide, /different software versions/);
   assert.match(adoptionGuide, /Positioning/);
   assert.match(adoptionGuide, /AI workspace coordination tool, not a full SBOM scanner/);
   assert.match(adoptionGuide, /future AI sessions need the same environment truth/);

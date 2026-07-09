@@ -9,6 +9,7 @@
 `aienvmp` helps multiple AI agents safely share one development environment with a lightweight env map, light SBOM, intent log, timeline, and handoff. Use it on shared servers, repos, laptops, or CI workspaces where people or AI agents need the same environment truth without heavy locks, backed by a dependency-free install.
 
 - Use: AI agents share environment-affecting work.
+- Prevent: different AI agents silently installing or assuming different software versions.
 - Skip: you only need a full compliance SBOM scanner or hard policy lock manager.
 - AI signal: shared Codex/Claude/Gemini work, version drift, or repeated env handoffs.
 - SBOM signal: use Syft, Trivy, Grype, or Dependency-Track for full evidence; keep `aienvmp` as the AI coordination layer.

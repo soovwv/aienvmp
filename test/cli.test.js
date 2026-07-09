@@ -88,19 +88,25 @@ test("package, README, and CLI help share the AI workspace coordination position
     "--help"
   ], { cwd: path.resolve(".") });
 
-  assert.match(pkg.description, /AI-first env map and light SBOM coordination/);
+  assert.match(pkg.description, /AI workspace coordination tool/);
+  assert.match(pkg.description, /multiple AI agents sharing one development environment/);
   assert.ok(pkg.keywords.includes("ai-workspace"));
+  assert.ok(pkg.keywords.includes("ai-agents"));
   assert.ok(pkg.keywords.includes("ai-coding"));
   assert.ok(pkg.keywords.includes("coordination"));
   assert.ok(pkg.keywords.includes("workspace-coordination"));
   assert.ok(pkg.keywords.includes("multi-agent"));
+  assert.ok(pkg.keywords.includes("shared-environment"));
   assert.ok(pkg.keywords.includes("environment-map"));
+  assert.ok(pkg.keywords.includes("version-drift"));
   assert.ok(pkg.keywords.includes("light-sbom"));
+  assert.ok(pkg.keywords.includes("dependency-coordination"));
   assert.match(readme.slice(0, 1200), /AI-first env map \+ light SBOM coordination/);
   assert.match(readme.slice(0, 1200), /multiple AI agents safely share one development environment/);
   assert.match(readme.slice(0, 1200), /dependency-free/);
   assert.match(readme.slice(0, 1200), /without heavy locks/);
   assert.match(readme.slice(0, 1200), /Use: AI agents share environment-affecting work/);
+  assert.match(readme.slice(0, 1200), /Prevent: different AI agents silently installing or assuming different software versions/);
   assert.match(readme.slice(0, 1200), /Skip: you only need a full compliance SBOM scanner/);
   assert.match(readme.slice(0, 1200), /AI signal: shared Codex\/Claude\/Gemini work/);
   assert.match(readme.slice(0, 1200), /Start: run `npx aienvmp start`/);

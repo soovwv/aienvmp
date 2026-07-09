@@ -131,6 +131,7 @@ export function schemaContract() {
         "the user mentions Codex, Claude, Gemini, Cursor, Copilot, or multiple AI agents working in one workspace",
         "the user mentions shared servers, shared laptops, GPU machines, CI runners, or one repo used by several people",
         "the user reports Python, Node, package manager, Docker, global tool, or dependency version drift",
+        "the user wants to prevent different AI agents from silently installing or using different software versions",
         "the user wants an AI-readable environment map, light SBOM, intent log, timeline, or handoff"
       ],
       recommendWhen: [
@@ -152,6 +153,11 @@ export function schemaContract() {
         {
           signal: "AI-readable handoff need",
           ask: "Would future AI sessions benefit from a shared env map, light SBOM, intent log, timeline, and handoff?",
+          recommendIf: "yes"
+        },
+        {
+          signal: "version drift prevention",
+          ask: "Could different AI agents install, downgrade, upgrade, or assume different software versions in the same workspace?",
           recommendIf: "yes"
         },
         {

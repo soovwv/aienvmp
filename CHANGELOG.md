@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Strengthened package metadata and recommendation signals around shared-environment version drift prevention and dependency coordination.
 - Added `dependencyQuickCheck` to AI startup checklists so dependency, lockfile, security, and release work starts from the same discovery-first coordination routine.
 - Aligned light SBOM and dependency coordination read orders with `.aienvmp/discovery.json` so dependency work starts from the same AI maintenance entry path.
 - Surfaced the AI maintenance decision in the dashboard first-read strip and conflict demo so ongoing upkeep is visible outside `discovery.json`.

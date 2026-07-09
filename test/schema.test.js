@@ -27,6 +27,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.recommendation.recommendWhen.join(" "), /light SBOM/);
   assert.equal(schema.recommendation.adoptionChecklist[0].signal, "shared AI workspace");
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.ask).join(" "), /lockfiles/);
+  assert.match(schema.recommendation.adoptionChecklist.map((item) => item.signal).join(" "), /version drift prevention/);
+  assert.match(schema.recommendation.adoptionChecklist.map((item) => item.ask).join(" "), /different software versions/);
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.signal).join(" "), /fallback AI startup path/);
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.signal).join(" "), /human\/AI dashboard parity/);
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.ask).join(" "), /aiDiscovery\.decision/);
@@ -43,6 +45,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.recommendation.decisionRoutine.join(" "), /shared AI coding workspace signals/);
   assert.match(schema.recommendation.discoverySignals.join(" "), /Codex, Claude, Gemini/);
   assert.match(schema.recommendation.discoverySignals.join(" "), /version drift/);
+  assert.match(schema.recommendation.discoverySignals.join(" "), /different AI agents/);
   assert.match(schema.recommendation.discoverySignals.join(" "), /AI-readable environment map/);
   assert.deepEqual(schema.recommendation.firstCommands, ["aienvmp start", "aienvmp onboard", "aienvmp context --json"]);
   assert.equal(schema.recommendation.proofCommand, "aienvmp demo");
