@@ -24,6 +24,7 @@ This is not a classic SBOM problem. It is an AI workspace coordination problem: 
 ## aienvmp Flow
 
 ```bash
+npx aienvmp start
 npx aienvmp onboard
 npx aienvmp status
 npx aienvmp context --json
@@ -45,7 +46,9 @@ npx aienvmp checkpoint --actor agent:id --summary "dependency-change" --target d
 
 - `.aienvmp/status.json`: first clear/review decision and next command
 - `.aienvmp/summary.md`: compact human/AI handoff
+- `.aienvmp/discovery.json`: smallest fallback entry when an AI host missed an instruction-file pointer
 - `aienvmp discover --json` `aiDiscovery.decision`: `auto-ready` when pointers can be picked up, `fallback-required` when the AI should use the fallback read path
+- `aienvmp start --json` `copyPastePrompt`: short text a human can paste into Codex, Claude, Gemini, Cursor, Copilot, or another AI when automatic pickup failed
 - `AIENV.md`: Markdown environment map
 - `.aienvmp/sbom.json`: light SBOM and dependency review hints
 - `.aienvmp/sbom.json` `dependencyCoordination`: SBOM-to-intent/checkpoint/handoff loop for dependency work
@@ -73,6 +76,7 @@ The next AI can answer these before touching the environment:
 - Is light SBOM risk high enough to run optional scanners?
 - What does `dependencyCoordination` require before dependency or security remediation?
 - What command records the accepted change and handoff?
+- If a new AI did not auto-load the pointer, what `copyPastePrompt` should the human paste?
 - Does `aiDiscovery.decision` say automatic pickup is ready, or should this AI use the fallback startup path?
 - Does the dashboard show the same discovery decision for the human operator?
 

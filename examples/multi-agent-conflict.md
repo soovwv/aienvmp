@@ -69,6 +69,7 @@ What the next AI sees:
 - `coordination.conflictTargets`: `dependency`.
 - `lightSbom.riskSummary`: dependency risk context without installing packages.
 - `agentPointers.discovery`: whether Codex, Claude, Gemini, or optional pointers can find the env map.
+- `aiDiscovery.copyPastePrompt`: the handoff text to paste when the next AI did not auto-load the pointer.
 
 ## Safe Resolution
 

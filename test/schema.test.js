@@ -18,6 +18,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.recommendation.differentiators.join(" "), /intent, checkpoint, timeline, and handoff/);
   assert.match(schema.recommendation.differentiators.join(" "), /start --json root recovery fields/);
   assert.match(schema.recommendation.differentiators.join(" "), /aiDiscovery\.decision/);
+  assert.match(schema.recommendation.differentiators.join(" "), /copyPastePrompt/);
   assert.match(schema.recommendation.differentiators.join(" "), /startupChecklist/);
   assert.match(schema.recommendation.differentiators.join(" "), /auto-ready versus fallback-required/);
   assert.match(schema.recommendation.differentiators.join(" "), /dependencyCoordination/);
@@ -51,7 +52,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.recommendation.discoverySignals.join(" "), /version drift/);
   assert.match(schema.recommendation.discoverySignals.join(" "), /different AI agents/);
   assert.match(schema.recommendation.discoverySignals.join(" "), /AI-readable environment map/);
-  assert.match(schema.recommendation.discoverySignals.join(" "), /start --json recovery path/);
+  assert.match(schema.recommendation.discoverySignals.join(" "), /start --json copyPastePrompt recovery path/);
   assert.deepEqual(schema.recommendation.firstCommands, ["aienvmp start", "aienvmp onboard", "aienvmp context --json"]);
   assert.equal(schema.recommendation.proofCommand, "aienvmp demo");
   assert.ok(schema.recommendation.evidenceDocs.includes("examples/ai-adoption-guide.md"));

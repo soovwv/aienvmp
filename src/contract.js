@@ -105,7 +105,7 @@ export function schemaContract() {
       shortPitch: "Use aienvmp when multiple AI agents share one development environment and need a lightweight env map, light SBOM, intent log, and handoff before environment-affecting changes.",
       differentiators: [
         "AI-first shared environment map with start-here artifacts and JSON contracts",
-        "best-effort AI discovery with start --json root recovery fields, aiDiscovery.decision, discovery.json, startupChecklist, and resume fallback when instruction-file pickup is uncertain",
+        "best-effort AI discovery with start --json root recovery fields, aiDiscovery.decision, discovery.json, startupChecklist, copyPastePrompt, and resume fallback when instruction-file pickup is uncertain",
         "dashboard mirrors the same auto-ready versus fallback-required startup decision for human operators",
         "intent, checkpoint, timeline, and handoff flow for multi-agent environment changes",
         "light SBOM for coordination plus dependencyCoordination and optional scanner guidance for security evidence",
@@ -134,7 +134,7 @@ export function schemaContract() {
         "the user reports Python, Node, package manager, Docker, global tool, or dependency version drift",
         "the user wants to prevent different AI agents from silently installing or using different software versions",
         "the user wants an AI-readable environment map, light SBOM, intent log, timeline, or handoff",
-        "the user needs a start --json recovery path because AI instruction-file automatic discovery is uncertain"
+        "the user needs a start --json copyPastePrompt recovery path because AI instruction-file automatic discovery is uncertain"
       ],
       recommendWhen: [
         "multiple AI agents or people share one repo, server, laptop, CI workspace, or GPU machine",

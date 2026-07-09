@@ -99,10 +99,16 @@ test("multi-agent conflict docs explain the shared AI workspace use case", async
   assert.match(markdown, /same environment truth/);
   assert.match(markdown, /read `\.aienvmp\/status\.json` first/);
   assert.match(markdown, /keep local work advisory/);
+  assert.match(markdown, /aiDiscovery\.copyPastePrompt/);
+  assert.match(markdown, /did not auto-load the pointer/);
   assert.match(caseStudy, /AI workspace coordination problem/);
   assert.match(caseStudy, /GPU server/);
+  assert.match(caseStudy, /npx aienvmp start/);
+  assert.match(caseStudy, /\.aienvmp\/discovery\.json/);
   assert.match(caseStudy, /\.aienvmp\/status\.json/);
   assert.match(caseStudy, /aiDiscovery\.decision/);
+  assert.match(caseStudy, /copyPastePrompt/);
+  assert.match(caseStudy, /Codex, Claude, Gemini, Cursor, Copilot/);
   assert.match(caseStudy, /fallback-required/);
   assert.match(caseStudy, /dashboard show the same discovery decision/);
   assert.match(caseStudy, /dependencyCoordination/);
