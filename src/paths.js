@@ -16,6 +16,10 @@ export function statusJsonPath(dir) {
   return path.join(stateDir(dir), "status.json");
 }
 
+export function discoveryJsonPath(dir) {
+  return path.join(stateDir(dir), "discovery.json");
+}
+
 export function sbomJsonPath(dir) {
   return path.join(stateDir(dir), "sbom.json");
 }

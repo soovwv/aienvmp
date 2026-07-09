@@ -104,8 +104,9 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   assert.equal(json.status, "review-required");
   assert.equal(json.nextSafeCommand, "aienvmp sync");
   assert.equal(json.startHere, ".aienvmp/README.md");
-  assert.equal(json.readOrder[0], ".aienvmp/README.md");
-  assert.equal(json.readOrder[1], ".aienvmp/status.json");
+  assert.equal(json.readOrder[0], ".aienvmp/discovery.json");
+  assert.equal(json.readOrder[1], ".aienvmp/README.md");
+  assert.equal(json.readOrder[2], ".aienvmp/status.json");
   assert.equal(json.aiSession.start[0], "aienvmp status --json");
   assert.equal(json.aiSession.start[1], "aienvmp context --json");
   assert.equal(json.aiSession.ifMissingOrStale, "aienvmp sync");

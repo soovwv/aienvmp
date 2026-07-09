@@ -53,7 +53,7 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.aiBootstrap.projectLocalWork, "allowed");
   assert.equal(status.aiBootstrap.environmentChanges, "intent-first");
   assert.equal(status.aiSession.purpose, "Shortest repeatable startup routine for AI agents in this workspace.");
-  assert.deepEqual(status.aiSession.readFirst, [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md"]);
+  assert.deepEqual(status.aiSession.readFirst, [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md"]);
   assert.equal(status.aiSession.start[0], "aienvmp status --json");
   assert.equal(status.aiSession.start[1], "aienvmp sync");
   assert.equal(status.aiSession.beforeEnvironmentChange, "aienvmp intent --actor agent:id --action planned-change --target dependency");
@@ -147,9 +147,10 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.enforcementProfile.strictDecision.shouldFailLocal, false);
   assert.equal(status.enforcementProfile.strictDecision.ciCommand, "aienvmp doctor --strict all --json");
   assert.equal(status.artifacts.status, ".aienvmp/status.json");
-  assert.equal(status.readOrder[0], ".aienvmp/README.md");
-  assert.equal(status.readOrder[1], ".aienvmp/status.json");
-  assert.equal(status.readOrder[2], ".aienvmp/summary.md");
+  assert.equal(status.readOrder[0], ".aienvmp/discovery.json");
+  assert.equal(status.readOrder[1], ".aienvmp/README.md");
+  assert.equal(status.readOrder[2], ".aienvmp/status.json");
+  assert.equal(status.readOrder[3], ".aienvmp/summary.md");
   assert.equal(status.commands.context, "aienvmp context --json");
   assert.equal(status.nextCommand, "aienvmp intent --actor agent:id --action planned-change --target environment");
   assert.equal(status.nextSafeCommand, status.nextCommand);
@@ -287,7 +288,7 @@ test("buildStatus exposes agent pointer discovery hints", () => {
   assert.equal(status.agentPointers.nextSetupCommand, "none");
   assert.match(status.agentPointers.startupChecklist.join(" "), /checkpoint and hand off/);
   assert.equal(status.agentPointers.fallbackCommand, "aienvmp start --json");
-  assert.deepEqual(status.agentPointers.fallbackRead, [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
+  assert.deepEqual(status.agentPointers.fallbackRead, [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
   assert.match(status.agentPointers.discovery, /ready: codex/);
   assert.match(status.agentPointers.next, /aienvmp onboard/);
   assert.match(status.agentPointers.next, /snippet claude/);
@@ -527,9 +528,10 @@ test("statusWorkspace can write the compact AI status artifact", async () => {
   const written = JSON.parse(await fs.readFile(result.artifact, "utf8"));
   assert.equal(written.schemaVersion, 1);
   assert.equal(written.state, "clear");
-  assert.equal(written.readOrder[0], ".aienvmp/README.md");
-  assert.equal(written.readOrder[1], ".aienvmp/status.json");
-  assert.equal(written.readOrder[2], ".aienvmp/summary.md");
+  assert.equal(written.readOrder[0], ".aienvmp/discovery.json");
+  assert.equal(written.readOrder[1], ".aienvmp/README.md");
+  assert.equal(written.readOrder[2], ".aienvmp/status.json");
+  assert.equal(written.readOrder[3], ".aienvmp/summary.md");
   assert.equal(written.commands.refresh, "aienvmp sync");
   assert.equal(written.nextSafeCommand, written.nextCommand);
   assert.equal(written.aiBootstrap.readFirst, ".aienvmp/status.json");

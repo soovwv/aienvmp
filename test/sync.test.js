@@ -76,6 +76,7 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.ok(["clear", "review-required"].includes(status.state));
   assert.equal(status.agentUse.purpose, "First AI-readable environment preflight for this workspace.");
   assert.equal(status.artifacts.dashboard, ".aienvmp/dashboard.html");
+  assert.equal(status.artifacts.discovery, ".aienvmp/discovery.json");
   assert.equal(status.artifacts.startHere, ".aienvmp/README.md");
   assert.equal(status.artifacts.summary, ".aienvmp/summary.md");
   assert.equal(status.artifacts.sbom, ".aienvmp/sbom.json");
@@ -84,7 +85,8 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.match(startHere, /# aienvmp start here/);
   assert.match(startHere, /This workspace uses `aienvmp`/);
   assert.match(startHere, /AI-first env map and light SBOM/);
-  assert.match(startHere, /read order: `\.aienvmp\/README\.md -> \.aienvmp\/status\.json/);
+  assert.match(startHere, /shortest AI entry: `\.aienvmp\/discovery\.json`/);
+  assert.match(startHere, /read order: `\.aienvmp\/discovery\.json -> \.aienvmp\/README\.md -> \.aienvmp\/status\.json/);
   assert.match(startHere, /AI session: `aienvmp status --json -> aienvmp context --json`/);
   assert.match(startHere, /discovery mode: best-effort/);
   assert.match(startHere, /discovery decision: fallback-required/);
@@ -93,7 +95,15 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.match(startHere, /aienvmp discover --json/);
   assert.match(startHere, /AI fallback prompt/);
   assert.match(startHere, /Use aienvmp as the workspace env map/);
+  assert.match(startHere, /\.aienvmp\/discovery\.json/);
   assert.match(startHere, /For AI agents: start here, then use `status\.json`, `summary\.md`, and `aienvmp context --json`/);
+  const discovery = JSON.parse(await fs.readFile(path.join(dir, ".aienvmp", "discovery.json"), "utf8"));
+  assert.equal(discovery.schemaName, "aienvmp.ai-discovery");
+  assert.equal(discovery.decision, "fallback-required");
+  assert.equal(discovery.automatic, false);
+  assert.equal(discovery.readOrder[0], ".aienvmp/discovery.json");
+  assert.equal(discovery.nextSetupCommand, "npx aienvmp onboard");
+  assert.match(discovery.fallbackPrompt, /\.aienvmp\/discovery\.json/);
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "summary.md")));
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "sbom.json")));
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "sbom.cdx.json")));
@@ -127,6 +137,7 @@ test("sync can return a quiet machine-readable result", async () => {
   assert.equal(result.changes, 0);
   assert.match(result.outputs.aiEnv, /AIENV\.md$/);
   assert.match(result.outputs.status, /\.aienvmp[\\\/]status\.json$/);
+  assert.match(result.outputs.discovery, /\.aienvmp[\\\/]discovery\.json$/);
   assert.match(result.outputs.startHere, /\.aienvmp[\\\/]README\.md$/);
   assert.match(result.outputs.summary, /\.aienvmp[\\\/]summary\.md$/);
   assert.match(result.outputs.sbom, /\.aienvmp[\\\/]sbom\.json$/);

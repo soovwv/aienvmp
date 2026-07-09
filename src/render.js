@@ -14,7 +14,7 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
   lines.push("Multiple AI agents should use this AI-first env map and light SBOM before changing shared development environment state.", "");
   lines.push("## Read Me First", "");
   lines.push("Before changing runtimes, dependencies, package managers, Docker settings, or global packages:");
-  lines.push("1. Read `.aienvmp/README.md` and `.aienvmp/status.json`.");
+  lines.push("1. Read `.aienvmp/discovery.json` and `.aienvmp/status.json`.");
   lines.push("2. Run `aienvmp discover` if you need to verify whether aienvmp artifacts exist.");
   lines.push("3. Treat automatic discovery as best-effort; if an instruction-file pointer was not loaded, follow the fallback read order.");
   lines.push("4. Run `aienvmp context --json` for the full AI preflight.");
@@ -23,7 +23,7 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
   lines.push("7. Record planned environment changes with `aienvmp intent --actor agent:id --action planned-change`.");
   lines.push("8. After environment changes, run `aienvmp checkpoint --actor agent:id --summary what-changed --target environment`.", "");
   lines.push("Fallback prompt for AI sessions that did not auto-load an instruction-file pointer:");
-  lines.push("Use aienvmp as the workspace env map. Read `.aienvmp/README.md`, then `.aienvmp/status.json`, then run `aienvmp context --json` before environment changes.", "");
+  lines.push("Use aienvmp as the workspace env map. Read `.aienvmp/discovery.json`, then `.aienvmp/status.json`, then run `aienvmp context --json` before environment changes.", "");
   lines.push(...preflightLines(manifest.preflight), "");
   lines.push("## Current Policy", "");
   lines.push(...policyLines(policy));

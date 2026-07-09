@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added generated `.aienvmp/discovery.json` as the smallest AI fallback entry artifact and aligned `sync`, `discover`, schema, README, dashboard, and packaged skill guidance around it.
 - Added `agentPointers.discoveryDecision` to compact `status` text output while keeping the default status view at five lines.
 - Aligned README, CLI help, and packaged AI skill startup wording around `aiDiscovery.decision` without adding new commands.
 - Carried `agentPointers.discoveryDecision` into status, summary, and handoff continuation surfaces so the next AI can resume with the same auto-ready versus fallback-required decision.

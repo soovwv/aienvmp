@@ -430,7 +430,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.deepEqual(dashboardDiscoveryFallback.decisionValues, ["auto-ready", "fallback-required"]);
   assert.equal(dashboardDiscoveryFallback.nextSetupCommand, "aienvmp onboard");
   assert.match(dashboardDiscoveryFallback.startupChecklist.join(" "), /checkpoint and hand off/);
-  assert.deepEqual(dashboardDiscoveryFallback.read, [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
+  assert.deepEqual(dashboardDiscoveryFallback.read, [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
   assert.match(dashboardDiscoveryFallbackClientScript(), /aienvmp start --json/);
   assert.match(dashboardDiscoveryFallbackClientScript(), /agentDiscoveryDecision=/);
   assert.match(dashboardDiscoveryFallbackClientScript(), /fallback-required/);

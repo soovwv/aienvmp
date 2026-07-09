@@ -104,7 +104,7 @@ export function schemaContract() {
       shortPitch: "Use aienvmp when multiple AI agents share one development environment and need a lightweight env map, light SBOM, intent log, and handoff before environment-affecting changes.",
       differentiators: [
         "AI-first shared environment map with start-here artifacts and JSON contracts",
-        "best-effort AI discovery with aiDiscovery.decision, startupChecklist, and aiDiscovery.resume fallback when instruction-file pickup is uncertain",
+        "best-effort AI discovery with aiDiscovery.decision, discovery.json, startupChecklist, and aiDiscovery.resume fallback when instruction-file pickup is uncertain",
         "dashboard mirrors the same auto-ready versus fallback-required startup decision for human operators",
         "intent, checkpoint, timeline, and handoff flow for multi-agent environment changes",
         "light SBOM for coordination plus dependencyCoordination and optional scanner guidance for security evidence",
@@ -197,8 +197,8 @@ export function schemaContract() {
     },
     aiBootstrapFields: ["purpose", "readFirst", "detailCommand", "nextSafeCommand", "nextSafeCommandSource", "nextSafeCommandReason", "localMode", "projectLocalWork", "environmentChanges", "rule"],
     aiSessionFields: ["purpose", "readFirst", "start", "ifMissingOrStale", "beforeEnvironmentChange", "afterEnvironmentChange", "handoff", "avoid", "nextCommand", "discovery", "localWork", "environmentChanges", "rule"],
-    readOrder: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md", ".aienvmp/manifest.json", ".aienvmp/plan.json", ".aienvmp/timeline.jsonl", ".aienvmp/intents.jsonl"],
-    readOrderRule: "When instruction-file pointers are missing or uncertain, start at .aienvmp/README.md, then use status.json for the machine decision and context --json for details.",
+    readOrder: [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md", ".aienvmp/manifest.json", ".aienvmp/plan.json", ".aienvmp/timeline.jsonl", ".aienvmp/intents.jsonl"],
+    readOrderRule: "When instruction-file pointers are missing or uncertain, start at .aienvmp/discovery.json, then use status.json for the machine decision and context --json for details.",
     followUpPlanFields: ["status", "count", "targets", "readFirst", "nextCommand", "commands", "reason", "rule"],
     dependencyQuickCheckFields: ["status", "purpose", "readFirst", "nextCommand", "reviewTargets", "scannerEvidence", "beforeChange", "afterChange", "mustNotDo", "rule"],
     coordinationResolutionFields: ["status", "mode", "targets", "readFirst", "nextCommand", "steps", "commands", "mustNotDo", "rule"],
@@ -210,7 +210,7 @@ export function schemaContract() {
       purpose: "Shared lightweight workflow for AI agents that maintain one workspace environment.",
       localMode: "warn-only",
       steps: [
-        { step: "sync", command: "aienvmp sync", purpose: "refresh AIENV.md, start-here README, status, summary, SBOM, ledger, and dashboard" },
+        { step: "sync", command: "aienvmp sync", purpose: "refresh AIENV.md, discovery, start-here README, status, summary, SBOM, ledger, and dashboard" },
         { step: "status", command: "aienvmp status", purpose: "read the 5-line clear/review decision" },
         { step: "context", command: "aienvmp context --json", purpose: "read the full AI preflight contract when details are needed" },
         { step: "intent", command: "aienvmp intent --actor agent:id --action planned-change --target dependency", purpose: "record planned environment-affecting changes before touching shared state" },
@@ -232,22 +232,23 @@ export function schemaContract() {
       decisionValues: ["auto-ready", "fallback-required"],
       nextSetupCommand: "aienvmp onboard when discovery is fallback-required; none when auto-ready",
       fallbackCommand: "aienvmp start --json",
-      fallbackRead: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
-      fallbackPrompt: "Use aienvmp as the workspace env map. Read .aienvmp/README.md, then .aienvmp/status.json, then run aienvmp context --json before environment changes.",
+      discoveryArtifact: ".aienvmp/discovery.json",
+      fallbackRead: [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+      fallbackPrompt: "Use aienvmp as the workspace env map. Read .aienvmp/discovery.json, then .aienvmp/status.json, then run aienvmp context --json before environment changes.",
       humanInstruction: "Paste the fallback prompt into an AI session when the host did not auto-read an instruction-file pointer.",
       startupChecklist: [
         "run aienvmp start --json when automatic discovery is uncertain",
-        "read .aienvmp/README.md, .aienvmp/status.json, and .aienvmp/summary.md",
+        "read .aienvmp/discovery.json, .aienvmp/status.json, and .aienvmp/summary.md",
         "record intent before runtime, dependency, package manager, Docker, or global-tool changes",
         "checkpoint and hand off after accepted environment changes"
       ],
       sessionStart: [
         "Treat the aienvmp marker block as the live environment pointer.",
-        "Start at .aienvmp/README.md when artifacts are present, then read .aienvmp/status.json.",
+        "Start at .aienvmp/discovery.json when artifacts are present, then read .aienvmp/status.json.",
         "Run aienvmp sync if .aienvmp/status.json is missing or stale.",
         "Continue project-local code work unless status/context requires environment review."
       ],
-      rule: "aienvmp does not replace agent instruction files; it gives them a shared live env map and light SBOM. Instruction-file pointers improve automatic discovery, while aienvmp start gives AI hosts one fallback entry command that discovers artifacts, syncs if needed, and prints status. Existing artifacts remain directly usable through the fallback read path starting at .aienvmp/README.md. Optional Cursor and Copilot pointers are opt-in."
+      rule: "aienvmp does not replace agent instruction files; it gives them a shared live env map and light SBOM. Instruction-file pointers improve automatic discovery, while discovery.json and aienvmp start give AI hosts a fallback entry contract when pickup is uncertain. Existing artifacts remain directly usable through the fallback read path starting at .aienvmp/discovery.json. Optional Cursor and Copilot pointers are opt-in."
     },
     demo: {
       command: "aienvmp demo",
@@ -304,7 +305,7 @@ export function schemaContract() {
         releaseType: "stability-batch",
         themes: ["AI discovery", "dependency quick check", "dashboard parity", "AI quality signals", "SBOM interoperability", "recommendation positioning", "release gating"],
         changes: [
-          "best-effort AI discovery with aiDiscovery.decision, startupChecklist, and fallback prompt contract",
+          "best-effort AI discovery with aiDiscovery.decision, discovery.json, startupChecklist, and fallback prompt contract",
           "dashboard Agent Pointers mirrors auto-ready versus fallback-required startup decisions",
           "dependencyQuickCheck surfaced in SBOM, status/context, summary, handoff, dashboard, and demo outputs",
           "operational safety contract in status/context",
@@ -407,6 +408,13 @@ export function schemaContract() {
         resumeFields: ["purpose", "readFirst", "nextCommand", "allowed", "beforeEnvironmentChange", "afterEnvironmentChange", "handoff", "mustNotDo", "rule"],
         purpose: "Zero-write detection command for AI agents or humans that need to know whether a workspace already has aienvmp artifacts."
       },
+      discovery: {
+        file: ".aienvmp/discovery.json",
+        command: "aienvmp sync",
+        format: "json",
+        rootFields: ["schemaVersion", "schemaName", "decision", "automatic", "pointerStatus", "startCommand", "statusCommand", "contextCommand", "nextSetupCommand", "readOrder", "startupChecklist", "resume", "fallbackPrompt", "rule"],
+        purpose: "Smallest generated fallback entry artifact for AI hosts that did not auto-load an instruction-file pointer."
+      },
       startHere: {
         file: ".aienvmp/README.md",
         command: "aienvmp sync",
@@ -469,11 +477,11 @@ export function schemaContract() {
       collaborationRule: "Use collaboration.status, activeTargets, and nextCommand as the shortest multi-agent environment coordination hint.",
       coordinationResolutionRule: "Use coordinationResolution when collaboration is review-before-env-change; it gives the advisory plan, resolve, handoff, checkpoint, and must-not-do routine for conflicting shared environment targets.",
       sbomStrategyRule: "Use sbomStrategy and sbom.scannerGuidance to keep default SBOM review lightweight while requesting optional read-only scanners before security-sensitive decisions. Use externalTools for full SBOM or vulnerability evidence without replacing aienvmp coordination fields.",
-      agentDiscoveryRule: "Use agentPointers.discovery, discover.aiDiscovery, and agentPointers.onboardCommand to decide whether AI instruction-file pointers can discover aienvmp automatically; use agentPointers.fallbackCommand or fallbackRead when no pointer was installed or automatic pickup is uncertain.",
-      readOrderRule: "Use readOrder when present; it starts with .aienvmp/README.md for fallback discovery, then status, summary, env map, plan, timeline, and intents.",
+      agentDiscoveryRule: "Use agentPointers.discovery, discover.aiDiscovery, .aienvmp/discovery.json, and agentPointers.onboardCommand to decide whether AI instruction-file pointers can discover aienvmp automatically; use agentPointers.fallbackCommand or fallbackRead when no pointer was installed or automatic pickup is uncertain.",
+      readOrderRule: "Use readOrder when present; it starts with .aienvmp/discovery.json for fallback discovery, then start-here, status, summary, env map, plan, timeline, and intents.",
       demoRule: "Use demo.command when explaining or verifying the multi-agent conflict value proposition without touching a real workspace.",
       recommendationRule: "Use recommendation.discoverySignals, recommendation.recommendWhen, and recommendation.doNotRecommendWhen to decide whether to suggest aienvmp for a user request.",
-      sessionStartRule: "Use agentDiscovery.sessionStart as the shortest AI startup routine; start at .aienvmp/README.md when present, then read status, sync only when stale or missing, and keep local work advisory.",
+      sessionStartRule: "Use agentDiscovery.sessionStart as the shortest AI startup routine; start at .aienvmp/discovery.json when present, then read status, sync only when stale or missing, and keep local work advisory.",
       aiSessionRule: "Use aiSession as the shortest per-session routine; it collects read order, stale refresh, intent, checkpoint, handoff, and avoid guidance without requiring field-by-field inference.",
       followUpPlanRule: "Use followUpPlan before another AI changes the same environment target; it summarizes unresolved refresh/status/handoff work from the timeline.",
       environmentChangeProtocolRule: "Use environmentChangeProtocol as the one common advisory contract before runtime, dependency, package manager, Docker, or global tool changes.",

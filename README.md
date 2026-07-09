@@ -14,7 +14,7 @@
 - SBOM signal: use Syft, Trivy, Grype, or Dependency-Track for full evidence; keep `aienvmp` as the AI coordination layer.
 - Start: run `npx aienvmp start`. For AI auto-discovery, run `npx aienvmp onboard`.
 
-`start` discovers artifacts, syncs only when missing or stale, then prints status. `discover` is read-only and reports `aiDiscovery.decision`: `auto-ready` or `fallback-required`. `onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`. Automatic discovery is best-effort; if pointers are missing, use `start --json` or `discover --json`, then follow `aiDiscovery.resume`.
+`start` discovers artifacts, syncs only when missing or stale, then prints status. `discover` is read-only and reports `aiDiscovery.decision`: `auto-ready` or `fallback-required`. `onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`. Automatic discovery is best-effort; if pointers are missing, start from `.aienvmp/discovery.json` or use `start --json`, then follow `aiDiscovery.resume`.
 
 ## 10-Second Use
 
@@ -57,6 +57,7 @@ Local mode is warn-only. Use strict doctor checks only for CI or explicit human-
 
 ```text
 AIENV.md                 # Markdown env map for AI agents
+.aienvmp/discovery.json  # smallest AI fallback entry: discovery decision + startup routine
 .aienvmp/status.json     # first AI read: clear/review, next command, nextAgent hint
 .aienvmp/README.md       # generated start-here file when AI finds the artifact folder
 .aienvmp/summary.md      # compact AI/CI summary with start-here path
@@ -77,8 +78,8 @@ AIENV.md                 # Markdown env map for AI agents
 - `recommendation.recommendWhen`, `doNotRecommendWhen`, and `evidenceDocs` tell AI when to suggest this tool.
 - `agentPointers.discovery` tells AI whether Codex, Claude, and Gemini files can discover `aienvmp`.
 - `discover --json` exposes `aiDiscovery.decision`, `nextSetupCommand`, `startupChecklist`, `resume`, and `fallbackPrompt` for AI hosts that did not auto-load a pointer file.
-- `.aienvmp/README.md` gives a generated fallback start point when instruction-file pointers are missing.
-- `readOrder` starts at `.aienvmp/README.md`, then status, summary, env map, plan, timeline, and intents.
+- `.aienvmp/discovery.json` gives the smallest generated fallback start point when instruction-file pointers are missing.
+- `readOrder` starts at `.aienvmp/discovery.json`, then start-here, status, summary, env map, plan, timeline, and intents.
 - `agentDiscovery.sessionStart` documents the startup rule for schema-only AI/CI consumers.
 - `environmentChangeProtocol` gives one before/after-change contract for runtimes, dependencies, package managers, Docker, and global tools.
 - `operationalSafety` keeps local use warn-only and tells AI what must not be changed automatically.
@@ -96,7 +97,7 @@ AIENV.md                 # Markdown env map for AI agents
 ```bash
 aienvmp onboard                 # install Codex/Claude/Gemini pointers and sync
 aienvmp start                   # one-command AI startup when discovery is uncertain
-aienvmp sync                    # update env map, start-here README, status, summary, SBOM, dashboard
+aienvmp sync                    # update env map, discovery, start-here README, status, summary, SBOM, dashboard
 aienvmp status                  # 5-line env decision with start-here path
 aienvmp context --json          # AI decision contract
 aienvmp sbom --json             # standalone light SBOM
@@ -110,7 +111,7 @@ aienvmp onboard --agents cursor,copilot
 ```
 
 ## CI
-The GitHub Action writes status, summary, schema, doctor, plan, SBOM, and dashboard artifacts. `strict: "off"` reports warnings without failing the job. See [examples/github-action.yml](examples/github-action.yml).
+The GitHub Action writes discovery, status, summary, schema, doctor, plan, SBOM, and dashboard artifacts. `strict: "off"` reports warnings without failing the job. See [examples/github-action.yml](examples/github-action.yml).
 
 ```yaml
 - uses: soovwv/aienvmp@main

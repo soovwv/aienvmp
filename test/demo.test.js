@@ -21,7 +21,7 @@ test("multi-agent conflict demo detects dependency coordination", async () => {
   assert.match(stdout, /conflict targets: dependency/);
   assert.match(stdout, /dependency quick check: ready \/ scanner-off \/ aienvmp sync --security/);
   assert.match(stdout, /start here: \.aienvmp\/README\.md/);
-  assert.match(stdout, /read order: \.aienvmp\/README\.md -> \.aienvmp\/status\.json/);
+  assert.match(stdout, /read order: \.aienvmp\/discovery\.json -> \.aienvmp\/README\.md -> \.aienvmp\/status\.json/);
   assert.match(stdout, /recommendation: Use aienvmp when multiple AI agents share one development environment/);
   assert.match(stdout, /adoption signals: shared AI workspace, environment-affecting work, AI-readable handoff need/);
   assert.match(stdout, /AI proof signals: fallback AI startup path, dependency coordination need, lightweight operation required/);
@@ -69,8 +69,9 @@ test("CLI demo JSON gives AI consumers the same conflict signal", async () => {
   assert.equal(json.dependencyQuickCheck.nextCommand, "aienvmp sync --security");
   assert.equal(json.startHere, ".aienvmp/README.md");
   assert.equal(json.readFirst, ".aienvmp/status.json");
-  assert.equal(json.readOrder[0], ".aienvmp/README.md");
-  assert.equal(json.readOrder[1], ".aienvmp/status.json");
+  assert.equal(json.readOrder[0], ".aienvmp/discovery.json");
+  assert.equal(json.readOrder[1], ".aienvmp/README.md");
+  assert.equal(json.readOrder[2], ".aienvmp/status.json");
   assert.equal(json.artifactFreshness.state, "fresh");
   assert.ok(json.contextFields.includes("artifactFreshness"));
   assert.ok(json.contextFields.includes("dependencyQuickCheck"));

@@ -64,8 +64,9 @@ test("buildHandoff summarizes next-agent environment state", () => {
   assert.equal(handoff.status, "clear");
   assert.equal(handoff.nextSafeCommand, "aienvmp intent --actor agent:id --action planned-change --target environment");
   assert.equal(handoff.startHere, ".aienvmp/README.md");
-  assert.equal(handoff.readOrder[0], ".aienvmp/README.md");
-  assert.equal(handoff.readOrder[1], ".aienvmp/status.json");
+  assert.equal(handoff.readOrder[0], ".aienvmp/discovery.json");
+  assert.equal(handoff.readOrder[1], ".aienvmp/README.md");
+  assert.equal(handoff.readOrder[2], ".aienvmp/status.json");
   assert.equal(handoff.aiBootstrap.nextSafeCommand, handoff.nextSafeCommand);
   assert.equal(handoff.aiBootstrap.readFirst, ".aienvmp/status.json");
   assert.equal(handoff.preflight.state, "clear");

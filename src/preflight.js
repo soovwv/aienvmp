@@ -113,6 +113,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     dependencyQuickCheck,
     artifacts: preflightArtifacts(),
     readOrder: [
+      ".aienvmp/discovery.json",
       ".aienvmp/README.md",
       ".aienvmp/status.json",
       ".aienvmp/summary.md",
@@ -274,7 +275,7 @@ function aiSessionSummary({ state, nextCommand, aiBootstrap = {}, artifactFreshn
   const commands = dependencyChangeProtocol.commands || {};
   return {
     purpose: "Shortest repeatable startup routine for AI agents in this workspace.",
-    readFirst: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md"],
+    readFirst: [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md"],
     start: [
       "aienvmp status --json",
       artifactFreshness.state === "fresh" ? "aienvmp context --json" : "aienvmp sync"
@@ -613,18 +614,18 @@ export function agentPointerSummary(agentFiles = {}) {
     nextSetupCommand: discoveryDecision === "auto-ready" ? "none" : "aienvmp onboard",
     startupChecklist: [
       "run aienvmp start --json when automatic discovery is uncertain",
-      "read .aienvmp/README.md, .aienvmp/status.json, and .aienvmp/summary.md",
+      "read .aienvmp/discovery.json, .aienvmp/status.json, and .aienvmp/summary.md",
       "record intent before shared environment changes",
       "checkpoint and hand off after accepted environment changes"
     ],
     onboardCommand: "aienvmp onboard",
-    fallbackRead: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+    fallbackRead: [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
     fallbackCommand: "aienvmp start --json",
     next: missing.length
       ? `Run aienvmp onboard for Codex, Claude, and Gemini, or install one pointer with ${missing[0].installCommand}. Optional: use --agents cursor,copilot when those tools should discover aienvmp too.`
       : "Agent instruction pointers are installed for detected AI instruction files.",
     mode: "advisory",
-    rule: "Instruction-file pointers improve automatic discovery. When pickup is uncertain, use aienvmp start --json; existing artifacts remain directly usable by reading start-here, status, summary, then context."
+    rule: "Instruction-file pointers improve automatic discovery. When pickup is uncertain, use aienvmp start --json or read discovery.json; existing artifacts remain directly usable by reading discovery, status, summary, then context."
   };
 }
 
@@ -902,6 +903,7 @@ function agentQuickstart(reviewRequired) {
 
 export function preflightArtifacts() {
   return {
+    discovery: ".aienvmp/discovery.json",
     startHere: ".aienvmp/README.md",
     status: ".aienvmp/status.json",
     summary: ".aienvmp/summary.md",

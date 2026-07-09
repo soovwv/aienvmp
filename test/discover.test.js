@@ -23,7 +23,7 @@ test("discover reports missing aienvmp artifacts without writing files", async (
   assert.equal(result.aiDiscovery.nextSetupCommand, "npx aienvmp onboard");
   assert.equal(result.aiDiscovery.safeStart, "npx aienvmp sync");
   assert.equal(result.aiDiscovery.resume.nextCommand, "npx aienvmp sync");
-  assert.equal(result.aiDiscovery.resume.readFirst[0], ".aienvmp/README.md");
+  assert.equal(result.aiDiscovery.resume.readFirst[0], ".aienvmp/discovery.json");
   assert.match(result.aiDiscovery.startupChecklist.join(" "), /checkpoint and hand off/);
   assert.match(result.aiDiscovery.resume.beforeEnvironmentChange, /planned-change/);
   assert.match(result.aiDiscovery.resume.afterEnvironmentChange, /checkpoint/);
@@ -49,7 +49,8 @@ test("discover finds generated start-here artifacts and agent pointers", async (
 
   assert.equal(result.status, "detected");
   assert.equal(result.detected, true);
-  assert.equal(result.startHere, ".aienvmp/README.md");
+  assert.equal(result.startHere, ".aienvmp/discovery.json");
+  assert.equal(result.artifacts.discovery.exists, true);
   assert.equal(result.artifacts.startHere.exists, true);
   assert.equal(result.artifacts.status.exists, true);
   assert.equal(result.artifacts.aiEnv.exists, true);
@@ -64,7 +65,7 @@ test("discover finds generated start-here artifacts and agent pointers", async (
   assert.equal(result.aiDiscovery.resume.nextCommand, "npx aienvmp status");
   assert.match(result.aiDiscovery.resume.rule, /startup contract/);
   assert.match(result.aiDiscovery.fallbackPrompt, /Use aienvmp as the workspace env map/);
-  assert.deepEqual(result.aiDiscovery.fallbackRead, [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md"]);
+  assert.deepEqual(result.aiDiscovery.fallbackRead, [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md"]);
   assert.match(result.rule, /does not write files/);
 });
 
@@ -82,7 +83,8 @@ test("discover JSON output is machine-readable for AI agents", async () => {
 
   const json = JSON.parse(output);
   assert.equal(json.detected, true);
-  assert.equal(json.readOrder[0], ".aienvmp/README.md");
+  assert.equal(json.readOrder[0], ".aienvmp/discovery.json");
+  assert.equal(json.artifacts.discovery.path, ".aienvmp/discovery.json");
   assert.equal(json.artifacts.dashboard.path, ".aienvmp/dashboard.html");
   assert.equal(json.localMode, "read-only");
   assert.equal(json.aiDiscovery.mode, "best-effort");

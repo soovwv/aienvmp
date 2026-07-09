@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { readJson } from "../fsutil.js";
-import { aiEnvPath, dashboardPath, manifestPath, sbomJsonPath, stateDir, stateReadmePath, statusJsonPath, summaryMdPath, workspaceDir } from "../paths.js";
+import { aiEnvPath, dashboardPath, discoveryJsonPath, manifestPath, sbomJsonPath, stateDir, stateReadmePath, statusJsonPath, summaryMdPath, workspaceDir } from "../paths.js";
 
 const pointerFiles = [
   ["codex", "AGENTS.md"],
@@ -11,8 +11,9 @@ const pointerFiles = [
   ["copilot", path.join(".github", "copilot-instructions.md")]
 ];
 
-const defaultReadOrder = [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md", "aienvmp context --json"];
+const defaultReadOrder = [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md", "aienvmp context --json"];
 const sessionStart = [
+  "Read .aienvmp/discovery.json when instruction-file pickup is uncertain.",
   "Read .aienvmp/README.md when it exists.",
   "Read .aienvmp/status.json before environment-affecting work.",
   "Run npx aienvmp sync only when artifacts are missing or stale.",
@@ -25,7 +26,7 @@ export async function discoverWorkspace(args = {}) {
   const status = await readJson(statusJsonPath(dir), null);
   const artifacts = await discoverArtifacts(dir);
   const pointers = await discoverPointers(dir);
-  const detected = artifacts.stateDir.exists || artifacts.aiEnv.exists || Boolean(status);
+  const detected = artifacts.stateDir.exists || artifacts.discovery.exists || artifacts.aiEnv.exists || Boolean(status);
   const freshness = status?.artifactFreshness?.state || "unknown";
   const stale = ["stale", "unknown"].includes(freshness);
   const agentPointers = {
@@ -39,7 +40,7 @@ export async function discoverWorkspace(args = {}) {
     detected,
     purpose: "Find the AI-readable environment map before shared environment changes.",
     localMode: "read-only",
-    startHere: artifacts.startHere.exists ? ".aienvmp/README.md" : artifacts.aiEnv.exists ? "AIENV.md" : ".aienvmp/README.md",
+    startHere: artifacts.discovery.exists ? ".aienvmp/discovery.json" : artifacts.startHere.exists ? ".aienvmp/README.md" : artifacts.aiEnv.exists ? "AIENV.md" : ".aienvmp/README.md",
     readOrder,
     freshness,
     nextCommand: detected && !stale ? "npx aienvmp status" : "npx aienvmp sync",
@@ -67,6 +68,7 @@ export async function discoverWorkspace(args = {}) {
 async function discoverArtifacts(dir) {
   return {
     stateDir: await artifact(dir, ".aienvmp", stateDir(dir)),
+    discovery: await artifact(dir, ".aienvmp/discovery.json", discoveryJsonPath(dir)),
     startHere: await artifact(dir, ".aienvmp/README.md", stateReadmePath(dir)),
     status: await artifact(dir, ".aienvmp/status.json", statusJsonPath(dir)),
     summary: await artifact(dir, ".aienvmp/summary.md", summaryMdPath(dir)),
@@ -126,7 +128,7 @@ function pointerDiscovery(pointers = []) {
 function aiDiscoverySummary({ detected = false, stale = true, agentPointers = {}, readOrder = [] } = {}) {
   const installed = agentPointers.installed || [];
   const safeStart = detected && !stale ? "npx aienvmp status" : "npx aienvmp sync";
-  const fallbackRead = readOrder.slice(0, 4);
+  const fallbackRead = readOrder.slice(0, 5);
   const decision = installed.length ? "auto-ready" : "fallback-required";
   const nextSetupCommand = installed.length ? "none" : "npx aienvmp onboard";
   const startupChecklist = [
@@ -149,7 +151,7 @@ function aiDiscoverySummary({ detected = false, stale = true, agentPointers = {}
     fallbackRead,
     resume: {
       purpose: "Minimum AI startup routine when instruction-file automatic discovery is uncertain.",
-      readFirst: fallbackRead.length ? fallbackRead : [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+      readFirst: fallbackRead.length ? fallbackRead : [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
       nextCommand: safeStart,
       allowed: "project-local code work can continue when status/context do not require environment review",
       beforeEnvironmentChange: "aienvmp intent --actor agent:id --action planned-change --target environment",
@@ -163,8 +165,8 @@ function aiDiscoverySummary({ detected = false, stale = true, agentPointers = {}
       rule: "When an AI host did not auto-load a pointer file, use this resume routine as the shared environment startup contract."
     },
     fallbackPrompt: detected
-      ? "Use aienvmp as the workspace env map. Read .aienvmp/README.md, then .aienvmp/status.json, then run npx aienvmp context --json before environment changes."
-      : "Run npx aienvmp sync to create the AI env map, then read .aienvmp/README.md and .aienvmp/status.json.",
+      ? "Use aienvmp as the workspace env map. Read .aienvmp/discovery.json, then .aienvmp/status.json, then run npx aienvmp context --json before environment changes."
+      : "Run npx aienvmp sync to create the AI env map, then read .aienvmp/discovery.json and .aienvmp/status.json.",
     humanInstruction: "Paste the fallbackPrompt into an AI session when the host did not auto-read an instruction-file pointer.",
     rule: "Do not assume automatic pickup. Verify discovery with aienvmp discover or status before shared environment changes."
   };

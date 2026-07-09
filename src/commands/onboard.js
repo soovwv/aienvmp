@@ -4,7 +4,7 @@ import { syncWorkspace } from "./sync.js";
 const defaultAgents = ["codex", "claude", "gemini"];
 const knownAgents = new Set(["agents", "codex", "claude", "gemini", "cursor", "copilot"]);
 const sessionStart = [
-  "start at .aienvmp/README.md, then read .aienvmp/status.json",
+  "start at .aienvmp/discovery.json, then read .aienvmp/status.json",
   "run aienvmp sync if status is missing, stale, or artifactFreshness is not fresh",
   "continue project-local code work unless status/context requires environment review"
 ];
@@ -23,13 +23,13 @@ export async function onboardWorkspace(args = {}) {
     status: "ok",
     pointers,
     sync: synced ? "ok" : "skipped",
-    startHere: ".aienvmp/README.md",
-    readFirst: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md"],
+    startHere: ".aienvmp/discovery.json",
+    readFirst: [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md"],
     nextCommands: ["aienvmp status", "aienvmp context --json"],
     sessionStart,
     freshnessRule: "Use artifactFreshness.nextCommand; when stale or unknown, run aienvmp sync before environment-affecting work.",
     aiDiscovery: `${synced ? "ready" : "pointers-written"}: ${discoveryTargets.join(", ")}`,
-    next: "Run aienvmp status; AI agents should read their instruction file pointer, then .aienvmp/README.md and .aienvmp/status.json."
+    next: "Run aienvmp status; AI agents should read their instruction file pointer, then .aienvmp/discovery.json and .aienvmp/status.json."
   };
 
   if (args.json) {

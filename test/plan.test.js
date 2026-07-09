@@ -183,8 +183,9 @@ test("planWorkspace can write plan artifacts", async () => {
   assert.equal(planJson.aiBootstrap.readFirst, ".aienvmp/status.json");
   assert.equal(planJson.nextSafeCommand, planJson.preflight.nextSafeCommand);
   assert.equal(planJson.followUpPlan.status, "clear");
-  assert.equal(planJson.preflight.readOrder[0], ".aienvmp/README.md");
-  assert.equal(planJson.preflight.readOrder[1], ".aienvmp/status.json");
+  assert.equal(planJson.preflight.readOrder[0], ".aienvmp/discovery.json");
+  assert.equal(planJson.preflight.readOrder[1], ".aienvmp/README.md");
+  assert.equal(planJson.preflight.readOrder[2], ".aienvmp/status.json");
   assert.equal(planJson.decision.requiredCommands.handoff, "aienvmp handoff --record --actor agent:id");
   assert.equal(planJson.decision.requiredCommands.checkpointAfterChange, "aienvmp checkpoint --actor agent:id --summary what-changed --target environment");
 });
