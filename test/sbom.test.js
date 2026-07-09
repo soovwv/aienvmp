@@ -85,9 +85,11 @@ test("buildSbomArtifact creates standalone AI-readable light SBOM", () => {
   assert.equal(sbom.aiUse.nextCommand, "aienvmp sync --security");
   assert.equal(sbom.aiUse.decision, "review");
   assert.equal(sbom.aiUse.securityConfidence, "scanner-off");
+  assert.equal(sbom.aiUse.scannerCommand, "aienvmp sync --security");
   assert.deepEqual(sbom.aiUse.readFirst, [".aienvmp/discovery.json", ".aienvmp/sbom.json", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
   assert.equal(sbom.aiUse.beforeChange, sbom.nextSafeCommand);
   assert.match(sbom.aiUse.afterChange, /checkpoint/);
+  assert.match(sbom.aiUse.mustNotDo.join(" "), /security claims/);
   assert.equal(sbom.aiUse.rule, sbom.scannerGuidance.rule);
 });
 
@@ -192,7 +194,9 @@ test("sbomWorkspace can write .aienvmp/sbom.json", async () => {
   assert.ok(written.aiDependencyReview.readFirst.includes("riskSummary"));
   assert.equal(written.aiUse.decision, "ready");
   assert.equal(written.aiUse.securityConfidence, "scanner-summary");
+  assert.equal(written.aiUse.scannerCommand, "aienvmp sync --security");
   assert.equal(written.aiUse.beforeChange, written.nextSafeCommand);
+  assert.match(written.aiUse.mustNotDo.join(" "), /audit fix/);
 });
 
 test("sbomWorkspace text shows the dependency quick check", async () => {

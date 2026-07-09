@@ -364,11 +364,14 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.sbom.dependencyQuickCheckFields.includes("mustNotDo"));
   assert.ok(schema.outputs.sbom.rootFields.includes("riskSummary"));
   assert.ok(schema.outputs.sbom.rootFields.includes("aiDependencyReview"));
+  assert.ok(schema.outputs.sbom.rootFields.includes("aiUse"));
   assert.ok(schema.outputs.sbom.aiDependencyReviewFields.includes("securityConfidence"));
   assert.ok(schema.outputs.sbom.aiDependencyReviewFields.includes("statusReason"));
   assert.ok(schema.outputs.sbom.aiUseFields.includes("decision"));
+  assert.ok(schema.outputs.sbom.aiUseFields.includes("scannerCommand"));
   assert.ok(schema.outputs.sbom.aiUseFields.includes("beforeChange"));
   assert.ok(schema.outputs.sbom.aiUseFields.includes("afterChange"));
+  assert.ok(schema.outputs.sbom.aiUseFields.includes("mustNotDo"));
   assert.equal(schema.outputs.cyclonedxLite.command, "aienvmp sbom --format cyclonedx-lite --json");
   assert.equal(schema.compatibility.stability, "additive");
   assert.equal(schema.compatibility.contractVersion, "0.1-prototype");

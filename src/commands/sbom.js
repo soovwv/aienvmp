@@ -63,8 +63,10 @@ export function buildSbomArtifact(manifest = {}) {
       securityConfidence: dependencyReview.securityConfidence || "unknown",
       readFirst: sbomReadOrder,
       nextCommand: nextSafeCommand,
+      scannerCommand: scannerGuidance.scannerCommand,
       beforeChange: nextSafeCommand,
       afterChange: dependencyReview.afterDependencyChange?.slice(-1)[0] || "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency",
+      mustNotDo: dependencyQuickCheck.mustNotDo,
       rule: scannerGuidance.rule
     }
   };
