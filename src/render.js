@@ -1,10 +1,10 @@
-import { dashboardAgentClientScript, dashboardCardClientScript, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallbackClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialSurfaceClientScript, dashboardMainCardsClientScript, dashboardOperationalCardsClientScript, dashboardPackageManagerPolicyClientScript, dashboardPayload, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, dashboardSupportCardsClientScript } from "./dashboard.js";
+import { dashboardAgentClientScript, dashboardCardClientScript, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallbackClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialSurfaceClientScript, dashboardMainCardsClientScript, dashboardOperationalCardsClientScript, dashboardPackageManagerPolicyClientScript, dashboardPayload, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, dashboardStateCardsClientScript, dashboardSupportCardsClientScript } from "./dashboard.js";
 
 const markerBegin = "<!-- aienvmp:begin -->";
 const markerEnd = "<!-- aienvmp:end -->";
 
 export { markerBegin, markerEnd };
-export { dashboardAgentClientScript, dashboardCardClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallback, dashboardDiscoveryFallbackClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardMainCardsClientScript, dashboardOperationalCardsClientScript, dashboardPayload, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, dashboardSupportCardsClientScript } from "./dashboard.js";
+export { dashboardAgentClientScript, dashboardCardClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallback, dashboardDiscoveryFallbackClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardMainCardsClientScript, dashboardOperationalCardsClientScript, dashboardPayload, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, dashboardStateCardsClientScript, dashboardSupportCardsClientScript } from "./dashboard.js";
 
 export function renderAIEnv(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const lines = [];
@@ -696,6 +696,7 @@ const agentDiscoveryNext=manifest.preflight?.agentPointers?.next||'Run aienvmp o
 const briefItem=(key,value)=>\`<div class="brief-item"><div class="brief-k">\${key}</div><div class="brief-v">\${esc(value)}</div></div>\`;
 const handoffHtml=\`<table><tr><th>Status</th><td>\${reviewRequired?'review-required':'clear'}</td></tr><tr><th>Trust</th><td><code>\${esc(trustState)}</code></td></tr><tr><th>Read first</th><td><code>\${esc(firstRead)}</code></td></tr><tr><th>Dependency files</th><td>\${handoffFiles.length?'<code>'+esc(handoffFiles.join(', '))+'</code>':'none'}</td></tr><tr><th>Conflicts</th><td>\${conflictTargets.length?'<code>'+esc(conflictTargets.join(', '))+'</code>':'none'}</td></tr><tr><th>Next</th><td>\${esc(handoffNext)}</td></tr></table>\`;
 const aiSessionHtml=\`<table><tr><th>Start</th><td><code>\${esc(aiSessionStart.join(' -> '))}</code></td></tr><tr><th>If stale</th><td><code>\${esc(aiSession.ifMissingOrStale||'aienvmp sync')}</code></td></tr><tr><th>Before env</th><td><code>\${esc(aiSession.beforeEnvironmentChange||'aienvmp intent --actor agent:id --action planned-change --target environment')}</code></td></tr><tr><th>After env</th><td><code>\${esc(aiSession.afterEnvironmentChange||'aienvmp checkpoint --actor agent:id --summary what-changed --target environment')}</code></td></tr><tr><th>Handoff</th><td><code>\${esc(aiSession.handoff||'aienvmp handoff --record --actor agent:id')}</code></td></tr><tr><th>Avoid</th><td>\${esc((aiSession.avoid||[]).slice(0,2).join('; ')||'No extra avoid guidance.')}</td></tr></table><div class="path">\${esc(aiSession.rule||'Read status first, sync only when stale or missing, and record intent before shared environment changes.')}</div>\`;
+${dashboardStateCardsClientScript()}
 document.getElementById('app').innerHTML=\`
 <header>
   <div>
@@ -762,17 +763,7 @@ document.getElementById('app').innerHTML=\`
     <div style="height:14px"></div>
     \${operationalCardsHtml}
     <div style="height:14px"></div>
-    \${card('Environment Health',warnings.length?'<span class="pill warn">attention</span>':'<span class="pill">clear</span>',warnHtml)}
-    <div style="height:14px"></div>
-    \${card('Version Policy','<span class="pill">'+entries(policy).length+' rules</span>',policyHtml)}
-    <div style="height:14px"></div>
-    \${card('Agent Intents','<span class="pill">'+intents.length+' open</span>',intentsHtml)}
-    <div style="height:14px"></div>
-    \${card('AI Handoff',reviewRequired?'<span class="pill warn">review</span>':'<span class="pill">ready</span>',handoffHtml)}
-    <div style="height:14px"></div>
-    \${card('Agent Pointers','<span class="pill">'+agentPointerCount+' installed</span>','<div class="path">'+esc(agentDiscoveryNext)+'</div>'+agentDiscoveryFallbackHtml+'<div class="agents">'+agentCards+'</div>')}
-    <div style="height:14px"></div>
-    \${card('Snapshot','',\`<table><tr><th>OS</th><td>\${esc(manifest.os.platform)} \${esc(manifest.os.release)} \${esc(manifest.os.arch)}</td></tr><tr><th>Shell</th><td>\${esc(manifest.os.shell||'unknown')}</td></tr><tr><th>Workspace</th><td><div class="path">\${esc(manifest.workspace.path)}</div></td></tr></table>\`)}
+    \${stateCardsHtml}
   </aside>
 </section>
 <section style="margin-top:14px">\${card('Environment Ledger','',timelineHtml)}</section>

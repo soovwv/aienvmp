@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { dashWorkspace } from "../src/commands/dash.js";
 import { writeJson } from "../src/fsutil.js";
-import { dashboardAgentClientScript, dashboardCardClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallback, dashboardDiscoveryFallbackClientScript, dashboardDocument, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardMainCardsClientScript, dashboardOperationalCardsClientScript, dashboardPayload, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardStyle, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, dashboardSupportCardsClientScript, renderDashboard } from "../src/render.js";
+import { dashboardAgentClientScript, dashboardCardClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallback, dashboardDiscoveryFallbackClientScript, dashboardDocument, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardMainCardsClientScript, dashboardOperationalCardsClientScript, dashboardPayload, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardStyle, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, dashboardStateCardsClientScript, dashboardSupportCardsClientScript, renderDashboard } from "../src/render.js";
 
 test("dashboardPayload centralizes schema-backed dashboard data", () => {
   const payload = dashboardPayload(
@@ -88,6 +88,19 @@ test("dashboardSupportCardsClientScript groups secondary side cards", () => {
   assert.match(script, /'Light SBOM Artifact'/);
   assert.match(script, /'Environment Steps'/);
   assert.match(script, /const supportCardsHtml=supportCards\.map/);
+});
+
+test("dashboardStateCardsClientScript groups state and handoff side cards", () => {
+  const script = dashboardStateCardsClientScript();
+
+  assert.match(script, /const stateCards=\[/);
+  assert.match(script, /'Environment Health'/);
+  assert.match(script, /'Version Policy'/);
+  assert.match(script, /'Agent Intents'/);
+  assert.match(script, /'AI Handoff'/);
+  assert.match(script, /'Agent Pointers'/);
+  assert.match(script, /'Snapshot'/);
+  assert.match(script, /const stateCardsHtml=stateCards\.map/);
 });
 
 test("renderDashboard includes the audit summary surface", () => {
@@ -611,6 +624,7 @@ test("renderDashboard includes the audit summary surface", () => {
   }
   assert.match(html, /const mainCards=\[/);
   assert.match(html, /const supportCards=\[/);
+  assert.match(html, /const stateCards=\[/);
   assert.match(html, /const operationalCards=\[/);
   assert.match(html, /const essentialCards=\["AI Session","Environment Health","AI Collaboration","Light SBOM","Agent Pointers","Agent Intents","Environment Ledger","Enforcement Mode","Release Readiness"\]/);
   assert.match(html, /const essentialSurfaces=\{"controlStrip":\["AI readiness","Freshness","Collaboration","SBOM risk"\],"tenSecondReview":\["AI entry","Next command","Review target","Mode"\]/);

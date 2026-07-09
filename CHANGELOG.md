@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Grouped dashboard environment state, policy, intent, handoff, pointer, and snapshot cards into a `stateCards` client-side list.
 - Grouped dashboard secondary side cards into a `supportCards` client-side list so `renderDashboard` keeps shrinking without changing dashboard behavior.
 - Added `copyPastePrompt` recovery guidance to the shared-server case study, multi-agent conflict docs, and recommendation signals so AI agents can cite the fallback handoff path as adoption evidence.
 - Aligned the packaged AI skill, adoption guide, and recommendation contract around `copyPastePrompt` while keeping `fallbackPrompt` as a compatible alias.

@@ -154,6 +154,20 @@ export function dashboardSupportCardsClientScript() {
   ].join("\n");
 }
 
+export function dashboardStateCardsClientScript() {
+  return [
+    "const stateCards=[",
+    "['Environment Health',warnings.length?'<span class=\"pill warn\">attention</span>':'<span class=\"pill\">clear</span>',warnHtml],",
+    "['Version Policy','<span class=\"pill\">'+entries(policy).length+' rules</span>',policyHtml],",
+    "['Agent Intents','<span class=\"pill\">'+intents.length+' open</span>',intentsHtml],",
+    "['AI Handoff',reviewRequired?'<span class=\"pill warn\">review</span>':'<span class=\"pill\">ready</span>',handoffHtml],",
+    "['Agent Pointers','<span class=\"pill\">'+agentPointerCount+' installed</span>','<div class=\"path\">'+esc(agentDiscoveryNext)+'</div>'+agentDiscoveryFallbackHtml+'<div class=\"agents\">'+agentCards+'</div>'],",
+    "['Snapshot','',`<table><tr><th>OS</th><td>${esc(manifest.os.platform)} ${esc(manifest.os.release)} ${esc(manifest.os.arch)}</td></tr><tr><th>Shell</th><td>${esc(manifest.os.shell||'unknown')}</td></tr><tr><th>Workspace</th><td><div class=\"path\">${esc(manifest.workspace.path)}</div></td></tr></table>`]",
+    "];",
+    "const stateCardsHtml=stateCards.map(([title,badge,body])=>card(title,badge,body)).join('<div style=\"height:14px\"></div>');"
+  ].join("\n");
+}
+
 export function dashboardDiscoveryFallbackClientScript() {
   return [
     `const dashboardDiscoveryFallback=${JSON.stringify(dashboardDiscoveryFallback)};`,
