@@ -42,6 +42,11 @@ test("buildSbomArtifact creates standalone AI-readable light SBOM", () => {
   assert.equal(sbom.scannerGuidance.securityConfidence, "scanner-off");
   assert.ok(sbom.scannerGuidance.useLightSbomFor.includes("AI environment coordination"));
   assert.ok(sbom.scannerGuidance.requireScannerFor.includes("security claims"));
+  assert.ok(sbom.scannerGuidance.externalTools.some((tool) => tool.tool === "syft"));
+  assert.ok(sbom.scannerGuidance.externalTools.some((tool) => tool.tool === "trivy"));
+  assert.ok(sbom.scannerGuidance.externalTools.some((tool) => tool.tool === "dependency-track"));
+  assert.match(sbom.scannerGuidance.interoperabilityRule, /AI coordination layer/);
+  assert.match(sbom.scannerGuidance.interoperabilityRule, /Do not install or run external tools automatically/);
   assert.ok(sbom.scannerGuidance.whenToRun.includes("before security claims"));
   assert.match(sbom.scannerGuidance.rule, /default SBOM lightweight/);
   assert.equal(sbom.aiReviewPlan.status, "review");
@@ -116,6 +121,8 @@ test("buildCycloneDxLite exports project manifest packages with limitations", ()
   assert.match(propertyValue(cdx.properties, "aienvmp:aiBootstrap:rule"), /Review SBOM risk/);
   assert.equal(propertyValue(cdx.properties, "aienvmp:scannerGuidance:mode"), "optional-read-only");
   assert.equal(propertyValue(cdx.properties, "aienvmp:scannerGuidance:command"), "aienvmp sync --security");
+  assert.equal(propertyValue(cdx.properties, "aienvmp:scannerGuidance:externalTools"), "syft,trivy,grype,dependency-track");
+  assert.match(propertyValue(cdx.properties, "aienvmp:scannerGuidance:interoperabilityRule"), /dedicated SBOM or security scanners/);
   assert.match(propertyValue(cdx.properties, "aienvmp:scannerGuidance:rule"), /optional read-only scanners/);
   assert.match(cdx.properties[0].value, /Light SBOM/);
 });
@@ -148,6 +155,7 @@ test("sbomWorkspace can write .aienvmp/sbom.json", async () => {
   assert.equal(written.scannerGuidance.mode, "optional-read-only");
   assert.equal(written.scannerGuidance.decision, "light-sbom-ok-for-coordination");
   assert.match(written.scannerGuidance.reason, /light SBOM is enough for coordination/);
+  assert.ok(written.scannerGuidance.externalTools.some((tool) => tool.tool === "grype"));
   assert.equal(written.aiDependencyReview.status, "ready");
   assert.equal(written.aiDependencyReview.securityConfidence, "scanner-summary");
   assert.ok(written.aiDependencyReview.readFirst.includes("riskSummary"));

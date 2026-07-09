@@ -66,6 +66,10 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.sbomStrategy.mode, "light-by-default");
   assert.equal(schema.sbomStrategy.defaultCommand, "aienvmp sbom --json");
   assert.equal(schema.sbomStrategy.scannerCommand, "aienvmp sync --security");
+  assert.ok(schema.sbomStrategy.externalTools.includes("syft"));
+  assert.ok(schema.sbomStrategy.externalTools.includes("trivy"));
+  assert.ok(schema.sbomStrategy.externalTools.includes("dependency-track"));
+  assert.match(schema.sbomStrategy.interoperabilityRule, /AI workspace coordination layer/);
   assert.match(schema.sbomStrategy.aiRule, /optional scanners/);
   assert.equal(schema.releaseGate.mode, "manual-batched");
   assert.equal(schema.releaseGate.localCommand, "npm run release:check");
@@ -171,6 +175,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.sbom.rootFields.includes("scannerGuidance"));
   assert.ok(schema.outputs.sbom.scannerGuidanceFields.includes("decision"));
   assert.ok(schema.outputs.sbom.scannerGuidanceFields.includes("requireScannerFor"));
+  assert.ok(schema.outputs.sbom.scannerGuidanceFields.includes("externalTools"));
+  assert.ok(schema.outputs.sbom.scannerGuidanceFields.includes("interoperabilityRule"));
   assert.ok(schema.outputs.sbom.scannerGuidanceFields.includes("whenToRun"));
   assert.ok(schema.outputs.sbom.rootFields.includes("aiReviewPlan"));
   assert.ok(schema.outputs.sbom.aiReviewPlanFields.includes("beforeChange"));
@@ -191,6 +197,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.compatibility.collaborationRule, /multi-agent environment coordination/);
   assert.match(schema.compatibility.coordinationResolutionRule, /resolve/);
   assert.match(schema.compatibility.sbomStrategyRule, /optional read-only scanners/);
+  assert.match(schema.compatibility.sbomStrategyRule, /externalTools/);
   assert.match(schema.compatibility.agentDiscoveryRule, /onboardCommand/);
   assert.match(schema.compatibility.agentDiscoveryRule, /fallbackRead/);
   assert.match(schema.compatibility.readOrderRule, /\.aienvmp\/README\.md/);
@@ -246,6 +253,7 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   assert.equal(schema.agentDiscovery.fallbackCommand, "aienvmp status --json");
   assert.ok(schema.agentDiscovery.rule.includes("Optional Cursor and Copilot"));
   assert.equal(schema.sbomStrategy.scannerCommand, "aienvmp sync --security");
+  assert.ok(schema.sbomStrategy.externalTools.includes("grype"));
   assert.equal(schema.demo.command, "aienvmp demo");
   assert.equal(schema.releaseGate.localCommand, "npm run release:check");
   assert.equal(schema.releaseReadiness.target, "0.2.0");

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added external SBOM/security tool guidance so AI agents keep `aienvmp` as the coordination layer while using Syft, Trivy, Grype, or Dependency-Track for full evidence.
 - Added read-only `aienvmp discover` and stronger start-here markers so AI agents can detect existing aienvmp artifacts before environment-affecting work.
 - Added `coordinationResolution` to the AI preflight surfaces so multiple AI agents get one advisory conflict-resolution routine for shared environment targets.
 - Added explicit batched-release threshold and publish-candidate signals to the AI-readable release readiness contract.

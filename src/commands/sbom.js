@@ -78,6 +78,8 @@ function sbomScannerGuidance(review = {}) {
     securityConfidence: confidence,
     useLightSbomFor: ["AI environment coordination", "dependency read set", "package manager policy", "intent and handoff planning"],
     requireScannerFor: ["security claims", "vulnerability remediation", "release decisions", "dependency changes when scanner confidence is low"],
+    externalTools: externalSbomTools(),
+    interoperabilityRule: "Use aienvmp as the AI coordination layer and use dedicated SBOM or security scanners for full evidence. Do not install or run external tools automatically unless the user, CI, or release process asks.",
     whenToRun: lowConfidence
       ? [
         "before security claims",
@@ -92,6 +94,39 @@ function sbomScannerGuidance(review = {}) {
       ],
     rule: "Keep the default SBOM lightweight for AI coordination; use optional read-only scanners only when security confidence matters."
   };
+}
+
+function externalSbomTools() {
+  return [
+    {
+      tool: "syft",
+      category: "full-sbom",
+      command: "syft dir:. -o cyclonedx-json",
+      useWhen: "full SBOM generation is required",
+      aienvmpRole: "keep AI coordination fields, intent, handoff, and local env context beside the full SBOM"
+    },
+    {
+      tool: "trivy",
+      category: "vulnerability-scan",
+      command: "trivy fs --format cyclonedx .",
+      useWhen: "security scan evidence is needed before release or remediation",
+      aienvmpRole: "use scanner evidence to raise security confidence before security claims"
+    },
+    {
+      tool: "grype",
+      category: "vulnerability-match",
+      command: "grype dir:.",
+      useWhen: "CVE matching is needed against the filesystem or a generated SBOM",
+      aienvmpRole: "record the dependency intent and checkpoint the environment decision around remediation"
+    },
+    {
+      tool: "dependency-track",
+      category: "continuous-sbom-risk",
+      command: "upload CycloneDX SBOM to Dependency-Track",
+      useWhen: "continuous component analysis or governance is required",
+      aienvmpRole: "keep local AI workspace coordination separate from long-running governance"
+    }
+  ];
 }
 
 function sbomBootstrap(nextSafeCommand, review = {}) {
@@ -232,6 +267,8 @@ export function buildCycloneDxLite(manifest = {}) {
       { name: "aienvmp:verifyWith", value: "CycloneDX, Syft, Trivy, npm audit, pip-audit, or another dedicated scanner before security claims." },
       { name: "aienvmp:scannerGuidance:mode", value: scannerGuidance.mode },
       { name: "aienvmp:scannerGuidance:command", value: scannerGuidance.scannerCommand },
+      { name: "aienvmp:scannerGuidance:externalTools", value: scannerGuidance.externalTools.map((tool) => tool.tool).join(",") },
+      { name: "aienvmp:scannerGuidance:interoperabilityRule", value: scannerGuidance.interoperabilityRule },
       { name: "aienvmp:scannerGuidance:rule", value: scannerGuidance.rule },
       { name: "aienvmp:aiBootstrap:rule", value: aiBootstrap.rule }
     ]

@@ -13,6 +13,7 @@ Use it on shared servers, repos, laptops, or CI workspaces where multiple people
 - Use: AI agents share environment-affecting work.
 - Skip: you only need a full compliance SBOM scanner or hard policy lock manager.
 - AI signal: shared Codex/Claude/Gemini work, version drift, or repeated env handoffs.
+- SBOM signal: use Syft, Trivy, Grype, or Dependency-Track for full evidence; keep `aienvmp` as the AI coordination layer.
 - Start: run `npx aienvmp onboard`, then `npx aienvmp status`.
 
 ```bash
@@ -96,6 +97,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `environmentChangeProtocol` gives one before/after-change contract for runtimes, dependencies, package managers, Docker, and global tools.
 - `followUpPlan` gives AI one next command when previous environment work still needs sync, status, or handoff.
 - `sbomStrategy`, `scannerGuidance.decision`, and `aiReviewPlan` keep SBOM review light by default and request optional read-only scanners before security-sensitive decisions.
+- `scannerGuidance.externalTools` points AI to Syft, Trivy, Grype, or Dependency-Track when full SBOM/security evidence is needed.
 - `sbom --json` also carries `startHere` and `readOrder` so dependency review follows the same AI entry path.
 - `collaboration`, `coordination`, and `agentActivity` expose multi-agent conflicts and shared targets.
 - `releaseGate` and `releaseReadiness` expose the `0.2.0` batched stable-contract gate.

@@ -107,6 +107,8 @@ export function schemaContract() {
       defaultCommand: "aienvmp sbom --json",
       scannerCommand: "aienvmp sync --security",
       scannerPolicy: "Optional, read-only scanner summaries are used for security confidence; they are not required for local coding.",
+      externalTools: ["syft", "trivy", "grype", "dependency-track"],
+      interoperabilityRule: "Use aienvmp as the AI workspace coordination layer; use dedicated SBOM and security tools for full evidence.",
       aiRule: "Use the light SBOM for dependency coordination. Run optional scanners before security claims, vulnerability remediation, release decisions, or dependency changes when scanner confidence is low."
     },
     dashboard: {
@@ -227,7 +229,7 @@ export function schemaContract() {
         file: ".aienvmp/sbom.json",
         command: "aienvmp sbom --json",
         rootFields: ["schemaVersion", "schemaName", "workspace", "startHere", "readOrder", "aiBootstrap", "nextSafeCommand", "scannerGuidance", "aiReviewPlan", "summary", "riskSummary", "topRisk", "packageManagerPolicy", "dependencyChangeHints", "aiDependencyReview"],
-        scannerGuidanceFields: ["mode", "decision", "reason", "defaultCommand", "scannerCommand", "securityConfidence", "useLightSbomFor", "requireScannerFor", "whenToRun", "rule"],
+        scannerGuidanceFields: ["mode", "decision", "reason", "defaultCommand", "scannerCommand", "securityConfidence", "useLightSbomFor", "requireScannerFor", "externalTools", "interoperabilityRule", "whenToRun", "rule"],
         aiReviewPlanFields: ["status", "risk", "securityConfidence", "packageManagerPolicy", "packages", "vulnerabilities", "reviewTargets", "beforeChange", "afterChange", "rule"],
         aiDependencyReviewFields: ["status", "statusReason", "securityConfidence", "readFirst", "reviewTargets", "beforeDependencyChange", "afterDependencyChange", "rule"],
         aiUseFields: ["purpose", "readBefore", "decision", "securityConfidence", "readFirst", "nextCommand", "beforeChange", "afterChange", "rule"]
@@ -249,7 +251,7 @@ export function schemaContract() {
       aiReadinessRule: "When aiReadiness.level is review, project-local code work may still continue if aiReadiness.projectLocalWork is allowed; environment changes should follow intent/review guidance.",
       collaborationRule: "Use collaboration.status, activeTargets, and nextCommand as the shortest multi-agent environment coordination hint.",
       coordinationResolutionRule: "Use coordinationResolution when collaboration is review-before-env-change; it gives the advisory plan, resolve, handoff, checkpoint, and must-not-do routine for conflicting shared environment targets.",
-      sbomStrategyRule: "Use sbomStrategy and sbom.scannerGuidance to keep default SBOM review lightweight while requesting optional read-only scanners before security-sensitive decisions.",
+      sbomStrategyRule: "Use sbomStrategy and sbom.scannerGuidance to keep default SBOM review lightweight while requesting optional read-only scanners before security-sensitive decisions. Use externalTools for full SBOM or vulnerability evidence without replacing aienvmp coordination fields.",
       agentDiscoveryRule: "Use agentPointers.discovery and agentPointers.onboardCommand to decide whether AI instruction-file pointers can discover aienvmp automatically; use fallbackRead when no pointer was installed but artifacts exist.",
       readOrderRule: "Use readOrder when present; it starts with .aienvmp/README.md for fallback discovery, then status, summary, env map, plan, timeline, and intents.",
       demoRule: "Use demo.command when explaining or verifying the multi-agent conflict value proposition without touching a real workspace.",
