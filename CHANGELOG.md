@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `sbom.dependencyCoordination` so AI agents can connect light SBOM review to intent, scanner evidence, checkpoint, and handoff steps.
 - Added dashboard fallback resume guidance to the Agent Pointers card so humans can see the same AI startup path when automatic discovery is uncertain.
 - Compressed the README quick-start and core sections so the AI workspace coordination story stays readable under a tighter line budget.
 - Documented `aiDiscovery.resume` in the README and packaged AI skill so fallback startup is visible to humans and agents.

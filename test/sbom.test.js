@@ -58,6 +58,14 @@ test("buildSbomArtifact creates standalone AI-readable light SBOM", () => {
   assert.equal(sbom.aiReviewPlan.packageManagerPolicy, "review-required");
   assert.equal(sbom.aiReviewPlan.beforeChange, "aienvmp sync --security");
   assert.match(sbom.aiReviewPlan.afterChange, /checkpoint/);
+  assert.equal(sbom.dependencyCoordination.mode, "advisory");
+  assert.equal(sbom.dependencyCoordination.nextCommand, "aienvmp sync --security");
+  assert.deepEqual(sbom.dependencyCoordination.reviewTargets, ["package.json", "express"]);
+  assert.match(sbom.dependencyCoordination.beforeChange.join(" "), /dependency-review/);
+  assert.match(sbom.dependencyCoordination.afterChange.join(" "), /checkpoint/);
+  assert.match(sbom.dependencyCoordination.mustNotDo.join(" "), /audit fix/);
+  assert.equal(sbom.dependencyCoordination.scannerEvidence, "run-scanner-before-security-work");
+  assert.match(sbom.dependencyCoordination.rule, /coordinate dependency work/);
   assert.equal(sbom.aiDependencyReview.status, "review");
   assert.equal(sbom.aiDependencyReview.securityConfidence, "scanner-off");
   assert.match(sbom.aiDependencyReview.statusReason, /requires dependency review/);
@@ -128,6 +136,8 @@ test("buildCycloneDxLite exports project manifest packages with limitations", ()
   assert.match(propertyValue(cdx.properties, "aienvmp:scannerGuidance:evidenceWorkflow"), /dedicated scanner/);
   assert.match(propertyValue(cdx.properties, "aienvmp:scannerGuidance:interoperabilityRule"), /dedicated SBOM or security scanners/);
   assert.match(propertyValue(cdx.properties, "aienvmp:scannerGuidance:rule"), /optional read-only scanners/);
+  assert.equal(propertyValue(cdx.properties, "aienvmp:dependencyCoordination:nextCommand"), "aienvmp intent --actor agent:id --action dependency-review --target dependency");
+  assert.match(propertyValue(cdx.properties, "aienvmp:dependencyCoordination:rule"), /record intent/);
   assert.match(cdx.properties[0].value, /Light SBOM/);
 });
 
@@ -161,6 +171,8 @@ test("sbomWorkspace can write .aienvmp/sbom.json", async () => {
   assert.match(written.scannerGuidance.reason, /light SBOM is enough for coordination/);
   assert.ok(written.scannerGuidance.externalTools.some((tool) => tool.tool === "grype"));
   assert.match(written.scannerGuidance.evidenceWorkflow.join(" "), /Record intent/);
+  assert.equal(written.dependencyCoordination.nextCommand, written.nextSafeCommand);
+  assert.match(written.dependencyCoordination.rule, /checkpoint and hand off/);
   assert.equal(written.aiDependencyReview.status, "ready");
   assert.equal(written.aiDependencyReview.securityConfidence, "scanner-summary");
   assert.ok(written.aiDependencyReview.readFirst.includes("riskSummary"));

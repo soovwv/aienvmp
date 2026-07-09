@@ -29,6 +29,7 @@ export function buildSbomArtifact(manifest = {}) {
   const aiBootstrap = sbomBootstrap(nextSafeCommand, dependencyReview);
   const scannerGuidance = sbomScannerGuidance(dependencyReview);
   const aiReviewPlan = sbomReviewPlan(lightSbom, dependencyReview, nextSafeCommand);
+  const dependencyCoordination = sbomDependencyCoordination(dependencyReview, scannerGuidance, nextSafeCommand);
   return {
     schemaVersion: 1,
     schemaName: "aienvmp.light-sbom",
@@ -49,6 +50,7 @@ export function buildSbomArtifact(manifest = {}) {
     nextSafeCommand,
     scannerGuidance,
     aiReviewPlan,
+    dependencyCoordination,
     aiDependencyReview: dependencyReview,
     aiUse: {
       purpose: "Standalone AI-readable light SBOM artifact.",
@@ -61,6 +63,28 @@ export function buildSbomArtifact(manifest = {}) {
       afterChange: dependencyReview.afterDependencyChange?.slice(-1)[0] || "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency",
       rule: scannerGuidance.rule
     }
+  };
+}
+
+function sbomDependencyCoordination(review = {}, scannerGuidance = {}, nextSafeCommand = "aienvmp context --json") {
+  return {
+    mode: "advisory",
+    appliesWhen: "Before dependency, lockfile, vulnerability remediation, package manager, or release-affecting dependency work.",
+    readFirst: [".aienvmp/README.md", ".aienvmp/sbom.json", ".aienvmp/status.json", "aienvmp context --json"],
+    reviewTargets: (review.reviewTargets || []).slice(0, 8),
+    nextCommand: nextSafeCommand,
+    beforeChange: review.beforeDependencyChange || [nextSafeCommand],
+    afterChange: review.afterDependencyChange || [
+      "run the narrowest relevant project validation",
+      "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"
+    ],
+    mustNotDo: [
+      "do not run broad install, update, audit fix, or lockfile rewrite commands before reading SBOM and status",
+      "do not switch package managers only because another AI prefers one",
+      "do not make security claims from the light SBOM alone when scanner confidence is low"
+    ],
+    scannerEvidence: scannerGuidance.decision || "light-sbom-ok-for-coordination",
+    rule: "Use the light SBOM to coordinate dependency work; record intent before dependency or lockfile changes, use optional scanners for security evidence, then checkpoint and hand off."
   };
 }
 
@@ -231,6 +255,7 @@ export function buildCycloneDxLite(manifest = {}) {
     || "aienvmp context --json";
   const aiBootstrap = sbomBootstrap(nextSafeCommand, dependencyReview);
   const scannerGuidance = sbomScannerGuidance(dependencyReview);
+  const dependencyCoordination = sbomDependencyCoordination(dependencyReview, scannerGuidance, nextSafeCommand);
   return {
     bomFormat: "CycloneDX",
     specVersion: "1.6",
@@ -278,6 +303,8 @@ export function buildCycloneDxLite(manifest = {}) {
       { name: "aienvmp:scannerGuidance:evidenceWorkflow", value: scannerGuidance.evidenceWorkflow.join(" -> ") },
       { name: "aienvmp:scannerGuidance:interoperabilityRule", value: scannerGuidance.interoperabilityRule },
       { name: "aienvmp:scannerGuidance:rule", value: scannerGuidance.rule },
+      { name: "aienvmp:dependencyCoordination:nextCommand", value: dependencyCoordination.nextCommand },
+      { name: "aienvmp:dependencyCoordination:rule", value: dependencyCoordination.rule },
       { name: "aienvmp:aiBootstrap:rule", value: aiBootstrap.rule }
     ]
   };
