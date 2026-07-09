@@ -25,6 +25,10 @@ export async function startWorkspace(args = {}) {
     nextSetupCommand: after.aiDiscovery?.nextSetupCommand || "npx aienvmp onboard",
     agentPointers: status.agentPointers,
     aiDiscovery: after.aiDiscovery,
+    discoveryDecision: after.aiDiscovery?.decision || status.agentPointers?.discoveryDecision || "fallback-required",
+    startupChecklist: after.aiDiscovery?.startupChecklist || [],
+    resume: after.aiDiscovery?.resume || null,
+    fallbackPrompt: after.aiDiscovery?.fallbackPrompt || "",
     statusText: renderStatusText(status),
     rule: "Use this as the first AI entry command when instruction-file automatic discovery is uncertain. It only writes aienvmp artifacts and keeps local decisions advisory."
   };
@@ -37,8 +41,9 @@ export async function startWorkspace(args = {}) {
     console.log(`read: ${result.readOrder.join(" -> ")}`);
     console.log(`next: ${result.nextCommand}`);
     console.log(`setup: ${result.nextSetupCommand}`);
+    console.log(`AI discovery: ${result.discoveryDecision} / ${result.agentPointers?.discovery || after.agentPointers.discovery}`);
     console.log(`discovery: ${result.agentPointers?.discovery || after.agentPointers.discovery}`);
-    console.log(`AI fallback: ${result.aiDiscovery.fallbackPrompt}`);
+    console.log(`AI fallback: ${result.fallbackPrompt}`);
   }
 
   return result;

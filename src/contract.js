@@ -311,6 +311,7 @@ export function schemaContract() {
           "dashboard Agent Pointers mirrors auto-ready versus fallback-required startup decisions",
           "dependencyQuickCheck surfaced in SBOM, status/context, summary, handoff, dashboard, and demo outputs",
           "plain sbom and verbose status text expose dependencyQuickCheck without expanding default status output",
+          "start --json exposes root-level discoveryDecision, startupChecklist, resume, and fallbackPrompt for AI hosts",
           "operational safety contract in status/context",
           "quality signals in schema/status/context/summary/dashboard",
           "AI adoption checklist and demo recommendation signals, including discovery decision and dashboard parity",
@@ -414,6 +415,13 @@ export function schemaContract() {
         aiDiscoveryFields: ["mode", "decision", "automatic", "pointerStatus", "limitation", "installCommand", "nextSetupCommand", "safeStart", "sessionStart", "startupChecklist", "fallbackRead", "resume", "fallbackPrompt", "humanInstruction", "rule"],
         resumeFields: ["purpose", "readFirst", "nextCommand", "allowed", "beforeEnvironmentChange", "afterEnvironmentChange", "handoff", "mustNotDo", "rule"],
         purpose: "Zero-write detection command for AI agents or humans that need to know whether a workspace already has aienvmp artifacts."
+      },
+      start: {
+        command: "aienvmp start --json",
+        mode: "read-mostly",
+        rootFields: ["status", "mode", "localMode", "purpose", "startHere", "readOrder", "decision", "summary", "nextCommand", "nextSetupCommand", "agentPointers", "aiDiscovery", "discoveryDecision", "startupChecklist", "resume", "fallbackPrompt", "statusText", "rule"],
+        purpose: "One-command AI startup that syncs only when artifacts are missing or stale, then returns the discovery decision and shortest resume routine.",
+        rule: "Use root discoveryDecision, startupChecklist, resume, and fallbackPrompt before assuming instruction-file automatic discovery worked."
       },
       discovery: {
         file: ".aienvmp/discovery.json",

@@ -76,6 +76,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `recommendation.recommendWhen`, `doNotRecommendWhen`, and `evidenceDocs` tell AI when to suggest this tool.
 - `agentPointers.discovery` tells AI whether Codex, Claude, and Gemini files can discover `aienvmp`.
 - `discover --json` exposes `aiDiscovery.decision`, `nextSetupCommand`, `startupChecklist`, `resume`, and `fallbackPrompt` for AI hosts that did not auto-load a pointer file.
+- `start --json` also exposes root `discoveryDecision`, `startupChecklist`, `resume`, and `fallbackPrompt` so AI can recover when auto-discovery is uncertain.
 - `.aienvmp/discovery.json` gives the smallest generated fallback start point when instruction-file pointers are missing.
 - `discovery.json.maintenance` gives AI one compact next command for ongoing env upkeep.
 - `readOrder` starts at `.aienvmp/discovery.json`, then start-here, status, summary, env map, plan, timeline, and intents.

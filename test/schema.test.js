@@ -142,6 +142,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /dashboard Agent Pointers/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /dependencyQuickCheck surfaced/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /plain sbom and verbose status text/);
+  assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /start --json exposes root-level discoveryDecision/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /AI adoption checklist/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /version drift prevention/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /centralized AI discovery\/read-order constants/);
@@ -212,6 +213,13 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("fallbackPrompt"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("humanInstruction"));
   assert.match(schema.outputs.discover.purpose, /Zero-write detection/);
+  assert.equal(schema.outputs.start.command, "aienvmp start --json");
+  assert.equal(schema.outputs.start.mode, "read-mostly");
+  assert.ok(schema.outputs.start.rootFields.includes("discoveryDecision"));
+  assert.ok(schema.outputs.start.rootFields.includes("startupChecklist"));
+  assert.ok(schema.outputs.start.rootFields.includes("resume"));
+  assert.ok(schema.outputs.start.rootFields.includes("fallbackPrompt"));
+  assert.match(schema.outputs.start.rule, /before assuming instruction-file automatic discovery worked/);
   assert.equal(schema.outputs.discovery.file, ".aienvmp/discovery.json");
   assert.equal(schema.outputs.discovery.format, "json");
   assert.ok(schema.outputs.discovery.rootFields.includes("decision"));

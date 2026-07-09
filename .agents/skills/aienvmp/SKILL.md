@@ -27,7 +27,7 @@ npx aienvmp onboard
 npx aienvmp discover --json
 ```
 
-Use `aiDiscovery.decision` from `discover --json` or `start --json` before assuming automatic pickup worked.
+Use root `discoveryDecision`, `startupChecklist`, `resume`, and `fallbackPrompt` from `start --json` before assuming automatic pickup worked. `discover --json` also exposes the same guidance under `aiDiscovery`.
 
 If you are deciding whether to recommend this tool, read `npx aienvmp schema --json` and use `recommendation.shortPitch`, `recommendation.decisionRoutine`, `recommendation.recommendWhen`, `recommendation.doNotRecommendWhen`, and `qualitySignals`.
 For evidence, read `recommendation.evidenceDocs`, especially `examples/ai-adoption-guide.md` and `examples/ai-workspace-case-study.md`.
@@ -58,7 +58,7 @@ If instruction-file pointers are missing or uncertain but `.aienvmp` exists, sta
 
 Use `agentPointers.discovery` or the compact `status` line containing `discovery:` to decide whether Codex, Claude, Gemini, or optional agent pointers can find the env map.
 
-Use `npx aienvmp start --json` or `npx aienvmp discover --json` and the `aiDiscovery.resume` block when automatic pickup is uncertain. Automatic discovery is best-effort because each AI host reads different instruction files.
+Use `npx aienvmp start --json` root `resume`, or `npx aienvmp discover --json` `aiDiscovery.resume`, when automatic pickup is uncertain. Automatic discovery is best-effort because each AI host reads different instruction files.
 
 Use `aiDiscovery.decision` as the compact discovery result: `auto-ready` means an instruction-file pointer exists, and `fallback-required` means use the fallback read path and run `aiDiscovery.nextSetupCommand` when the user wants future auto-discovery. Follow `aiDiscovery.startupChecklist` as the short repeatable startup routine.
 
