@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { dashWorkspace } from "../src/commands/dash.js";
 import { writeJson } from "../src/fsutil.js";
-import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
+import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
 
 test("renderDashboard includes the audit summary surface", () => {
   const html = renderDashboard({
@@ -106,7 +106,18 @@ test("renderDashboard includes the audit summary surface", () => {
         lockfiles: [{ file: "package-lock.json", ecosystem: "npm", manager: "npm" }],
         packages: 1,
         riskPackages: [{ name: "express", severity: "high", priority: "high", fixAvailable: true }]
-      }]
+      }],
+      dependencyCoordination: {
+        mode: "advisory",
+        readFirst: [".aienvmp/README.md", ".aienvmp/sbom.json", ".aienvmp/status.json", "aienvmp context --json"],
+        reviewTargets: ["package.json", "express"],
+        nextCommand: "aienvmp sync --security",
+        beforeChange: ["aienvmp intent --actor agent:id --action dependency-review --target dependency", "aienvmp plan --write"],
+        afterChange: ["run the narrowest relevant project validation", "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"],
+        mustNotDo: ["do not run broad install, update, audit fix, or lockfile rewrite commands before reading SBOM and status"],
+        scannerEvidence: "run-scanner-before-security-work",
+        rule: "Use the light SBOM to coordinate dependency work; record intent before dependency or lockfile changes, use optional scanners for security evidence, then checkpoint and hand off."
+      }
     },
     security: {
       mode: "security",
@@ -453,6 +464,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardDependencyReviewClientScript(), /const aiDependencyReviewHtml=aiDependencyReview\.status/);
   assert.match(dashboardDependencyReviewClientScript(), /Security confidence/);
   assert.match(dashboardDependencyReviewClientScript(), /aienvmp intent --actor agent:id --action dependency-review --target dependency/);
+  assert.match(dashboardDependencyCoordinationClientScript(), /const dependencyCoordination=lightSbom\.dependencyCoordination/);
+  assert.match(dashboardDependencyCoordinationClientScript(), /Scanner evidence/);
+  assert.match(dashboardDependencyCoordinationClientScript(), /audit fix/);
   assert.match(dashboardEnvironmentProtocolClientScript(), /const environmentProtocol=manifest\.preflight\?\.environmentChangeProtocol/);
   assert.match(dashboardEnvironmentProtocolClientScript(), /Before shared environment changes/);
   assert.match(dashboardEnvironmentProtocolClientScript(), /mustNotDo/);
@@ -481,6 +495,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const aiReviewPlan=lightSbom\.aiReviewPlan/);
   assert.match(html, /const aiReviewPlanHtml=aiReviewPlan\.status/);
   assert.match(html, /const scannerGuidanceHtml=/);
+  assert.match(html, /const dependencyCoordinationHtml=/);
+  assert.match(html, /Dependency Coordination/);
   assert.match(html, /const riskSummaryHtml=riskSummary\.level/);
   assert.match(html, /const pmPolicyHtml=/);
   assert.match(html, /const dependencyHintsHtml=dependencyHints\.length/);
