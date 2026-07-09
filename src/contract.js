@@ -1,5 +1,5 @@
 import { dashboardDiscoveryFallback, dashboardEssentialSurfaces, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardSurfaceBudget } from "./dashboard.js";
-import { aiDefaultReadOrder, aiFallbackPrompt, aiFallbackRead, aiStartupChecklist } from "./ai-contract.js";
+import { aiDefaultReadOrder, aiEntryContract, aiFallbackPrompt, aiFallbackRead, aiStartupChecklist } from "./ai-contract.js";
 
 export function preflightContract() {
   return {
@@ -242,6 +242,7 @@ export function schemaContract() {
       fallbackCommand: "aienvmp start --json",
       discoveryArtifact: ".aienvmp/discovery.json",
       fallbackRead: aiFallbackRead,
+      aiEntry: aiEntryContract(),
       fallbackPrompt: aiFallbackPrompt,
       copyPastePrompt: aiFallbackPrompt,
       promptUse: {
@@ -315,13 +316,13 @@ export function schemaContract() {
         themes: ["AI discovery", "dependency quick check", "dashboard parity", "dashboard maintainability", "AI quality signals", "SBOM interoperability", "recommendation positioning", "shared contract constants", "release gating"],
         changes: [
           "best-effort AI discovery with aiDiscovery.decision, discovery.json, startupChecklist, and fallback prompt contract",
-          "copyPastePrompt and promptUse recovery fields for AI hosts that miss instruction-file automatic discovery",
+          "copyPastePrompt, promptUse, and aiEntry recovery fields for AI hosts that miss instruction-file automatic discovery",
           "copyPastePrompt guidance aligned across README, schema, packaged AI skill, adoption guide, and example evidence docs",
           "dashboard Agent Pointers mirrors auto-ready versus fallback-required startup decisions",
           "dashboard rendering split into payload, document, style, card, mainCards, supportCards, operationalCards, and stateCards helpers",
           "dependencyQuickCheck surfaced in SBOM, status/context, summary, handoff, dashboard, and demo outputs",
           "plain sbom and verbose status text expose dependencyQuickCheck without expanding default status output",
-          "start --json exposes root-level discoveryDecision, startupChecklist, resume, copyPastePrompt, and fallbackPrompt for AI hosts",
+          "start --json exposes root-level discoveryDecision, startupChecklist, resume, aiEntry, copyPastePrompt, and fallbackPrompt for AI hosts",
           "operational safety contract in status/context",
           "quality signals in schema/status/context/summary/dashboard",
           "AI adoption checklist and demo recommendation signals, including discovery decision and dashboard parity",
@@ -364,7 +365,7 @@ export function schemaContract() {
           "aiDiscovery.decision and dependencyQuickCheck are visible in the AI JSON contract, generated artifacts, plain CLI review, dashboard, and examples",
           "shared AI discovery/read-order constants are covered by release:check",
           "README, examples, schema, CHANGELOG, dashboard, and packaged AI skill describe the same AI workspace coordination contract",
-          "copyPastePrompt, promptUse, dashboard helper lists, and release notes are covered by release:check",
+          "aiEntry, copyPastePrompt, promptUse, dashboard helper lists, and release notes are covered by release:check",
           "package.json version is intentionally bumped for 0.2.0 or the chosen release"
         ],
         holdWhen: [
@@ -401,7 +402,7 @@ export function schemaContract() {
       stabilizationFocus: [
         "AI session/status/context contract",
         "aiDiscovery.decision and fallback startup contract",
-        "copyPastePrompt recovery contract across JSON, docs, examples, and packaged skill",
+        "aiEntry and copyPastePrompt recovery contract across JSON, docs, examples, and packaged skill",
         "light SBOM and dependency-change review loop",
         "dependencyQuickCheck across AI and human surfaces",
         "dependencyQuickCheck across JSON, plain sbom, verbose status, summary, handoff, dashboard, and demo surfaces",
@@ -425,14 +426,14 @@ export function schemaContract() {
         command: "aienvmp discover --json",
         mode: "read-only",
         rootFields: ["status", "detected", "startHere", "readOrder", "freshness", "nextCommand", "agentPointers", "aiDiscovery", "artifacts", "rule"],
-        aiDiscoveryFields: ["mode", "decision", "automatic", "pointerStatus", "limitation", "installCommand", "nextSetupCommand", "safeStart", "sessionStart", "startupChecklist", "fallbackRead", "resume", "fallbackPrompt", "copyPastePrompt", "promptUse", "humanInstruction", "rule"],
+        aiDiscoveryFields: ["mode", "decision", "automatic", "pointerStatus", "limitation", "installCommand", "nextSetupCommand", "safeStart", "sessionStart", "startupChecklist", "fallbackRead", "resume", "aiEntry", "fallbackPrompt", "copyPastePrompt", "promptUse", "humanInstruction", "rule"],
         resumeFields: ["purpose", "readFirst", "nextCommand", "allowed", "beforeEnvironmentChange", "afterEnvironmentChange", "handoff", "mustNotDo", "rule"],
         purpose: "Zero-write detection command for AI agents or humans that need to know whether a workspace already has aienvmp artifacts."
       },
       start: {
         command: "aienvmp start --json",
         mode: "read-mostly",
-        rootFields: ["status", "mode", "localMode", "purpose", "startHere", "readOrder", "decision", "summary", "nextCommand", "nextSetupCommand", "agentPointers", "aiDiscovery", "discoveryDecision", "startupChecklist", "resume", "fallbackPrompt", "copyPastePrompt", "promptUse", "statusText", "rule"],
+        rootFields: ["status", "mode", "localMode", "purpose", "startHere", "readOrder", "decision", "summary", "nextCommand", "nextSetupCommand", "agentPointers", "aiDiscovery", "discoveryDecision", "startupChecklist", "resume", "aiEntry", "fallbackPrompt", "copyPastePrompt", "promptUse", "statusText", "rule"],
         purpose: "One-command AI startup that syncs only when artifacts are missing or stale, then returns the discovery decision and shortest resume routine.",
         rule: "Use root discoveryDecision, startupChecklist, resume, and fallbackPrompt before assuming instruction-file automatic discovery worked."
       },
@@ -440,7 +441,7 @@ export function schemaContract() {
         file: ".aienvmp/discovery.json",
         command: "aienvmp sync",
         format: "json",
-        rootFields: ["schemaVersion", "schemaName", "decision", "automatic", "pointerStatus", "startCommand", "statusCommand", "contextCommand", "nextSetupCommand", "readOrder", "maintenance", "startupChecklist", "resume", "fallbackPrompt", "copyPastePrompt", "promptUse", "rule"],
+        rootFields: ["schemaVersion", "schemaName", "decision", "automatic", "pointerStatus", "startCommand", "statusCommand", "contextCommand", "nextSetupCommand", "readOrder", "maintenance", "startupChecklist", "resume", "aiEntry", "fallbackPrompt", "copyPastePrompt", "promptUse", "rule"],
         maintenanceFields: ["status", "nextCommand", "source", "freshness", "followUp", "dependencyQuickCheck", "beforeEnvironmentChange", "afterEnvironmentChange", "rule"],
         purpose: "Smallest generated fallback entry artifact for AI hosts that did not auto-load an instruction-file pointer."
       },

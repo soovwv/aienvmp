@@ -1,5 +1,5 @@
 import fs from "node:fs/promises";
-import { aiDefaultReadOrder, aiDiscoveryEntry, aiFallbackPrompt, aiStartupChecklist, npxAiContextCommand } from "../ai-contract.js";
+import { aiDefaultReadOrder, aiDiscoveryEntry, aiEntryContract, aiFallbackPrompt, aiStartupChecklist, npxAiContextCommand } from "../ai-contract.js";
 import { initWorkspace } from "./init.js";
 import { scanWorkspace } from "./scan.js";
 import { compileWorkspace } from "./compile.js";
@@ -61,6 +61,14 @@ async function writeDiscoveryArtifact(dir, status = {}) {
   const dependencyQuickCheck = status.dependencyQuickCheck || {};
   const artifactFreshness = status.artifactFreshness || {};
   const readOrder = aiDefaultReadOrder;
+  const resume = {
+    readFirst: readOrder,
+    nextCommand: status.nextCommand || "aienvmp status --json",
+    beforeEnvironmentChange: status.aiSession?.beforeEnvironmentChange || "aienvmp intent --actor agent:id --action planned-change --target environment",
+    afterEnvironmentChange: status.aiSession?.afterEnvironmentChange || "aienvmp checkpoint --actor agent:id --summary what-changed --target environment",
+    handoff: status.aiSession?.handoff || "aienvmp handoff --record --actor agent:id",
+    rule: "Use this routine when an AI host did not auto-load an instruction-file pointer."
+  };
   const artifact = {
     schemaVersion: 1,
     schemaName: "aienvmp.ai-discovery",
@@ -90,14 +98,17 @@ async function writeDiscoveryArtifact(dir, status = {}) {
       rule: "Use this compact block as the recurring AI environment maintenance decision before another shared environment change."
     },
     startupChecklist: status.agentPointers?.startupChecklist || aiStartupChecklist,
-    resume: {
+    resume,
+    aiEntry: aiEntryContract({
+      decision: discoveryDecision,
       readFirst: readOrder,
-      nextCommand: status.nextCommand || "aienvmp status --json",
-      beforeEnvironmentChange: status.aiSession?.beforeEnvironmentChange || "aienvmp intent --actor agent:id --action planned-change --target environment",
-      afterEnvironmentChange: status.aiSession?.afterEnvironmentChange || "aienvmp checkpoint --actor agent:id --summary what-changed --target environment",
-      handoff: status.aiSession?.handoff || "aienvmp handoff --record --actor agent:id",
-      rule: "Use this routine when an AI host did not auto-load an instruction-file pointer."
-    },
+      nextCommand: resume.nextCommand,
+      nextSetupCommand,
+      beforeEnvironmentChange: resume.beforeEnvironmentChange,
+      afterEnvironmentChange: resume.afterEnvironmentChange,
+      handoff: resume.handoff,
+      copyPastePrompt: aiFallbackPrompt
+    }),
     fallbackPrompt: aiFallbackPrompt,
     copyPastePrompt: aiFallbackPrompt,
     promptUse: {

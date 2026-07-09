@@ -109,6 +109,9 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.equal(discovery.maintenance.dependencyQuickCheck, "ready");
   assert.match(discovery.maintenance.rule, /recurring AI environment maintenance decision/);
   assert.match(discovery.startupChecklist.join(" "), /dependencyQuickCheck/);
+  assert.equal(discovery.aiEntry.decision, discovery.decision);
+  assert.equal(discovery.aiEntry.nextSetupCommand, discovery.nextSetupCommand);
+  assert.equal(discovery.aiEntry.copyPastePrompt, discovery.copyPastePrompt);
   assert.match(discovery.fallbackPrompt, /\.aienvmp\/discovery\.json/);
   assert.equal(discovery.copyPastePrompt, discovery.fallbackPrompt);
   assert.ok(discovery.promptUse.pasteInto.includes("Claude"));

@@ -21,6 +21,8 @@ test("start syncs a missing workspace then returns the AI startup contract", asy
   assert.equal(result.nextSetupCommand, "npx aienvmp onboard");
   assert.equal(result.aiDiscovery.resume.nextCommand, "npx aienvmp status");
   assert.equal(result.resume.nextCommand, "npx aienvmp status");
+  assert.equal(result.aiEntry.nextCommand, "npx aienvmp status");
+  assert.equal(result.aiEntry.copyPastePrompt, result.copyPastePrompt);
   assert.match(result.startupChecklist.join(" "), /dependencyQuickCheck/);
   assert.match(result.fallbackPrompt, /Use aienvmp as the workspace env map/);
   assert.equal(result.copyPastePrompt, result.fallbackPrompt);
@@ -61,6 +63,8 @@ test("start JSON output is machine-readable", async () => {
   assert.equal(json.discoveryDecision, "fallback-required");
   assert.match(json.startupChecklist.join(" "), /start --json/);
   assert.equal(json.resume.handoff, "aienvmp handoff --record --actor agent:id");
+  assert.equal(json.aiEntry.handoff, "aienvmp handoff --record --actor agent:id");
+  assert.equal(json.aiEntry.copyPastePrompt, json.copyPastePrompt);
   assert.match(json.fallbackPrompt, /Use aienvmp as the workspace env map/);
   assert.equal(json.copyPastePrompt, json.fallbackPrompt);
   assert.ok(json.promptUse.pasteInto.includes("Gemini"));

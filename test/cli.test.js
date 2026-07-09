@@ -115,7 +115,7 @@ test("package, README, and CLI help share the AI workspace coordination position
   assert.match(readme, /Automatic discovery is best-effort/);
   assert.match(readme, /aiDiscovery\.decision/);
   assert.match(readme, /fallback-required/);
-  assert.match(readme, /aiDiscovery\.resume/);
+  assert.match(readme, /aiEntry/);
   assert.match(readme, /operationalSafety/);
   assert.match(readme, /releaseReadiness\.currentBatch/);
   assert.match(readme, /releaseReadiness\.currentBatch` is reviewed/);

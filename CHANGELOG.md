@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added compact `aiEntry` recovery fields to `discover --json`, `start --json`, and generated `.aienvmp/discovery.json` so AI hosts can recover from missed automatic discovery with one small object.
 - Updated CLI help and README command wording so the copy-paste fallback prompt is discoverable before reading JSON.
 - Added `copy-paste prompt:` to default `start` and `discover` text output so humans can hand the fallback instruction to another AI without parsing JSON.
 - Compressed the README AI Contract section while keeping discovery, `copyPastePrompt`, dependency, safety, and release readiness signals visible.

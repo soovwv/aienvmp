@@ -107,6 +107,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.agentDiscovery.fallbackCommand, "aienvmp start --json");
   assert.equal(schema.agentDiscovery.discoveryArtifact, ".aienvmp/discovery.json");
   assert.deepEqual(schema.agentDiscovery.fallbackRead, [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
+  assert.equal(schema.agentDiscovery.aiEntry.decision, "fallback-required");
+  assert.equal(schema.agentDiscovery.aiEntry.copyPastePrompt, schema.agentDiscovery.copyPastePrompt);
   assert.equal(schema.agentDiscovery.copyPastePrompt, schema.agentDiscovery.fallbackPrompt);
   assert.ok(schema.agentDiscovery.promptUse.pasteInto.includes("Codex"));
   assert.match(schema.agentDiscovery.promptUse.when, /did not auto-read/);
@@ -149,7 +151,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.releaseReadiness.currentBatch.themes.includes("shared contract constants"));
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /aiDiscovery\.decision/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /fallback prompt contract/);
-  assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /copyPastePrompt and promptUse/);
+  assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /copyPastePrompt, promptUse, and aiEntry/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /dashboard rendering split/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /dashboard Agent Pointers/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /dependencyQuickCheck surfaced/);
@@ -184,7 +186,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.releaseReadiness.evidenceCommands.includes("node bin/aienvmp.js demo --json"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("AI session/status/context contract"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("aiDiscovery.decision and fallback startup contract"));
-  assert.ok(schema.releaseReadiness.stabilizationFocus.includes("copyPastePrompt recovery contract across JSON, docs, examples, and packaged skill"));
+  assert.ok(schema.releaseReadiness.stabilizationFocus.includes("aiEntry and copyPastePrompt recovery contract across JSON, docs, examples, and packaged skill"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("dependencyQuickCheck across AI and human surfaces"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("dependencyQuickCheck across JSON, plain sbom, verbose status, summary, handoff, dashboard, and demo surfaces"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("dashboard maintainability helpers before further UI changes"));
@@ -222,6 +224,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("startupChecklist"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("sessionStart"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("resume"));
+  assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("aiEntry"));
   assert.ok(schema.outputs.discover.resumeFields.includes("beforeEnvironmentChange"));
   assert.ok(schema.outputs.discover.resumeFields.includes("mustNotDo"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("fallbackPrompt"));
@@ -234,6 +237,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.start.rootFields.includes("discoveryDecision"));
   assert.ok(schema.outputs.start.rootFields.includes("startupChecklist"));
   assert.ok(schema.outputs.start.rootFields.includes("resume"));
+  assert.ok(schema.outputs.start.rootFields.includes("aiEntry"));
   assert.ok(schema.outputs.start.rootFields.includes("fallbackPrompt"));
   assert.ok(schema.outputs.start.rootFields.includes("copyPastePrompt"));
   assert.ok(schema.outputs.start.rootFields.includes("promptUse"));
@@ -245,6 +249,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.discovery.maintenanceFields.includes("nextCommand"));
   assert.ok(schema.outputs.discovery.maintenanceFields.includes("dependencyQuickCheck"));
   assert.ok(schema.outputs.discovery.rootFields.includes("fallbackPrompt"));
+  assert.ok(schema.outputs.discovery.rootFields.includes("aiEntry"));
   assert.ok(schema.outputs.discovery.rootFields.includes("copyPastePrompt"));
   assert.ok(schema.outputs.discovery.rootFields.includes("promptUse"));
   assert.match(schema.outputs.discovery.purpose, /Smallest generated fallback entry/);

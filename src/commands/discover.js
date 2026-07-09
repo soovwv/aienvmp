@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { aiDefaultReadOrder, aiDiscoveryEntry, aiEnvMap, aiStartHere, aiStatus, aiSummary, npxAiFallbackPrompt, npxAiMissingFallbackPrompt, npxAiStartupChecklist } from "../ai-contract.js";
+import { aiDefaultReadOrder, aiDiscoveryEntry, aiEntryContract, aiEnvMap, aiStartHere, aiStatus, aiSummary, npxAiFallbackPrompt, npxAiMissingFallbackPrompt, npxAiStartupChecklist } from "../ai-contract.js";
 import { readJson } from "../fsutil.js";
 import { aiEnvPath, dashboardPath, discoveryJsonPath, manifestPath, sbomJsonPath, stateDir, stateReadmePath, statusJsonPath, summaryMdPath, workspaceDir } from "../paths.js";
 
@@ -136,6 +136,21 @@ function aiDiscoverySummary({ detected = false, stale = true, agentPointers = {}
   const fallbackPrompt = detected
     ? npxAiFallbackPrompt
     : npxAiMissingFallbackPrompt;
+  const resume = {
+    purpose: "Minimum AI startup routine when instruction-file automatic discovery is uncertain.",
+    readFirst: fallbackRead.length ? fallbackRead : aiDefaultReadOrder,
+    nextCommand: safeStart,
+    allowed: "project-local code work can continue when status/context do not require environment review",
+    beforeEnvironmentChange: "aienvmp intent --actor agent:id --action planned-change --target environment",
+    afterEnvironmentChange: "aienvmp checkpoint --actor agent:id --summary what-changed --target environment",
+    handoff: "aienvmp handoff --record --actor agent:id",
+    mustNotDo: [
+      "do not assume automatic pickup worked; verify discovery or read fallback artifacts first",
+      "do not change runtimes, dependencies, package managers, Docker, or global tools before intent/review",
+      "do not run sync repeatedly when status artifacts are fresh"
+    ],
+    rule: "When an AI host did not auto-load a pointer file, use this resume routine as the shared environment startup contract."
+  };
   return {
     mode: "best-effort",
     decision,
@@ -148,21 +163,17 @@ function aiDiscoverySummary({ detected = false, stale = true, agentPointers = {}
     sessionStart,
     startupChecklist,
     fallbackRead,
-    resume: {
-      purpose: "Minimum AI startup routine when instruction-file automatic discovery is uncertain.",
-      readFirst: fallbackRead.length ? fallbackRead : aiDefaultReadOrder,
+    resume,
+    aiEntry: aiEntryContract({
+      decision,
+      readFirst: fallbackRead,
       nextCommand: safeStart,
-      allowed: "project-local code work can continue when status/context do not require environment review",
-      beforeEnvironmentChange: "aienvmp intent --actor agent:id --action planned-change --target environment",
-      afterEnvironmentChange: "aienvmp checkpoint --actor agent:id --summary what-changed --target environment",
-      handoff: "aienvmp handoff --record --actor agent:id",
-      mustNotDo: [
-        "do not assume automatic pickup worked; verify discovery or read fallback artifacts first",
-        "do not change runtimes, dependencies, package managers, Docker, or global tools before intent/review",
-        "do not run sync repeatedly when status artifacts are fresh"
-      ],
-      rule: "When an AI host did not auto-load a pointer file, use this resume routine as the shared environment startup contract."
-    },
+      nextSetupCommand,
+      beforeEnvironmentChange: resume.beforeEnvironmentChange,
+      afterEnvironmentChange: resume.afterEnvironmentChange,
+      handoff: resume.handoff,
+      copyPastePrompt: fallbackPrompt
+    }),
     fallbackPrompt,
     copyPastePrompt: fallbackPrompt,
     promptUse: {

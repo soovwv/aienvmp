@@ -46,3 +46,27 @@ export const sbomReadOrder = [
   aiSummary,
   aiContextCommand
 ];
+
+export function aiEntryContract({
+  decision = "fallback-required",
+  readFirst = aiFallbackRead,
+  nextCommand = aiContextCommand,
+  nextSetupCommand = "aienvmp onboard",
+  beforeEnvironmentChange = "aienvmp intent --actor agent:id --action planned-change --target environment",
+  afterEnvironmentChange = "aienvmp checkpoint --actor agent:id --summary what-changed --target environment",
+  handoff = "aienvmp handoff --record --actor agent:id",
+  copyPastePrompt = aiFallbackPrompt
+} = {}) {
+  return {
+    purpose: "Small AI startup contract for hosts that missed automatic instruction-file discovery.",
+    decision,
+    readFirst,
+    nextCommand,
+    nextSetupCommand,
+    beforeEnvironmentChange,
+    afterEnvironmentChange,
+    handoff,
+    copyPastePrompt,
+    rule: "Read aiEntry first when automatic discovery is uncertain; keep local work advisory and record intent before shared environment changes."
+  };
+}

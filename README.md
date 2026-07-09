@@ -15,7 +15,7 @@
 - SBOM signal: use Syft, Trivy, Grype, or Dependency-Track for full evidence; keep `aienvmp` as the AI coordination layer.
 - Start: run `npx aienvmp start`. For AI auto-discovery, run `npx aienvmp onboard`.
 
-`start` discovers artifacts, syncs only when missing or stale, then prints status. `discover` is read-only and reports `aiDiscovery.decision`: `auto-ready` or `fallback-required`. `onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`. Automatic discovery is best-effort; if pointers are missing, paste `copyPastePrompt` from `start --json` or `.aienvmp/discovery.json`, then follow `aiDiscovery.resume`.
+`start` discovers artifacts, syncs only when missing or stale, then prints status. `discover` is read-only and reports `aiDiscovery.decision`: `auto-ready` or `fallback-required`. `onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`. Automatic discovery is best-effort; if pointers are missing, paste `copyPastePrompt` from `start --json` or `.aienvmp/discovery.json`, then follow `aiEntry`.
 
 ## 10-Second Use
 
@@ -74,7 +74,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `status`, `context`, `plan`, and `handoff` share one additive preflight contract.
 - `schemaVersion`, `contractVersion`, `stableFrom`, and compatibility rules are explicit.
 - `recommendation.recommendWhen`, `doNotRecommendWhen`, and `evidenceDocs` tell AI when to suggest this tool.
-- `agentPointers.discovery`, `aiDiscovery.decision`, `startupChecklist`, `aiDiscovery.resume`, and `copyPastePrompt` tell AI whether discovery is `auto-ready` or `fallback-required`.
+- `agentPointers.discovery`, `aiDiscovery.decision`, `startupChecklist`, `aiEntry`, and `copyPastePrompt` tell AI whether discovery is `auto-ready` or `fallback-required`.
 - `.aienvmp/discovery.json`, `discovery.json.maintenance`, `agentDiscovery.sessionStart`, and `readOrder` give the fallback start path for schema-only or Markdown-first agents.
 - `environmentChangeProtocol`, `operationalSafety`, `followUpPlan`, `collaboration`, `coordination`, and `agentActivity` keep shared changes advisory; `followUpPlan` points to sync, status, or handoff when needed.
 - `dependencyQuickCheck`, `sbomStrategy`, `scannerGuidance.decision`, `aiReviewPlan`, `externalTools`, and `evidenceWorkflow` keep SBOM review light while pointing to Syft, Trivy, Grype, or Dependency-Track when full evidence is needed.
