@@ -147,7 +147,7 @@ function dependencyQuickCheckSummary(manifest = {}, dependencyChangeProtocol = {
   return {
     status: quick.status || review.status || (["urgent", "high", "medium"].includes(sbomRisk.level) ? "review" : "ready"),
     purpose: quick.purpose || "10-second AI check before dependency, lockfile, package manager, security, or release-affecting dependency work.",
-    readFirst: quick.readFirst || [".aienvmp/README.md", ".aienvmp/sbom.json", ".aienvmp/status.json", "aienvmp context --json"],
+    readFirst: quick.readFirst || [".aienvmp/discovery.json", ".aienvmp/sbom.json", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
     nextCommand: quick.nextCommand || review.beforeDependencyChange?.[0] || sbomRisk.commands?.[0] || commands.recordIntent || "aienvmp sbom --json",
     reviewTargets: reviewTargets.slice(0, 5),
     scannerEvidence: quick.scannerEvidence || review.securityConfidence || "unknown",

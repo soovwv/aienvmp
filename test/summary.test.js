@@ -112,7 +112,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
       nextSetupCommand: "none",
       next: "Install a pointer with aienvmp snippet claude --write if this workspace uses that AI.",
       fallbackCommand: "aienvmp start --json",
-      fallbackRead: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]
+      fallbackRead: [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md"]
     },
     artifacts: {
       startHere: ".aienvmp/README.md"
@@ -177,7 +177,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /dependency quick check: review \/ scanner-summary \/ aienvmp sync --security \/ package\.json/);
   assert.match(markdown, /maintenance SBOM review: review \/ scanner-summary \/ aienvmp sync --security/);
   assert.match(markdown, /## Dependency changes/);
-  assert.match(markdown, /fallback: aienvmp start --json \/ \.aienvmp\/README\.md -> \.aienvmp\/status\.json -> \.aienvmp\/summary\.md -> aienvmp context --json/);
+  assert.match(markdown, /fallback: aienvmp start --json \/ \.aienvmp\/discovery\.json -> \.aienvmp\/README\.md -> \.aienvmp\/status\.json -> \.aienvmp\/summary\.md/);
   assert.match(markdown, /environment read: \.aienvmp\/status\.json, \.aienvmp\/summary\.md, aienvmp context --json/);
   assert.match(markdown, /environment before: aienvmp intent --actor agent:id --action planned-change --target dependency/);
   assert.match(markdown, /environment after: aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency/);

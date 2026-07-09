@@ -1,6 +1,8 @@
 import { readJson, writeJson } from "../fsutil.js";
 import { cyclonedxSbomPath, manifestPath, sbomJsonPath, workspaceDir } from "../paths.js";
 
+const sbomReadOrder = [".aienvmp/discovery.json", ".aienvmp/sbom.json", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"];
+
 export async function sbomWorkspace(args = {}) {
   const dir = workspaceDir(args);
   const manifest = await readJson(manifestPath(dir));
@@ -37,7 +39,7 @@ export function buildSbomArtifact(manifest = {}) {
     generatedAt: manifest.generatedAt || "",
     workspace: manifest.workspace || {},
     startHere: ".aienvmp/README.md",
-    readOrder: [".aienvmp/README.md", ".aienvmp/sbom.json", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+    readOrder: sbomReadOrder,
     mode: lightSbom.mode || "light-sbom",
     source: lightSbom.source || {},
     confidence: lightSbom.confidence || {},
@@ -59,7 +61,7 @@ export function buildSbomArtifact(manifest = {}) {
       readBefore: "Dependency changes, vulnerability remediation, release review, or shared AI handoff.",
       decision: dependencyReview.status || "ready",
       securityConfidence: dependencyReview.securityConfidence || "unknown",
-      readFirst: [".aienvmp/README.md", ".aienvmp/sbom.json", ".aienvmp/status.json", "aienvmp context --json"],
+      readFirst: sbomReadOrder,
       nextCommand: nextSafeCommand,
       beforeChange: nextSafeCommand,
       afterChange: dependencyReview.afterDependencyChange?.slice(-1)[0] || "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency",
@@ -74,7 +76,7 @@ function sbomDependencyQuickCheck(review = {}, coordination = {}, scannerGuidanc
   return {
     status,
     purpose: "10-second AI check before dependency, lockfile, package manager, security, or release-affecting dependency work.",
-    readFirst: [".aienvmp/README.md", ".aienvmp/sbom.json", ".aienvmp/status.json", "aienvmp context --json"],
+    readFirst: sbomReadOrder,
     nextCommand: nextSafeCommand,
     reviewTargets: targets,
     scannerEvidence: scannerGuidance.decision || "light-sbom-ok-for-coordination",
@@ -93,7 +95,7 @@ function sbomDependencyCoordination(review = {}, scannerGuidance = {}, nextSafeC
   return {
     mode: "advisory",
     appliesWhen: "Before dependency, lockfile, vulnerability remediation, package manager, or release-affecting dependency work.",
-    readFirst: [".aienvmp/README.md", ".aienvmp/sbom.json", ".aienvmp/status.json", "aienvmp context --json"],
+    readFirst: sbomReadOrder,
     reviewTargets: (review.reviewTargets || []).slice(0, 8),
     nextCommand: nextSafeCommand,
     beforeChange: review.beforeDependencyChange || [nextSafeCommand],
@@ -127,7 +129,7 @@ function sbomScannerGuidance(review = {}) {
     requireScannerFor: ["security claims", "vulnerability remediation", "release decisions", "dependency changes when scanner confidence is low"],
     externalTools: externalSbomTools(),
     evidenceWorkflow: [
-      "Read .aienvmp/sbom.json, .aienvmp/status.json, and aienvmp context --json first.",
+      "Read .aienvmp/discovery.json, .aienvmp/sbom.json, .aienvmp/status.json, and aienvmp context --json first.",
       "Use the light SBOM for coordination and dependency read set only.",
       "Run a dedicated scanner such as Syft, Trivy, Grype, Dependency-Track, npm audit, or pip-audit only when security confidence matters.",
       "Record intent before dependency or lockfile remediation.",
@@ -306,7 +308,7 @@ export function buildCycloneDxLite(manifest = {}) {
         { name: "aienvmp:risk:level", value: lightSbom.riskSummary?.level || "clear" },
         { name: "aienvmp:risk:score", value: String(lightSbom.riskSummary?.score || 0) },
         { name: "aienvmp:startHere", value: ".aienvmp/README.md" },
-        { name: "aienvmp:readOrder", value: ".aienvmp/README.md -> .aienvmp/sbom.json -> .aienvmp/status.json -> .aienvmp/summary.md -> aienvmp context --json" },
+        { name: "aienvmp:readOrder", value: sbomReadOrder.join(" -> ") },
         { name: "aienvmp:aiBootstrap:readFirst", value: aiBootstrap.readFirst },
         { name: "aienvmp:aiBootstrap:detailCommand", value: aiBootstrap.detailCommand },
         { name: "aienvmp:aiBootstrap:nextSafeCommand", value: aiBootstrap.nextSafeCommand },

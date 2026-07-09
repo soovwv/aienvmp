@@ -109,7 +109,7 @@ test("renderDashboard includes the audit summary surface", () => {
       }],
       dependencyCoordination: {
         mode: "advisory",
-        readFirst: [".aienvmp/README.md", ".aienvmp/sbom.json", ".aienvmp/status.json", "aienvmp context --json"],
+        readFirst: [".aienvmp/discovery.json", ".aienvmp/sbom.json", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
         reviewTargets: ["package.json", "express"],
         nextCommand: "aienvmp sync --security",
         beforeChange: ["aienvmp intent --actor agent:id --action dependency-review --target dependency", "aienvmp plan --write"],
@@ -120,7 +120,7 @@ test("renderDashboard includes the audit summary surface", () => {
       },
       dependencyQuickCheck: {
         status: "review",
-        readFirst: [".aienvmp/README.md", ".aienvmp/sbom.json", ".aienvmp/status.json", "aienvmp context --json"],
+        readFirst: [".aienvmp/discovery.json", ".aienvmp/sbom.json", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
         nextCommand: "aienvmp sync --security",
         reviewTargets: ["package.json", "express"],
         scannerEvidence: "run-scanner-before-security-work",

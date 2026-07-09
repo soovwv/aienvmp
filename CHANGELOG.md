@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Aligned light SBOM and dependency coordination read orders with `.aienvmp/discovery.json` so dependency work starts from the same AI maintenance entry path.
 - Surfaced the AI maintenance decision in the dashboard first-read strip and conflict demo so ongoing upkeep is visible outside `discovery.json`.
 - Added `discovery.json.maintenance` so AI agents get one compact ongoing environment upkeep decision from the smallest fallback entry artifact.
 - Surfaced `.aienvmp/discovery.json` as the dashboard and demo AI entry point so humans and AI see the same fallback startup artifact.

@@ -100,7 +100,7 @@ npx aienvmp intent --actor agent:id --action "planned-change" --target dependenc
 npx aienvmp checkpoint --actor agent:id --summary "dependency-change" --target dependency
 ```
 
-For dependency or security work, read `.aienvmp/sbom.json` and follow `dependencyCoordination` before changing manifests or lockfiles.
+For dependency or security work, start from `.aienvmp/discovery.json`, then read `.aienvmp/sbom.json` and follow `dependencyCoordination` before changing manifests or lockfiles.
 
 ## Recommendation Sentence
 

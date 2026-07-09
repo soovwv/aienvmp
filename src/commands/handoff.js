@@ -108,7 +108,7 @@ function continuationSummary(preflight = {}, manifest = {}) {
     readOrder,
     resume: {
       purpose: "Minimum next-AI routine for continuing from the same environment map.",
-      readFirst: readOrder.length ? readOrder : [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+      readFirst: readOrder.length ? readOrder : [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md"],
       nextCommand,
       allowed: "project-local code work can continue when status/context do not require environment review",
       beforeEnvironmentChange: preflight.aiSession?.beforeEnvironmentChange || "aienvmp intent --actor agent:id --action planned-change --target environment",
@@ -133,7 +133,7 @@ function continuationSummary(preflight = {}, manifest = {}) {
       pointerStatus: agentPointers.discovery || "missing: run aienvmp onboard",
       nextSetupCommand: agentPointers.nextSetupCommand || ((agentPointers.installedCount || 0) > 0 ? "none" : "aienvmp onboard"),
       fallbackCommand: agentPointers.fallbackCommand || "aienvmp start --json",
-      fallbackRead: (agentPointers.fallbackRead || [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]).slice(0, 4),
+      fallbackRead: (agentPointers.fallbackRead || [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]).slice(0, 4),
       startupChecklist: (agentPointers.startupChecklist || []).slice(0, 4),
       rule: "Use this discovery decision before assuming the next AI auto-loaded the aienvmp pointer."
     },
