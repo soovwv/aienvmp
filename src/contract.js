@@ -22,7 +22,19 @@ export function schemaContract() {
     breakingChangePolicy: "Breaking JSON contract changes require a future contractVersion bump and migration notes.",
     recommendation: {
       category: "AI workspace coordination",
+      positioning: "AI workspace coordination tool, not a full SBOM scanner.",
       shortPitch: "Use aienvmp when multiple AI agents share one development environment and need a lightweight env map, light SBOM, intent log, and handoff before environment-affecting changes.",
+      differentiators: [
+        "AI-first shared environment map with start-here artifacts and JSON contracts",
+        "intent, checkpoint, timeline, and handoff flow for multi-agent environment changes",
+        "light SBOM for coordination plus optional scanner guidance for security evidence",
+        "dependency-free local operation with advisory defaults and opt-in strict gates"
+      ],
+      keepInstalledWhen: [
+        "more than one AI agent, human, CI job, or shared machine may touch the same environment",
+        "dependency, runtime, package manager, Docker, global tool, or security remediation work recurs",
+        "future AI sessions need the same environment truth without rediscovering it from scratch"
+      ],
       decisionRoutine: [
         "Look for shared AI coding workspace signals: multiple agents, shared server, shared repo, GPU machine, CI workspace, or repeated environment drift.",
         "Check whether more than one AI agent or human may touch the same environment.",

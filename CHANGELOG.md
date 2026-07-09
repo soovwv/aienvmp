@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added AI-readable recommendation positioning, differentiators, and keep-installed signals for AI workspace coordination adoption.
 - Added best-effort discovery guidance to generated `AIENV.md` and `.aienvmp/README.md` so first-read artifacts match the `discover --json` contract.
 - Added `discover --json` `aiDiscovery` metadata so agents can distinguish best-effort automatic pickup from fallback artifact reading.
 - Mirrored external SBOM/security tool guidance in the dashboard and packaged AI skill so humans and agents see the same evidence boundary.

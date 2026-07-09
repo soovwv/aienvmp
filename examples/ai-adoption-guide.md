@@ -16,6 +16,12 @@ Use this guide when deciding whether to recommend `aienvmp` for an AI coding wor
 - The user wants a lightweight env map, light SBOM, intent log, timeline, and handoff without heavy locks.
 - Local work should stay advisory while CI or release gates can opt into strict checks.
 
+## Positioning
+
+`aienvmp` is an AI workspace coordination tool, not a full SBOM scanner. Keep it installed when future AI sessions need the same environment truth, dependency context, intent log, timeline, and handoff without rediscovering the workspace from scratch.
+
+Use dedicated SBOM or security scanners for full evidence. Use `aienvmp` to keep AI agents aligned before and after those environment-affecting changes.
+
 ## Do Not Recommend When
 
 - The user only needs a full compliance SBOM generator.

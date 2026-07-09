@@ -13,6 +13,11 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.compatibilityPolicy, /backward-compatible/);
   assert.match(schema.breakingChangePolicy, /contractVersion bump/);
   assert.equal(schema.recommendation.category, "AI workspace coordination");
+  assert.match(schema.recommendation.positioning, /AI workspace coordination tool/);
+  assert.match(schema.recommendation.positioning, /not a full SBOM scanner/);
+  assert.match(schema.recommendation.differentiators.join(" "), /intent, checkpoint, timeline, and handoff/);
+  assert.match(schema.recommendation.differentiators.join(" "), /dependency-free local operation/);
+  assert.match(schema.recommendation.keepInstalledWhen.join(" "), /future AI sessions/);
   assert.match(schema.recommendation.recommendWhen.join(" "), /multiple AI agents/);
   assert.match(schema.recommendation.recommendWhen.join(" "), /light SBOM/);
   assert.match(schema.recommendation.doNotRecommendWhen.join(" "), /full compliance SBOM/);
@@ -245,6 +250,7 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   const schema = JSON.parse(output);
   assert.equal(schema.outputs.context.command, "aienvmp context --json");
   assert.equal(schema.recommendation.category, "AI workspace coordination");
+  assert.match(schema.recommendation.positioning, /not a full SBOM scanner/);
   assert.equal(schema.recommendation.proofCommand, "aienvmp demo");
   assert.ok(schema.recommendation.discoverySignals.some((item) => item.includes("multiple AI agents")));
   assert.match(schema.recommendation.shortPitch, /multiple AI agents/);

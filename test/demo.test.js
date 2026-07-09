@@ -84,6 +84,9 @@ test("multi-agent conflict docs explain the shared AI workspace use case", async
   assert.match(caseStudy, /advisory by default/);
   assert.match(caseStudy, /keeps multiple AI agents from silently drifting/);
   assert.match(adoptionGuide, /Recommend When/);
+  assert.match(adoptionGuide, /Positioning/);
+  assert.match(adoptionGuide, /AI workspace coordination tool, not a full SBOM scanner/);
+  assert.match(adoptionGuide, /future AI sessions need the same environment truth/);
   assert.match(adoptionGuide, /Do Not Recommend When/);
   assert.match(adoptionGuide, /Discovery Signals/);
   assert.match(adoptionGuide, /\.aienvmp\/README\.md/);
