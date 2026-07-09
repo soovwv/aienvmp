@@ -95,6 +95,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.sbomStrategy.externalTools.includes("syft"));
   assert.ok(schema.sbomStrategy.externalTools.includes("trivy"));
   assert.ok(schema.sbomStrategy.externalTools.includes("dependency-track"));
+  assert.match(schema.sbomStrategy.evidenceWorkflow.join(" "), /light SBOM/);
+  assert.match(schema.sbomStrategy.evidenceWorkflow.join(" "), /checkpoint and hand off/);
   assert.match(schema.sbomStrategy.interoperabilityRule, /AI workspace coordination layer/);
   assert.match(schema.sbomStrategy.aiRule, /optional scanners/);
   assert.equal(schema.releaseGate.mode, "manual-batched");
@@ -228,6 +230,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.sbom.scannerGuidanceFields.includes("decision"));
   assert.ok(schema.outputs.sbom.scannerGuidanceFields.includes("requireScannerFor"));
   assert.ok(schema.outputs.sbom.scannerGuidanceFields.includes("externalTools"));
+  assert.ok(schema.outputs.sbom.scannerGuidanceFields.includes("evidenceWorkflow"));
   assert.ok(schema.outputs.sbom.scannerGuidanceFields.includes("interoperabilityRule"));
   assert.ok(schema.outputs.sbom.scannerGuidanceFields.includes("whenToRun"));
   assert.ok(schema.outputs.sbom.rootFields.includes("aiReviewPlan"));

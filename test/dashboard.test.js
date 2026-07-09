@@ -431,6 +431,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardScannerGuidanceHtmlClientScript(), /Tools/);
   assert.match(dashboardScannerGuidanceHtmlClientScript(), /Evidence rule/);
   assert.match(dashboardScannerGuidanceHtmlClientScript(), /scannerGuidance\.externalTools/);
+  assert.match(dashboardScannerGuidanceHtmlClientScript(), /const scannerWorkflow=scannerGuidance\.evidenceWorkflow/);
+  assert.match(dashboardScannerGuidanceHtmlClientScript(), /evidence/);
   assert.match(dashboardScannerGuidanceHtmlClientScript(), /scannerGuidance\.decision/);
   assert.match(dashboardScannerGuidanceHtmlClientScript(), /security-sensitive decisions/);
   assert.match(dashboardRiskSummaryClientScript(), /const riskSummaryHtml=riskSummary\.level/);

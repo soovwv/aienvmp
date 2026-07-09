@@ -79,6 +79,13 @@ function sbomScannerGuidance(review = {}) {
     useLightSbomFor: ["AI environment coordination", "dependency read set", "package manager policy", "intent and handoff planning"],
     requireScannerFor: ["security claims", "vulnerability remediation", "release decisions", "dependency changes when scanner confidence is low"],
     externalTools: externalSbomTools(),
+    evidenceWorkflow: [
+      "Read .aienvmp/sbom.json, .aienvmp/status.json, and aienvmp context --json first.",
+      "Use the light SBOM for coordination and dependency read set only.",
+      "Run a dedicated scanner such as Syft, Trivy, Grype, Dependency-Track, npm audit, or pip-audit only when security confidence matters.",
+      "Record intent before dependency or lockfile remediation.",
+      "Checkpoint and hand off after accepted dependency or security changes."
+    ],
     interoperabilityRule: "Use aienvmp as the AI coordination layer and use dedicated SBOM or security scanners for full evidence. Do not install or run external tools automatically unless the user, CI, or release process asks.",
     whenToRun: lowConfidence
       ? [
@@ -268,6 +275,7 @@ export function buildCycloneDxLite(manifest = {}) {
       { name: "aienvmp:scannerGuidance:mode", value: scannerGuidance.mode },
       { name: "aienvmp:scannerGuidance:command", value: scannerGuidance.scannerCommand },
       { name: "aienvmp:scannerGuidance:externalTools", value: scannerGuidance.externalTools.map((tool) => tool.tool).join(",") },
+      { name: "aienvmp:scannerGuidance:evidenceWorkflow", value: scannerGuidance.evidenceWorkflow.join(" -> ") },
       { name: "aienvmp:scannerGuidance:interoperabilityRule", value: scannerGuidance.interoperabilityRule },
       { name: "aienvmp:scannerGuidance:rule", value: scannerGuidance.rule },
       { name: "aienvmp:aiBootstrap:rule", value: aiBootstrap.rule }

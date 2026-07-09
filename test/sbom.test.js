@@ -45,6 +45,9 @@ test("buildSbomArtifact creates standalone AI-readable light SBOM", () => {
   assert.ok(sbom.scannerGuidance.externalTools.some((tool) => tool.tool === "syft"));
   assert.ok(sbom.scannerGuidance.externalTools.some((tool) => tool.tool === "trivy"));
   assert.ok(sbom.scannerGuidance.externalTools.some((tool) => tool.tool === "dependency-track"));
+  assert.match(sbom.scannerGuidance.evidenceWorkflow.join(" "), /Read \.aienvmp\/sbom\.json/);
+  assert.match(sbom.scannerGuidance.evidenceWorkflow.join(" "), /dedicated scanner/);
+  assert.match(sbom.scannerGuidance.evidenceWorkflow.join(" "), /Checkpoint and hand off/);
   assert.match(sbom.scannerGuidance.interoperabilityRule, /AI coordination layer/);
   assert.match(sbom.scannerGuidance.interoperabilityRule, /Do not install or run external tools automatically/);
   assert.ok(sbom.scannerGuidance.whenToRun.includes("before security claims"));
@@ -122,6 +125,7 @@ test("buildCycloneDxLite exports project manifest packages with limitations", ()
   assert.equal(propertyValue(cdx.properties, "aienvmp:scannerGuidance:mode"), "optional-read-only");
   assert.equal(propertyValue(cdx.properties, "aienvmp:scannerGuidance:command"), "aienvmp sync --security");
   assert.equal(propertyValue(cdx.properties, "aienvmp:scannerGuidance:externalTools"), "syft,trivy,grype,dependency-track");
+  assert.match(propertyValue(cdx.properties, "aienvmp:scannerGuidance:evidenceWorkflow"), /dedicated scanner/);
   assert.match(propertyValue(cdx.properties, "aienvmp:scannerGuidance:interoperabilityRule"), /dedicated SBOM or security scanners/);
   assert.match(propertyValue(cdx.properties, "aienvmp:scannerGuidance:rule"), /optional read-only scanners/);
   assert.match(cdx.properties[0].value, /Light SBOM/);
@@ -156,6 +160,7 @@ test("sbomWorkspace can write .aienvmp/sbom.json", async () => {
   assert.equal(written.scannerGuidance.decision, "light-sbom-ok-for-coordination");
   assert.match(written.scannerGuidance.reason, /light SBOM is enough for coordination/);
   assert.ok(written.scannerGuidance.externalTools.some((tool) => tool.tool === "grype"));
+  assert.match(written.scannerGuidance.evidenceWorkflow.join(" "), /Record intent/);
   assert.equal(written.aiDependencyReview.status, "ready");
   assert.equal(written.aiDependencyReview.securityConfidence, "scanner-summary");
   assert.ok(written.aiDependencyReview.readFirst.includes("riskSummary"));

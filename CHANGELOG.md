@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added SBOM scanner `evidenceWorkflow` guidance so AI agents can hand off from light SBOM coordination to dedicated scanner evidence without auto-running tools.
 - Added batched release readiness details so AI/CI can see current grouped changes and do-not-publish gates before npm release.
 - Added an AI-readable adoption checklist and demo adoption signals so agents can decide when to recommend aienvmp for shared AI workspaces.
 - Mirrored `qualitySignals` into summary and dashboard outputs so humans and AI see the same stabilization checklist.

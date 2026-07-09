@@ -231,6 +231,13 @@ export function schemaContract() {
       scannerCommand: "aienvmp sync --security",
       scannerPolicy: "Optional, read-only scanner summaries are used for security confidence; they are not required for local coding.",
       externalTools: ["syft", "trivy", "grype", "dependency-track"],
+      evidenceWorkflow: [
+        "read aienvmp light SBOM, status, and context",
+        "use light SBOM for AI coordination and dependency read set",
+        "run dedicated scanner evidence only when security confidence matters",
+        "record intent before dependency or lockfile remediation",
+        "checkpoint and hand off after accepted dependency or security changes"
+      ],
       interoperabilityRule: "Use aienvmp as the AI workspace coordination layer; use dedicated SBOM and security tools for full evidence.",
       aiRule: "Use the light SBOM for dependency coordination. Run optional scanners before security claims, vulnerability remediation, release decisions, or dependency changes when scanner confidence is low."
     },
@@ -376,7 +383,7 @@ export function schemaContract() {
         file: ".aienvmp/sbom.json",
         command: "aienvmp sbom --json",
         rootFields: ["schemaVersion", "schemaName", "workspace", "startHere", "readOrder", "aiBootstrap", "nextSafeCommand", "scannerGuidance", "aiReviewPlan", "summary", "riskSummary", "topRisk", "packageManagerPolicy", "dependencyChangeHints", "aiDependencyReview"],
-        scannerGuidanceFields: ["mode", "decision", "reason", "defaultCommand", "scannerCommand", "securityConfidence", "useLightSbomFor", "requireScannerFor", "externalTools", "interoperabilityRule", "whenToRun", "rule"],
+        scannerGuidanceFields: ["mode", "decision", "reason", "defaultCommand", "scannerCommand", "securityConfidence", "useLightSbomFor", "requireScannerFor", "externalTools", "evidenceWorkflow", "interoperabilityRule", "whenToRun", "rule"],
         aiReviewPlanFields: ["status", "risk", "securityConfidence", "packageManagerPolicy", "packages", "vulnerabilities", "reviewTargets", "beforeChange", "afterChange", "rule"],
         aiDependencyReviewFields: ["status", "statusReason", "securityConfidence", "readFirst", "reviewTargets", "beforeDependencyChange", "afterDependencyChange", "rule"],
         aiUseFields: ["purpose", "readBefore", "decision", "securityConfidence", "readFirst", "nextCommand", "beforeChange", "afterChange", "rule"]
