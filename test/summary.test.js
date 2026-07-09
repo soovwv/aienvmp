@@ -146,7 +146,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /local check: aienvmp doctor --json \(warn-only\)/);
   assert.match(markdown, /CI strict: aienvmp doctor --strict security --json/);
   assert.match(markdown, /release strict: aienvmp doctor --strict all --json/);
-  assert.match(markdown, /release readiness: 0\.2\.0 \/ prototype-hardening \/ hold \/ npm run release:check passes locally/);
+  assert.match(markdown, /release readiness: 0\.2\.0 \/ prototype-hardening \/ hold \/ accumulating \/ npm run release:check passes locally/);
   assert.match(markdown, /collaboration rule: Do not install shared tools/);
   assert.match(markdown, /resolution rule:/);
   assert.match(markdown, /maintenance rule: Keep local operation advisory and lightweight/);
@@ -168,6 +168,8 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /## Release readiness/);
   assert.match(markdown, /target: 0\.2\.0/);
   assert.match(markdown, /default decision: hold/);
+  assert.match(markdown, /current batch: accumulating \/ stability-batch \/ AI discovery/);
+  assert.match(markdown, /batch reason: Several stability and AI-contract changes/);
   assert.match(markdown, /publish when: meaningful AI contract/);
   assert.match(markdown, /hold when: only one small documentation/);
   assert.match(markdown, /publish: Accumulate several meaningful AI-contract, dashboard, SBOM, release-gate, and bugfix changes before one npm publish/);

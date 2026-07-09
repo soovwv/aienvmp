@@ -81,6 +81,7 @@ export function renderSummary(status = {}, manifest = {}) {
   const strictRecommendation = status.strictRecommendation || {};
   const releaseReadiness = schemaContract().releaseReadiness || {};
   const publishDecision = releaseReadiness.publishDecision || {};
+  const currentBatch = releaseReadiness.currentBatch || {};
   const releaseChecks = toList(releaseReadiness.requiredBeforeStable);
 
   return [
@@ -105,7 +106,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- local check: ${strictRecommendation.localCommand || strictDecision.localCommand || "aienvmp doctor --json"} (${strictRecommendation.localBehavior || strictDecision.local || "warn-only"})`,
     `- CI strict: ${strictRecommendation.ciCommand || strictPlan.ciCommand || `${strict} --json`}`,
     `- release strict: ${strictRecommendation.releaseCommand || "aienvmp doctor --strict all --json"}`,
-    `- release readiness: ${releaseReadiness.target || "0.2.0"} / ${releaseReadiness.status || "prototype-hardening"} / ${publishDecision.default || "hold"} / ${releaseChecks[0] || "npm run release:check passes locally"}`,
+    `- release readiness: ${releaseReadiness.target || "0.2.0"} / ${releaseReadiness.status || "prototype-hardening"} / ${publishDecision.default || "hold"} / ${currentBatch.status || "accumulating"} / ${releaseChecks[0] || "npm run release:check passes locally"}`,
     "",
     `- state: ${status.state || "unknown"}`,
     `- workspace: ${workspace}`,
@@ -158,6 +159,8 @@ export function renderSummary(status = {}, manifest = {}) {
     `- target: ${releaseReadiness.target || "0.2.0"}`,
     `- status: ${releaseReadiness.status || "prototype-hardening"}`,
     `- default decision: ${publishDecision.default || "hold"}`,
+    `- current batch: ${currentBatch.status || "accumulating"} / ${currentBatch.releaseType || "stability-batch"} / ${toList(currentBatch.themes).join(", ") || "AI contract, dashboard, SBOM, release gate"}`,
+    `- batch reason: ${currentBatch.reason || "Accumulate meaningful changes before one intentional release."}`,
     `- gate: ${releaseChecks[0] || "npm run release:check passes locally"}`,
     `- publish when: ${toList(publishDecision.publishWhen)[0] || "meaningful changes are batched"}`,
     `- hold when: ${toList(publishDecision.holdWhen)[0] || "changes can be batched into the next release"}`,

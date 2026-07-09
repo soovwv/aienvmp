@@ -143,7 +143,7 @@ See [examples/github-action.yml](examples/github-action.yml).
 - `0.2.x` starts the stabilized AI workspace contract.
 - npm releases are manually gated and batched around meaningful changes; security fixes are the exception.
 - Default publish decision is `hold`; publish only after several meaningful changes are batched and `npm run release:check` passes.
-- `schema --json` exposes `releaseGate`, `releaseReadiness.requiredBeforeStable`, and `releaseReadiness.evidenceCommands`.
+- `schema --json` exposes `releaseGate`, `releaseReadiness.currentBatch`, `requiredBeforeStable`, and `evidenceCommands`.
 - `0.1.x` is deprecated only after `0.2.0` is published.
 - Broken or superseded versions are deprecated instead of unpublished.
 

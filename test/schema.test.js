@@ -85,6 +85,11 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.releaseGate.rule, /batch meaningful changes/);
   assert.equal(schema.releaseReadiness.target, "0.2.0");
   assert.equal(schema.releaseReadiness.status, "prototype-hardening");
+  assert.equal(schema.releaseReadiness.currentBatch.status, "accumulating");
+  assert.equal(schema.releaseReadiness.currentBatch.releaseType, "stability-batch");
+  assert.ok(schema.releaseReadiness.currentBatch.themes.includes("AI discovery"));
+  assert.ok(schema.releaseReadiness.currentBatch.themes.includes("release gating"));
+  assert.match(schema.releaseReadiness.currentBatch.reason, /one intentional release/);
   assert.equal(schema.releaseReadiness.publishDecision.default, "hold");
   assert.match(schema.releaseReadiness.publishDecision.batchThreshold, /Hold by default/);
   assert.match(schema.releaseReadiness.publishDecision.publishCandidateSignals.join(" "), /dashboard changes/);
@@ -274,6 +279,7 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   assert.equal(schema.demo.command, "aienvmp demo");
   assert.equal(schema.releaseGate.localCommand, "npm run release:check");
   assert.equal(schema.releaseReadiness.target, "0.2.0");
+  assert.equal(schema.releaseReadiness.currentBatch.decision, "hold");
   assert.ok(schema.releaseReadiness.evidenceCommands.includes("npm pack --dry-run"));
   assert.match(schema.compatibility.localBehavior, /read-only/);
 });

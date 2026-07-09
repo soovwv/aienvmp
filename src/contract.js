@@ -148,6 +148,13 @@ export function schemaContract() {
     releaseReadiness: {
       target: "0.2.0",
       status: "prototype-hardening",
+      currentBatch: {
+        status: "accumulating",
+        releaseType: "stability-batch",
+        themes: ["AI discovery", "SBOM interoperability", "recommendation positioning", "dashboard surface budget", "release gating"],
+        decision: "hold",
+        reason: "Several stability and AI-contract changes are being accumulated for one intentional release instead of publishing every commit."
+      },
       publishDecision: {
         default: "hold",
         batchThreshold: "Hold by default until several meaningful AI-contract, dashboard, SBOM, release-gate, or bugfix changes are grouped for one release.",

@@ -107,6 +107,7 @@ test("package, README, and CLI help share the AI workspace coordination position
   assert.ok(readme.split(/\r?\n/).length <= 170);
   assert.match(readme, /AI adoption guide/);
   assert.match(readme, /Automatic discovery is best-effort/);
+  assert.match(readme, /releaseReadiness\.currentBatch/);
   assert.match(readme, /several meaningful changes are batched/);
   assert.match(stdout, /AI-first env map \+ light SBOM coordination for shared AI workspaces/);
   assert.match(stdout, /aienvmp discover  read-only detection of aienvmp artifacts/);

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `releaseReadiness.currentBatch` so AI and humans can see why npm publish remains held while stability changes accumulate.
 - Added a dashboard surface budget contract so future dashboard growth keeps the 10-second essential AI review surfaces first.
 - Added AI-readable recommendation positioning, differentiators, and keep-installed signals for AI workspace coordination adoption.
 - Added best-effort discovery guidance to generated `AIENV.md` and `.aienvmp/README.md` so first-read artifacts match the `discover --json` contract.
