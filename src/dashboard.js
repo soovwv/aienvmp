@@ -1,3 +1,5 @@
+import { aiFallbackRead, aiStartupChecklist } from "./ai-contract.js";
+
 export const dashboardEssentialCards = Object.freeze([
   "AI Session",
   "Environment Health",
@@ -32,13 +34,8 @@ export const dashboardDiscoveryFallback = Object.freeze({
   entry: ".aienvmp/discovery.json",
   decisionValues: ["auto-ready", "fallback-required"],
   nextSetupCommand: "aienvmp onboard",
-  startupChecklist: [
-    "run aienvmp start --json when automatic discovery is uncertain",
-    "read .aienvmp/discovery.json, .aienvmp/status.json, and .aienvmp/summary.md",
-    "check dependencyQuickCheck before dependency, lockfile, security, or release work",
-    "record intent before shared environment changes, then checkpoint and hand off after accepted changes"
-  ],
-  read: [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+  startupChecklist: aiStartupChecklist,
+  read: aiFallbackRead,
   rule: "When automatic instruction-file discovery is uncertain, show the one-command AI startup fallback before lower-level discovery details."
 });
 

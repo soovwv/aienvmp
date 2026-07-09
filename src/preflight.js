@@ -1,4 +1,5 @@
 import { recommendedActions } from "./actions.js";
+import { aiFallbackRead, aiStartupChecklist } from "./ai-contract.js";
 import { aiDecision } from "./decision.js";
 import { enforcementAdvice, enforcementGate } from "./enforcement.js";
 import { operationalSafetyContract, preflightContract, qualitySignalsContract } from "./contract.js";
@@ -612,14 +613,9 @@ export function agentPointerSummary(agentFiles = {}) {
       : "missing: run aienvmp onboard",
     discoveryDecision,
     nextSetupCommand: discoveryDecision === "auto-ready" ? "none" : "aienvmp onboard",
-    startupChecklist: [
-      "run aienvmp start --json when automatic discovery is uncertain",
-      "read .aienvmp/discovery.json, .aienvmp/status.json, and .aienvmp/summary.md",
-      "check dependencyQuickCheck before dependency, lockfile, security, or release work",
-      "record intent before shared environment changes, then checkpoint and hand off after accepted changes"
-    ],
+    startupChecklist: aiStartupChecklist,
     onboardCommand: "aienvmp onboard",
-    fallbackRead: [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+    fallbackRead: aiFallbackRead,
     fallbackCommand: "aienvmp start --json",
     next: missing.length
       ? `Run aienvmp onboard for Codex, Claude, and Gemini, or install one pointer with ${missing[0].installCommand}. Optional: use --agents cursor,copilot when those tools should discover aienvmp too.`

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Centralized shared AI discovery and read-order constants so discovery, status, dashboard, schema, SBOM, and generated artifacts stay aligned.
 - Strengthened package metadata and recommendation signals around shared-environment version drift prevention and dependency coordination.
 - Added `dependencyQuickCheck` to AI startup checklists so dependency, lockfile, security, and release work starts from the same discovery-first coordination routine.
 - Aligned light SBOM and dependency coordination read orders with `.aienvmp/discovery.json` so dependency work starts from the same AI maintenance entry path.

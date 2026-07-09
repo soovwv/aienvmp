@@ -1,7 +1,6 @@
+import { sbomReadOrder } from "../ai-contract.js";
 import { readJson, writeJson } from "../fsutil.js";
 import { cyclonedxSbomPath, manifestPath, sbomJsonPath, workspaceDir } from "../paths.js";
-
-const sbomReadOrder = [".aienvmp/discovery.json", ".aienvmp/sbom.json", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"];
 
 export async function sbomWorkspace(args = {}) {
   const dir = workspaceDir(args);

@@ -1,4 +1,5 @@
 import { dashboardDiscoveryFallback, dashboardEssentialSurfaces, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardSurfaceBudget } from "./dashboard.js";
+import { aiDefaultReadOrder, aiFallbackPrompt, aiFallbackRead, aiStartupChecklist } from "./ai-contract.js";
 
 export function preflightContract() {
   return {
@@ -203,7 +204,7 @@ export function schemaContract() {
     },
     aiBootstrapFields: ["purpose", "readFirst", "detailCommand", "nextSafeCommand", "nextSafeCommandSource", "nextSafeCommandReason", "localMode", "projectLocalWork", "environmentChanges", "rule"],
     aiSessionFields: ["purpose", "readFirst", "start", "ifMissingOrStale", "beforeEnvironmentChange", "afterEnvironmentChange", "handoff", "avoid", "nextCommand", "discovery", "localWork", "environmentChanges", "rule"],
-    readOrder: [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md", ".aienvmp/manifest.json", ".aienvmp/plan.json", ".aienvmp/timeline.jsonl", ".aienvmp/intents.jsonl"],
+    readOrder: [...aiDefaultReadOrder.slice(0, 5), ".aienvmp/manifest.json", ".aienvmp/plan.json", ".aienvmp/timeline.jsonl", ".aienvmp/intents.jsonl"],
     readOrderRule: "When instruction-file pointers are missing or uncertain, start at .aienvmp/discovery.json, then use status.json for the machine decision and context --json for details.",
     followUpPlanFields: ["status", "count", "targets", "readFirst", "nextCommand", "commands", "reason", "rule"],
     dependencyQuickCheckFields: ["status", "purpose", "readFirst", "nextCommand", "reviewTargets", "scannerEvidence", "beforeChange", "afterChange", "mustNotDo", "rule"],
@@ -239,15 +240,10 @@ export function schemaContract() {
       nextSetupCommand: "aienvmp onboard when discovery is fallback-required; none when auto-ready",
       fallbackCommand: "aienvmp start --json",
       discoveryArtifact: ".aienvmp/discovery.json",
-      fallbackRead: [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
-      fallbackPrompt: "Use aienvmp as the workspace env map. Read .aienvmp/discovery.json, then .aienvmp/status.json, then run aienvmp context --json before environment changes.",
+      fallbackRead: aiFallbackRead,
+      fallbackPrompt: aiFallbackPrompt,
       humanInstruction: "Paste the fallback prompt into an AI session when the host did not auto-read an instruction-file pointer.",
-      startupChecklist: [
-        "run aienvmp start --json when automatic discovery is uncertain",
-        "read .aienvmp/discovery.json, .aienvmp/status.json, and .aienvmp/summary.md",
-        "check dependencyQuickCheck before dependency, lockfile, security, or release work",
-        "record intent before shared environment changes, then checkpoint and hand off after accepted changes"
-      ],
+      startupChecklist: aiStartupChecklist,
       sessionStart: [
         "Treat the aienvmp marker block as the live environment pointer.",
         "Start at .aienvmp/discovery.json when artifacts are present, then read .aienvmp/status.json.",
