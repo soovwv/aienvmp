@@ -672,6 +672,9 @@ const safeMode=aiBootstrap.localMode||enforcementProfile.gate?.localDefault||enf
 const bootstrapState=[aiBootstrap.projectLocalWork||'allowed',aiBootstrap.environmentChanges||'intent-first'].join(' / ');
 const agentDiscovery=manifest.preflight?.agentPointers?.discovery||((agentPointerCount||0)>0?'ready':'missing: run aienvmp onboard');
 const agentDiscoveryNext=manifest.preflight?.agentPointers?.next||'Run aienvmp onboard to install AI instruction-file pointers.';
+const agentDiscoveryFallbackRead=manifest.preflight?.agentPointers?.fallbackRead||['.aienvmp/README.md','.aienvmp/status.json','.aienvmp/summary.md','aienvmp context --json'];
+const agentDiscoveryFallbackCommand=manifest.preflight?.agentPointers?.fallbackCommand||'aienvmp discover --json';
+const agentDiscoveryFallbackHtml=\`<div class="path">Fallback resume: <code>\${esc(agentDiscoveryFallbackRead.slice(0,4).join(' -> '))}</code></div><div class="path">Verify: <code>\${esc(agentDiscoveryFallbackCommand)}</code></div>\`;
 const briefItem=(key,value)=>\`<div class="brief-item"><div class="brief-k">\${key}</div><div class="brief-v">\${esc(value)}</div></div>\`;
 const handoffHtml=\`<table><tr><th>Status</th><td>\${reviewRequired?'review-required':'clear'}</td></tr><tr><th>Trust</th><td><code>\${esc(trustState)}</code></td></tr><tr><th>Read first</th><td><code>\${esc(firstRead)}</code></td></tr><tr><th>Dependency files</th><td>\${handoffFiles.length?'<code>'+esc(handoffFiles.join(', '))+'</code>':'none'}</td></tr><tr><th>Conflicts</th><td>\${conflictTargets.length?'<code>'+esc(conflictTargets.join(', '))+'</code>':'none'}</td></tr><tr><th>Next</th><td>\${esc(handoffNext)}</td></tr></table>\`;
 const aiSessionHtml=\`<table><tr><th>Start</th><td><code>\${esc(aiSessionStart.join(' -> '))}</code></td></tr><tr><th>If stale</th><td><code>\${esc(aiSession.ifMissingOrStale||'aienvmp sync')}</code></td></tr><tr><th>Before env</th><td><code>\${esc(aiSession.beforeEnvironmentChange||'aienvmp intent --actor agent:id --action planned-change --target environment')}</code></td></tr><tr><th>After env</th><td><code>\${esc(aiSession.afterEnvironmentChange||'aienvmp checkpoint --actor agent:id --summary what-changed --target environment')}</code></td></tr><tr><th>Handoff</th><td><code>\${esc(aiSession.handoff||'aienvmp handoff --record --actor agent:id')}</code></td></tr><tr><th>Avoid</th><td>\${esc((aiSession.avoid||[]).slice(0,2).join('; ')||'No extra avoid guidance.')}</td></tr></table><div class="path">\${esc(aiSession.rule||'Read status first, sync only when stale or missing, and record intent before shared environment changes.')}</div>\`;
@@ -786,7 +789,7 @@ document.getElementById('app').innerHTML=\`
     <div style="height:14px"></div>
     \${card('AI Handoff',reviewRequired?'<span class="pill warn">review</span>':'<span class="pill">ready</span>',handoffHtml)}
     <div style="height:14px"></div>
-    \${card('Agent Pointers','<span class="pill">'+agentPointerCount+' installed</span>','<div class="path">'+esc(agentDiscoveryNext)+'</div><div class="agents">'+agentCards+'</div>')}
+    \${card('Agent Pointers','<span class="pill">'+agentPointerCount+' installed</span>','<div class="path">'+esc(agentDiscoveryNext)+'</div>'+agentDiscoveryFallbackHtml+'<div class="agents">'+agentCards+'</div>')}
     <div style="height:14px"></div>
     \${card('Snapshot','',\`<table><tr><th>OS</th><td>\${esc(manifest.os.platform)} \${esc(manifest.os.release)} \${esc(manifest.os.arch)}</td></tr><tr><th>Shell</th><td>\${esc(manifest.os.shell||'unknown')}</td></tr><tr><th>Workspace</th><td><div class="path">\${esc(manifest.workspace.path)}</div></td></tr></table>\`)}
   </aside>
