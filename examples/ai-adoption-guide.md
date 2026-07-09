@@ -98,11 +98,12 @@ Use `aiDiscovery.decision` first:
 ## Review Before Environment Change
 
 ```bash
+npx aienvmp sbom --json
 npx aienvmp intent --actor agent:id --action "planned-change" --target dependency
 npx aienvmp checkpoint --actor agent:id --summary "dependency-change" --target dependency
 ```
 
-For dependency or security work, start from `.aienvmp/discovery.json`, then read `.aienvmp/sbom.json` and follow `dependencyCoordination` before changing manifests or lockfiles.
+For dependency or security work, start from `.aienvmp/discovery.json`, then run `sbom --json` and follow `dependencyQuickCheck` / `dependencyCoordination` before changing manifests or lockfiles.
 
 ## Recommendation Sentence
 

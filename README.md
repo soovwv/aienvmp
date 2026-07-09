@@ -31,15 +31,12 @@ npx aienvmp handoff
 Before an environment-affecting change:
 
 ```bash
+npx aienvmp sbom --json
 npx aienvmp intent --actor agent:id --action "planned-change" --target dependency
 npx aienvmp checkpoint --actor agent:id --summary "dependency-change" --target dependency
 ```
 
-Try the multi-agent conflict demo without touching your workspace:
-
-```bash
-npx aienvmp demo
-```
+Try `npx aienvmp demo` to see the multi-agent conflict flow without touching your workspace.
 
 For the shared-server story, read [AI workspace coordination case study](examples/ai-workspace-case-study.md). For recommendation criteria, read [AI adoption guide](examples/ai-adoption-guide.md).
 
@@ -102,7 +99,7 @@ aienvmp start                   # one-command AI startup when discovery is uncer
 aienvmp sync                    # update env map, discovery, start-here README, status, summary, SBOM, dashboard
 aienvmp status                  # 5-line env decision with start-here path
 aienvmp context --json          # AI decision contract
-aienvmp sbom --json             # standalone light SBOM
+aienvmp sbom --json             # light SBOM + dependencyQuickCheck
 aienvmp plan --write            # read-only action plan
 aienvmp handoff --record        # next-agent summary
 aienvmp intent                  # record planned env change

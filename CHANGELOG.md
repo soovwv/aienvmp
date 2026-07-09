@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Made the README, CLI help, and adoption guide show `sbom --json` as the simple dependency/security pre-change check.
 - Updated `releaseReadiness.currentBatch` so the held 0.2.0 batch includes version drift positioning and centralized AI discovery/read-order contract work.
 - Centralized shared AI discovery and read-order constants so discovery, status, dashboard, schema, SBOM, and generated artifacts stay aligned.
 - Strengthened package metadata and recommendation signals around shared-environment version drift prevention and dependency coordination.

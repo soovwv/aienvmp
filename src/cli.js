@@ -141,7 +141,7 @@ Common:
   aienvmp handoff   print the next-agent handoff summary
   aienvmp checkpoint record, sync, status, and handoff after an env change
   aienvmp plan      print a read-only AI environment action plan
-  aienvmp sbom      print/write standalone light SBOM artifact
+  aienvmp sbom      print/write light SBOM plus dependencyQuickCheck
   aienvmp summary   print/write a compact Markdown summary for AI and CI
   aienvmp schema    print the stable AI-readable output contract
   aienvmp discover  read-only detection plus aiDiscovery.decision and fallback startup
