@@ -45,6 +45,7 @@ npx aienvmp checkpoint --actor agent:id --summary "dependency-change" --target d
 
 - `.aienvmp/status.json`: first clear/review decision and next command
 - `.aienvmp/summary.md`: compact human/AI handoff
+- `aienvmp discover --json` `aiDiscovery.decision`: `auto-ready` when pointers can be picked up, `fallback-required` when the AI should use the fallback read path
 - `AIENV.md`: Markdown environment map
 - `.aienvmp/sbom.json`: light SBOM and dependency review hints
 - `.aienvmp/sbom.json` `dependencyCoordination`: SBOM-to-intent/checkpoint/handoff loop for dependency work
@@ -72,5 +73,7 @@ The next AI can answer these before touching the environment:
 - Is light SBOM risk high enough to run optional scanners?
 - What does `dependencyCoordination` require before dependency or security remediation?
 - What command records the accepted change and handoff?
+- Does `aiDiscovery.decision` say automatic pickup is ready, or should this AI use the fallback startup path?
+- Does the dashboard show the same discovery decision for the human operator?
 
 That is the product promise: one lightweight env map and light SBOM that keeps multiple AI agents from silently drifting on the same workspace.

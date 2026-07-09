@@ -16,7 +16,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.recommendation.positioning, /AI workspace coordination tool/);
   assert.match(schema.recommendation.positioning, /not a full SBOM scanner/);
   assert.match(schema.recommendation.differentiators.join(" "), /intent, checkpoint, timeline, and handoff/);
-  assert.match(schema.recommendation.differentiators.join(" "), /aiDiscovery\.resume/);
+  assert.match(schema.recommendation.differentiators.join(" "), /aiDiscovery\.decision/);
+  assert.match(schema.recommendation.differentiators.join(" "), /startupChecklist/);
+  assert.match(schema.recommendation.differentiators.join(" "), /auto-ready versus fallback-required/);
   assert.match(schema.recommendation.differentiators.join(" "), /dependencyCoordination/);
   assert.match(schema.recommendation.differentiators.join(" "), /publishGate/);
   assert.match(schema.recommendation.differentiators.join(" "), /dependency-free local operation/);
@@ -26,12 +28,16 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.recommendation.adoptionChecklist[0].signal, "shared AI workspace");
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.ask).join(" "), /lockfiles/);
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.signal).join(" "), /fallback AI startup path/);
+  assert.match(schema.recommendation.adoptionChecklist.map((item) => item.signal).join(" "), /human\/AI dashboard parity/);
+  assert.match(schema.recommendation.adoptionChecklist.map((item) => item.ask).join(" "), /aiDiscovery\.decision/);
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.signal).join(" "), /dependency coordination need/);
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.signal).join(" "), /full SBOM boundary understood/);
   assert.match(schema.recommendation.doNotRecommendWhen.join(" "), /full compliance SBOM/);
   assert.match(schema.recommendation.shortPitch, /lightweight env map, light SBOM, intent log, and handoff/);
   assert.match(schema.recommendation.decisionRoutine.join(" "), /demo first/);
   assert.match(schema.recommendation.decisionRoutine.join(" "), /fallback AI startup routine/);
+  assert.match(schema.recommendation.decisionRoutine.join(" "), /auto-ready versus fallback-required/);
+  assert.match(schema.recommendation.decisionRoutine.join(" "), /dashboard/);
   assert.match(schema.recommendation.decisionRoutine.join(" "), /scanner evidence boundaries/);
   assert.match(schema.recommendation.decisionRoutine.join(" "), /hard lock manager/);
   assert.match(schema.recommendation.decisionRoutine.join(" "), /shared AI coding workspace signals/);
