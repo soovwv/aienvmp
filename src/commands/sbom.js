@@ -30,6 +30,7 @@ export function buildSbomArtifact(manifest = {}) {
   const scannerGuidance = sbomScannerGuidance(dependencyReview);
   const aiReviewPlan = sbomReviewPlan(lightSbom, dependencyReview, nextSafeCommand);
   const dependencyCoordination = sbomDependencyCoordination(dependencyReview, scannerGuidance, nextSafeCommand);
+  const dependencyQuickCheck = sbomDependencyQuickCheck(dependencyReview, dependencyCoordination, scannerGuidance, nextSafeCommand);
   return {
     schemaVersion: 1,
     schemaName: "aienvmp.light-sbom",
@@ -51,6 +52,7 @@ export function buildSbomArtifact(manifest = {}) {
     scannerGuidance,
     aiReviewPlan,
     dependencyCoordination,
+    dependencyQuickCheck,
     aiDependencyReview: dependencyReview,
     aiUse: {
       purpose: "Standalone AI-readable light SBOM artifact.",
@@ -63,6 +65,27 @@ export function buildSbomArtifact(manifest = {}) {
       afterChange: dependencyReview.afterDependencyChange?.slice(-1)[0] || "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency",
       rule: scannerGuidance.rule
     }
+  };
+}
+
+function sbomDependencyQuickCheck(review = {}, coordination = {}, scannerGuidance = {}, nextSafeCommand = "aienvmp context --json") {
+  const status = review.status === "review" || scannerGuidance.decision === "run-scanner-before-security-work" ? "review" : "ready";
+  const targets = (review.reviewTargets || coordination.reviewTargets || []).slice(0, 5);
+  return {
+    status,
+    purpose: "10-second AI check before dependency, lockfile, package manager, security, or release-affecting dependency work.",
+    readFirst: [".aienvmp/README.md", ".aienvmp/sbom.json", ".aienvmp/status.json", "aienvmp context --json"],
+    nextCommand: nextSafeCommand,
+    reviewTargets: targets,
+    scannerEvidence: scannerGuidance.decision || "light-sbom-ok-for-coordination",
+    beforeChange: (coordination.beforeChange || review.beforeDependencyChange || [nextSafeCommand]).slice(0, 3),
+    afterChange: (coordination.afterChange || review.afterDependencyChange || ["aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"]).slice(-2),
+    mustNotDo: (coordination.mustNotDo || [
+      "do not run broad install, update, audit fix, or lockfile rewrite commands before reading SBOM and status",
+      "do not switch package managers only because another AI prefers one",
+      "do not make security claims from the light SBOM alone when scanner confidence is low"
+    ]).slice(0, 3),
+    rule: "Use this compact block as the first AI dependency-work decision; it is advisory and does not replace full scanner evidence."
   };
 }
 
@@ -256,6 +279,7 @@ export function buildCycloneDxLite(manifest = {}) {
   const aiBootstrap = sbomBootstrap(nextSafeCommand, dependencyReview);
   const scannerGuidance = sbomScannerGuidance(dependencyReview);
   const dependencyCoordination = sbomDependencyCoordination(dependencyReview, scannerGuidance, nextSafeCommand);
+  const dependencyQuickCheck = sbomDependencyQuickCheck(dependencyReview, dependencyCoordination, scannerGuidance, nextSafeCommand);
   return {
     bomFormat: "CycloneDX",
     specVersion: "1.6",
@@ -305,6 +329,9 @@ export function buildCycloneDxLite(manifest = {}) {
       { name: "aienvmp:scannerGuidance:rule", value: scannerGuidance.rule },
       { name: "aienvmp:dependencyCoordination:nextCommand", value: dependencyCoordination.nextCommand },
       { name: "aienvmp:dependencyCoordination:rule", value: dependencyCoordination.rule },
+      { name: "aienvmp:dependencyQuickCheck:status", value: dependencyQuickCheck.status },
+      { name: "aienvmp:dependencyQuickCheck:nextCommand", value: dependencyQuickCheck.nextCommand },
+      { name: "aienvmp:dependencyQuickCheck:scannerEvidence", value: dependencyQuickCheck.scannerEvidence },
       { name: "aienvmp:aiBootstrap:rule", value: aiBootstrap.rule }
     ]
   };

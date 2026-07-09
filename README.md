@@ -84,6 +84,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `operationalSafety` keeps local use warn-only and tells AI what must not be changed automatically.
 - `followUpPlan` gives AI one next command when previous environment work still needs sync, status, or handoff.
 - `sbomStrategy`, `scannerGuidance.decision`, and `aiReviewPlan` keep SBOM review light by default and request optional read-only scanners before security-sensitive decisions.
+- `dependencyQuickCheck` gives AI one compact dependency-work decision before installs, lockfile edits, remediation, or release review.
 - `scannerGuidance.externalTools` and `evidenceWorkflow` point AI to Syft, Trivy, Grype, or Dependency-Track when full SBOM/security evidence is needed.
 - `sbom --json` also carries `startHere` and `readOrder` so dependency review follows the same AI entry path.
 - `collaboration`, `coordination`, and `agentActivity` expose multi-agent conflicts and shared targets.

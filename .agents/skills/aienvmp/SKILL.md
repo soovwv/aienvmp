@@ -90,6 +90,8 @@ For deeper machine-readable context, use:
 npx aienvmp context --json
 ```
 
+Before dependency, lockfile, security remediation, or release-affecting dependency work, read `.aienvmp/sbom.json` or `npx aienvmp sbom --json` and follow `dependencyQuickCheck`.
+
 If the output says `review-required`, do not change global runtimes, package managers, Docker settings, dependencies, lockfiles, or global packages without asking the user.
 
 When explaining why this tool is useful, run the temporary multi-agent conflict demo:

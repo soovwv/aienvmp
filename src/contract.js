@@ -421,10 +421,11 @@ export function schemaContract() {
       sbom: {
         file: ".aienvmp/sbom.json",
         command: "aienvmp sbom --json",
-        rootFields: ["schemaVersion", "schemaName", "workspace", "startHere", "readOrder", "aiBootstrap", "nextSafeCommand", "scannerGuidance", "aiReviewPlan", "dependencyCoordination", "summary", "riskSummary", "topRisk", "packageManagerPolicy", "dependencyChangeHints", "aiDependencyReview"],
+        rootFields: ["schemaVersion", "schemaName", "workspace", "startHere", "readOrder", "aiBootstrap", "nextSafeCommand", "scannerGuidance", "aiReviewPlan", "dependencyCoordination", "dependencyQuickCheck", "summary", "riskSummary", "topRisk", "packageManagerPolicy", "dependencyChangeHints", "aiDependencyReview"],
         scannerGuidanceFields: ["mode", "decision", "reason", "defaultCommand", "scannerCommand", "securityConfidence", "useLightSbomFor", "requireScannerFor", "externalTools", "evidenceWorkflow", "interoperabilityRule", "whenToRun", "rule"],
         aiReviewPlanFields: ["status", "risk", "securityConfidence", "packageManagerPolicy", "packages", "vulnerabilities", "reviewTargets", "beforeChange", "afterChange", "rule"],
         dependencyCoordinationFields: ["mode", "appliesWhen", "readFirst", "reviewTargets", "nextCommand", "beforeChange", "afterChange", "mustNotDo", "scannerEvidence", "rule"],
+        dependencyQuickCheckFields: ["status", "purpose", "readFirst", "nextCommand", "reviewTargets", "scannerEvidence", "beforeChange", "afterChange", "mustNotDo", "rule"],
         aiDependencyReviewFields: ["status", "statusReason", "securityConfidence", "readFirst", "reviewTargets", "beforeDependencyChange", "afterDependencyChange", "rule"],
         aiUseFields: ["purpose", "readBefore", "decision", "securityConfidence", "readFirst", "nextCommand", "beforeChange", "afterChange", "rule"]
       },

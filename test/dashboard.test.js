@@ -117,6 +117,15 @@ test("renderDashboard includes the audit summary surface", () => {
         mustNotDo: ["do not run broad install, update, audit fix, or lockfile rewrite commands before reading SBOM and status"],
         scannerEvidence: "run-scanner-before-security-work",
         rule: "Use the light SBOM to coordinate dependency work; record intent before dependency or lockfile changes, use optional scanners for security evidence, then checkpoint and hand off."
+      },
+      dependencyQuickCheck: {
+        status: "review",
+        readFirst: [".aienvmp/README.md", ".aienvmp/sbom.json", ".aienvmp/status.json", "aienvmp context --json"],
+        nextCommand: "aienvmp sync --security",
+        reviewTargets: ["package.json", "express"],
+        scannerEvidence: "run-scanner-before-security-work",
+        mustNotDo: ["do not run broad install, update, audit fix, or lockfile rewrite commands before reading SBOM and status"],
+        rule: "Use this compact block as the first AI dependency-work decision."
       }
     },
     security: {
@@ -469,6 +478,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardDependencyReviewClientScript(), /Security confidence/);
   assert.match(dashboardDependencyReviewClientScript(), /aienvmp intent --actor agent:id --action dependency-review --target dependency/);
   assert.match(dashboardDependencyCoordinationClientScript(), /const dependencyCoordination=lightSbom\.dependencyCoordination/);
+  assert.match(dashboardDependencyCoordinationClientScript(), /const dependencyQuickCheck=lightSbom\.dependencyQuickCheck/);
+  assert.match(dashboardDependencyCoordinationClientScript(), /const dependencyQuickCheckHtml=/);
   assert.match(dashboardDependencyCoordinationClientScript(), /Scanner evidence/);
   assert.match(dashboardDependencyCoordinationClientScript(), /audit fix/);
   assert.match(dashboardEnvironmentProtocolClientScript(), /const environmentProtocol=manifest\.preflight\?\.environmentChangeProtocol/);
@@ -507,6 +518,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const aiReviewPlanHtml=aiReviewPlan\.status/);
   assert.match(html, /const scannerGuidanceHtml=/);
   assert.match(html, /const dependencyCoordinationHtml=/);
+  assert.match(html, /const dependencyQuickCheckHtml=/);
+  assert.match(html, /Dependency Quick Check/);
   assert.match(html, /Dependency Coordination/);
   assert.match(html, /const riskSummaryHtml=riskSummary\.level/);
   assert.match(html, /const pmPolicyHtml=/);
