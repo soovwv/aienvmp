@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added batched release readiness details so AI/CI can see current grouped changes and do-not-publish gates before npm release.
 - Added an AI-readable adoption checklist and demo adoption signals so agents can decide when to recommend aienvmp for shared AI workspaces.
 - Mirrored `qualitySignals` into summary and dashboard outputs so humans and AI see the same stabilization checklist.
 - Added `qualitySignals` to schema, status, and context outputs so AI agents can evaluate AI-friendliness, simplicity, lightweight operation, advisory safety, and batched-release readiness.

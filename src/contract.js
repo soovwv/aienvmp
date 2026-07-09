@@ -261,6 +261,14 @@ export function schemaContract() {
         status: "accumulating",
         releaseType: "stability-batch",
         themes: ["AI discovery", "AI quality signals", "SBOM interoperability", "recommendation positioning", "dashboard surface budget", "release gating"],
+        changes: [
+          "best-effort AI discovery and fallback prompt contract",
+          "operational safety contract in status/context",
+          "quality signals in schema/status/context/summary/dashboard",
+          "AI adoption checklist and demo recommendation signals",
+          "external SBOM/security scanner guidance",
+          "manual batched release gate"
+        ],
         decision: "hold",
         reason: "Several stability and AI-contract changes are being accumulated for one intentional release instead of publishing every commit."
       },
@@ -284,6 +292,13 @@ export function schemaContract() {
         ],
         emergencyException: "Security or broken-package fixes may publish sooner, but still run the release gate."
       },
+      doNotPublishUntil: [
+        "currentBatch changes are reviewed as one release note group",
+        "README, examples, schema, and CHANGELOG describe the same AI workspace coordination contract",
+        "npm run release:check passes after the final batched change",
+        "package.json version is intentionally bumped for 0.2.0 or the chosen release",
+        "GitHub Release workflow is run manually with explicit publish confirmation"
+      ],
       requiredBeforeStable: [
         "npm run release:check passes locally",
         "GitHub Release workflow passes with confirm_publish=publish",
