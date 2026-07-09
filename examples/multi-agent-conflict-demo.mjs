@@ -44,6 +44,7 @@ console.log(`conflict targets: ${conflictTargets.join(", ")}`);
 console.log(`dependency quick check: ${dependencyQuickCheck.status || "unknown"} / ${dependencyQuickCheck.scannerEvidence || "unknown"} / ${dependencyQuickCheck.nextCommand || "aienvmp sbom --json"}`);
 console.log(`next command: ${status.nextSafeCommand || status.nextCommand}`);
 console.log(`AI entry: ${status.artifacts?.discovery || ".aienvmp/discovery.json"}`);
+console.log(`maintenance: ${status.maintenanceLoop?.state || status.state || "unknown"} / ${status.maintenanceLoop?.nextCommandSource || "status"} / ${status.maintenanceLoop?.nextCommand || status.nextSafeCommand || status.nextCommand || "aienvmp status --json"}`);
 console.log(`start here: ${status.artifacts?.startHere || ".aienvmp/README.md"}`);
 const readOrder = status.aiSession?.readFirst || status.readOrder || [
   ".aienvmp/README.md",

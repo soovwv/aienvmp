@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Surfaced the AI maintenance decision in the dashboard first-read strip and conflict demo so ongoing upkeep is visible outside `discovery.json`.
 - Added `discovery.json.maintenance` so AI agents get one compact ongoing environment upkeep decision from the smallest fallback entry artifact.
 - Surfaced `.aienvmp/discovery.json` as the dashboard and demo AI entry point so humans and AI see the same fallback startup artifact.
 - Added generated `.aienvmp/discovery.json` as the smallest AI fallback entry artifact and aligned `sync`, `discover`, schema, README, dashboard, and packaged skill guidance around it.

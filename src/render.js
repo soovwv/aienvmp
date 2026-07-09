@@ -667,6 +667,7 @@ const sbomRiskScore=riskSummary.score!==undefined?' ('+riskSummary.score+')':'';
 const sbomRiskNext=riskSummary.next||aiDependencyReview.beforeDependencyChange?.[0]||'Run aienvmp sbom --json for dependency context.';
 const nextCommand=aiBootstrap.nextSafeCommand||manifest.preflight?.nextSafeCommand||manifest.preflight?.nextCommand||maintenanceLoop.nextCommand||topAction.command||collaboration.nextCommand||'aienvmp status --json';
 const nextReason=topAction.summary||aiBootstrap.rule||maintenanceLoop.rule||collaboration.rule||riskSummary.next||'Read status/context before changing shared environment state.';
+const maintenanceNext=maintenanceLoop.nextCommand||nextCommand;
 const coordination=manifest.preflight?.coordination||{};
 const conflictTargets=coordination.conflictTargets||[];
 const handoffFiles=nextAgent.dependencyFiles?.length?nextAgent.dependencyFiles:(dependencyReadSet[0]?[dependencyReadSet[0].manifest,...(dependencyReadSet[0].lockfiles||[])].filter(Boolean):[]);
@@ -720,6 +721,7 @@ document.getElementById('app').innerHTML=\`
   \${briefItem('Status',reviewRequired?'review required':'clear')}
   \${briefItem('Freshness',artifactFreshnessValue+' / '+artifactFreshnessNext)}
   \${briefItem('AI entry',aiEntry)}
+  \${briefItem('Maintenance',maintenanceNext)}
   \${briefItem('Start here',startHere)}
   \${briefItem('Read first',firstRead)}
   \${briefItem('AI discovery',agentDiscoveryDecision+' / '+agentDiscovery)}

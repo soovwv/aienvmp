@@ -410,6 +410,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /auto-ready/);
   assert.match(html, /AI discovery/);
   assert.match(html, /AI entry/);
+  assert.match(html, /Maintenance/);
   assert.match(html, /AI Session/);
   assert.match(html, /Before env/);
   assert.match(html, /<th>Avoid<\/th>/);
@@ -443,6 +444,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardDiscoveryFallbackClientScript(), /startup/);
   assert.ok(dashboardEssentialSurfaces.firstRead.includes("Start here"));
   assert.ok(dashboardEssentialSurfaces.firstRead.includes("AI entry"));
+  assert.ok(dashboardEssentialSurfaces.firstRead.includes("Maintenance"));
   assert.equal(dashboardEssentialSurfaces.nextCommand, "Next command");
   assert.ok(dashboardEssentialSurfaces.essentialCards.includes("Light SBOM"));
   assert.match(dashboardEssentialSurfaces.rule, /AI startup contract/);

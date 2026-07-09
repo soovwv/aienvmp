@@ -48,6 +48,12 @@ export async function demoWorkspace(args = {}) {
     },
     nextCommand: status.nextSafeCommand || status.nextCommand || "aienvmp status --json",
     aiEntry: status.artifacts?.discovery || ".aienvmp/discovery.json",
+    maintenance: {
+      status: status.followUpPlan?.status === "pending" ? "follow-up-pending" : status.maintenanceLoop?.state || status.state || "unknown",
+      nextCommand: status.maintenanceLoop?.nextCommand || status.nextSafeCommand || status.nextCommand || "aienvmp status --json",
+      source: status.maintenanceLoop?.nextCommandSource || "status",
+      dependencyQuickCheck: dependencyQuickCheck.status || "unknown"
+    },
     startHere: status.artifacts?.startHere || ".aienvmp/README.md",
     readFirst: status.aiBootstrap?.readFirst || ".aienvmp/status.json",
     readOrder: status.aiSession?.readFirst || status.readOrder || [
@@ -74,6 +80,7 @@ export async function demoWorkspace(args = {}) {
     console.log(`dependency quick check: ${result.dependencyQuickCheck.status} / ${result.dependencyQuickCheck.scannerEvidence} / ${result.dependencyQuickCheck.nextCommand}`);
     console.log(`next command: ${result.nextCommand}`);
     console.log(`AI entry: ${result.aiEntry}`);
+    console.log(`maintenance: ${result.maintenance.status} / ${result.maintenance.source} / ${result.maintenance.nextCommand}`);
     console.log(`start here: ${result.startHere}`);
     console.log(`read order: ${result.readOrder.join(" -> ")}`);
     console.log(`freshness: ${result.artifactFreshness.state || "unknown"} / ${result.artifactFreshness.nextCommand || "aienvmp sync"}`);

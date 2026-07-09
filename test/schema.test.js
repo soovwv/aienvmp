@@ -177,6 +177,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.dashboard.qualityDefaults.evidence, "aienvmp start --json && aienvmp context --json");
   assert.deepEqual(schema.dashboard.essentialSurfaces.controlStrip, ["AI readiness", "Freshness", "Collaboration", "SBOM risk"]);
   assert.deepEqual(schema.dashboard.essentialSurfaces.tenSecondReview, ["AI entry", "Next command", "Review target", "Mode"]);
+  assert.ok(schema.dashboard.essentialSurfaces.firstRead.includes("Maintenance"));
   assert.ok(schema.dashboard.essentialSurfaces.essentialCards.includes("Light SBOM"));
   assert.equal(schema.dashboard.surfaceBudget.mode, "essential-first");
   assert.equal(schema.dashboard.surfaceBudget.primaryReviewTime, "10 seconds");
