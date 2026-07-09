@@ -1,4 +1,5 @@
 import { aiFallbackRead, aiStartupChecklist } from "./ai-contract.js";
+import { schemaContract } from "./contract.js";
 
 export const dashboardEssentialCards = Object.freeze([
   "AI Session",
@@ -64,6 +65,21 @@ export const dashboardQualityDefaults = Object.freeze({
   mustStayTrue: "do not require background services, daemons, or lock managers for the default flow",
   rule: "Keep the default product lightweight and AI-readable before adding deeper integrations."
 });
+
+export function dashboardPayload(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
+  const schema = schemaContract();
+  const releaseReadiness = schema.releaseReadiness;
+  const schemaQualitySignals = schema.qualitySignals;
+  return {
+    manifest,
+    timeline,
+    warnings,
+    intents,
+    policy,
+    releaseReadiness,
+    schemaQualitySignals
+  };
+}
 
 export function dashboardCardPriority(title) {
   return dashboardEssentialCards.includes(title) ? "essential" : "support";

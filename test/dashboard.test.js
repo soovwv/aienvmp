@@ -5,7 +5,25 @@ import os from "node:os";
 import path from "node:path";
 import { dashWorkspace } from "../src/commands/dash.js";
 import { writeJson } from "../src/fsutil.js";
-import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallback, dashboardDiscoveryFallbackClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
+import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallback, dashboardDiscoveryFallbackClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardPayload, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
+
+test("dashboardPayload centralizes schema-backed dashboard data", () => {
+  const payload = dashboardPayload(
+    { workspace: { name: "sample" }, preflight: {} },
+    [{ type: "record" }],
+    [{ message: "review" }],
+    [{ actor: "agent:codex" }],
+    { node: "24" }
+  );
+
+  assert.equal(payload.manifest.workspace.name, "sample");
+  assert.equal(payload.timeline.length, 1);
+  assert.equal(payload.warnings.length, 1);
+  assert.equal(payload.intents.length, 1);
+  assert.equal(payload.policy.node, "24");
+  assert.equal(payload.releaseReadiness.target, "0.2.0");
+  assert.equal(payload.schemaQualitySignals.status, "prototype-hardening");
+});
 
 test("renderDashboard includes the audit summary surface", () => {
   const html = renderDashboard({
