@@ -1,7 +1,7 @@
 {
   "name": "aienvmp",
   "version": "0.1.69",
-  "description": "AI workspace coordination with a lightweight env map, light SBOM, and change ledger for shared development machines.",
+  "description": "AI-first env map and light SBOM coordination tool for multiple AI agents sharing one development environment.",
   "type": "module",
   "bin": {
     "aienvmp": "bin/aienvmp.js"

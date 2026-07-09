@@ -88,7 +88,7 @@ test("package, README, and CLI help share the AI workspace coordination position
     "--help"
   ], { cwd: path.resolve(".") });
 
-  assert.match(pkg.description, /AI workspace coordination/);
+  assert.match(pkg.description, /AI-first env map and light SBOM coordination/);
   assert.ok(pkg.keywords.includes("ai-workspace"));
   assert.ok(pkg.keywords.includes("ai-coding"));
   assert.ok(pkg.keywords.includes("coordination"));
@@ -96,7 +96,8 @@ test("package, README, and CLI help share the AI workspace coordination position
   assert.ok(pkg.keywords.includes("multi-agent"));
   assert.ok(pkg.keywords.includes("environment-map"));
   assert.ok(pkg.keywords.includes("light-sbom"));
-  assert.match(readme.slice(0, 1200), /AI workspace coordination/);
+  assert.match(readme.slice(0, 1200), /AI-first env map \+ light SBOM coordination/);
+  assert.match(readme.slice(0, 1200), /multiple AI agents safely share the same development environment/);
   assert.match(readme.slice(0, 1200), /dependency-free/);
   assert.match(readme.slice(0, 1200), /without heavy locks/);
   assert.match(readme.slice(0, 1200), /Use: AI agents share environment-affecting work/);
@@ -106,7 +107,8 @@ test("package, README, and CLI help share the AI workspace coordination position
   assert.ok(readme.split(/\r?\n/).length <= 170);
   assert.match(readme, /AI adoption guide/);
   assert.match(readme, /several meaningful changes are batched/);
-  assert.match(stdout, /AI workspace coordination with a lightweight env map and SBOM/);
+  assert.match(stdout, /AI-first env map \+ light SBOM coordination for shared AI workspaces/);
+  assert.match(stdout, /aienvmp discover  read-only detection of aienvmp artifacts/);
 });
 
 test("package stays runtime dependency-free for lightweight shared machines", async () => {

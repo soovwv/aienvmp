@@ -51,6 +51,9 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   await assert.doesNotReject(fs.access(path.join(dir, "AIENV.md")));
   const aiEnv = await fs.readFile(path.join(dir, "AIENV.md"), "utf8");
   assert.match(aiEnv, /10-Second AI Flow/);
+  assert.match(aiEnv, /This workspace uses `aienvmp`/);
+  assert.match(aiEnv, /Multiple AI agents should use this AI-first env map and light SBOM/);
+  assert.match(aiEnv, /aienvmp discover/);
   assert.match(aiEnv, /AI session: `aienvmp status --json -> aienvmp context --json`/);
   assert.match(aiEnv, /If stale: `aienvmp sync`/);
   assert.match(aiEnv, /AI bootstrap:/);
@@ -75,6 +78,8 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.equal(status.artifacts.cyclonedx, ".aienvmp/sbom.cdx.json");
   const startHere = await fs.readFile(path.join(dir, ".aienvmp", "README.md"), "utf8");
   assert.match(startHere, /# aienvmp start here/);
+  assert.match(startHere, /This workspace uses `aienvmp`/);
+  assert.match(startHere, /AI-first env map and light SBOM/);
   assert.match(startHere, /read order: `\.aienvmp\/README\.md -> \.aienvmp\/status\.json/);
   assert.match(startHere, /AI session: `aienvmp status --json -> aienvmp context --json`/);
   assert.match(startHere, /For AI agents: start here, then use `status\.json`, `summary\.md`, and `aienvmp context --json`/);

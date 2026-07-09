@@ -10,14 +10,17 @@ export { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyH
 export function renderAIEnv(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const lines = [];
   lines.push("# AI Environment Protocol", "");
-  lines.push("This workspace uses `aienvmp` as the shared environment source of truth for humans and AI agents.", "");
+  lines.push("This workspace uses `aienvmp`.");
+  lines.push("Multiple AI agents should use this AI-first env map and light SBOM before changing shared development environment state.", "");
   lines.push("## Read Me First", "");
-  lines.push("Before changing runtimes, package managers, Docker settings, or global packages:");
-  lines.push("1. Run `aienvmp context`.");
-  lines.push("2. Prefer project-local version files such as `.nvmrc`, `.python-version`, `mise.toml`, and `.tool-versions`.");
-  lines.push("3. Ask the user before changing global environment state.");
-  lines.push("4. Record planned environment changes with `aienvmp intent --actor agent:id --action planned-change`.");
-  lines.push("5. After environment changes, run `aienvmp checkpoint --actor agent:id --summary what-changed --target environment`.", "");
+  lines.push("Before changing runtimes, dependencies, package managers, Docker settings, or global packages:");
+  lines.push("1. Read `.aienvmp/README.md` and `.aienvmp/status.json`.");
+  lines.push("2. Run `aienvmp discover` if you need to verify whether aienvmp artifacts exist.");
+  lines.push("3. Run `aienvmp context --json` for the full AI preflight.");
+  lines.push("4. Prefer project-local version files such as `.nvmrc`, `.python-version`, `mise.toml`, and `.tool-versions`.");
+  lines.push("5. Ask the user before changing global environment state.");
+  lines.push("6. Record planned environment changes with `aienvmp intent --actor agent:id --action planned-change`.");
+  lines.push("7. After environment changes, run `aienvmp checkpoint --actor agent:id --summary what-changed --target environment`.", "");
   lines.push(...preflightLines(manifest.preflight), "");
   lines.push("## Current Policy", "");
   lines.push(...policyLines(policy));

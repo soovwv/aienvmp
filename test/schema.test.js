@@ -49,6 +49,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.aiLoop.steps[5].command, "aienvmp handoff");
   assert.match(schema.aiLoop.strictRule, /warn-only/);
   assert.equal(schema.agentDiscovery.mode, "instruction-file-pointer");
+  assert.equal(schema.agentDiscovery.discoverCommand, "aienvmp discover");
   assert.equal(schema.agentDiscovery.installCommand, "aienvmp onboard");
   assert.equal(schema.agentDiscovery.optionalInstallCommand, "aienvmp onboard --agents cursor,copilot");
   assert.equal(schema.agentDiscovery.fallbackCommand, "aienvmp status --json");
@@ -94,6 +95,10 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.dashboard.essentialSurfaces.essentialCards.includes("Light SBOM"));
   assert.match(schema.dashboard.rule, /10-second review/);
   assert.equal(schema.outputs.status.contract.name, "aienvmp-preflight");
+  assert.equal(schema.outputs.discover.command, "aienvmp discover --json");
+  assert.equal(schema.outputs.discover.mode, "read-only");
+  assert.ok(schema.outputs.discover.rootFields.includes("detected"));
+  assert.match(schema.outputs.discover.purpose, /Zero-write detection/);
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("nextAgent"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("readOrder"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("aiSession"));
@@ -237,6 +242,7 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   assert.equal(schema.outputs.sbom.file, ".aienvmp/sbom.json");
   assert.equal(schema.outputs.cyclonedxLite.file, ".aienvmp/sbom.cdx.json");
   assert.equal(schema.agentDiscovery.installCommand, "aienvmp onboard");
+  assert.equal(schema.agentDiscovery.discoverCommand, "aienvmp discover");
   assert.equal(schema.agentDiscovery.fallbackCommand, "aienvmp status --json");
   assert.ok(schema.agentDiscovery.rule.includes("Optional Cursor and Copilot"));
   assert.equal(schema.sbomStrategy.scannerCommand, "aienvmp sync --security");

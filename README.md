@@ -4,9 +4,9 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-339933.svg)](package.json)
 
-**AI workspace coordination for shared development environments.**
+**AI-first env map + light SBOM coordination tool for shared development environments.**
 
-`aienvmp` gives Codex, Claude, Gemini, and humans one lightweight env map before different AI agents install or use conflicting runtimes, dependencies, package managers, Docker, or global tools.
+`aienvmp` helps multiple AI agents safely share the same development environment with one lightweight env map, light SBOM, intent log, timeline, and handoff.
 
 Use it on shared servers, repos, laptops, or CI workspaces where multiple people or AI agents need the same environment truth without heavy locks, backed by a dependency-free install.
 
@@ -17,15 +17,17 @@ Use it on shared servers, repos, laptops, or CI workspaces where multiple people
 
 ```bash
 npx aienvmp onboard
+npx aienvmp discover
 npx aienvmp status
 ```
 
-`onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`, refreshes artifacts, and tells AI agents to start at `.aienvmp/README.md`, then read `.aienvmp/status.json`. If pointers are not installed, AI can still find the same start-here file inside `.aienvmp/`.
+`discover` is read-only and tells AI or humans whether this workspace already has aienvmp artifacts. `onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`, refreshes artifacts, and tells AI agents to start at `.aienvmp/README.md`, then read `.aienvmp/status.json`. If pointers are not installed, AI can still find the same start-here file inside `.aienvmp/`.
 
 ## 10-Second Use
 
 ```bash
 npx aienvmp onboard
+npx aienvmp discover
 npx aienvmp status
 npx aienvmp context --json
 npx aienvmp handoff

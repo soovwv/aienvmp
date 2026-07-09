@@ -19,6 +19,7 @@ import { sbomWorkspace } from "./commands/sbom.js";
 import { summaryWorkspace } from "./commands/summary.js";
 import { onboardWorkspace } from "./commands/onboard.js";
 import { demoWorkspace } from "./commands/demo.js";
+import { discoverWorkspace } from "./commands/discover.js";
 import { readFileSync } from "node:fs";
 
 const commands = new Map([
@@ -42,7 +43,8 @@ const commands = new Map([
   ["sbom", sbomWorkspace],
   ["summary", summaryWorkspace],
   ["onboard", onboardWorkspace],
-  ["demo", demoWorkspace]
+  ["demo", demoWorkspace],
+  ["discover", discoverWorkspace]
 ]);
 
 const version = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version;
@@ -111,7 +113,7 @@ export function parseArgs(argv) {
 }
 
 function printUsage() {
-  console.log(`aienvmp - AI workspace coordination with a lightweight env map and SBOM
+  console.log(`aienvmp - AI-first env map + light SBOM coordination for shared AI workspaces
 
 Usage:
   aienvmp sync [--dir .] [--json] [--quiet] [--deep] [--security]
@@ -123,6 +125,7 @@ Usage:
   aienvmp sbom [--dir .] [--json] [--write]
   aienvmp summary [--dir .] [--write]
   aienvmp schema [--json]
+  aienvmp discover [--dir .] [--json]
   aienvmp onboard [codex claude gemini] [--agents codex,claude,gemini,cursor,copilot] [--no-sync]
   aienvmp demo [conflict] [--json]
 
@@ -137,6 +140,7 @@ Common:
   aienvmp sbom      print/write standalone light SBOM artifact
   aienvmp summary   print/write a compact Markdown summary for AI and CI
   aienvmp schema    print the stable AI-readable output contract
+  aienvmp discover  read-only detection of aienvmp artifacts and next start-here command
   aienvmp snippet   print an AGENTS.md pointer snippet
   aienvmp demo      run the temporary multi-agent conflict demo
   aienvmp dash      regenerate/open the lightweight dashboard
@@ -155,6 +159,7 @@ Advanced:
   aienvmp doctor [--dir .] [--json] [--ci] [--strict security|policy|coordination|all]
   aienvmp sbom [--dir .] [--json] [--write]
   aienvmp summary [--dir .] [--write]
+  aienvmp discover [--dir .] [--json]
   aienvmp demo [conflict] [--json]
   aienvmp dash [--dir .] [--open]
 `);

@@ -81,6 +81,7 @@ export function schemaContract() {
       mode: "instruction-file-pointer",
       files: ["AGENTS.md", "CLAUDE.md", "GEMINI.md"],
       optionalFiles: [".cursor/rules/environment.md", ".github/copilot-instructions.md"],
+      discoverCommand: "aienvmp discover",
       installCommand: "aienvmp onboard",
       optionalInstallCommand: "aienvmp onboard --agents cursor,copilot",
       fallbackCommand: "aienvmp status --json",
@@ -183,6 +184,12 @@ export function schemaContract() {
         rootFields: ["state", "readOrder", "aiSession", "aiBootstrap", "nextCommand", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "decision", "counts", "aiReadiness", "collaboration", "coordinationResolution", "maintenanceLoop", "coordination", "agentPointers", "sbomRisk", "followUpPlan", "environmentChangeProtocol"],
         agentPointerFields: ["installedCount", "missingCount", "installed", "missing", "discovery", "onboardCommand", "fallbackCommand", "fallbackRead", "next", "targets", "rule"],
         contract: preflightContract()
+      },
+      discover: {
+        command: "aienvmp discover --json",
+        mode: "read-only",
+        rootFields: ["status", "detected", "startHere", "readOrder", "freshness", "nextCommand", "agentPointers", "artifacts", "rule"],
+        purpose: "Zero-write detection command for AI agents or humans that need to know whether a workspace already has aienvmp artifacts."
       },
       startHere: {
         file: ".aienvmp/README.md",

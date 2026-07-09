@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added read-only `aienvmp discover` and stronger start-here markers so AI agents can detect existing aienvmp artifacts before environment-affecting work.
 - Added `coordinationResolution` to the AI preflight surfaces so multiple AI agents get one advisory conflict-resolution routine for shared environment targets.
 - Added explicit batched-release threshold and publish-candidate signals to the AI-readable release readiness contract.
 - Added an explicit light-SBOM scanner decision so AI agents can tell when the light artifact is enough and when optional read-only scanner evidence is needed.
