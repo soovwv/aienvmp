@@ -85,7 +85,7 @@ AIENV.md                 # Markdown env map for AI agents
 
 ```bash
 aienvmp onboard                 # install Codex/Claude/Gemini pointers and sync
-aienvmp start                   # one-command AI startup when discovery is uncertain
+aienvmp start                   # one-command AI startup + copy-paste prompt
 aienvmp sync                    # update env map, discovery, start-here README, status, summary, SBOM, dashboard
 aienvmp status                  # 5-line env decision with start-here path
 aienvmp context --json          # AI decision contract

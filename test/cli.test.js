@@ -121,8 +121,8 @@ test("package, README, and CLI help share the AI workspace coordination position
   assert.match(readme, /releaseReadiness\.currentBatch` is reviewed/);
   assert.match(readme, /several meaningful changes are batched/);
   assert.match(stdout, /AI-first env map \+ light SBOM coordination for shared AI workspaces/);
-  assert.match(stdout, /aienvmp start    one-command AI startup/);
-  assert.match(stdout, /aienvmp discover  read-only detection plus aiDiscovery\.decision/);
+  assert.match(stdout, /aienvmp start    one-command AI startup with a copy-paste fallback prompt/);
+  assert.match(stdout, /aienvmp discover  read-only detection plus aiDiscovery\.decision and copy-paste prompt/);
 });
 
 test("package stays runtime dependency-free for lightweight shared machines", async () => {

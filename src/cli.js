@@ -133,7 +133,7 @@ Usage:
   aienvmp demo [conflict] [--json]
 
 Common:
-  aienvmp start    one-command AI startup: discover, sync if needed, then status
+  aienvmp start    one-command AI startup with a copy-paste fallback prompt
   aienvmp onboard   install AI instruction-file pointers and refresh outputs
   aienvmp sync      update AIENV.md, discovery, start-here README, status, summary, SBOM, ledger, intents, and dashboard
   aienvmp status    print a 5-line AI/human environment decision; --verbose shows command details
@@ -144,7 +144,7 @@ Common:
   aienvmp sbom      print/write light SBOM plus dependencyQuickCheck
   aienvmp summary   print/write a compact Markdown summary for AI and CI
   aienvmp schema    print the stable AI-readable output contract
-  aienvmp discover  read-only detection plus aiDiscovery.decision and fallback startup
+  aienvmp discover  read-only detection plus aiDiscovery.decision and copy-paste prompt
   aienvmp snippet   print an AGENTS.md pointer snippet
   aienvmp demo      run the temporary multi-agent conflict demo
   aienvmp dash      regenerate/open the lightweight dashboard
