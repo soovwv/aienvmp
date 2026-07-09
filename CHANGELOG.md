@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Aligned README, CLI help, and packaged AI skill startup wording around `aiDiscovery.decision` without adding new commands.
 - Carried `agentPointers.discoveryDecision` into status, summary, and handoff continuation surfaces so the next AI can resume with the same auto-ready versus fallback-required decision.
 - Updated `releaseReadiness.currentBatch` so the held 0.2.0 batch explicitly covers `aiDiscovery.decision`, dashboard parity, and `dependencyQuickCheck` stabilization work.
 - Updated recommendation guidance and examples to position `aiDiscovery.decision` and dashboard parity as adoption signals for AI workspace coordination.

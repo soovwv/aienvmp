@@ -144,7 +144,7 @@ Common:
   aienvmp sbom      print/write standalone light SBOM artifact
   aienvmp summary   print/write a compact Markdown summary for AI and CI
   aienvmp schema    print the stable AI-readable output contract
-  aienvmp discover  read-only detection of aienvmp artifacts and next start-here command
+  aienvmp discover  read-only detection plus aiDiscovery.decision and fallback startup
   aienvmp snippet   print an AGENTS.md pointer snippet
   aienvmp demo      run the temporary multi-agent conflict demo
   aienvmp dash      regenerate/open the lightweight dashboard

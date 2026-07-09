@@ -8,6 +8,8 @@ test("packaged aienvmp skill points AI agents to current startup contracts", asy
 
   assert.match(skill, /npx aienvmp start/);
   assert.match(skill, /npx aienvmp onboard/);
+  assert.match(skill, /npx aienvmp discover --json/);
+  assert.match(skill, /before assuming automatic pickup worked/);
   assert.match(skill, /Use \/ Skip \/ Start/);
   assert.match(skill, /multiple AI agents or humans/);
   assert.match(skill, /full compliance SBOM scanner/);
