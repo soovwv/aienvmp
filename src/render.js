@@ -16,11 +16,12 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
   lines.push("Before changing runtimes, dependencies, package managers, Docker settings, or global packages:");
   lines.push("1. Read `.aienvmp/README.md` and `.aienvmp/status.json`.");
   lines.push("2. Run `aienvmp discover` if you need to verify whether aienvmp artifacts exist.");
-  lines.push("3. Run `aienvmp context --json` for the full AI preflight.");
-  lines.push("4. Prefer project-local version files such as `.nvmrc`, `.python-version`, `mise.toml`, and `.tool-versions`.");
-  lines.push("5. Ask the user before changing global environment state.");
-  lines.push("6. Record planned environment changes with `aienvmp intent --actor agent:id --action planned-change`.");
-  lines.push("7. After environment changes, run `aienvmp checkpoint --actor agent:id --summary what-changed --target environment`.", "");
+  lines.push("3. Treat automatic discovery as best-effort; if an instruction-file pointer was not loaded, follow the fallback read order.");
+  lines.push("4. Run `aienvmp context --json` for the full AI preflight.");
+  lines.push("5. Prefer project-local version files such as `.nvmrc`, `.python-version`, `mise.toml`, and `.tool-versions`.");
+  lines.push("6. Ask the user before changing global environment state.");
+  lines.push("7. Record planned environment changes with `aienvmp intent --actor agent:id --action planned-change`.");
+  lines.push("8. After environment changes, run `aienvmp checkpoint --actor agent:id --summary what-changed --target environment`.", "");
   lines.push(...preflightLines(manifest.preflight), "");
   lines.push("## Current Policy", "");
   lines.push(...policyLines(policy));

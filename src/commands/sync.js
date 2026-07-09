@@ -74,6 +74,7 @@ async function writeStateReadme(dir, status = {}) {
     `- next: \`${next}\``,
     `- freshness: ${freshness}`,
     `- discovery: ${discovery}`,
+    "- discovery mode: best-effort; use `aienvmp discover --json` when automatic pickup is uncertain",
     `- follow-up: ${followUp}`,
     `- light SBOM risk: ${sbom}`,
     "",
