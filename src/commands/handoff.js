@@ -98,10 +98,27 @@ function continuationSummary(preflight = {}) {
   const sbomReview = maintenanceLoop.sbomReview || {};
   const followUpPlan = preflight.followUpPlan || {};
   const coordinationResolution = preflight.coordinationResolution || {};
+  const readOrder = (maintenanceLoop.readOrder || preflight.readOrder || []).slice(0, 4);
+  const nextCommand = maintenanceLoop.nextCommand || preflight.nextCommand || "aienvmp status --json";
   return {
     status: preflight.state || "unknown",
-    nextCommand: maintenanceLoop.nextCommand || preflight.nextCommand || "aienvmp status --json",
-    readOrder: (maintenanceLoop.readOrder || preflight.readOrder || []).slice(0, 4),
+    nextCommand,
+    readOrder,
+    resume: {
+      purpose: "Minimum next-AI routine for continuing from the same environment map.",
+      readFirst: readOrder.length ? readOrder : [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+      nextCommand,
+      allowed: "project-local code work can continue when status/context do not require environment review",
+      beforeEnvironmentChange: preflight.aiSession?.beforeEnvironmentChange || "aienvmp intent --actor agent:id --action planned-change --target environment",
+      afterEnvironmentChange: preflight.aiSession?.afterEnvironmentChange || "aienvmp checkpoint --actor agent:id --summary what-changed --target environment",
+      handoff: preflight.aiSession?.handoff || "aienvmp handoff --record --actor agent:id",
+      mustNotDo: [
+        "do not continue from memory only; read current aienvmp artifacts first",
+        "do not change runtimes, dependencies, package managers, Docker, or global tools before intent/review",
+        "do not ignore pending follow-ups, coordination conflicts, or SBOM review signals"
+      ],
+      rule: "Every next AI should start from the same aienvmp read order, then record intent/checkpoint/handoff around shared environment changes."
+    },
     followUpPlan: {
       status: followUpPlan.status || "clear",
       count: Number(followUpPlan.count || 0),

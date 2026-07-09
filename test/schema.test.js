@@ -217,6 +217,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.handoff.rootFields.includes("aiBootstrap"));
   assert.ok(schema.outputs.handoff.rootFields.includes("nextSafeCommand"));
   assert.ok(schema.outputs.handoff.rootFields.includes("continuation"));
+  assert.ok(schema.outputs.handoff.continuationFields.includes("resume"));
+  assert.ok(schema.outputs.handoff.resumeFields.includes("beforeEnvironmentChange"));
+  assert.ok(schema.outputs.handoff.resumeFields.includes("mustNotDo"));
   assert.ok(schema.outputs.handoff.continuationFields.includes("followUpPlan"));
   assert.ok(schema.outputs.handoff.continuationFields.includes("coordinationResolution"));
   assert.ok(schema.outputs.handoff.rootFields.includes("coordination"));

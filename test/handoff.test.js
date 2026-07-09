@@ -74,6 +74,14 @@ test("buildHandoff summarizes next-agent environment state", () => {
   assert.equal(handoff.dependencyHandoff.protocol.mode, "advisory");
   assert.equal(handoff.dependencyHandoff.protocol.checkpointAfterChange, "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency");
   assert.equal(handoff.continuation.status, "clear");
+  assert.equal(handoff.continuation.resume.purpose, "Minimum next-AI routine for continuing from the same environment map.");
+  assert.equal(handoff.continuation.resume.readFirst[0], ".aienvmp/status.json");
+  assert.equal(handoff.continuation.resume.nextCommand, handoff.continuation.nextCommand);
+  assert.match(handoff.continuation.resume.beforeEnvironmentChange, /planned-change/);
+  assert.match(handoff.continuation.resume.afterEnvironmentChange, /checkpoint/);
+  assert.match(handoff.continuation.resume.handoff, /handoff --record/);
+  assert.match(handoff.continuation.resume.mustNotDo.join(" "), /continue from memory only/);
+  assert.match(handoff.continuation.resume.rule, /Every next AI/);
   assert.equal(handoff.continuation.maintenance.mode, "advisory");
   assert.equal(handoff.continuation.strict.localCommand, "aienvmp doctor --json");
   assert.equal(handoff.continuation.strict.shouldFailLocal, false);
@@ -84,6 +92,9 @@ test("buildHandoff summarizes next-agent environment state", () => {
   assert.match(renderHandoff(handoff), /AI Handoff/);
   assert.match(renderHandoff(handoff), /Decision: project-local-work/);
   assert.match(renderHandoff(handoff), /AI continuation/);
+  assert.match(renderHandoff(handoff), /Resume: \.aienvmp\/status\.json/);
+  assert.match(renderHandoff(handoff), /Before env: aienvmp intent/);
+  assert.match(renderHandoff(handoff), /After env: aienvmp checkpoint/);
   assert.match(renderHandoff(handoff), /Local check: aienvmp doctor --json \(warn-only\)/);
   assert.match(renderHandoff(handoff), /SBOM review: review \/ high \/ aienvmp sync --security/);
   assert.match(renderHandoff(handoff), /Agent activity/);
@@ -211,6 +222,7 @@ test("buildHandoff carries follow-up plan into continuation", () => {
   }], [], [], {});
 
   assert.equal(handoff.continuation.followUpPlan.status, "pending");
+  assert.match(handoff.continuation.resume.mustNotDo.join(" "), /pending follow-ups/);
   assert.equal(handoff.continuation.followUpPlan.nextCommand, "aienvmp sync");
   assert.deepEqual(handoff.continuation.followUpPlan.targets, ["dependency"]);
   assert.match(renderHandoff(handoff), /Follow-up: pending \/ aienvmp sync \/ dependency/);

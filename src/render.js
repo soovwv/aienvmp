@@ -307,10 +307,14 @@ function continuationHandoffLines(continuation = {}) {
   const sbomReview = continuation.sbomReview || {};
   const maintenance = continuation.maintenance || {};
   const followUpPlan = continuation.followUpPlan || {};
+  const resume = continuation.resume || {};
   const followUpTargets = followUpPlan.targets?.length ? ` / ${followUpPlan.targets.join(", ")}` : "";
   return [
+    `- Resume: ${(resume.readFirst || continuation.readOrder || []).join(", ") || ".aienvmp/README.md, .aienvmp/status.json"} -> ${resume.nextCommand || continuation.nextCommand || "aienvmp status --json"}`,
     `- Next: ${continuation.nextCommand || "aienvmp status --json"}`,
     `- Read: ${(continuation.readOrder || []).join(", ") || ".aienvmp/status.json"}`,
+    `- Before env: ${resume.beforeEnvironmentChange || "aienvmp intent --actor agent:id --action planned-change --target environment"}`,
+    `- After env: ${resume.afterEnvironmentChange || "aienvmp checkpoint --actor agent:id --summary what-changed --target environment"}`,
     `- Follow-up: ${followUpPlan.status || "clear"} / ${followUpPlan.nextCommand || "aienvmp status --json"}${followUpTargets}`,
     `- Local check: ${strict.localCommand || "aienvmp doctor --json"} (${strict.local || "warn-only"})`,
     `- CI strict: ${strict.ciCommand || "aienvmp doctor --strict all --json"}`,
