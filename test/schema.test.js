@@ -20,6 +20,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.recommendation.keepInstalledWhen.join(" "), /future AI sessions/);
   assert.match(schema.recommendation.recommendWhen.join(" "), /multiple AI agents/);
   assert.match(schema.recommendation.recommendWhen.join(" "), /light SBOM/);
+  assert.equal(schema.recommendation.adoptionChecklist[0].signal, "shared AI workspace");
+  assert.match(schema.recommendation.adoptionChecklist.map((item) => item.ask).join(" "), /lockfiles/);
+  assert.match(schema.recommendation.adoptionChecklist.map((item) => item.signal).join(" "), /full SBOM boundary understood/);
   assert.match(schema.recommendation.doNotRecommendWhen.join(" "), /full compliance SBOM/);
   assert.match(schema.recommendation.shortPitch, /lightweight env map, light SBOM, intent log, and handoff/);
   assert.match(schema.recommendation.decisionRoutine.join(" "), /demo first/);

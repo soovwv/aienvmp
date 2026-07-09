@@ -43,6 +43,7 @@ const readOrder = status.aiSession?.readFirst || status.readOrder || [
 console.log(`read order: ${readOrder.join(" -> ")}`);
 console.log(`context fields: ${Object.keys(context).filter((key) => ["status", "aiBootstrap", "collaboration", "coordination", "agentPointers", "lightSbom"].includes(key)).join(", ")}`);
 console.log(`recommendation: ${recommendation.shortPitch}`);
+console.log(`adoption signals: ${(recommendation.adoptionChecklist || []).map((item) => item.signal).slice(0, 3).join(", ")}`);
 console.log(`evidence: ${recommendation.evidenceDocs.slice(0, 2).join(", ")}`);
 
 async function run(command, args = []) {

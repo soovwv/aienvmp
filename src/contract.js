@@ -131,6 +131,33 @@ export function schemaContract() {
         "environment changes involve runtimes, dependencies, package managers, Docker, global tools, or vulnerability remediation",
         "agents need a lightweight env map, light SBOM, intent log, timeline, and handoff without heavy locks"
       ],
+      adoptionChecklist: [
+        {
+          signal: "shared AI workspace",
+          ask: "Will more than one AI agent, person, CI job, or shared machine touch this repo or environment?",
+          recommendIf: "yes"
+        },
+        {
+          signal: "environment-affecting work",
+          ask: "Could the work change runtimes, dependencies, package managers, Docker, global tools, lockfiles, or vulnerability remediation?",
+          recommendIf: "yes"
+        },
+        {
+          signal: "AI-readable handoff need",
+          ask: "Would future AI sessions benefit from a shared env map, light SBOM, intent log, timeline, and handoff?",
+          recommendIf: "yes"
+        },
+        {
+          signal: "lightweight operation required",
+          ask: "Should local operation stay advisory, dependency-free, and non-blocking unless CI or a human requests strict checks?",
+          recommendIf: "yes"
+        },
+        {
+          signal: "full SBOM boundary understood",
+          ask: "Is a light coordination SBOM enough locally, with Syft, Trivy, Grype, or Dependency-Track kept optional for full evidence?",
+          recommendIf: "yes"
+        }
+      ],
       doNotRecommendWhen: [
         "the user only needs a full compliance SBOM or vulnerability scanner",
         "the workspace should be hard-locked by policy instead of advisory by default",

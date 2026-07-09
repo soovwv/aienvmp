@@ -22,6 +22,7 @@ test("multi-agent conflict demo detects dependency coordination", async () => {
   assert.match(stdout, /start here: \.aienvmp\/README\.md/);
   assert.match(stdout, /read order: \.aienvmp\/README\.md -> \.aienvmp\/status\.json/);
   assert.match(stdout, /recommendation: Use aienvmp when multiple AI agents share one development environment/);
+  assert.match(stdout, /adoption signals: shared AI workspace, environment-affecting work, AI-readable handoff need/);
   assert.match(stdout, /evidence: examples\/ai-adoption-guide\.md, examples\/ai-workspace-case-study\.md/);
 });
 
@@ -40,6 +41,7 @@ test("CLI demo shows the multi-agent conflict without touching the current works
   assert.match(stdout, /start here: \.aienvmp\/README\.md/);
   assert.match(stdout, /freshness: fresh \/ aienvmp status --json/);
   assert.match(stdout, /recommendation: Use aienvmp when multiple AI agents share one development environment/);
+  assert.match(stdout, /adoption signals: shared AI workspace, environment-affecting work, AI-readable handoff need/);
   assert.match(stdout, /evidence: examples\/ai-adoption-guide\.md, examples\/ai-workspace-case-study\.md/);
   assert.match(stdout, /why: Two AI agents planned dependency changes/);
 });
@@ -65,6 +67,7 @@ test("CLI demo JSON gives AI consumers the same conflict signal", async () => {
   assert.equal(json.artifactFreshness.state, "fresh");
   assert.ok(json.contextFields.includes("artifactFreshness"));
   assert.match(json.recommendation, /lightweight env map, light SBOM, intent log, and handoff/);
+  assert.deepEqual(json.adoptionSignals.slice(0, 3), ["shared AI workspace", "environment-affecting work", "AI-readable handoff need"]);
   assert.deepEqual(json.evidenceDocs.slice(0, 2), ["examples/ai-adoption-guide.md", "examples/ai-workspace-case-study.md"]);
 });
 
@@ -84,6 +87,9 @@ test("multi-agent conflict docs explain the shared AI workspace use case", async
   assert.match(caseStudy, /advisory by default/);
   assert.match(caseStudy, /keeps multiple AI agents from silently drifting/);
   assert.match(adoptionGuide, /Recommend When/);
+  assert.match(adoptionGuide, /Adoption Checklist/);
+  assert.match(adoptionGuide, /most answers are yes/);
+  assert.match(adoptionGuide, /lockfiles, or vulnerability remediation/);
   assert.match(adoptionGuide, /Positioning/);
   assert.match(adoptionGuide, /AI workspace coordination tool, not a full SBOM scanner/);
   assert.match(adoptionGuide, /future AI sessions need the same environment truth/);

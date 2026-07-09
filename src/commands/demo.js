@@ -27,6 +27,7 @@ export async function demoWorkspace(args = {}) {
     name: "aienvmp multi-agent conflict demo",
     workspace: dir,
     recommendation: recommendation.shortPitch,
+    adoptionSignals: (recommendation.adoptionChecklist || []).map((item) => item.signal),
     evidenceDocs: recommendation.evidenceDocs,
     aiDiscovery: status.agentPointers?.discovery || "unknown",
     collaboration: status.collaboration?.status || "unknown",
@@ -61,6 +62,7 @@ export async function demoWorkspace(args = {}) {
     console.log(`freshness: ${result.artifactFreshness.state || "unknown"} / ${result.artifactFreshness.nextCommand || "aienvmp sync"}`);
     console.log(`context fields: ${result.contextFields.join(", ")}`);
     console.log(`recommendation: ${result.recommendation}`);
+    console.log(`adoption signals: ${result.adoptionSignals.slice(0, 3).join(", ")}`);
     console.log(`evidence: ${result.evidenceDocs.slice(0, 2).join(", ")}`);
     console.log(`why: ${result.point}`);
   }
