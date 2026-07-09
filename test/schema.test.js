@@ -64,6 +64,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.agentDiscovery.discoverCommand, "aienvmp discover");
   assert.equal(schema.agentDiscovery.installCommand, "aienvmp onboard");
   assert.equal(schema.agentDiscovery.optionalInstallCommand, "aienvmp onboard --agents cursor,copilot");
+  assert.match(schema.agentDiscovery.fallbackPrompt, /Use aienvmp as the workspace env map/);
+  assert.match(schema.agentDiscovery.humanInstruction, /Paste the fallback prompt/);
   assert.equal(schema.agentDiscovery.automaticDiscovery, "best-effort");
   assert.match(schema.agentDiscovery.automaticDiscoveryLimit, /AI hosts only auto-read/);
   assert.equal(schema.agentDiscovery.fallbackCommand, "aienvmp status --json");
@@ -128,6 +130,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.discover.rootFields.includes("aiDiscovery"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("automatic"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("fallbackRead"));
+  assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("sessionStart"));
+  assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("fallbackPrompt"));
+  assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("humanInstruction"));
   assert.match(schema.outputs.discover.purpose, /Zero-write detection/);
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("nextAgent"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("readOrder"));

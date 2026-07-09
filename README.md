@@ -22,7 +22,7 @@ npx aienvmp discover
 npx aienvmp status
 ```
 
-`discover` is read-only and tells AI or humans whether this workspace already has aienvmp artifacts. `onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`, refreshes artifacts, and tells AI agents to start at `.aienvmp/README.md`, then read `.aienvmp/status.json`. Automatic discovery is best-effort because each AI host reads different instruction files; if pointers are missing, use `discover --json` and the `.aienvmp/README.md` fallback path.
+`discover` is read-only and tells AI or humans whether this workspace already has aienvmp artifacts. `onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`, refreshes artifacts, and tells AI agents to start at `.aienvmp/README.md`, then read `.aienvmp/status.json`. Automatic discovery is best-effort because each AI host reads different instruction files; if pointers are missing, use `discover --json` and paste its `fallbackPrompt` into the AI session.
 
 ## 10-Second Use
 
@@ -91,7 +91,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `schemaVersion`, `contractVersion`, `stableFrom`, and compatibility rules are explicit.
 - `recommendation.recommendWhen`, `doNotRecommendWhen`, and `evidenceDocs` tell AI when to suggest this tool.
 - `agentPointers.discovery` tells AI whether Codex, Claude, and Gemini files can discover `aienvmp`.
-- `discover --json` exposes `aiDiscovery` so agents know whether automatic pickup is ready or fallback reading is required.
+- `discover --json` exposes `aiDiscovery`, including a `fallbackPrompt` humans can paste when an AI host did not auto-load the pointer file.
 - `.aienvmp/README.md` gives a generated fallback start point when instruction-file pointers are missing.
 - `readOrder` starts at `.aienvmp/README.md`, then status, summary, env map, plan, timeline, and intents.
 - `agentDiscovery.sessionStart` documents the startup rule for schema-only AI/CI consumers.

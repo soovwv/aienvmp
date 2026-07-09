@@ -75,6 +75,7 @@ async function writeStateReadme(dir, status = {}) {
     `- freshness: ${freshness}`,
     `- discovery: ${discovery}`,
     "- discovery mode: best-effort; use `aienvmp discover --json` when automatic pickup is uncertain",
+    "- AI fallback prompt: Use aienvmp as the workspace env map. Read `.aienvmp/README.md`, then `.aienvmp/status.json`, then run `aienvmp context --json` before environment changes.",
     `- follow-up: ${followUp}`,
     `- light SBOM risk: ${sbom}`,
     "",

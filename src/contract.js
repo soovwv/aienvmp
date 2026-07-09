@@ -130,6 +130,8 @@ export function schemaContract() {
       automaticDiscoveryLimit: "AI hosts only auto-read their supported instruction files; otherwise use discover/status fallback artifacts.",
       fallbackCommand: "aienvmp status --json",
       fallbackRead: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+      fallbackPrompt: "Use aienvmp as the workspace env map. Read .aienvmp/README.md, then .aienvmp/status.json, then run aienvmp context --json before environment changes.",
+      humanInstruction: "Paste the fallback prompt into an AI session when the host did not auto-read an instruction-file pointer.",
       sessionStart: [
         "Treat the aienvmp marker block as the live environment pointer.",
         "Start at .aienvmp/README.md when artifacts are present, then read .aienvmp/status.json.",
@@ -243,7 +245,7 @@ export function schemaContract() {
         command: "aienvmp discover --json",
         mode: "read-only",
         rootFields: ["status", "detected", "startHere", "readOrder", "freshness", "nextCommand", "agentPointers", "aiDiscovery", "artifacts", "rule"],
-        aiDiscoveryFields: ["mode", "automatic", "pointerStatus", "limitation", "installCommand", "safeStart", "fallbackRead", "rule"],
+        aiDiscoveryFields: ["mode", "automatic", "pointerStatus", "limitation", "installCommand", "safeStart", "sessionStart", "fallbackRead", "fallbackPrompt", "humanInstruction", "rule"],
         purpose: "Zero-write detection command for AI agents or humans that need to know whether a workspace already has aienvmp artifacts."
       },
       startHere: {

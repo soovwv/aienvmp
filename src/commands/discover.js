@@ -11,6 +11,15 @@ const pointerFiles = [
   ["copilot", path.join(".github", "copilot-instructions.md")]
 ];
 
+const defaultReadOrder = [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md", "aienvmp context --json"];
+const sessionStart = [
+  "Read .aienvmp/README.md when it exists.",
+  "Read .aienvmp/status.json before environment-affecting work.",
+  "Run npx aienvmp sync only when artifacts are missing or stale.",
+  "Continue project-local code work unless status/context requires environment review.",
+  "Record intent before changing runtimes, dependencies, package managers, Docker, or global tools."
+];
+
 export async function discoverWorkspace(args = {}) {
   const dir = workspaceDir(args);
   const status = await readJson(statusJsonPath(dir), null);
@@ -24,7 +33,7 @@ export async function discoverWorkspace(args = {}) {
     installed: pointers.filter((item) => item.hasPointer).map((item) => item.agent),
     detected: pointers.filter((item) => item.exists).map((item) => item.agent)
   };
-  const readOrder = [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md", "aienvmp context --json"];
+  const readOrder = defaultReadOrder;
   const result = {
     status: detected ? "detected" : "not-detected",
     detected,
@@ -49,6 +58,7 @@ export async function discoverWorkspace(args = {}) {
     console.log(`freshness: ${result.freshness}`);
     console.log(`agent pointers: ${result.agentPointers.discovery}`);
     console.log(`next: ${result.nextCommand}`);
+    console.log(`AI fallback: ${result.aiDiscovery.fallbackPrompt}`);
   }
 
   return result;
@@ -122,7 +132,12 @@ function aiDiscoverySummary({ detected = false, stale = true, agentPointers = {}
     limitation: "AI hosts only auto-read their supported instruction files; otherwise use the fallback read path.",
     installCommand: "npx aienvmp onboard",
     safeStart: detected && !stale ? "npx aienvmp status" : "npx aienvmp sync",
+    sessionStart,
     fallbackRead: readOrder.slice(0, 4),
+    fallbackPrompt: detected
+      ? "Use aienvmp as the workspace env map. Read .aienvmp/README.md, then .aienvmp/status.json, then run npx aienvmp context --json before environment changes."
+      : "Run npx aienvmp sync to create the AI env map, then read .aienvmp/README.md and .aienvmp/status.json.",
+    humanInstruction: "Paste the fallbackPrompt into an AI session when the host did not auto-read an instruction-file pointer.",
     rule: "Do not assume automatic pickup. Verify discovery with aienvmp discover or status before shared environment changes."
   };
 }

@@ -22,6 +22,8 @@ export function renderAIEnv(manifest, timeline = [], warnings = [], intents = []
   lines.push("6. Ask the user before changing global environment state.");
   lines.push("7. Record planned environment changes with `aienvmp intent --actor agent:id --action planned-change`.");
   lines.push("8. After environment changes, run `aienvmp checkpoint --actor agent:id --summary what-changed --target environment`.", "");
+  lines.push("Fallback prompt for AI sessions that did not auto-load an instruction-file pointer:");
+  lines.push("Use aienvmp as the workspace env map. Read `.aienvmp/README.md`, then `.aienvmp/status.json`, then run `aienvmp context --json` before environment changes.", "");
   lines.push(...preflightLines(manifest.preflight), "");
   lines.push("## Current Policy", "");
   lines.push(...policyLines(policy));

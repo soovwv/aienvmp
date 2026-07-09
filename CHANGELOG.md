@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `aiDiscovery.fallbackPrompt` and session-start hints so humans can paste one compact instruction when an AI host does not auto-load aienvmp pointers.
 - Exposed `operationalSafety` in status and context outputs so AI agents see the must-not-change contract at session start.
 - Added `operationalSafety` to the AI schema so agents have one central warn-only and must-not-change contract.
 - Added `releaseReadiness.currentBatch` so AI and humans can see why npm publish remains held while stability changes accumulate.

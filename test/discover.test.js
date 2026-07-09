@@ -20,6 +20,9 @@ test("discover reports missing aienvmp artifacts without writing files", async (
   assert.equal(result.aiDiscovery.automatic, false);
   assert.equal(result.aiDiscovery.pointerStatus, "missing");
   assert.equal(result.aiDiscovery.safeStart, "npx aienvmp sync");
+  assert.ok(result.aiDiscovery.sessionStart.includes("Read .aienvmp/status.json before environment-affecting work."));
+  assert.match(result.aiDiscovery.fallbackPrompt, /Run npx aienvmp sync/);
+  assert.match(result.aiDiscovery.humanInstruction, /Paste the fallbackPrompt/);
   assert.match(result.aiDiscovery.limitation, /AI hosts only auto-read/);
   assert.equal(result.artifacts.stateDir.exists, false);
   await assert.rejects(fs.access(path.join(dir, ".aienvmp")));
@@ -48,6 +51,7 @@ test("discover finds generated start-here artifacts and agent pointers", async (
   assert.equal(result.aiDiscovery.automatic, true);
   assert.equal(result.aiDiscovery.pointerStatus, "ready: codex");
   assert.equal(result.aiDiscovery.safeStart, "npx aienvmp status");
+  assert.match(result.aiDiscovery.fallbackPrompt, /Use aienvmp as the workspace env map/);
   assert.deepEqual(result.aiDiscovery.fallbackRead, [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md"]);
   assert.match(result.rule, /does not write files/);
 });
@@ -71,5 +75,8 @@ test("discover JSON output is machine-readable for AI agents", async () => {
   assert.equal(json.localMode, "read-only");
   assert.equal(json.aiDiscovery.mode, "best-effort");
   assert.equal(json.aiDiscovery.installCommand, "npx aienvmp onboard");
+  assert.ok(json.aiDiscovery.sessionStart.some((item) => item.includes("Record intent")));
+  assert.match(json.aiDiscovery.fallbackPrompt, /aienvmp context --json/);
+  assert.match(json.aiDiscovery.humanInstruction, /instruction-file pointer/);
   assert.match(json.aiDiscovery.rule, /Do not assume automatic pickup/);
 });

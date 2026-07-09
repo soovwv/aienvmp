@@ -56,6 +56,8 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.match(aiEnv, /aienvmp discover/);
   assert.match(aiEnv, /automatic discovery as best-effort/);
   assert.match(aiEnv, /fallback read order/);
+  assert.match(aiEnv, /Fallback prompt for AI sessions/);
+  assert.match(aiEnv, /Use aienvmp as the workspace env map/);
   assert.match(aiEnv, /AI session: `aienvmp status --json -> aienvmp context --json`/);
   assert.match(aiEnv, /If stale: `aienvmp sync`/);
   assert.match(aiEnv, /AI bootstrap:/);
@@ -86,6 +88,8 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.match(startHere, /AI session: `aienvmp status --json -> aienvmp context --json`/);
   assert.match(startHere, /discovery mode: best-effort/);
   assert.match(startHere, /aienvmp discover --json/);
+  assert.match(startHere, /AI fallback prompt/);
+  assert.match(startHere, /Use aienvmp as the workspace env map/);
   assert.match(startHere, /For AI agents: start here, then use `status\.json`, `summary\.md`, and `aienvmp context --json`/);
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "summary.md")));
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "sbom.json")));
