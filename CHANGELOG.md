@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Split dashboard CSS into `dashboardStyle` so the essential human review surfaces can be tested separately from the HTML shell.
 - Split dashboard document shell rendering into `dashboardDocument` so payload, HTML shell, and client script responsibilities are easier to test separately.
 - Split dashboard schema-backed payload assembly into `dashboardPayload` so `renderDashboard` stays focused on rendering while preserving the same output.
 - Updated recommendation and adoption guidance to prefer `start --json` root recovery fields when AI instruction-file discovery is uncertain.

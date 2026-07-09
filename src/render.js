@@ -463,15 +463,8 @@ function remediationLines(item) {
   ];
 }
 
-export function dashboardDocument(data, clientScript) {
-  return `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>aienvmp dashboard</title>
-<style>
-:root{color-scheme:dark;--bg:#08110f;--panel:#0d1815;--panel2:#101e1a;--line:#214138;--line2:#172b26;--text:#eefcf5;--muted:#91aa9d;--green:#47e58d;--green2:#133d2a;--amber:#f4bf5f;--red:#ff6b6b;--code:#d7ffe9}
+export function dashboardStyle() {
+  return `:root{color-scheme:dark;--bg:#08110f;--panel:#0d1815;--panel2:#101e1a;--line:#214138;--line2:#172b26;--text:#eefcf5;--muted:#91aa9d;--green:#47e58d;--green2:#133d2a;--amber:#f4bf5f;--red:#ff6b6b;--code:#d7ffe9}
 *{box-sizing:border-box}
 body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--text)}
 body:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(71,229,141,.12),transparent 38%),radial-gradient(circle at 74% 0,rgba(244,191,95,.08),transparent 28%)}
@@ -537,7 +530,18 @@ code{color:var(--code);background:#0a2017;border:1px solid #17462f;padding:2px 6
 @media (max-width:520px){.shell{padding:14px}.metrics{grid-template-columns:1fr}.event{grid-template-columns:1fr}h1{font-size:32px}}
 @media (max-width:520px){.brief{grid-template-columns:1fr}}
 @media (max-width:520px){.cockpit-head{display:block}.cockpit-rule{margin-top:6px}.cockpit-grid{grid-template-columns:1fr}}
-@media (max-width:520px){.audit{grid-template-columns:1fr}}
+@media (max-width:520px){.audit{grid-template-columns:1fr}}`;
+}
+
+export function dashboardDocument(data, clientScript) {
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>aienvmp dashboard</title>
+<style>
+${dashboardStyle()}
 </style>
 </head>
 <body>
