@@ -305,6 +305,7 @@ export function renderHandoff(handoff) {
 function continuationHandoffLines(continuation = {}) {
   const strict = continuation.strict || {};
   const sbomReview = continuation.sbomReview || {};
+  const dependencyQuickCheck = continuation.dependencyQuickCheck || {};
   const maintenance = continuation.maintenance || {};
   const followUpPlan = continuation.followUpPlan || {};
   const resume = continuation.resume || {};
@@ -319,6 +320,7 @@ function continuationHandoffLines(continuation = {}) {
     `- Local check: ${strict.localCommand || "aienvmp doctor --json"} (${strict.local || "warn-only"})`,
     `- CI strict: ${strict.ciCommand || "aienvmp doctor --strict all --json"}`,
     `- SBOM review: ${sbomReview.status || "unknown"} / ${sbomReview.riskLevel || "unknown"} / ${sbomReview.nextCommand || maintenance.sbomCommand || "aienvmp sbom --json"}`,
+    `- Dependency quick check: ${dependencyQuickCheck.status || "unknown"} / ${dependencyQuickCheck.scannerEvidence || "unknown"} / ${dependencyQuickCheck.nextCommand || "aienvmp sbom --json"}`,
     `- Rule: ${maintenance.rule || strict.rule || "Keep local operation advisory and lightweight."}`
   ];
 }

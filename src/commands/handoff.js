@@ -65,8 +65,8 @@ export function buildHandoff(manifest, timeline = [], warnings = [], intents = [
     },
     inventory: inventorySummary(manifest.inventory),
     security: securitySummary(manifest.security),
-    dependencyHandoff: dependencyHandoffSummary(preflight),
-    continuation: continuationSummary(preflight),
+    dependencyHandoff: dependencyHandoffSummary(preflight, manifest),
+    continuation: continuationSummary(preflight, manifest),
     coordination: preflight.coordination,
     coordinationResolution: preflight.coordinationResolution,
     agentActivity: preflight.agentActivity,
@@ -92,10 +92,11 @@ export function buildHandoff(manifest, timeline = [], warnings = [], intents = [
   };
 }
 
-function continuationSummary(preflight = {}) {
+function continuationSummary(preflight = {}, manifest = {}) {
   const maintenanceLoop = preflight.maintenanceLoop || {};
   const strictDecision = preflight.enforcementProfile?.strictDecision || preflight.enforcement?.strictDecision || {};
   const sbomReview = maintenanceLoop.sbomReview || {};
+  const dependencyQuickCheck = manifest.lightSbom?.dependencyQuickCheck || {};
   const followUpPlan = preflight.followUpPlan || {};
   const coordinationResolution = preflight.coordinationResolution || {};
   const readOrder = (maintenanceLoop.readOrder || preflight.readOrder || []).slice(0, 4);
@@ -145,6 +146,14 @@ function continuationSummary(preflight = {}) {
       nextCommand: sbomReview.nextCommand || maintenanceLoop.sbomCommand || "aienvmp sbom --json",
       reviewTargets: (sbomReview.reviewTargets || []).slice(0, 5)
     },
+    dependencyQuickCheck: {
+      status: dependencyQuickCheck.status || "unknown",
+      nextCommand: dependencyQuickCheck.nextCommand || sbomReview.nextCommand || maintenanceLoop.sbomCommand || "aienvmp sbom --json",
+      scannerEvidence: dependencyQuickCheck.scannerEvidence || sbomReview.securityConfidence || "unknown",
+      reviewTargets: (dependencyQuickCheck.reviewTargets || sbomReview.reviewTargets || []).slice(0, 5),
+      mustNotDo: (dependencyQuickCheck.mustNotDo || []).slice(0, 3),
+      rule: dependencyQuickCheck.rule || "Use .aienvmp/sbom.json dependencyQuickCheck before dependency, lockfile, remediation, or release-affecting work."
+    },
     strict: {
       localCommand: strictDecision.localCommand || "aienvmp doctor --json",
       local: strictDecision.local || "warn-only",
@@ -155,10 +164,18 @@ function continuationSummary(preflight = {}) {
   };
 }
 
-function dependencyHandoffSummary(preflight = {}) {
+function dependencyHandoffSummary(preflight = {}, manifest = {}) {
   const protocol = preflight.dependencyChangeProtocol || {};
+  const dependencyQuickCheck = manifest.lightSbom?.dependencyQuickCheck || {};
   return {
     readSet: (preflight.dependencyReadSet || []).slice(0, 5),
+    quickCheck: {
+      status: dependencyQuickCheck.status || "unknown",
+      nextCommand: dependencyQuickCheck.nextCommand || "aienvmp sbom --json",
+      scannerEvidence: dependencyQuickCheck.scannerEvidence || "unknown",
+      reviewTargets: (dependencyQuickCheck.reviewTargets || []).slice(0, 5),
+      rule: dependencyQuickCheck.rule || "Read dependencyQuickCheck before dependency-affecting work."
+    },
     protocol: {
       mode: protocol.mode || "advisory",
       packageManagerPolicy: protocol.packageManagerPolicy || "not-detected",

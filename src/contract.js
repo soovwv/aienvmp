@@ -411,7 +411,7 @@ export function schemaContract() {
       handoff: {
         command: "aienvmp handoff --json",
         rootFields: ["status", "startHere", "readOrder", "aiBootstrap", "nextSafeCommand", "decision", "preflight", "continuation", "coordination", "coordinationResolution", "dependencyHandoff", "openIntents", "warnings", "recommendedActions", "recentChanges"],
-        continuationFields: ["status", "nextCommand", "readOrder", "resume", "followUpPlan", "coordinationResolution", "maintenance", "sbomReview", "strict"],
+        continuationFields: ["status", "nextCommand", "readOrder", "resume", "followUpPlan", "coordinationResolution", "maintenance", "sbomReview", "dependencyQuickCheck", "strict"],
         resumeFields: ["purpose", "readFirst", "nextCommand", "allowed", "beforeEnvironmentChange", "afterEnvironmentChange", "handoff", "mustNotDo", "rule"]
       },
       manifest: {

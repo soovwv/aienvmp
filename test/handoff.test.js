@@ -37,6 +37,14 @@ test("buildHandoff summarizes next-agent environment state", () => {
         reviewTargets: ["package.json", "lodash"],
         beforeDependencyChange: ["aienvmp sync --security", "aienvmp plan --write"]
       },
+      dependencyQuickCheck: {
+        status: "review",
+        nextCommand: "aienvmp sync --security",
+        scannerEvidence: "scanner-summary",
+        reviewTargets: ["package.json", "lodash"],
+        mustNotDo: ["do not run broad install commands before reading SBOM"],
+        rule: "Use this compact block as the first AI dependency-work decision."
+      },
       dependencyChangeHints: [{
         manifest: "package.json",
         ecosystem: "npm",
@@ -72,6 +80,8 @@ test("buildHandoff summarizes next-agent environment state", () => {
   assert.equal(handoff.recommendedActions[0].id, "review-security-remediation");
   assert.equal(handoff.dependencyHandoff.readSet[0].manifest, "package.json");
   assert.equal(handoff.dependencyHandoff.protocol.mode, "advisory");
+  assert.equal(handoff.dependencyHandoff.quickCheck.status, "review");
+  assert.equal(handoff.dependencyHandoff.quickCheck.nextCommand, "aienvmp sync --security");
   assert.equal(handoff.dependencyHandoff.protocol.checkpointAfterChange, "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency");
   assert.equal(handoff.continuation.status, "clear");
   assert.equal(handoff.continuation.resume.purpose, "Minimum next-AI routine for continuing from the same environment map.");
@@ -88,6 +98,8 @@ test("buildHandoff summarizes next-agent environment state", () => {
   assert.equal(handoff.continuation.sbomReview.status, "review");
   assert.equal(handoff.continuation.sbomReview.securityConfidence, "scanner-summary");
   assert.deepEqual(handoff.continuation.sbomReview.reviewTargets, ["package.json", "lodash"]);
+  assert.equal(handoff.continuation.dependencyQuickCheck.status, "review");
+  assert.deepEqual(handoff.continuation.dependencyQuickCheck.reviewTargets, ["package.json", "lodash"]);
   assert.equal(handoff.agentActivity.environmentRecordCount, 1);
   assert.match(renderHandoff(handoff), /AI Handoff/);
   assert.match(renderHandoff(handoff), /Decision: project-local-work/);
@@ -97,6 +109,7 @@ test("buildHandoff summarizes next-agent environment state", () => {
   assert.match(renderHandoff(handoff), /After env: aienvmp checkpoint/);
   assert.match(renderHandoff(handoff), /Local check: aienvmp doctor --json \(warn-only\)/);
   assert.match(renderHandoff(handoff), /SBOM review: review \/ high \/ aienvmp sync --security/);
+  assert.match(renderHandoff(handoff), /Dependency quick check: review \/ scanner-summary \/ aienvmp sync --security/);
   assert.match(renderHandoff(handoff), /Agent activity/);
   assert.match(renderHandoff(handoff), /Recommended actions/);
   assert.match(renderHandoff(handoff), /Dependency handoff/);

@@ -129,6 +129,12 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
         risk: "medium/42",
         securityConfidence: "scanner-summary",
         beforeChange: "aienvmp sync --security"
+      },
+      dependencyQuickCheck: {
+        status: "review",
+        scannerEvidence: "scanner-summary",
+        nextCommand: "aienvmp sync --security",
+        reviewTargets: ["package.json"]
       }
     }
   });
@@ -165,6 +171,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /multi-actor targets: node/);
   assert.match(markdown, /AI SBOM plan: review \/ medium\/42 \/ scanner-summary \/ aienvmp sync --security/);
   assert.match(markdown, /AI dependency review: review \/ scanner-summary \/ aienvmp intent --actor agent:id --action dependency-review --target dependency/);
+  assert.match(markdown, /dependency quick check: review \/ scanner-summary \/ aienvmp sync --security \/ package\.json/);
   assert.match(markdown, /maintenance SBOM review: review \/ scanner-summary \/ aienvmp sync --security/);
   assert.match(markdown, /## Dependency changes/);
   assert.match(markdown, /fallback: aienvmp start --json \/ \.aienvmp\/README\.md -> \.aienvmp\/status\.json -> \.aienvmp\/summary\.md -> aienvmp context --json/);

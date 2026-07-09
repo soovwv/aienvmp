@@ -68,6 +68,12 @@ export function renderSummary(status = {}, manifest = {}) {
   const aiSignals = toList(aiReadiness.signals).slice(0, 5);
   const aiNext = aiReadiness.next || "Run aienvmp context --json for details.";
   const aiDependencyReview = manifest.lightSbom?.aiDependencyReview || {};
+  const dependencyQuickCheck = manifest.lightSbom?.dependencyQuickCheck || {
+    status: aiDependencyReview.status || "unknown",
+    nextCommand: aiDependencyReview.beforeDependencyChange?.[0] || sbomReview.nextCommand || "aienvmp sbom --json",
+    scannerEvidence: aiDependencyReview.securityConfidence || "unknown",
+    reviewTargets: aiDependencyReview.reviewTargets || sbomReview.reviewTargets || []
+  };
   const aiReviewPlan = manifest.lightSbom?.aiReviewPlan || {
     status: aiDependencyReview.status || "unknown",
     risk: `${riskLevel}/${riskScore}`,
@@ -138,6 +144,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- source: ${manifest.lightSbom?.source?.dependencies || "project manifests"}`,
     `- confidence: transitive ${manifest.lightSbom?.confidence?.transitiveDependencies || "not-resolved"}`,
     `- maintenance SBOM review: ${sbomReview.status || "unknown"} / ${sbomReview.securityConfidence || "unknown"} / ${sbomReview.nextCommand || maintenanceLoop.sbomCommand || "aienvmp sbom --json"}`,
+    `- dependency quick check: ${dependencyQuickCheck.status || "unknown"} / ${dependencyQuickCheck.scannerEvidence || "unknown"} / ${dependencyQuickCheck.nextCommand || "aienvmp sbom --json"} / ${toList(dependencyQuickCheck.reviewTargets).join(", ") || "none"}`,
     `- AI SBOM plan: ${aiReviewPlan.status || "unknown"} / ${aiReviewPlan.risk || `${riskLevel}/${riskScore}`} / ${aiReviewPlan.securityConfidence || "unknown"} / ${aiReviewPlan.beforeChange || "aienvmp sbom --json"}`,
     `- AI dependency review: ${aiDependencyReview.status || "unknown"} / ${aiDependencyReview.securityConfidence || "unknown"} / ${aiDependencyReview.beforeDependencyChange?.[0] || "aienvmp sbom --json"}`,
     `- signals: ${riskSignals.length ? riskSignals.join("; ") : "none"}`,
