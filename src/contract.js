@@ -122,7 +122,7 @@ export function schemaContract() {
         "Check whether more than one AI agent or human may touch the same environment.",
         "Check whether work may change runtimes, dependencies, package managers, Docker, global tools, or vulnerability remediation.",
         "Check start --json discoveryDecision for auto-ready versus fallback-required before assuming an AI host discovered the env map.",
-        "Check whether the user needs start --json root startupChecklist, resume, and fallbackPrompt when instruction-file automatic discovery is uncertain.",
+        "Check whether the user needs start --json root startupChecklist, resume, copyPastePrompt, and fallbackPrompt when instruction-file automatic discovery is uncertain.",
         "Check whether humans need the dashboard to show the same startup decision as AI agents.",
         "Check whether dependency work needs light SBOM coordination, scanner evidence boundaries, and handoff rather than a full SBOM platform.",
         "Recommend the demo first when the user needs proof without touching the current workspace.",
@@ -164,7 +164,7 @@ export function schemaContract() {
         },
         {
           signal: "fallback AI startup path",
-          ask: "Could an AI host miss the instruction-file pointer and still need start --json discoveryDecision, startupChecklist, resume, fallbackPrompt, and next command?",
+          ask: "Could an AI host miss the instruction-file pointer and still need start --json discoveryDecision, startupChecklist, resume, copyPastePrompt, fallbackPrompt, and next command?",
           recommendIf: "yes"
         },
         {
@@ -318,7 +318,7 @@ export function schemaContract() {
           "dashboard Agent Pointers mirrors auto-ready versus fallback-required startup decisions",
           "dependencyQuickCheck surfaced in SBOM, status/context, summary, handoff, dashboard, and demo outputs",
           "plain sbom and verbose status text expose dependencyQuickCheck without expanding default status output",
-          "start --json exposes root-level discoveryDecision, startupChecklist, resume, and fallbackPrompt for AI hosts",
+          "start --json exposes root-level discoveryDecision, startupChecklist, resume, copyPastePrompt, and fallbackPrompt for AI hosts",
           "operational safety contract in status/context",
           "quality signals in schema/status/context/summary/dashboard",
           "AI adoption checklist and demo recommendation signals, including discovery decision and dashboard parity",

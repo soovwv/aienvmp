@@ -10,6 +10,8 @@ test("packaged aienvmp skill points AI agents to current startup contracts", asy
   assert.match(skill, /npx aienvmp onboard/);
   assert.match(skill, /npx aienvmp discover --json/);
   assert.match(skill, /before assuming automatic pickup worked/);
+  assert.match(skill, /copyPastePrompt/);
+  assert.match(skill, /fallbackPrompt/);
   assert.match(skill, /Use \/ Skip \/ Start/);
   assert.match(skill, /multiple AI agents or humans/);
   assert.match(skill, /full compliance SBOM scanner/);
@@ -37,6 +39,8 @@ test("packaged aienvmp skill points AI agents to current startup contracts", asy
   assert.match(skill, /fallback-required/);
   assert.match(skill, /aiDiscovery\.startupChecklist/);
   assert.match(skill, /aiDiscovery\.resume\.readFirst/);
+  assert.match(skill, /aiDiscovery\.copyPastePrompt/);
+  assert.match(skill, /compatible older alias/);
   assert.match(skill, /beforeEnvironmentChange/);
   assert.match(skill, /afterEnvironmentChange/);
   assert.match(skill, /Automatic discovery is best-effort/);
