@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Compressed the README AI Contract section while keeping discovery, `copyPastePrompt`, dependency, safety, and release readiness signals visible.
 - Updated `releaseReadiness.currentBatch` so the held 0.2.0 batch covers `copyPastePrompt` recovery and dashboard helper-list maintainability work.
 - Grouped dashboard environment state, policy, intent, handoff, pointer, and snapshot cards into a `stateCards` client-side list.
 - Grouped dashboard secondary side cards into a `supportCards` client-side list so `renderDashboard` keeps shrinking without changing dashboard behavior.

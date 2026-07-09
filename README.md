@@ -74,21 +74,10 @@ AIENV.md                 # Markdown env map for AI agents
 - `status`, `context`, `plan`, and `handoff` share one additive preflight contract.
 - `schemaVersion`, `contractVersion`, `stableFrom`, and compatibility rules are explicit.
 - `recommendation.recommendWhen`, `doNotRecommendWhen`, and `evidenceDocs` tell AI when to suggest this tool.
-- `agentPointers.discovery` tells AI whether Codex, Claude, and Gemini files can discover `aienvmp`.
-- `discover --json` exposes `aiDiscovery.decision`, `nextSetupCommand`, `startupChecklist`, `resume`, and `copyPastePrompt` for AI hosts that did not auto-load a pointer file.
-- `start --json` also exposes root `discoveryDecision`, `startupChecklist`, `resume`, and `copyPastePrompt` so AI can recover when auto-discovery is uncertain.
-- `.aienvmp/discovery.json` gives the smallest generated fallback start point when instruction-file pointers are missing.
-- `discovery.json.maintenance` gives AI one compact next command for ongoing env upkeep.
-- `readOrder` starts at `.aienvmp/discovery.json`, then start-here, status, summary, env map, plan, timeline, and intents.
-- `agentDiscovery.sessionStart` documents the startup rule for schema-only AI/CI consumers.
-- `environmentChangeProtocol` gives one before/after-change contract for runtimes, dependencies, package managers, Docker, and global tools.
-- `operationalSafety` keeps local use warn-only and tells AI what must not be changed automatically.
-- `followUpPlan` gives AI one next command when previous environment work still needs sync, status, or handoff.
-- `sbomStrategy`, `scannerGuidance.decision`, and `aiReviewPlan` keep SBOM review light by default and request optional read-only scanners before security-sensitive decisions.
-- `dependencyQuickCheck` gives AI one compact dependency-work decision before installs, lockfile edits, remediation, or release review.
-- `scannerGuidance.externalTools` and `evidenceWorkflow` point AI to Syft, Trivy, Grype, or Dependency-Track when full SBOM/security evidence is needed.
-- `sbom --json` also carries `startHere` and `readOrder` so dependency review follows the same AI entry path.
-- `collaboration`, `coordination`, and `agentActivity` expose multi-agent conflicts and shared targets.
+- `agentPointers.discovery`, `aiDiscovery.decision`, `startupChecklist`, `aiDiscovery.resume`, and `copyPastePrompt` tell AI whether discovery is `auto-ready` or `fallback-required`.
+- `.aienvmp/discovery.json`, `discovery.json.maintenance`, `agentDiscovery.sessionStart`, and `readOrder` give the fallback start path for schema-only or Markdown-first agents.
+- `environmentChangeProtocol`, `operationalSafety`, `followUpPlan`, `collaboration`, `coordination`, and `agentActivity` keep shared changes advisory; `followUpPlan` points to sync, status, or handoff when needed.
+- `dependencyQuickCheck`, `sbomStrategy`, `scannerGuidance.decision`, `aiReviewPlan`, `externalTools`, and `evidenceWorkflow` keep SBOM review light while pointing to Syft, Trivy, Grype, or Dependency-Track when full evidence is needed.
 - `qualitySignals`, `releaseGate`, and `releaseReadiness` expose the AI-friendly, lightweight, batched stable-contract gate.
 - After `0.2.0`, documented JSON fields stay backward-compatible; new fields are additive.
 
