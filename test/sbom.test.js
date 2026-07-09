@@ -195,6 +195,32 @@ test("sbomWorkspace can write .aienvmp/sbom.json", async () => {
   assert.equal(written.aiUse.beforeChange, written.nextSafeCommand);
 });
 
+test("sbomWorkspace text shows the dependency quick check", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-sbom-text-"));
+  await fs.mkdir(path.join(dir, ".aienvmp"), { recursive: true });
+  await writeJson(path.join(dir, ".aienvmp", "manifest.json"), {
+    generatedAt: "2026-07-08T00:00:00.000Z",
+    workspace: { path: dir, name: path.basename(dir) },
+    lightSbom: {
+      summary: { packages: 2, vulnerabilities: 0 },
+      riskSummary: { level: "clear", score: 0, commands: [] }
+    }
+  });
+
+  const originalLog = console.log;
+  const lines = [];
+  console.log = (value) => { lines.push(value); };
+  try {
+    await sbomWorkspace({ dir });
+  } finally {
+    console.log = originalLog;
+  }
+
+  assert.match(lines.join("\n"), /dependency: ready \/ light-sbom-ok-for-coordination/);
+  assert.match(lines.join("\n"), /next: aienvmp intent --actor agent:id --action dependency-review --target dependency/);
+  assert.equal(lines.some((line) => /undefined/.test(line)), false);
+});
+
 test("sbomWorkspace can write CycloneDX-lite artifact", async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-sbom-cdx-"));
   await fs.mkdir(path.join(dir, ".aienvmp"), { recursive: true });

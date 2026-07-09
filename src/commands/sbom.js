@@ -16,7 +16,8 @@ export async function sbomWorkspace(args = {}) {
     console.log(`sbom: ${sbom.riskSummary.level}/${sbom.riskSummary.score}`);
     console.log(`packages: ${sbom.summary.packages || 0}`);
     console.log(`vulnerabilities: ${sbom.summary.vulnerabilities || 0}`);
-    console.log(`next: ${sbom.riskSummary.next}`);
+    console.log(`dependency: ${sbom.dependencyQuickCheck.status} / ${sbom.dependencyQuickCheck.scannerEvidence}`);
+    console.log(`next: ${sbom.dependencyQuickCheck.nextCommand || sbom.riskSummary.next || sbom.nextSafeCommand}`);
   }
   return output;
 }
