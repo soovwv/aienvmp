@@ -87,6 +87,7 @@ test("package, README, and CLI help share the AI workspace coordination position
     path.resolve("bin/aienvmp.js"),
     "--help"
   ], { cwd: path.resolve(".") });
+  const readmeTop = readme.replace(/\r\n/g, "\n").slice(0, 1300);
 
   assert.match(pkg.description, /AI workspace coordination tool/);
   assert.match(pkg.description, /multiple AI agents sharing one development environment/);
@@ -101,15 +102,15 @@ test("package, README, and CLI help share the AI workspace coordination position
   assert.ok(pkg.keywords.includes("version-drift"));
   assert.ok(pkg.keywords.includes("light-sbom"));
   assert.ok(pkg.keywords.includes("dependency-coordination"));
-  assert.match(readme.slice(0, 1200), /AI-first env map \+ light SBOM coordination/);
-  assert.match(readme.slice(0, 1200), /multiple AI agents safely share one development environment/);
-  assert.match(readme.slice(0, 1200), /dependency-free/);
-  assert.match(readme.slice(0, 1200), /without heavy locks/);
-  assert.match(readme.slice(0, 1200), /Use: AI agents share environment-affecting work/);
-  assert.match(readme.slice(0, 1200), /Prevent: different AI agents silently installing or assuming different software versions/);
-  assert.match(readme.slice(0, 1200), /Skip: you only need a full compliance SBOM scanner/);
-  assert.match(readme.slice(0, 1200), /AI signal: shared Codex\/Claude\/Gemini work/);
-  assert.match(readme.slice(0, 1200), /Start: run `npx aienvmp start`/);
+  assert.match(readmeTop, /AI-first env map \+ light SBOM coordination/);
+  assert.match(readmeTop, /multiple AI agents safely share one development environment/);
+  assert.match(readmeTop, /dependency-free/);
+  assert.match(readmeTop, /without heavy locks/);
+  assert.match(readmeTop, /Use: AI agents share environment-affecting work/);
+  assert.match(readmeTop, /Prevent: different AI agents silently installing or assuming different software versions/);
+  assert.match(readmeTop, /Skip: you only need a full compliance SBOM scanner/);
+  assert.match(readmeTop, /AI signal: shared Codex\/Claude\/Gemini work/);
+  assert.match(readmeTop, /Start: run `npx aienvmp start`/);
   assert.ok(readme.split(/\r?\n/).length <= 155);
   assert.match(readme, /AI adoption guide/);
   assert.match(readme, /Automatic discovery is best-effort/);
