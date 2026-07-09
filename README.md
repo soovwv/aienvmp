@@ -76,7 +76,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `schemaVersion`, `contractVersion`, `stableFrom`, and compatibility rules are explicit.
 - `recommendation.recommendWhen`, `doNotRecommendWhen`, and `evidenceDocs` tell AI when to suggest this tool.
 - `agentPointers.discovery` tells AI whether Codex, Claude, and Gemini files can discover `aienvmp`.
-- `discover --json` exposes `aiDiscovery.resume` and `fallbackPrompt` for AI hosts that did not auto-load a pointer file.
+- `discover --json` exposes `aiDiscovery.decision`, `nextSetupCommand`, `startupChecklist`, `resume`, and `fallbackPrompt` for AI hosts that did not auto-load a pointer file.
 - `.aienvmp/README.md` gives a generated fallback start point when instruction-file pointers are missing.
 - `readOrder` starts at `.aienvmp/README.md`, then status, summary, env map, plan, timeline, and intents.
 - `agentDiscovery.sessionStart` documents the startup rule for schema-only AI/CI consumers.

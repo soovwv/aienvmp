@@ -16,6 +16,8 @@ test("start syncs a missing workspace then returns the AI startup contract", asy
   assert.equal(result.startHere, ".aienvmp/README.md");
   assert.equal(result.decision, "clear");
   assert.equal(result.aiDiscovery.safeStart, "npx aienvmp status");
+  assert.equal(result.aiDiscovery.decision, "fallback-required");
+  assert.equal(result.nextSetupCommand, "npx aienvmp onboard");
   assert.equal(result.aiDiscovery.resume.nextCommand, "npx aienvmp status");
   assert.match(result.rule, /first AI entry command/);
   assert.match(result.statusText, /session:/);
@@ -49,6 +51,8 @@ test("start JSON output is machine-readable", async () => {
   assert.equal(json.status, "ok");
   assert.equal(json.mode, "synced");
   assert.equal(json.readOrder[0], ".aienvmp/README.md");
+  assert.equal(json.nextSetupCommand, "npx aienvmp onboard");
+  assert.match(json.aiDiscovery.startupChecklist.join(" "), /start --json/);
   assert.equal(json.aiDiscovery.resume.handoff, "aienvmp handoff --record --actor agent:id");
   assert.match(json.aiDiscovery.rule, /Do not assume automatic pickup/);
 });

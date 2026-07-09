@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `aiDiscovery.decision`, `nextSetupCommand`, and `startupChecklist` so AI agents can choose auto-ready versus fallback startup without inferring from pointer files.
 - Surfaced `dependencyQuickCheck` in the conflict demo so the first proof run shows the compact dependency-work decision.
 - Added `dependencyQuickCheck` to status/context preflight surfaces so AI agents can make the same compact dependency-work decision before opening the full SBOM.
 - Surfaced `dependencyQuickCheck` in summary and handoff continuation output so the next AI sees the compact dependency-work decision without opening the full SBOM first.

@@ -127,14 +127,25 @@ function aiDiscoverySummary({ detected = false, stale = true, agentPointers = {}
   const installed = agentPointers.installed || [];
   const safeStart = detected && !stale ? "npx aienvmp status" : "npx aienvmp sync";
   const fallbackRead = readOrder.slice(0, 4);
+  const decision = installed.length ? "auto-ready" : "fallback-required";
+  const nextSetupCommand = installed.length ? "none" : "npx aienvmp onboard";
+  const startupChecklist = [
+    "run npx aienvmp start --json when automatic discovery is uncertain",
+    "read .aienvmp/README.md, .aienvmp/status.json, and .aienvmp/summary.md",
+    "record intent before runtime, dependency, package manager, Docker, or global-tool changes",
+    "checkpoint and hand off after accepted environment changes"
+  ];
   return {
     mode: "best-effort",
+    decision,
     automatic: installed.length > 0,
     pointerStatus: installed.length ? `ready: ${installed.join(", ")}` : "missing",
     limitation: "AI hosts only auto-read their supported instruction files; otherwise use the fallback read path.",
     installCommand: "npx aienvmp onboard",
+    nextSetupCommand,
     safeStart,
     sessionStart,
+    startupChecklist,
     fallbackRead,
     resume: {
       purpose: "Minimum AI startup routine when instruction-file automatic discovery is uncertain.",

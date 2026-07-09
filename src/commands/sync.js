@@ -60,6 +60,8 @@ async function writeStateReadme(dir, status = {}) {
   const next = status.nextSafeCommand || status.nextCommand || "aienvmp status --json";
   const freshness = status.artifactFreshness?.status || "unknown";
   const discovery = status.agentPointers?.discovery || "missing: run aienvmp onboard";
+  const discoveryDecision = discovery.startsWith("ready:") ? "auto-ready" : "fallback-required";
+  const nextSetup = discoveryDecision === "auto-ready" ? "none" : "npx aienvmp onboard";
   const followUp = status.followUpPlan?.status || "clear";
   const sbom = status.sbomRisk?.level || "unknown";
   const lines = [
@@ -74,7 +76,10 @@ async function writeStateReadme(dir, status = {}) {
     `- next: \`${next}\``,
     `- freshness: ${freshness}`,
     `- discovery: ${discovery}`,
+    `- discovery decision: ${discoveryDecision}`,
+    `- next setup: \`${nextSetup}\``,
     "- discovery mode: best-effort; use `aienvmp discover --json` when automatic pickup is uncertain",
+    "- startup checklist: `start --json` -> read `status.json` -> record `intent` before env changes -> `checkpoint` and `handoff` after changes",
     "- AI fallback prompt: Use aienvmp as the workspace env map. Read `.aienvmp/README.md`, then `.aienvmp/status.json`, then run `aienvmp context --json` before environment changes.",
     `- follow-up: ${followUp}`,
     `- light SBOM risk: ${sbom}`,

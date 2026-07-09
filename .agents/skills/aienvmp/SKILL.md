@@ -58,6 +58,8 @@ Use `agentPointers.discovery` or the compact `status` line containing `discovery
 
 Use `npx aienvmp start --json` or `npx aienvmp discover --json` and the `aiDiscovery.resume` block when automatic pickup is uncertain. Automatic discovery is best-effort because each AI host reads different instruction files.
 
+Use `aiDiscovery.decision` as the compact discovery result: `auto-ready` means an instruction-file pointer exists, and `fallback-required` means use the fallback read path and run `aiDiscovery.nextSetupCommand` when the user wants future auto-discovery. Follow `aiDiscovery.startupChecklist` as the short repeatable startup routine.
+
 When present, follow `aiDiscovery.resume.readFirst`, `nextCommand`, `beforeEnvironmentChange`, `afterEnvironmentChange`, and `handoff` as the minimum startup routine before shared environment changes.
 
 Use `followUpPlan` before touching a shared environment target; if it is `pending`, run its `nextCommand` first.

@@ -85,11 +85,14 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.agentDiscovery.fallbackPrompt, /Use aienvmp as the workspace env map/);
   assert.match(schema.agentDiscovery.humanInstruction, /Paste the fallback prompt/);
   assert.equal(schema.agentDiscovery.automaticDiscovery, "best-effort");
+  assert.deepEqual(schema.agentDiscovery.decisionValues, ["auto-ready", "fallback-required"]);
+  assert.match(schema.agentDiscovery.nextSetupCommand, /aienvmp onboard/);
   assert.match(schema.agentDiscovery.automaticDiscoveryLimit, /AI hosts only auto-read/);
   assert.equal(schema.agentDiscovery.fallbackCommand, "aienvmp start --json");
   assert.deepEqual(schema.agentDiscovery.fallbackRead, [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
   assert.ok(schema.agentDiscovery.optionalFiles.includes(".github/copilot-instructions.md"));
   assert.deepEqual(schema.agentDiscovery.files, ["AGENTS.md", "CLAUDE.md", "GEMINI.md"]);
+  assert.match(schema.agentDiscovery.startupChecklist.join(" "), /record intent before/);
   assert.ok(schema.agentDiscovery.sessionStart.includes("Start at .aienvmp/README.md when artifacts are present, then read .aienvmp/status.json."));
   assert.match(schema.agentDiscovery.rule, /shared live env map/);
   assert.equal(schema.demo.command, "aienvmp demo");
@@ -165,8 +168,11 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.outputs.discover.mode, "read-only");
   assert.ok(schema.outputs.discover.rootFields.includes("detected"));
   assert.ok(schema.outputs.discover.rootFields.includes("aiDiscovery"));
+  assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("decision"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("automatic"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("fallbackRead"));
+  assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("nextSetupCommand"));
+  assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("startupChecklist"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("sessionStart"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("resume"));
   assert.ok(schema.outputs.discover.resumeFields.includes("beforeEnvironmentChange"));
@@ -347,6 +353,8 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   assert.equal(schema.agentDiscovery.discoverCommand, "aienvmp discover");
   assert.equal(schema.agentDiscovery.fallbackCommand, "aienvmp start --json");
   assert.equal(schema.agentDiscovery.automaticDiscovery, "best-effort");
+  assert.ok(schema.agentDiscovery.decisionValues.includes("fallback-required"));
+  assert.match(schema.agentDiscovery.startupChecklist.join(" "), /checkpoint/);
   assert.equal(schema.operationalSafety.defaultBehavior, "warn-only");
   assert.ok(schema.agentDiscovery.rule.includes("Optional Cursor and Copilot"));
   assert.equal(schema.sbomStrategy.scannerCommand, "aienvmp sync --security");

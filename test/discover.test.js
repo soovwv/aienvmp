@@ -17,11 +17,14 @@ test("discover reports missing aienvmp artifacts without writing files", async (
   assert.equal(result.startHere, ".aienvmp/README.md");
   assert.equal(result.nextCommand, "npx aienvmp sync");
   assert.equal(result.aiDiscovery.mode, "best-effort");
+  assert.equal(result.aiDiscovery.decision, "fallback-required");
   assert.equal(result.aiDiscovery.automatic, false);
   assert.equal(result.aiDiscovery.pointerStatus, "missing");
+  assert.equal(result.aiDiscovery.nextSetupCommand, "npx aienvmp onboard");
   assert.equal(result.aiDiscovery.safeStart, "npx aienvmp sync");
   assert.equal(result.aiDiscovery.resume.nextCommand, "npx aienvmp sync");
   assert.equal(result.aiDiscovery.resume.readFirst[0], ".aienvmp/README.md");
+  assert.match(result.aiDiscovery.startupChecklist.join(" "), /checkpoint and hand off/);
   assert.match(result.aiDiscovery.resume.beforeEnvironmentChange, /planned-change/);
   assert.match(result.aiDiscovery.resume.afterEnvironmentChange, /checkpoint/);
   assert.match(result.aiDiscovery.resume.mustNotDo.join(" "), /automatic pickup/);
@@ -54,7 +57,9 @@ test("discover finds generated start-here artifacts and agent pointers", async (
   assert.equal(result.nextCommand, "npx aienvmp status");
   assert.deepEqual(result.agentPointers.installed, ["codex"]);
   assert.equal(result.aiDiscovery.automatic, true);
+  assert.equal(result.aiDiscovery.decision, "auto-ready");
   assert.equal(result.aiDiscovery.pointerStatus, "ready: codex");
+  assert.equal(result.aiDiscovery.nextSetupCommand, "none");
   assert.equal(result.aiDiscovery.safeStart, "npx aienvmp status");
   assert.equal(result.aiDiscovery.resume.nextCommand, "npx aienvmp status");
   assert.match(result.aiDiscovery.resume.rule, /startup contract/);
@@ -81,8 +86,11 @@ test("discover JSON output is machine-readable for AI agents", async () => {
   assert.equal(json.artifacts.dashboard.path, ".aienvmp/dashboard.html");
   assert.equal(json.localMode, "read-only");
   assert.equal(json.aiDiscovery.mode, "best-effort");
+  assert.equal(json.aiDiscovery.decision, "fallback-required");
   assert.equal(json.aiDiscovery.installCommand, "npx aienvmp onboard");
+  assert.equal(json.aiDiscovery.nextSetupCommand, "npx aienvmp onboard");
   assert.equal(json.aiDiscovery.resume.handoff, "aienvmp handoff --record --actor agent:id");
+  assert.match(json.aiDiscovery.startupChecklist.join(" "), /record intent before/);
   assert.match(json.aiDiscovery.resume.allowed, /project-local code work/);
   assert.ok(json.aiDiscovery.sessionStart.some((item) => item.includes("Record intent")));
   assert.match(json.aiDiscovery.fallbackPrompt, /aienvmp context --json/);

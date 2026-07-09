@@ -87,6 +87,9 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.match(startHere, /read order: `\.aienvmp\/README\.md -> \.aienvmp\/status\.json/);
   assert.match(startHere, /AI session: `aienvmp status --json -> aienvmp context --json`/);
   assert.match(startHere, /discovery mode: best-effort/);
+  assert.match(startHere, /discovery decision: fallback-required/);
+  assert.match(startHere, /next setup: `npx aienvmp onboard`/);
+  assert.match(startHere, /startup checklist: `start --json` -> read `status\.json` -> record `intent`/);
   assert.match(startHere, /aienvmp discover --json/);
   assert.match(startHere, /AI fallback prompt/);
   assert.match(startHere, /Use aienvmp as the workspace env map/);

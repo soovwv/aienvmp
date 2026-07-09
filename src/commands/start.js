@@ -22,6 +22,7 @@ export async function startWorkspace(args = {}) {
     decision: status.state,
     summary: status.summary,
     nextCommand: status.nextCommand,
+    nextSetupCommand: after.aiDiscovery?.nextSetupCommand || "npx aienvmp onboard",
     agentPointers: status.agentPointers,
     aiDiscovery: after.aiDiscovery,
     statusText: renderStatusText(status),
@@ -35,6 +36,7 @@ export async function startWorkspace(args = {}) {
     console.log(`decision: ${result.decision}: ${result.summary}`);
     console.log(`read: ${result.readOrder.join(" -> ")}`);
     console.log(`next: ${result.nextCommand}`);
+    console.log(`setup: ${result.nextSetupCommand}`);
     console.log(`discovery: ${result.agentPointers?.discovery || after.agentPointers.discovery}`);
     console.log(`AI fallback: ${result.aiDiscovery.fallbackPrompt}`);
   }
