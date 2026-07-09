@@ -10,6 +10,8 @@ test("packaged aienvmp skill points AI agents to current startup contracts", asy
   assert.match(skill, /Use \/ Skip \/ Start/);
   assert.match(skill, /multiple AI agents or humans/);
   assert.match(skill, /full compliance SBOM scanner/);
+  assert.match(skill, /AI coordination layer/);
+  assert.match(skill, /Syft, Trivy, Grype, Dependency-Track/);
   assert.match(skill, /recommendation\.recommendWhen/);
   assert.match(skill, /recommendation\.doNotRecommendWhen/);
   assert.match(skill, /recommendation\.shortPitch/);

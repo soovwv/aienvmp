@@ -410,6 +410,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardScannerGuidanceClientScript(), /const scannerGuidance=lightSbom\.scannerGuidance/);
   assert.match(dashboardScannerGuidanceClientScript(), /optional-read-only/);
   assert.match(dashboardScannerGuidanceClientScript(), /aienvmp sync --security/);
+  assert.match(dashboardScannerGuidanceClientScript(), /dependency-track/);
+  assert.match(dashboardScannerGuidanceClientScript(), /dedicated scanners for full evidence/);
   assert.match(dashboardReviewPlanClientScript(), /const aiReviewPlan=lightSbom\.aiReviewPlan/);
   assert.match(dashboardReviewPlanClientScript(), /packageManagerPolicy/);
   assert.match(dashboardReviewPlanClientScript(), /aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency/);
@@ -419,6 +421,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardScannerGuidanceHtmlClientScript(), /const scannerGuidanceHtml=/);
   assert.match(dashboardScannerGuidanceHtmlClientScript(), /optional-read-only/);
   assert.match(dashboardScannerGuidanceHtmlClientScript(), /Decision/);
+  assert.match(dashboardScannerGuidanceHtmlClientScript(), /Tools/);
+  assert.match(dashboardScannerGuidanceHtmlClientScript(), /Evidence rule/);
+  assert.match(dashboardScannerGuidanceHtmlClientScript(), /scannerGuidance\.externalTools/);
   assert.match(dashboardScannerGuidanceHtmlClientScript(), /scannerGuidance\.decision/);
   assert.match(dashboardScannerGuidanceHtmlClientScript(), /security-sensitive decisions/);
   assert.match(dashboardRiskSummaryClientScript(), /const riskSummaryHtml=riskSummary\.level/);
@@ -454,6 +459,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const agentNames=\{agents:'Codex',claude:'Claude',gemini:'Gemini'\}/);
   assert.match(html, /agentNames\.copilot='Copilot'/);
   assert.match(html, /const scannerGuidance=lightSbom\.scannerGuidance/);
+  assert.match(html, /const scannerTools=/);
   assert.match(html, /const aiReviewPlan=lightSbom\.aiReviewPlan/);
   assert.match(html, /const aiReviewPlanHtml=aiReviewPlan\.status/);
   assert.match(html, /const scannerGuidanceHtml=/);

@@ -51,7 +51,7 @@ export function dashboardAgentClientScript() {
 
 export function dashboardScannerGuidanceClientScript() {
   return [
-    "const scannerGuidance=lightSbom.scannerGuidance||{mode:'optional-read-only',defaultCommand:'aienvmp sbom --json',scannerCommand:'aienvmp sync --security',securityConfidence:aiDependencyReview.securityConfidence||'unknown',whenToRun:['before security claims','before vulnerability remediation','before release decisions'],rule:'Keep the default SBOM lightweight for AI coordination; use optional read-only scanners only when security confidence matters.'};"
+    "const scannerGuidance=lightSbom.scannerGuidance||{mode:'optional-read-only',defaultCommand:'aienvmp sbom --json',scannerCommand:'aienvmp sync --security',securityConfidence:aiDependencyReview.securityConfidence||'unknown',externalTools:[{tool:'syft'},{tool:'trivy'},{tool:'grype'},{tool:'dependency-track'}],interoperabilityRule:'Use aienvmp as the AI coordination layer and dedicated scanners for full evidence.',whenToRun:['before security claims','before vulnerability remediation','before release decisions'],rule:'Keep the default SBOM lightweight for AI coordination; use optional read-only scanners only when security confidence matters.'};"
   ].join("\n");
 }
 
@@ -75,7 +75,8 @@ export function dashboardReviewPlanHtmlClientScript() {
 
 export function dashboardScannerGuidanceHtmlClientScript() {
   return [
-    "const scannerGuidanceHtml=`<table><tr><th>Mode</th><td><code>${esc(scannerGuidance.mode||'optional-read-only')}</code></td></tr><tr><th>Decision</th><td><code>${esc(scannerGuidance.decision||'light-sbom-ok-for-coordination')}</code></td></tr><tr><th>Reason</th><td>${esc(scannerGuidance.reason||'Use scanner evidence only when security confidence matters.')}</td></tr><tr><th>Default</th><td><code>${esc(scannerGuidance.defaultCommand||'aienvmp sbom --json')}</code></td></tr><tr><th>Scanner</th><td><code>${esc(scannerGuidance.scannerCommand||'aienvmp sync --security')}</code></td></tr><tr><th>Confidence</th><td><code>${esc(scannerGuidance.securityConfidence||'unknown')}</code></td></tr><tr><th>Run before</th><td>${esc((scannerGuidance.whenToRun||[]).join(', ')||'security-sensitive decisions')}</td></tr></table><div class=\"path\">${esc(scannerGuidance.rule||'Keep the default SBOM lightweight; use optional read-only scanners when security confidence matters.')}</div>`;"
+    "const scannerTools=(scannerGuidance.externalTools||[]).map(t=>t.tool||t).filter(Boolean).join(', ');",
+    "const scannerGuidanceHtml=`<table><tr><th>Mode</th><td><code>${esc(scannerGuidance.mode||'optional-read-only')}</code></td></tr><tr><th>Decision</th><td><code>${esc(scannerGuidance.decision||'light-sbom-ok-for-coordination')}</code></td></tr><tr><th>Reason</th><td>${esc(scannerGuidance.reason||'Use scanner evidence only when security confidence matters.')}</td></tr><tr><th>Default</th><td><code>${esc(scannerGuidance.defaultCommand||'aienvmp sbom --json')}</code></td></tr><tr><th>Scanner</th><td><code>${esc(scannerGuidance.scannerCommand||'aienvmp sync --security')}</code></td></tr><tr><th>Tools</th><td>${esc(scannerTools||'Syft, Trivy, Grype, Dependency-Track')}</td></tr><tr><th>Confidence</th><td><code>${esc(scannerGuidance.securityConfidence||'unknown')}</code></td></tr><tr><th>Run before</th><td>${esc((scannerGuidance.whenToRun||[]).join(', ')||'security-sensitive decisions')}</td></tr><tr><th>Evidence rule</th><td>${esc(scannerGuidance.interoperabilityRule||'Use aienvmp as the AI coordination layer and dedicated scanners for full evidence.')}</td></tr></table><div class=\"path\">${esc(scannerGuidance.rule||'Keep the default SBOM lightweight; use optional read-only scanners when security confidence matters.')}</div>`;"
   ].join("\n");
 }
 

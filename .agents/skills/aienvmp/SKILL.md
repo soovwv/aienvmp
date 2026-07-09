@@ -17,6 +17,8 @@ Use `aienvmp` when multiple AI agents or humans share environment-affecting work
 
 Skip it when the user only needs a full compliance SBOM scanner, a vulnerability scanner, or a hard policy lock manager.
 
+For SBOM/security evidence, keep `aienvmp` as the AI coordination layer and use Syft, Trivy, Grype, Dependency-Track, or another dedicated scanner when full evidence is required.
+
 Start with:
 
 ```bash
