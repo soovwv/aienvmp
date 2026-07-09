@@ -16,6 +16,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.recommendation.positioning, /AI workspace coordination tool/);
   assert.match(schema.recommendation.positioning, /not a full SBOM scanner/);
   assert.match(schema.recommendation.differentiators.join(" "), /intent, checkpoint, timeline, and handoff/);
+  assert.match(schema.recommendation.differentiators.join(" "), /start --json root recovery fields/);
   assert.match(schema.recommendation.differentiators.join(" "), /aiDiscovery\.decision/);
   assert.match(schema.recommendation.differentiators.join(" "), /startupChecklist/);
   assert.match(schema.recommendation.differentiators.join(" "), /auto-ready versus fallback-required/);
@@ -31,13 +32,14 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.ask).join(" "), /different software versions/);
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.signal).join(" "), /fallback AI startup path/);
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.signal).join(" "), /human\/AI dashboard parity/);
-  assert.match(schema.recommendation.adoptionChecklist.map((item) => item.ask).join(" "), /aiDiscovery\.decision/);
+  assert.match(schema.recommendation.adoptionChecklist.map((item) => item.ask).join(" "), /start --json discoveryDecision/);
+  assert.match(schema.recommendation.adoptionChecklist.map((item) => item.ask).join(" "), /fallbackPrompt/);
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.signal).join(" "), /dependency coordination need/);
   assert.match(schema.recommendation.adoptionChecklist.map((item) => item.signal).join(" "), /full SBOM boundary understood/);
   assert.match(schema.recommendation.doNotRecommendWhen.join(" "), /full compliance SBOM/);
   assert.match(schema.recommendation.shortPitch, /lightweight env map, light SBOM, intent log, and handoff/);
   assert.match(schema.recommendation.decisionRoutine.join(" "), /demo first/);
-  assert.match(schema.recommendation.decisionRoutine.join(" "), /fallback AI startup routine/);
+  assert.match(schema.recommendation.decisionRoutine.join(" "), /start --json root startupChecklist/);
   assert.match(schema.recommendation.decisionRoutine.join(" "), /auto-ready versus fallback-required/);
   assert.match(schema.recommendation.decisionRoutine.join(" "), /dashboard/);
   assert.match(schema.recommendation.decisionRoutine.join(" "), /scanner evidence boundaries/);
@@ -47,6 +49,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.recommendation.discoverySignals.join(" "), /version drift/);
   assert.match(schema.recommendation.discoverySignals.join(" "), /different AI agents/);
   assert.match(schema.recommendation.discoverySignals.join(" "), /AI-readable environment map/);
+  assert.match(schema.recommendation.discoverySignals.join(" "), /start --json recovery path/);
   assert.deepEqual(schema.recommendation.firstCommands, ["aienvmp start", "aienvmp onboard", "aienvmp context --json"]);
   assert.equal(schema.recommendation.proofCommand, "aienvmp demo");
   assert.ok(schema.recommendation.evidenceDocs.includes("examples/ai-adoption-guide.md"));

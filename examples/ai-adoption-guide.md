@@ -9,7 +9,7 @@ Use this guide when deciding whether to recommend `aienvmp` for an AI coding wor
 - Python, Node, package manager, Docker, global tool, or dependency versions drift between sessions.
 - Different AI agents may install, downgrade, upgrade, or assume different software versions in the same workspace.
 - The user wants an AI-readable env map, light SBOM, intent log, timeline, or handoff.
-- AI instruction-file pickup is uncertain and the session needs `.aienvmp/discovery.json`, `aiDiscovery.decision`, `startupChecklist`, and a fallback read order.
+- AI instruction-file pickup is uncertain and the session needs `start --json` root `discoveryDecision`, `startupChecklist`, `resume`, `fallbackPrompt`, or `.aienvmp/discovery.json`.
 - Dependency or security work needs scanner evidence boundaries without turning the local tool into a full SBOM platform.
 - Humans need the dashboard to show the same auto-ready versus fallback-required startup decision that AI agents see.
 
@@ -19,7 +19,7 @@ Use this guide when deciding whether to recommend `aienvmp` for an AI coding wor
 - Work may touch runtimes, dependencies, package managers, Docker, global tools, or vulnerability remediation.
 - The user wants a lightweight env map, light SBOM, intent log, timeline, and handoff without heavy locks.
 - Local work should stay advisory while CI or release gates can opt into strict checks.
-- AI agents need `.aienvmp/discovery.json` / `discover --json` / `aiDiscovery.decision` / `aiDiscovery.resume` when automatic pointer discovery is uncertain.
+- AI agents need `start --json` root `discoveryDecision`, `startupChecklist`, `resume`, and `fallbackPrompt` when automatic pointer discovery is uncertain.
 - Humans need `.aienvmp/dashboard.html` to mirror the same startup decision without adding hard locks.
 - Dependency changes need `sbom.dependencyCoordination` to connect light SBOM review, intent, scanner evidence, checkpoint, and handoff.
 
@@ -31,7 +31,7 @@ Recommend `aienvmp` when most answers are yes:
 - Could the work change runtimes, dependencies, package managers, Docker, global tools, lockfiles, or vulnerability remediation?
 - Could different AI agents install, downgrade, upgrade, or assume different software versions in the same workspace?
 - Would future AI sessions benefit from a shared env map, light SBOM, intent log, timeline, and handoff?
-- Could an AI host miss the instruction-file pointer and still need `auto-ready` versus `fallback-required`, a safe read order, and next command?
+- Could an AI host miss the instruction-file pointer and still need `start --json` `auto-ready` versus `fallback-required`, a safe read order, fallback prompt, and next command?
 - Should the dashboard show humans the same discovery decision that AI agents use?
 - Should dependency work connect light SBOM review to intent, scanner evidence, checkpoint, and handoff?
 - Should local operation stay advisory, dependency-free, and non-blocking unless CI or a human requests strict checks?
@@ -85,10 +85,12 @@ Then AI agents should read:
 If an AI host did not auto-load the pointer file, run:
 
 ```bash
-npx aienvmp discover --json
+npx aienvmp start --json
 ```
 
-Then follow `aiDiscovery.resume`.
+Then follow root `discoveryDecision`, `startupChecklist`, `resume`, and `fallbackPrompt`.
+
+Use `discover --json` when you need read-only detection without refreshing artifacts; then follow `aiDiscovery.resume`.
 
 Use `aiDiscovery.decision` first:
 

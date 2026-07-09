@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated recommendation and adoption guidance to prefer `start --json` root recovery fields when AI instruction-file discovery is uncertain.
 - Added root `discoveryDecision`, `startupChecklist`, `resume`, and `fallbackPrompt` to `start --json` so AI hosts can recover when instruction-file auto-discovery is uncertain.
 - Added the dependency quick-check decision to verbose `status` text while keeping the default status view at five lines.
 - Updated plain `sbom` output to show the dependency quick-check decision, scanner evidence, and next command instead of an empty risk-only next value.

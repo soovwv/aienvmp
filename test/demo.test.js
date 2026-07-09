@@ -120,6 +120,8 @@ test("multi-agent conflict docs explain the shared AI workspace use case", async
   assert.match(adoptionGuide, /Do Not Recommend When/);
   assert.match(adoptionGuide, /Discovery Signals/);
   assert.match(adoptionGuide, /\.aienvmp\/README\.md/);
+  assert.match(adoptionGuide, /`start --json` root `discoveryDecision`, `startupChecklist`, `resume`, and `fallbackPrompt`/);
+  assert.match(adoptionGuide, /Then follow root `discoveryDecision`, `startupChecklist`, `resume`, and `fallbackPrompt`/);
   assert.match(adoptionGuide, /aiDiscovery\.resume/);
   assert.match(adoptionGuide, /aiDiscovery\.decision/);
   assert.match(adoptionGuide, /startupChecklist/);
