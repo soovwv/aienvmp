@@ -317,8 +317,9 @@ export function schemaContract() {
         changes: [
           "best-effort AI discovery with aiDiscovery.decision, discovery.json, startupChecklist, and fallback prompt contract",
           "copyPastePrompt, promptUse, and aiEntry recovery fields for AI hosts that miss instruction-file automatic discovery",
-          "copyPastePrompt guidance aligned across README, schema, packaged AI skill, adoption guide, and example evidence docs",
-          "dashboard Agent Pointers mirrors auto-ready versus fallback-required startup decisions",
+          "aiEntry and copyPastePrompt guidance aligned across README, schema, packaged AI skill, adoption guide, and example evidence docs",
+          "generated .aienvmp/README.md and summary.md surface aiEntry for artifact-first AI agents",
+          "dashboard Agent Pointers mirrors auto-ready versus fallback-required startup decisions and shows aiEntry fields",
           "dashboard rendering split into payload, document, style, card, mainCards, supportCards, operationalCards, and stateCards helpers",
           "dependencyQuickCheck surfaced in SBOM, status/context, summary, handoff, dashboard, and demo outputs",
           "plain sbom and verbose status text expose dependencyQuickCheck without expanding default status output",
@@ -365,7 +366,7 @@ export function schemaContract() {
           "aiDiscovery.decision and dependencyQuickCheck are visible in the AI JSON contract, generated artifacts, plain CLI review, dashboard, and examples",
           "shared AI discovery/read-order constants are covered by release:check",
           "README, examples, schema, CHANGELOG, dashboard, and packaged AI skill describe the same AI workspace coordination contract",
-          "aiEntry, copyPastePrompt, promptUse, dashboard helper lists, and release notes are covered by release:check",
+          "aiEntry, generated artifact hints, dashboard fallback fields, copyPastePrompt, promptUse, dashboard helper lists, and release notes are covered by release:check",
           "package.json version is intentionally bumped for 0.2.0 or the chosen release"
         ],
         holdWhen: [
@@ -403,6 +404,7 @@ export function schemaContract() {
         "AI session/status/context contract",
         "aiDiscovery.decision and fallback startup contract",
         "aiEntry and copyPastePrompt recovery contract across JSON, docs, examples, and packaged skill",
+        "aiEntry recovery visibility across generated artifacts and dashboard fallback surfaces",
         "light SBOM and dependency-change review loop",
         "dependencyQuickCheck across AI and human surfaces",
         "dependencyQuickCheck across JSON, plain sbom, verbose status, summary, handoff, dashboard, and demo surfaces",

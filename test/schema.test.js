@@ -154,8 +154,11 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /aiDiscovery\.decision/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /fallback prompt contract/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /copyPastePrompt, promptUse, and aiEntry/);
+  assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /aiEntry and copyPastePrompt guidance/);
+  assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /generated \.aienvmp\/README\.md and summary\.md surface aiEntry/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /dashboard rendering split/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /dashboard Agent Pointers/);
+  assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /shows aiEntry fields/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /dependencyQuickCheck surfaced/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /plain sbom and verbose status text/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /start --json exposes root-level discoveryDecision/);
@@ -177,6 +180,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.releaseReadiness.publishGate.readyWhen.join(" "), /release note group/);
   assert.match(schema.releaseReadiness.publishGate.readyWhen.join(" "), /aiDiscovery\.decision and dependencyQuickCheck/);
   assert.match(schema.releaseReadiness.publishGate.readyWhen.join(" "), /plain CLI review/);
+  assert.match(schema.releaseReadiness.publishGate.readyWhen.join(" "), /generated artifact hints/);
+  assert.match(schema.releaseReadiness.publishGate.readyWhen.join(" "), /dashboard fallback fields/);
   assert.match(schema.releaseReadiness.publishGate.readyWhen.join(" "), /shared AI discovery\/read-order constants/);
   assert.match(schema.releaseReadiness.publishGate.holdWhen.join(" "), /package\.json version/);
   assert.match(schema.releaseReadiness.publishGate.rule, /single AI-readable npm publish decision/);
@@ -189,6 +194,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("AI session/status/context contract"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("aiDiscovery.decision and fallback startup contract"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("aiEntry and copyPastePrompt recovery contract across JSON, docs, examples, and packaged skill"));
+  assert.ok(schema.releaseReadiness.stabilizationFocus.includes("aiEntry recovery visibility across generated artifacts and dashboard fallback surfaces"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("dependencyQuickCheck across AI and human surfaces"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("dependencyQuickCheck across JSON, plain sbom, verbose status, summary, handoff, dashboard, and demo surfaces"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("dashboard maintainability helpers before further UI changes"));
