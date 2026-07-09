@@ -75,6 +75,32 @@ export function schemaContract() {
     followUpPlanFields: ["status", "count", "targets", "readFirst", "nextCommand", "commands", "reason", "rule"],
     coordinationResolutionFields: ["status", "mode", "targets", "readFirst", "nextCommand", "steps", "commands", "mustNotDo", "rule"],
     environmentChangeProtocolFields: ["mode", "appliesWhen", "state", "readFirst", "beforeChange", "afterChange", "commands", "mustNotDo", "nextCommand", "rule"],
+    operationalSafety: {
+      mode: "advisory-first",
+      localImpact: "read-mostly",
+      defaultBehavior: "warn-only",
+      strictUse: "CI, release, or explicit human-requested gates only",
+      mustNotDo: [
+        "do not install, upgrade, downgrade, or remove global software automatically",
+        "do not switch package managers or rewrite lockfiles only to satisfy an agent preference",
+        "do not run automatic fix, audit fix, or broad update commands before reading status/context and dependency signals",
+        "do not use warnings as permission to interrupt production or shared workspace operations"
+      ],
+      allowedWithoutIntent: [
+        "read generated artifacts",
+        "inspect project-local files",
+        "edit source code when runtime, dependency, package manager, Docker, global tool, or policy state is not changed"
+      ],
+      requireIntentBefore: [
+        "runtime changes",
+        "dependency or lockfile changes",
+        "package manager changes",
+        "Docker context or daemon assumption changes",
+        "global tool installation or removal",
+        "security remediation that changes dependencies or environment state"
+      ],
+      rule: "Keep local operation lightweight and non-blocking; record intent before shared environment changes and use strict checks only when CI, release, or a human asks."
+    },
     aiLoop: {
       name: "AI maintenance loop",
       purpose: "Shared lightweight workflow for AI agents that maintain one workspace environment.",

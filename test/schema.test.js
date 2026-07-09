@@ -47,6 +47,13 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.deepEqual(schema.coordinationResolutionFields, ["status", "mode", "targets", "readFirst", "nextCommand", "steps", "commands", "mustNotDo", "rule"]);
   assert.ok(schema.environmentChangeProtocolFields.includes("beforeChange"));
   assert.ok(schema.environmentChangeProtocolFields.includes("mustNotDo"));
+  assert.equal(schema.operationalSafety.mode, "advisory-first");
+  assert.equal(schema.operationalSafety.defaultBehavior, "warn-only");
+  assert.match(schema.operationalSafety.strictUse, /CI, release/);
+  assert.match(schema.operationalSafety.mustNotDo.join(" "), /do not install, upgrade, downgrade/);
+  assert.match(schema.operationalSafety.mustNotDo.join(" "), /audit fix/);
+  assert.ok(schema.operationalSafety.allowedWithoutIntent.includes("read generated artifacts"));
+  assert.ok(schema.operationalSafety.requireIntentBefore.includes("dependency or lockfile changes"));
   assert.equal(schema.aiLoop.name, "AI maintenance loop");
   assert.equal(schema.aiLoop.localMode, "warn-only");
   assert.deepEqual(schema.aiLoop.steps.map((item) => item.step), ["sync", "status", "context", "intent", "checkpoint", "handoff"]);
@@ -273,6 +280,7 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   assert.equal(schema.agentDiscovery.discoverCommand, "aienvmp discover");
   assert.equal(schema.agentDiscovery.fallbackCommand, "aienvmp status --json");
   assert.equal(schema.agentDiscovery.automaticDiscovery, "best-effort");
+  assert.equal(schema.operationalSafety.defaultBehavior, "warn-only");
   assert.ok(schema.agentDiscovery.rule.includes("Optional Cursor and Copilot"));
   assert.equal(schema.sbomStrategy.scannerCommand, "aienvmp sync --security");
   assert.ok(schema.sbomStrategy.externalTools.includes("grype"));

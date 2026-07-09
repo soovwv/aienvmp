@@ -135,6 +135,7 @@ npx aienvmp handoff --record --actor agent:codex
 ## Safety Rules
 
 - `aienvmp` warnings are non-blocking by default.
+- Use `npx aienvmp schema --json` and `operationalSafety` when deciding what must not be changed automatically.
 - Treat policy mismatches as review-required.
 - Do not install, upgrade, downgrade, or remove global software unless the user explicitly asks.
 - Prefer project-local version files and local environments.

@@ -36,5 +36,7 @@ test("packaged aienvmp skill points AI agents to current startup contracts", asy
   assert.match(skill, /npx aienvmp demo/);
   assert.match(skill, /review-before-env-change/);
   assert.match(skill, /without heavy locks or surprise failures/);
+  assert.match(skill, /operationalSafety/);
+  assert.match(skill, /must not be changed automatically/);
   assert.match(skill, /Local source edits can continue/);
 });

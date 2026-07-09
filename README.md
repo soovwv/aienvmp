@@ -96,6 +96,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `readOrder` starts at `.aienvmp/README.md`, then status, summary, env map, plan, timeline, and intents.
 - `agentDiscovery.sessionStart` documents the startup rule for schema-only AI/CI consumers.
 - `environmentChangeProtocol` gives one before/after-change contract for runtimes, dependencies, package managers, Docker, and global tools.
+- `operationalSafety` keeps local use warn-only and tells AI what must not be changed automatically.
 - `followUpPlan` gives AI one next command when previous environment work still needs sync, status, or handoff.
 - `sbomStrategy`, `scannerGuidance.decision`, and `aiReviewPlan` keep SBOM review light by default and request optional read-only scanners before security-sensitive decisions.
 - `scannerGuidance.externalTools` points AI to Syft, Trivy, Grype, or Dependency-Track when full SBOM/security evidence is needed.
