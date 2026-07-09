@@ -6,9 +6,7 @@
 
 **AI-first env map + light SBOM coordination tool for shared development environments.**
 
-`aienvmp` helps multiple AI agents safely share the same development environment with one lightweight env map, light SBOM, intent log, timeline, and handoff.
-
-Use it on shared servers, repos, laptops, or CI workspaces where multiple people or AI agents need the same environment truth without heavy locks, backed by a dependency-free install.
+`aienvmp` helps multiple AI agents safely share one development environment with a lightweight env map, light SBOM, intent log, timeline, and handoff. Use it on shared servers, repos, laptops, or CI workspaces where people or AI agents need the same environment truth without heavy locks, backed by a dependency-free install.
 
 - Use: AI agents share environment-affecting work.
 - Skip: you only need a full compliance SBOM scanner or hard policy lock manager.
@@ -22,7 +20,7 @@ npx aienvmp discover
 npx aienvmp status
 ```
 
-`discover` is read-only and tells AI or humans whether this workspace already has aienvmp artifacts. `onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`, refreshes artifacts, and tells AI agents to start at `.aienvmp/README.md`, then read `.aienvmp/status.json`. Automatic discovery is best-effort because each AI host reads different instruction files; if pointers are missing, use `discover --json` and follow `aiDiscovery.resume` or paste `fallbackPrompt` into the AI session.
+`discover` is read-only. `onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`, refreshes artifacts, and tells AI agents to start at `.aienvmp/README.md`, then read `.aienvmp/status.json`. Automatic discovery is best-effort; if pointers are missing, use `discover --json` and follow `aiDiscovery.resume` or paste `fallbackPrompt` into the AI session.
 
 ## 10-Second Use
 
@@ -47,26 +45,18 @@ Try the multi-agent conflict demo without touching your workspace:
 npx aienvmp demo
 ```
 
-For the real shared-server story, read [AI workspace coordination case study](examples/ai-workspace-case-study.md). For recommendation criteria, read [AI adoption guide](examples/ai-adoption-guide.md).
+For the shared-server story, read [AI workspace coordination case study](examples/ai-workspace-case-study.md). For recommendation criteria, read [AI adoption guide](examples/ai-adoption-guide.md).
 
-## What It Does
+## Core
 
 - stops AI agents from silently using different environment assumptions
 - gives every AI the same env map, light SBOM, intent log, timeline, and handoff
 - shows humans the same state in `.aienvmp/dashboard.html`
 - stays advisory and dependency-free by default; strict mode is opt-in
 - keeps light SBOM useful for coordination, not as a full compliance scanner replacement
+- AI loop: `sync` -> `status` -> `context --json` -> `intent` -> `checkpoint` -> `handoff`
 
-## AI Loop
-
-1. `sync` refreshes `AIENV.md`, `.aienvmp/README.md`, status, summary, SBOM, ledger, and dashboard.
-2. `status` gives the 5-line clear/review decision.
-3. `context --json` gives AI the full preflight contract.
-4. `intent` records planned env changes before touching shared state.
-5. `checkpoint` records the accepted change, refreshes outputs, and writes handoff context.
-6. `handoff` tells the next AI what to read, avoid, and review.
-
-Local mode is warn-only. Use `doctor --strict security|policy|coordination|all` only for CI or explicit human-requested gates.
+Local mode is warn-only. Use strict doctor checks only for CI or explicit human-requested gates.
 
 ## Outputs
 
@@ -123,8 +113,7 @@ aienvmp onboard --agents cursor,copilot
 ```
 
 ## CI
-
-The GitHub Action writes status, summary, schema, doctor, plan, SBOM, and dashboard artifacts. `strict: "off"` reports warnings without failing the job.
+The GitHub Action writes status, summary, schema, doctor, plan, SBOM, and dashboard artifacts. `strict: "off"` reports warnings without failing the job. See [examples/github-action.yml](examples/github-action.yml).
 
 ```yaml
 - uses: soovwv/aienvmp@main
@@ -136,15 +125,11 @@ The GitHub Action writes status, summary, schema, doctor, plan, SBOM, and dashbo
     strict: "off"
 ```
 
-See [examples/github-action.yml](examples/github-action.yml).
-
 ## Release Policy
-
 - `0.1.x` is the prototype history for fast AI-contract validation.
 - `0.2.x` starts the stabilized AI workspace contract.
 - npm releases are manually gated and batched around meaningful changes; security fixes are the exception.
-- Default publish decision is `hold`; publish only after several meaningful changes are batched and `npm run release:check` passes.
-- Before publish, review the batched change group in `schema --json` `releaseReadiness.currentBatch`.
+- Default publish decision is `hold`; publish only after several meaningful changes are batched, `npm run release:check` passes, and `schema --json` `releaseReadiness.currentBatch` is reviewed.
 - `schema --json` exposes `releaseGate`, `releaseReadiness.currentBatch`, `requiredBeforeStable`, and `evidenceCommands`; `0.1.x` is deprecated only after `0.2.0` is published.
 - Broken or superseded versions are deprecated instead of unpublished.
 
