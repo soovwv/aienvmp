@@ -308,10 +308,13 @@ function continuationHandoffLines(continuation = {}) {
   const dependencyQuickCheck = continuation.dependencyQuickCheck || {};
   const maintenance = continuation.maintenance || {};
   const followUpPlan = continuation.followUpPlan || {};
+  const discovery = continuation.discovery || {};
   const resume = continuation.resume || {};
   const followUpTargets = followUpPlan.targets?.length ? ` / ${followUpPlan.targets.join(", ")}` : "";
   return [
     `- Resume: ${(resume.readFirst || continuation.readOrder || []).join(", ") || ".aienvmp/README.md, .aienvmp/status.json"} -> ${resume.nextCommand || continuation.nextCommand || "aienvmp status --json"}`,
+    `- Discovery: ${discovery.decision || "unknown"} / ${discovery.pointerStatus || "missing: run aienvmp onboard"} / ${discovery.nextSetupCommand || "aienvmp onboard"}`,
+    `- Discovery fallback: ${discovery.fallbackCommand || "aienvmp start --json"} / ${(discovery.fallbackRead || []).join(" -> ") || ".aienvmp/README.md -> .aienvmp/status.json -> .aienvmp/summary.md -> aienvmp context --json"}`,
     `- Next: ${continuation.nextCommand || "aienvmp status --json"}`,
     `- Read: ${(continuation.readOrder || []).join(", ") || ".aienvmp/status.json"}`,
     `- Before env: ${resume.beforeEnvironmentChange || "aienvmp intent --actor agent:id --action planned-change --target environment"}`,

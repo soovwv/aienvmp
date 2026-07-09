@@ -64,6 +64,8 @@ export function renderSummary(status = {}, manifest = {}) {
   const dependencyCommands = dependencyProtocol.commands || {};
   const dependencyFiles = dependencyFilesFor(status.dependencyReadSet);
   const agentPointers = status.agentPointers || {};
+  const discoveryDecision = agentPointers.discoveryDecision || (toList(agentPointers.installed).length ? "auto-ready" : "fallback-required");
+  const discoverySetup = agentPointers.nextSetupCommand || (discoveryDecision === "auto-ready" ? "none" : "aienvmp onboard");
   const aiReadiness = status.aiReadiness || {};
   const aiSignals = toList(aiReadiness.signals).slice(0, 5);
   const aiNext = aiReadiness.next || "Run aienvmp context --json for details.";
@@ -164,6 +166,7 @@ export function renderSummary(status = {}, manifest = {}) {
     "",
     `- installed: ${toList(agentPointers.installed).join(", ") || "none"}`,
     `- missing: ${toList(agentPointers.missing).join(", ") || "none"}`,
+    `- discovery: ${discoveryDecision} / ${agentPointers.discovery || "missing: run aienvmp onboard"} / ${discoverySetup}`,
     `- next: ${agentPointers.next || "Run aienvmp snippet codex --write if AI agents need instruction-file discovery."}`,
     `- fallback: ${agentPointers.fallbackCommand || "aienvmp start --json"} / ${toList(agentPointers.fallbackRead).slice(0, 4).join(" -> ") || ".aienvmp/README.md -> .aienvmp/status.json -> .aienvmp/summary.md -> aienvmp context --json"}`,
     "",

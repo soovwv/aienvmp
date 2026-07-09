@@ -283,6 +283,9 @@ test("buildStatus exposes agent pointer discovery hints", () => {
   assert.equal(status.aiReadiness.level, "ready");
   assert.equal(status.agentPointers.targets[1].file, "CLAUDE.md");
   assert.equal(status.agentPointers.onboardCommand, "aienvmp onboard");
+  assert.equal(status.agentPointers.discoveryDecision, "auto-ready");
+  assert.equal(status.agentPointers.nextSetupCommand, "none");
+  assert.match(status.agentPointers.startupChecklist.join(" "), /checkpoint and hand off/);
   assert.equal(status.agentPointers.fallbackCommand, "aienvmp start --json");
   assert.deepEqual(status.agentPointers.fallbackRead, [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
   assert.match(status.agentPointers.discovery, /ready: codex/);
@@ -323,6 +326,8 @@ test("buildStatus marks AI readiness review when no agent pointer is installed",
   assert.equal(status.aiReadiness.level, "review");
   assert.equal(status.aiReadiness.requiresHumanReview, true);
   assert.equal(status.agentPointers.discovery, "missing: run aienvmp onboard");
+  assert.equal(status.agentPointers.discoveryDecision, "fallback-required");
+  assert.equal(status.agentPointers.nextSetupCommand, "aienvmp onboard");
   assert.equal(status.agentPointers.fallbackCommand, "aienvmp start --json");
   assert.match(status.agentPointers.rule, /Instruction-file pointers/);
   assert.match(status.aiReadiness.signals.join(" "), /pointer/);

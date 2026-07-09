@@ -599,6 +599,7 @@ export function agentPointerSummary(agentFiles = {}) {
   });
   const installed = targets.filter((item) => item.hasPointer);
   const missing = targets.filter((item) => !item.hasPointer);
+  const discoveryDecision = installed.length ? "auto-ready" : "fallback-required";
   return {
     installedCount: installed.length,
     missingCount: missing.length,
@@ -608,6 +609,14 @@ export function agentPointerSummary(agentFiles = {}) {
     discovery: installed.length
       ? `ready: ${installed.map((item) => item.role).join(", ")}`
       : "missing: run aienvmp onboard",
+    discoveryDecision,
+    nextSetupCommand: discoveryDecision === "auto-ready" ? "none" : "aienvmp onboard",
+    startupChecklist: [
+      "run aienvmp start --json when automatic discovery is uncertain",
+      "read .aienvmp/README.md, .aienvmp/status.json, and .aienvmp/summary.md",
+      "record intent before shared environment changes",
+      "checkpoint and hand off after accepted environment changes"
+    ],
     onboardCommand: "aienvmp onboard",
     fallbackRead: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
     fallbackCommand: "aienvmp start --json",

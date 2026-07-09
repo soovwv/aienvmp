@@ -107,6 +107,9 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
     agentPointers: {
       installed: ["codex"],
       missing: ["claude"],
+      discovery: "ready: codex",
+      discoveryDecision: "auto-ready",
+      nextSetupCommand: "none",
       next: "Install a pointer with aienvmp snippet claude --write if this workspace uses that AI.",
       fallbackCommand: "aienvmp start --json",
       fallbackRead: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]
@@ -183,6 +186,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /## Agent pointers/);
   assert.match(markdown, /installed: codex/);
   assert.match(markdown, /missing: claude/);
+  assert.match(markdown, /discovery: auto-ready \/ ready: codex \/ none/);
   assert.match(markdown, /## Quality signals/);
   assert.match(markdown, /status: prototype-hardening/);
   assert.match(markdown, /first check: AI entry path \/ aienvmp discover --json && aienvmp status --json && aienvmp context --json/);
@@ -223,6 +227,7 @@ test("summaryWorkspace writes summary.md after sync", async () => {
   assert.match(summary, /## Dependency changes/);
   assert.match(summary, /environment before:/);
   assert.match(summary, /## Agent pointers/);
+  assert.match(summary, /discovery: fallback-required \/ missing: run aienvmp onboard \/ aienvmp onboard/);
   assert.match(summary, /## Quality signals/);
   assert.match(summary, /quality signals: prototype-hardening/);
   assert.match(summary, /## Release readiness/);

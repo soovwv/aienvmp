@@ -228,6 +228,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.rootFields.includes("dependencyQuickCheck"));
   assert.ok(schema.outputs.status.rootFields.includes("coordinationResolution"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("discovery"));
+  assert.ok(schema.outputs.status.agentPointerFields.includes("discoveryDecision"));
+  assert.ok(schema.outputs.status.agentPointerFields.includes("nextSetupCommand"));
+  assert.ok(schema.outputs.status.agentPointerFields.includes("startupChecklist"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("onboardCommand"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("fallbackRead"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("fallbackCommand"));
@@ -267,6 +270,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.handoff.rootFields.includes("nextSafeCommand"));
   assert.ok(schema.outputs.handoff.rootFields.includes("continuation"));
   assert.ok(schema.outputs.handoff.continuationFields.includes("resume"));
+  assert.ok(schema.outputs.handoff.continuationFields.includes("discovery"));
   assert.ok(schema.outputs.handoff.resumeFields.includes("beforeEnvironmentChange"));
   assert.ok(schema.outputs.handoff.resumeFields.includes("mustNotDo"));
   assert.ok(schema.outputs.handoff.continuationFields.includes("followUpPlan"));

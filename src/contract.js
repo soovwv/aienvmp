@@ -396,7 +396,7 @@ export function schemaContract() {
         file: ".aienvmp/status.json",
         command: "aienvmp status --json",
         rootFields: ["state", "readOrder", "aiSession", "aiBootstrap", "nextCommand", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "operationalSafety", "qualitySignals", "decision", "counts", "aiReadiness", "collaboration", "coordinationResolution", "maintenanceLoop", "coordination", "agentPointers", "sbomRisk", "followUpPlan", "environmentChangeProtocol", "dependencyQuickCheck"],
-        agentPointerFields: ["installedCount", "missingCount", "installed", "missing", "discovery", "onboardCommand", "fallbackCommand", "fallbackRead", "next", "targets", "rule"],
+        agentPointerFields: ["installedCount", "missingCount", "installed", "missing", "discovery", "discoveryDecision", "nextSetupCommand", "startupChecklist", "onboardCommand", "fallbackCommand", "fallbackRead", "next", "targets", "rule"],
         contract: preflightContract()
       },
       discover: {
@@ -433,7 +433,7 @@ export function schemaContract() {
       handoff: {
         command: "aienvmp handoff --json",
         rootFields: ["status", "startHere", "readOrder", "aiBootstrap", "nextSafeCommand", "decision", "preflight", "continuation", "coordination", "coordinationResolution", "dependencyHandoff", "openIntents", "warnings", "recommendedActions", "recentChanges"],
-        continuationFields: ["status", "nextCommand", "readOrder", "resume", "followUpPlan", "coordinationResolution", "maintenance", "sbomReview", "dependencyQuickCheck", "strict"],
+        continuationFields: ["status", "nextCommand", "readOrder", "resume", "discovery", "followUpPlan", "coordinationResolution", "maintenance", "sbomReview", "dependencyQuickCheck", "strict"],
         resumeFields: ["purpose", "readFirst", "nextCommand", "allowed", "beforeEnvironmentChange", "afterEnvironmentChange", "handoff", "mustNotDo", "rule"]
       },
       manifest: {

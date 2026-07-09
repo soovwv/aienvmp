@@ -99,6 +99,7 @@ function continuationSummary(preflight = {}, manifest = {}) {
   const dependencyQuickCheck = manifest.lightSbom?.dependencyQuickCheck || {};
   const followUpPlan = preflight.followUpPlan || {};
   const coordinationResolution = preflight.coordinationResolution || {};
+  const agentPointers = preflight.agentPointers || {};
   const readOrder = (maintenanceLoop.readOrder || preflight.readOrder || []).slice(0, 4);
   const nextCommand = maintenanceLoop.nextCommand || preflight.nextCommand || "aienvmp status --json";
   return {
@@ -126,6 +127,15 @@ function continuationSummary(preflight = {}, manifest = {}) {
       targets: (followUpPlan.targets || []).slice(0, 5),
       nextCommand: followUpPlan.nextCommand || "aienvmp status --json",
       rule: followUpPlan.rule || followUpPlan.reason || "Resolve follow-ups before shared environment changes."
+    },
+    discovery: {
+      decision: agentPointers.discoveryDecision || ((agentPointers.installedCount || 0) > 0 ? "auto-ready" : "fallback-required"),
+      pointerStatus: agentPointers.discovery || "missing: run aienvmp onboard",
+      nextSetupCommand: agentPointers.nextSetupCommand || ((agentPointers.installedCount || 0) > 0 ? "none" : "aienvmp onboard"),
+      fallbackCommand: agentPointers.fallbackCommand || "aienvmp start --json",
+      fallbackRead: (agentPointers.fallbackRead || [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]).slice(0, 4),
+      startupChecklist: (agentPointers.startupChecklist || []).slice(0, 4),
+      rule: "Use this discovery decision before assuming the next AI auto-loaded the aienvmp pointer."
     },
     coordinationResolution: {
       status: coordinationResolution.status || "clear",

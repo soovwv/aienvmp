@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Carried `agentPointers.discoveryDecision` into status, summary, and handoff continuation surfaces so the next AI can resume with the same auto-ready versus fallback-required decision.
 - Updated `releaseReadiness.currentBatch` so the held 0.2.0 batch explicitly covers `aiDiscovery.decision`, dashboard parity, and `dependencyQuickCheck` stabilization work.
 - Updated recommendation guidance and examples to position `aiDiscovery.decision` and dashboard parity as adoption signals for AI workspace coordination.
 - Mirrored the explicit AI discovery decision in the dashboard Agent Pointers surface so humans can see auto-ready versus fallback-required without adding another card.

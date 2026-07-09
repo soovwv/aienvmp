@@ -92,6 +92,10 @@ test("buildHandoff summarizes next-agent environment state", () => {
   assert.match(handoff.continuation.resume.handoff, /handoff --record/);
   assert.match(handoff.continuation.resume.mustNotDo.join(" "), /continue from memory only/);
   assert.match(handoff.continuation.resume.rule, /Every next AI/);
+  assert.equal(handoff.continuation.discovery.decision, "fallback-required");
+  assert.equal(handoff.continuation.discovery.nextSetupCommand, "aienvmp onboard");
+  assert.equal(handoff.continuation.discovery.fallbackCommand, "aienvmp start --json");
+  assert.match(handoff.continuation.discovery.rule, /auto-loaded/);
   assert.equal(handoff.continuation.maintenance.mode, "advisory");
   assert.equal(handoff.continuation.strict.localCommand, "aienvmp doctor --json");
   assert.equal(handoff.continuation.strict.shouldFailLocal, false);
@@ -105,6 +109,8 @@ test("buildHandoff summarizes next-agent environment state", () => {
   assert.match(renderHandoff(handoff), /Decision: project-local-work/);
   assert.match(renderHandoff(handoff), /AI continuation/);
   assert.match(renderHandoff(handoff), /Resume: \.aienvmp\/status\.json/);
+  assert.match(renderHandoff(handoff), /Discovery: fallback-required \/ missing: run aienvmp onboard \/ aienvmp onboard/);
+  assert.match(renderHandoff(handoff), /Discovery fallback: aienvmp start --json/);
   assert.match(renderHandoff(handoff), /Before env: aienvmp intent/);
   assert.match(renderHandoff(handoff), /After env: aienvmp checkpoint/);
   assert.match(renderHandoff(handoff), /Local check: aienvmp doctor --json \(warn-only\)/);
