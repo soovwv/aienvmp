@@ -310,6 +310,7 @@ export function schemaContract() {
           "best-effort AI discovery with aiDiscovery.decision, discovery.json, startupChecklist, and fallback prompt contract",
           "dashboard Agent Pointers mirrors auto-ready versus fallback-required startup decisions",
           "dependencyQuickCheck surfaced in SBOM, status/context, summary, handoff, dashboard, and demo outputs",
+          "plain sbom and verbose status text expose dependencyQuickCheck without expanding default status output",
           "operational safety contract in status/context",
           "quality signals in schema/status/context/summary/dashboard",
           "AI adoption checklist and demo recommendation signals, including discovery decision and dashboard parity",
@@ -349,7 +350,7 @@ export function schemaContract() {
         readyWhen: [
           "currentBatch changes are reviewed as one release note group",
           "documented JSON contracts are additive and compatible",
-          "aiDiscovery.decision and dependencyQuickCheck are visible in the AI JSON contract, generated artifacts, dashboard, and examples",
+          "aiDiscovery.decision and dependencyQuickCheck are visible in the AI JSON contract, generated artifacts, plain CLI review, dashboard, and examples",
           "shared AI discovery/read-order constants are covered by release:check",
           "README, examples, schema, CHANGELOG, dashboard, and packaged AI skill describe the same AI workspace coordination contract",
           "package.json version is intentionally bumped for 0.2.0 or the chosen release"
@@ -390,6 +391,7 @@ export function schemaContract() {
         "aiDiscovery.decision and fallback startup contract",
         "light SBOM and dependency-change review loop",
         "dependencyQuickCheck across AI and human surfaces",
+        "dependencyQuickCheck across JSON, plain sbom, verbose status, summary, handoff, dashboard, and demo surfaces",
         "multi-agent intent, checkpoint, timeline, and handoff flow",
         "dashboard essential surfaces, discovery parity, and release readiness",
         "manual batched release workflow"

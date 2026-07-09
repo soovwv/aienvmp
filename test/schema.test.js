@@ -141,6 +141,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /fallback prompt contract/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /dashboard Agent Pointers/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /dependencyQuickCheck surfaced/);
+  assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /plain sbom and verbose status text/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /AI adoption checklist/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /version drift prevention/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /centralized AI discovery\/read-order constants/);
@@ -158,6 +159,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.releaseReadiness.publishGate.requiredEvidence.includes("npm run release:check"));
   assert.match(schema.releaseReadiness.publishGate.readyWhen.join(" "), /release note group/);
   assert.match(schema.releaseReadiness.publishGate.readyWhen.join(" "), /aiDiscovery\.decision and dependencyQuickCheck/);
+  assert.match(schema.releaseReadiness.publishGate.readyWhen.join(" "), /plain CLI review/);
   assert.match(schema.releaseReadiness.publishGate.readyWhen.join(" "), /shared AI discovery\/read-order constants/);
   assert.match(schema.releaseReadiness.publishGate.holdWhen.join(" "), /package\.json version/);
   assert.match(schema.releaseReadiness.publishGate.rule, /single AI-readable npm publish decision/);
@@ -170,6 +172,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("AI session/status/context contract"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("aiDiscovery.decision and fallback startup contract"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("dependencyQuickCheck across AI and human surfaces"));
+  assert.ok(schema.releaseReadiness.stabilizationFocus.includes("dependencyQuickCheck across JSON, plain sbom, verbose status, summary, handoff, dashboard, and demo surfaces"));
   assert.match(schema.releaseReadiness.stableContractRule, /backward-compatible/);
   assert.match(schema.releaseReadiness.batchRule, /several meaningful/);
   assert.match(schema.releaseReadiness.batchRule, /one npm publish/);
