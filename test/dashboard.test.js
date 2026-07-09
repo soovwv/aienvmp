@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { dashWorkspace } from "../src/commands/dash.js";
 import { writeJson } from "../src/fsutil.js";
-import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallback, dashboardDiscoveryFallbackClientScript, dashboardDocument, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardPayload, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardStyle, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
+import { dashboardAgentClientScript, dashboardCardClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallback, dashboardDiscoveryFallbackClientScript, dashboardDocument, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardPayload, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardStyle, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
 
 test("dashboardPayload centralizes schema-backed dashboard data", () => {
   const payload = dashboardPayload(
@@ -44,6 +44,15 @@ test("dashboardStyle keeps essential dashboard surfaces responsive", () => {
   assert.match(css, /\.brief\{/);
   assert.match(css, /\.card\.essential/);
   assert.match(css, /@media \(max-width:520px\)/);
+});
+
+test("dashboardCardClientScript keeps card priority markup centralized", () => {
+  const script = dashboardCardClientScript();
+
+  assert.match(script, /const card=/);
+  assert.match(script, /cardPriority\(title\)/);
+  assert.match(script, /data-dashboard-priority/);
+  assert.match(script, /card-head/);
 });
 
 test("renderDashboard includes the audit summary surface", () => {

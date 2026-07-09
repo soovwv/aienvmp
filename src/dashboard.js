@@ -98,6 +98,12 @@ export function dashboardPriorityClientScript() {
   ].join("\n");
 }
 
+export function dashboardCardClientScript() {
+  return [
+    "const card=(title,badge,body)=>`<section class=\"card ${cardPriority(title)}\" data-dashboard-priority=\"${cardPriority(title)}\"><div class=\"card-head\"><h2>${title}</h2>${badge||''}</div>${body}</section>`;"
+  ].join("\n");
+}
+
 export function dashboardDiscoveryFallbackClientScript() {
   return [
     `const dashboardDiscoveryFallback=${JSON.stringify(dashboardDiscoveryFallback)};`,
