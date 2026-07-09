@@ -13,6 +13,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
   const intentTargets = recommendedIntentTargets(manifest, warnings, intents);
   const dependencyReadSet = dependencyPreflightReadSet(manifest);
   const dependencyChangeProtocol = dependencyProtocol(manifest, dependencyReadSet);
+  const dependencyQuickCheck = dependencyQuickCheckSummary(manifest, dependencyChangeProtocol);
   const coordination = coordinationSummary(intents);
   const followUps = pendingFollowUps(timeline);
   const followUpPlan = followUpPlanSummary(followUps);
@@ -109,6 +110,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     environmentChangeProtocol,
     dependencyReadSet,
     dependencyChangeProtocol,
+    dependencyQuickCheck,
     artifacts: preflightArtifacts(),
     readOrder: [
       ".aienvmp/README.md",
@@ -132,6 +134,30 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     topAction,
     nextCommand,
     nextSafeCommand: nextCommand
+  };
+}
+
+function dependencyQuickCheckSummary(manifest = {}, dependencyChangeProtocol = {}) {
+  const quick = manifest.lightSbom?.dependencyQuickCheck || {};
+  const review = manifest.lightSbom?.aiDependencyReview || {};
+  const sbomRisk = manifest.lightSbom?.riskSummary || {};
+  const commands = dependencyChangeProtocol.commands || {};
+  const reviewTargets = quick.reviewTargets || review.reviewTargets || sbomRisk.reviewTargets || [];
+  return {
+    status: quick.status || review.status || (["urgent", "high", "medium"].includes(sbomRisk.level) ? "review" : "ready"),
+    purpose: quick.purpose || "10-second AI check before dependency, lockfile, package manager, security, or release-affecting dependency work.",
+    readFirst: quick.readFirst || [".aienvmp/README.md", ".aienvmp/sbom.json", ".aienvmp/status.json", "aienvmp context --json"],
+    nextCommand: quick.nextCommand || review.beforeDependencyChange?.[0] || sbomRisk.commands?.[0] || commands.recordIntent || "aienvmp sbom --json",
+    reviewTargets: reviewTargets.slice(0, 5),
+    scannerEvidence: quick.scannerEvidence || review.securityConfidence || "unknown",
+    beforeChange: (quick.beforeChange || review.beforeDependencyChange || [commands.recordIntent || "aienvmp intent --actor agent:id --action planned-change --target dependency"]).slice(0, 3),
+    afterChange: (quick.afterChange || review.afterDependencyChange || [commands.checkpointAfterChange || "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"]).slice(-2),
+    mustNotDo: (quick.mustNotDo || [
+      "do not run broad install, update, audit fix, or lockfile rewrite commands before reading SBOM and status",
+      "do not switch package managers only because another AI prefers one",
+      "do not make security claims from the light SBOM alone when scanner confidence is low"
+    ]).slice(0, 3),
+    rule: quick.rule || "Use this compact block as the first AI dependency-work decision; it is advisory and does not replace full scanner evidence."
   };
 }
 

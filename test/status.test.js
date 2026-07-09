@@ -40,6 +40,7 @@ test("buildStatus returns a compact clear state", () => {
   assert.ok(status.contract.aiEntryFields.includes("qualitySignals"));
   assert.ok(status.contract.aiEntryFields.includes("environmentChangeProtocol"));
   assert.ok(status.contract.aiEntryFields.includes("dependencyReadSet"));
+  assert.ok(status.contract.aiEntryFields.includes("dependencyQuickCheck"));
   assert.equal(status.counts.runtimes, 1);
   assert.equal(status.counts.dependencies, 2);
   assert.equal(status.agentUse.environmentChanges, "allowed");
@@ -111,6 +112,10 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.dependencyReadSet[0].manifest, "package.json");
   assert.deepEqual(status.dependencyReadSet[0].lockfiles, ["package-lock.json"]);
   assert.equal(status.dependencyChangeProtocol.mode, "advisory");
+  assert.equal(status.dependencyQuickCheck.status, "ready");
+  assert.equal(status.dependencyQuickCheck.nextCommand, "aienvmp intent --actor agent:id --action planned-change --target dependency");
+  assert.equal(status.dependencyQuickCheck.scannerEvidence, "unknown");
+  assert.match(status.dependencyQuickCheck.mustNotDo.join(" "), /lockfile rewrite/);
   assert.equal(status.sbomRisk.level, "low");
   assert.match(status.sbomRisk.next, /security scan/);
   assert.equal(status.dependencyChangeProtocol.commands.recordIntent, "aienvmp intent --actor agent:id --action planned-change --target dependency");
@@ -175,6 +180,13 @@ test("buildStatus connects high SBOM risk to dependency review loop", () => {
           "run the narrowest relevant project validation",
           "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency"
         ]
+      },
+      dependencyQuickCheck: {
+        status: "review",
+        nextCommand: "aienvmp sync --security",
+        scannerEvidence: "scanner-summary",
+        reviewTargets: ["package.json", "express"],
+        mustNotDo: ["do not run broad install commands before reading SBOM"]
       }
     },
     security: { summary: { total: 1 } }
@@ -186,6 +198,9 @@ test("buildStatus connects high SBOM risk to dependency review loop", () => {
   assert.deepEqual(status.maintenanceLoop.sbomReview.reviewTargets, ["package.json", "express"]);
   assert.equal(status.maintenanceLoop.sbomReview.beforeDependencyChange[1], "aienvmp intent --actor agent:id --action dependency-review --target dependency");
   assert.match(status.maintenanceLoop.sbomReview.afterDependencyChange[1], /checkpoint/);
+  assert.equal(status.dependencyQuickCheck.status, "review");
+  assert.equal(status.dependencyQuickCheck.nextCommand, "aienvmp sync --security");
+  assert.deepEqual(status.dependencyQuickCheck.reviewTargets, ["package.json", "express"]);
   assert.equal(status.maintenanceLoop.sbomCommand, "aienvmp sync --security");
 });
 

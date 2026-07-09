@@ -46,6 +46,7 @@ export async function contextWorkspace(args) {
       followUps: preflight.followUps,
       followUpPlan: preflight.followUpPlan,
       environmentChangeProtocol: preflight.environmentChangeProtocol,
+      dependencyQuickCheck: preflight.dependencyQuickCheck,
       decision,
       enforcement: enforcementAdvice(warnings),
       recommendedActions: actions,
@@ -101,6 +102,7 @@ function lightSbomSummary(lightSbom = {}) {
       guidance: "No lockfile policy detected."
     },
     dependencyChangeHints: (lightSbom.dependencyChangeHints || []).slice(0, 8),
+    dependencyQuickCheck: lightSbom.dependencyQuickCheck || {},
     riskSummary: lightSbom.riskSummary || {},
     source: lightSbom.source || {},
     confidence: lightSbom.confidence || {},

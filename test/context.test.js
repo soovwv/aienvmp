@@ -57,6 +57,13 @@ test("contextWorkspace JSON includes compact step summary", async () => {
         packages: 1,
         riskPackages: []
       }],
+      dependencyQuickCheck: {
+        status: "review",
+        nextCommand: "aienvmp sync --security",
+        scannerEvidence: "scanner-off",
+        reviewTargets: ["package.json"],
+        mustNotDo: ["do not run broad install commands before reading SBOM"]
+      },
       source: {
         dependencies: "project manifests",
         lockfiles: "file presence only",
@@ -150,6 +157,9 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   assert.deepEqual(json.preflight.dependencyReadSet[0].lockfiles, ["package-lock.json"]);
   assert.equal(json.preflight.dependencyChangeProtocol.commands.recordAfterChange, "aienvmp record --actor agent:id --summary dependency-change --target dependency");
   assert.equal(json.preflight.dependencyChangeProtocol.commands.checkpointAfterChange, "aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency");
+  assert.equal(json.dependencyQuickCheck.status, "review");
+  assert.equal(json.dependencyQuickCheck.nextCommand, "aienvmp sync --security");
+  assert.equal(json.preflight.dependencyQuickCheck.scannerEvidence, "scanner-off");
   assert.equal(json.coordination.openIntentCount, 0);
   assert.deepEqual(json.coordination.conflictTargets, []);
   assert.deepEqual(json.agentPointers.missing, ["codex"]);
@@ -193,6 +203,7 @@ test("contextWorkspace JSON includes compact step summary", async () => {
   assert.equal(json.sbomRisk.level, "low");
   assert.equal(json.lightSbom.riskSummary.scanner, "off");
   assert.equal(json.lightSbom.dependencyChangeHints[0].manifest, "package.json");
+  assert.equal(json.lightSbom.dependencyQuickCheck.status, "review");
   assert.equal(json.lightSbom.source.dependencies, "project manifests");
   assert.equal(json.lightSbom.confidence.transitiveDependencies, "not-resolved");
   assert.match(json.lightSbom.limitations[0], /install/);

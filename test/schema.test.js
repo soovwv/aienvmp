@@ -191,6 +191,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("followUpPlan"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("environmentChangeProtocol"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("agentPointers"));
+  assert.ok(schema.outputs.status.contract.aiEntryFields.includes("dependencyQuickCheck"));
   assert.ok(schema.outputs.status.rootFields.includes("nextSafeCommand"));
   assert.ok(schema.outputs.status.rootFields.includes("readOrder"));
   assert.ok(schema.outputs.status.rootFields.includes("aiSession"));
@@ -201,6 +202,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.rootFields.includes("qualitySignals"));
   assert.ok(schema.outputs.status.rootFields.includes("followUpPlan"));
   assert.ok(schema.outputs.status.rootFields.includes("environmentChangeProtocol"));
+  assert.ok(schema.outputs.status.rootFields.includes("dependencyQuickCheck"));
   assert.ok(schema.outputs.status.rootFields.includes("coordinationResolution"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("discovery"));
   assert.ok(schema.outputs.status.agentPointerFields.includes("onboardCommand"));
@@ -233,6 +235,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.context.rootFields.includes("agentPointers"));
   assert.ok(schema.outputs.context.rootFields.includes("followUpPlan"));
   assert.ok(schema.outputs.context.rootFields.includes("environmentChangeProtocol"));
+  assert.ok(schema.outputs.context.rootFields.includes("dependencyQuickCheck"));
   assert.ok(schema.outputs.context.rootFields.includes("aiReadiness"));
   assert.ok(schema.outputs.handoff.rootFields.includes("dependencyHandoff"));
   assert.ok(schema.outputs.handoff.rootFields.includes("startHere"));
