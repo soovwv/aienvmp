@@ -46,6 +46,7 @@ export async function startWorkspace(args = {}) {
     console.log(`AI discovery: ${result.discoveryDecision} / ${result.agentPointers?.discovery || after.agentPointers.discovery}`);
     console.log(`discovery: ${result.agentPointers?.discovery || after.agentPointers.discovery}`);
     console.log(`AI fallback: ${result.fallbackPrompt}`);
+    console.log(`copy-paste prompt: ${result.copyPastePrompt}`);
   }
 
   return result;

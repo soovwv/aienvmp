@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `copy-paste prompt:` to default `start` and `discover` text output so humans can hand the fallback instruction to another AI without parsing JSON.
 - Compressed the README AI Contract section while keeping discovery, `copyPastePrompt`, dependency, safety, and release readiness signals visible.
 - Updated `releaseReadiness.currentBatch` so the held 0.2.0 batch covers `copyPastePrompt` recovery and dashboard helper-list maintainability work.
 - Grouped dashboard environment state, policy, intent, handoff, pointer, and snapshot cards into a `stateCards` client-side list.

@@ -108,3 +108,19 @@ test("discover JSON output is machine-readable for AI agents", async () => {
   assert.match(json.aiDiscovery.humanInstruction, /instruction-file pointer/);
   assert.match(json.aiDiscovery.rule, /Do not assume automatic pickup/);
 });
+
+test("discover text output includes a copy-paste prompt", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-discover-text-"));
+  const originalLog = console.log;
+  const output = [];
+  console.log = (value) => { output.push(value); };
+  try {
+    await discoverWorkspace({ dir });
+  } finally {
+    console.log = originalLog;
+  }
+
+  const text = output.join("\n");
+  assert.match(text, /AI fallback:/);
+  assert.match(text, /copy-paste prompt: Run npx aienvmp sync/);
+});

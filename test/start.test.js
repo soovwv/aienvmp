@@ -69,3 +69,19 @@ test("start JSON output is machine-readable", async () => {
   assert.equal(json.aiDiscovery.copyPastePrompt, json.aiDiscovery.fallbackPrompt);
   assert.match(json.aiDiscovery.rule, /Do not assume automatic pickup/);
 });
+
+test("start text output includes a copy-paste prompt", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aienvmp-start-text-"));
+  const originalLog = console.log;
+  const output = [];
+  console.log = (value) => { output.push(value); };
+  try {
+    await startWorkspace({ dir });
+  } finally {
+    console.log = originalLog;
+  }
+
+  const text = output.join("\n");
+  assert.match(text, /AI fallback:/);
+  assert.match(text, /copy-paste prompt: Use aienvmp as the workspace env map/);
+});
