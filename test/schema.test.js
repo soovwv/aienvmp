@@ -96,7 +96,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.agentDiscovery.installCommand, "aienvmp onboard");
   assert.equal(schema.agentDiscovery.optionalInstallCommand, "aienvmp onboard --agents cursor,copilot");
   assert.match(schema.agentDiscovery.fallbackPrompt, /Use aienvmp as the workspace env map/);
-  assert.match(schema.agentDiscovery.humanInstruction, /Paste the fallback prompt/);
+  assert.match(schema.agentDiscovery.humanInstruction, /Paste copyPastePrompt/);
   assert.equal(schema.agentDiscovery.automaticDiscovery, "best-effort");
   assert.deepEqual(schema.agentDiscovery.decisionValues, ["auto-ready", "fallback-required"]);
   assert.match(schema.agentDiscovery.nextSetupCommand, /aienvmp onboard/);
@@ -104,6 +104,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.agentDiscovery.fallbackCommand, "aienvmp start --json");
   assert.equal(schema.agentDiscovery.discoveryArtifact, ".aienvmp/discovery.json");
   assert.deepEqual(schema.agentDiscovery.fallbackRead, [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
+  assert.equal(schema.agentDiscovery.copyPastePrompt, schema.agentDiscovery.fallbackPrompt);
+  assert.ok(schema.agentDiscovery.promptUse.pasteInto.includes("Codex"));
+  assert.match(schema.agentDiscovery.promptUse.when, /did not auto-read/);
   assert.ok(schema.agentDiscovery.optionalFiles.includes(".github/copilot-instructions.md"));
   assert.deepEqual(schema.agentDiscovery.files, ["AGENTS.md", "CLAUDE.md", "GEMINI.md"]);
   assert.match(schema.agentDiscovery.startupChecklist.join(" "), /dependencyQuickCheck/);
@@ -214,6 +217,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.discover.resumeFields.includes("beforeEnvironmentChange"));
   assert.ok(schema.outputs.discover.resumeFields.includes("mustNotDo"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("fallbackPrompt"));
+  assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("copyPastePrompt"));
+  assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("promptUse"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("humanInstruction"));
   assert.match(schema.outputs.discover.purpose, /Zero-write detection/);
   assert.equal(schema.outputs.start.command, "aienvmp start --json");
@@ -222,6 +227,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.start.rootFields.includes("startupChecklist"));
   assert.ok(schema.outputs.start.rootFields.includes("resume"));
   assert.ok(schema.outputs.start.rootFields.includes("fallbackPrompt"));
+  assert.ok(schema.outputs.start.rootFields.includes("copyPastePrompt"));
+  assert.ok(schema.outputs.start.rootFields.includes("promptUse"));
   assert.match(schema.outputs.start.rule, /before assuming instruction-file automatic discovery worked/);
   assert.equal(schema.outputs.discovery.file, ".aienvmp/discovery.json");
   assert.equal(schema.outputs.discovery.format, "json");
@@ -230,6 +237,8 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.discovery.maintenanceFields.includes("nextCommand"));
   assert.ok(schema.outputs.discovery.maintenanceFields.includes("dependencyQuickCheck"));
   assert.ok(schema.outputs.discovery.rootFields.includes("fallbackPrompt"));
+  assert.ok(schema.outputs.discovery.rootFields.includes("copyPastePrompt"));
+  assert.ok(schema.outputs.discovery.rootFields.includes("promptUse"));
   assert.match(schema.outputs.discovery.purpose, /Smallest generated fallback entry/);
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("nextAgent"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("readOrder"));

@@ -23,6 +23,8 @@ test("start syncs a missing workspace then returns the AI startup contract", asy
   assert.equal(result.resume.nextCommand, "npx aienvmp status");
   assert.match(result.startupChecklist.join(" "), /dependencyQuickCheck/);
   assert.match(result.fallbackPrompt, /Use aienvmp as the workspace env map/);
+  assert.equal(result.copyPastePrompt, result.fallbackPrompt);
+  assert.ok(result.promptUse.pasteInto.includes("Claude"));
   assert.match(result.rule, /first AI entry command/);
   assert.match(result.statusText, /session:/);
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "status.json")));
@@ -60,7 +62,10 @@ test("start JSON output is machine-readable", async () => {
   assert.match(json.startupChecklist.join(" "), /start --json/);
   assert.equal(json.resume.handoff, "aienvmp handoff --record --actor agent:id");
   assert.match(json.fallbackPrompt, /Use aienvmp as the workspace env map/);
+  assert.equal(json.copyPastePrompt, json.fallbackPrompt);
+  assert.ok(json.promptUse.pasteInto.includes("Gemini"));
   assert.match(json.aiDiscovery.startupChecklist.join(" "), /start --json/);
   assert.equal(json.aiDiscovery.resume.handoff, "aienvmp handoff --record --actor agent:id");
+  assert.equal(json.aiDiscovery.copyPastePrompt, json.aiDiscovery.fallbackPrompt);
   assert.match(json.aiDiscovery.rule, /Do not assume automatic pickup/);
 });

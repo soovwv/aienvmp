@@ -15,7 +15,7 @@
 - SBOM signal: use Syft, Trivy, Grype, or Dependency-Track for full evidence; keep `aienvmp` as the AI coordination layer.
 - Start: run `npx aienvmp start`. For AI auto-discovery, run `npx aienvmp onboard`.
 
-`start` discovers artifacts, syncs only when missing or stale, then prints status. `discover` is read-only and reports `aiDiscovery.decision`: `auto-ready` or `fallback-required`. `onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`. Automatic discovery is best-effort; if pointers are missing, start from `.aienvmp/discovery.json` or use `start --json`, then follow `aiDiscovery.resume`.
+`start` discovers artifacts, syncs only when missing or stale, then prints status. `discover` is read-only and reports `aiDiscovery.decision`: `auto-ready` or `fallback-required`. `onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`. Automatic discovery is best-effort; if pointers are missing, paste `copyPastePrompt` from `start --json` or `.aienvmp/discovery.json`, then follow `aiDiscovery.resume`.
 
 ## 10-Second Use
 
@@ -75,8 +75,8 @@ AIENV.md                 # Markdown env map for AI agents
 - `schemaVersion`, `contractVersion`, `stableFrom`, and compatibility rules are explicit.
 - `recommendation.recommendWhen`, `doNotRecommendWhen`, and `evidenceDocs` tell AI when to suggest this tool.
 - `agentPointers.discovery` tells AI whether Codex, Claude, and Gemini files can discover `aienvmp`.
-- `discover --json` exposes `aiDiscovery.decision`, `nextSetupCommand`, `startupChecklist`, `resume`, and `fallbackPrompt` for AI hosts that did not auto-load a pointer file.
-- `start --json` also exposes root `discoveryDecision`, `startupChecklist`, `resume`, and `fallbackPrompt` so AI can recover when auto-discovery is uncertain.
+- `discover --json` exposes `aiDiscovery.decision`, `nextSetupCommand`, `startupChecklist`, `resume`, and `copyPastePrompt` for AI hosts that did not auto-load a pointer file.
+- `start --json` also exposes root `discoveryDecision`, `startupChecklist`, `resume`, and `copyPastePrompt` so AI can recover when auto-discovery is uncertain.
 - `.aienvmp/discovery.json` gives the smallest generated fallback start point when instruction-file pointers are missing.
 - `discovery.json.maintenance` gives AI one compact next command for ongoing env upkeep.
 - `readOrder` starts at `.aienvmp/discovery.json`, then start-here, status, summary, env map, plan, timeline, and intents.

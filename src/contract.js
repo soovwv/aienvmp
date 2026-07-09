@@ -243,7 +243,13 @@ export function schemaContract() {
       discoveryArtifact: ".aienvmp/discovery.json",
       fallbackRead: aiFallbackRead,
       fallbackPrompt: aiFallbackPrompt,
-      humanInstruction: "Paste the fallback prompt into an AI session when the host did not auto-read an instruction-file pointer.",
+      copyPastePrompt: aiFallbackPrompt,
+      promptUse: {
+        pasteInto: ["Codex", "Claude", "Gemini", "Cursor", "Copilot", "other AI coding agents"],
+        when: "Use when the AI host did not auto-read an aienvmp instruction-file pointer.",
+        rule: "Keep the prompt short enough to paste into any AI session, then let the agent read the generated artifacts."
+      },
+      humanInstruction: "Paste copyPastePrompt into an AI session when the host did not auto-read an instruction-file pointer.",
       startupChecklist: aiStartupChecklist,
       sessionStart: [
         "Treat the aienvmp marker block as the live environment pointer.",
@@ -413,14 +419,14 @@ export function schemaContract() {
         command: "aienvmp discover --json",
         mode: "read-only",
         rootFields: ["status", "detected", "startHere", "readOrder", "freshness", "nextCommand", "agentPointers", "aiDiscovery", "artifacts", "rule"],
-        aiDiscoveryFields: ["mode", "decision", "automatic", "pointerStatus", "limitation", "installCommand", "nextSetupCommand", "safeStart", "sessionStart", "startupChecklist", "fallbackRead", "resume", "fallbackPrompt", "humanInstruction", "rule"],
+        aiDiscoveryFields: ["mode", "decision", "automatic", "pointerStatus", "limitation", "installCommand", "nextSetupCommand", "safeStart", "sessionStart", "startupChecklist", "fallbackRead", "resume", "fallbackPrompt", "copyPastePrompt", "promptUse", "humanInstruction", "rule"],
         resumeFields: ["purpose", "readFirst", "nextCommand", "allowed", "beforeEnvironmentChange", "afterEnvironmentChange", "handoff", "mustNotDo", "rule"],
         purpose: "Zero-write detection command for AI agents or humans that need to know whether a workspace already has aienvmp artifacts."
       },
       start: {
         command: "aienvmp start --json",
         mode: "read-mostly",
-        rootFields: ["status", "mode", "localMode", "purpose", "startHere", "readOrder", "decision", "summary", "nextCommand", "nextSetupCommand", "agentPointers", "aiDiscovery", "discoveryDecision", "startupChecklist", "resume", "fallbackPrompt", "statusText", "rule"],
+        rootFields: ["status", "mode", "localMode", "purpose", "startHere", "readOrder", "decision", "summary", "nextCommand", "nextSetupCommand", "agentPointers", "aiDiscovery", "discoveryDecision", "startupChecklist", "resume", "fallbackPrompt", "copyPastePrompt", "promptUse", "statusText", "rule"],
         purpose: "One-command AI startup that syncs only when artifacts are missing or stale, then returns the discovery decision and shortest resume routine.",
         rule: "Use root discoveryDecision, startupChecklist, resume, and fallbackPrompt before assuming instruction-file automatic discovery worked."
       },
@@ -428,7 +434,7 @@ export function schemaContract() {
         file: ".aienvmp/discovery.json",
         command: "aienvmp sync",
         format: "json",
-        rootFields: ["schemaVersion", "schemaName", "decision", "automatic", "pointerStatus", "startCommand", "statusCommand", "contextCommand", "nextSetupCommand", "readOrder", "maintenance", "startupChecklist", "resume", "fallbackPrompt", "rule"],
+        rootFields: ["schemaVersion", "schemaName", "decision", "automatic", "pointerStatus", "startCommand", "statusCommand", "contextCommand", "nextSetupCommand", "readOrder", "maintenance", "startupChecklist", "resume", "fallbackPrompt", "copyPastePrompt", "promptUse", "rule"],
         maintenanceFields: ["status", "nextCommand", "source", "freshness", "followUp", "dependencyQuickCheck", "beforeEnvironmentChange", "afterEnvironmentChange", "rule"],
         purpose: "Smallest generated fallback entry artifact for AI hosts that did not auto-load an instruction-file pointer."
       },

@@ -132,6 +132,9 @@ function aiDiscoverySummary({ detected = false, stale = true, agentPointers = {}
   const decision = installed.length ? "auto-ready" : "fallback-required";
   const nextSetupCommand = installed.length ? "none" : "npx aienvmp onboard";
   const startupChecklist = npxAiStartupChecklist;
+  const fallbackPrompt = detected
+    ? npxAiFallbackPrompt
+    : npxAiMissingFallbackPrompt;
   return {
     mode: "best-effort",
     decision,
@@ -159,10 +162,14 @@ function aiDiscoverySummary({ detected = false, stale = true, agentPointers = {}
       ],
       rule: "When an AI host did not auto-load a pointer file, use this resume routine as the shared environment startup contract."
     },
-    fallbackPrompt: detected
-      ? npxAiFallbackPrompt
-      : npxAiMissingFallbackPrompt,
-    humanInstruction: "Paste the fallbackPrompt into an AI session when the host did not auto-read an instruction-file pointer.",
+    fallbackPrompt,
+    copyPastePrompt: fallbackPrompt,
+    promptUse: {
+      pasteInto: ["Codex", "Claude", "Gemini", "Cursor", "Copilot", "other AI coding agents"],
+      when: "Use when the AI host did not auto-read an aienvmp instruction-file pointer.",
+      rule: "Keep the prompt short enough to paste into any AI session, then let the agent read the generated artifacts."
+    },
+    humanInstruction: "Paste copyPastePrompt into an AI session when the host did not auto-read an instruction-file pointer.",
     rule: "Do not assume automatic pickup. Verify discovery with aienvmp discover or status before shared environment changes."
   };
 }

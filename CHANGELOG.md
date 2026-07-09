@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `copyPastePrompt` and `promptUse` to AI discovery/startup contracts so humans can hand a short fallback instruction to Codex, Claude, Gemini, Cursor, Copilot, or another AI when automatic pointer discovery is missed.
 - Grouped dashboard enforcement, release, quality, and CI cards into an `operationalCards` client-side list for safer side-card maintenance.
 - Converted the dashboard main grid cards to a `mainCards` client-side list so core card order and labels are easier to review and test.
 - Moved dashboard card markup into `dashboardCardClientScript` so card priority rendering is centralized before further card-list simplification.

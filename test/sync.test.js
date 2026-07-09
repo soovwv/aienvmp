@@ -110,6 +110,8 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.match(discovery.maintenance.rule, /recurring AI environment maintenance decision/);
   assert.match(discovery.startupChecklist.join(" "), /dependencyQuickCheck/);
   assert.match(discovery.fallbackPrompt, /\.aienvmp\/discovery\.json/);
+  assert.equal(discovery.copyPastePrompt, discovery.fallbackPrompt);
+  assert.ok(discovery.promptUse.pasteInto.includes("Claude"));
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "summary.md")));
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "sbom.json")));
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "sbom.cdx.json")));

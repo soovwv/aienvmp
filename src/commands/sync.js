@@ -99,7 +99,13 @@ async function writeDiscoveryArtifact(dir, status = {}) {
       rule: "Use this routine when an AI host did not auto-load an instruction-file pointer."
     },
     fallbackPrompt: aiFallbackPrompt,
-    humanInstruction: "Paste fallbackPrompt into an AI session when automatic instruction-file discovery did not happen.",
+    copyPastePrompt: aiFallbackPrompt,
+    promptUse: {
+      pasteInto: ["Codex", "Claude", "Gemini", "Cursor", "Copilot", "other AI coding agents"],
+      when: "Use when the AI host did not auto-read an aienvmp instruction-file pointer.",
+      rule: "Keep the prompt short enough to paste into any AI session, then let the agent read the generated artifacts."
+    },
+    humanInstruction: "Paste copyPastePrompt into an AI session when automatic instruction-file discovery did not happen.",
     rule: "Do not assume automatic pickup worked. Read discovery/status first, keep local operation advisory, and record intent before shared environment changes."
   };
   await fs.writeFile(out, JSON.stringify(artifact, null, 2), "utf8");

@@ -29,6 +29,8 @@ export async function startWorkspace(args = {}) {
     startupChecklist: after.aiDiscovery?.startupChecklist || [],
     resume: after.aiDiscovery?.resume || null,
     fallbackPrompt: after.aiDiscovery?.fallbackPrompt || "",
+    copyPastePrompt: after.aiDiscovery?.copyPastePrompt || after.aiDiscovery?.fallbackPrompt || "",
+    promptUse: after.aiDiscovery?.promptUse || null,
     statusText: renderStatusText(status),
     rule: "Use this as the first AI entry command when instruction-file automatic discovery is uncertain. It only writes aienvmp artifacts and keeps local decisions advisory."
   };
