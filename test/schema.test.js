@@ -136,11 +136,14 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.releaseReadiness.currentBatch.themes.includes("dashboard parity"));
   assert.ok(schema.releaseReadiness.currentBatch.themes.includes("AI quality signals"));
   assert.ok(schema.releaseReadiness.currentBatch.themes.includes("release gating"));
+  assert.ok(schema.releaseReadiness.currentBatch.themes.includes("shared contract constants"));
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /aiDiscovery\.decision/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /fallback prompt contract/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /dashboard Agent Pointers/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /dependencyQuickCheck surfaced/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /AI adoption checklist/);
+  assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /version drift prevention/);
+  assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /centralized AI discovery\/read-order constants/);
   assert.match(schema.releaseReadiness.currentBatch.reason, /one intentional release/);
   assert.equal(schema.releaseReadiness.publishDecision.default, "hold");
   assert.match(schema.releaseReadiness.publishDecision.batchThreshold, /Hold by default/);
@@ -155,6 +158,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.releaseReadiness.publishGate.requiredEvidence.includes("npm run release:check"));
   assert.match(schema.releaseReadiness.publishGate.readyWhen.join(" "), /release note group/);
   assert.match(schema.releaseReadiness.publishGate.readyWhen.join(" "), /aiDiscovery\.decision and dependencyQuickCheck/);
+  assert.match(schema.releaseReadiness.publishGate.readyWhen.join(" "), /shared AI discovery\/read-order constants/);
   assert.match(schema.releaseReadiness.publishGate.holdWhen.join(" "), /package\.json version/);
   assert.match(schema.releaseReadiness.publishGate.rule, /single AI-readable npm publish decision/);
   assert.match(schema.releaseReadiness.doNotPublishUntil.join(" "), /currentBatch changes/);

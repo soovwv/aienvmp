@@ -305,7 +305,7 @@ export function schemaContract() {
       currentBatch: {
         status: "accumulating",
         releaseType: "stability-batch",
-        themes: ["AI discovery", "dependency quick check", "dashboard parity", "AI quality signals", "SBOM interoperability", "recommendation positioning", "release gating"],
+        themes: ["AI discovery", "dependency quick check", "dashboard parity", "AI quality signals", "SBOM interoperability", "recommendation positioning", "shared contract constants", "release gating"],
         changes: [
           "best-effort AI discovery with aiDiscovery.decision, discovery.json, startupChecklist, and fallback prompt contract",
           "dashboard Agent Pointers mirrors auto-ready versus fallback-required startup decisions",
@@ -313,6 +313,8 @@ export function schemaContract() {
           "operational safety contract in status/context",
           "quality signals in schema/status/context/summary/dashboard",
           "AI adoption checklist and demo recommendation signals, including discovery decision and dashboard parity",
+          "package metadata and recommendation signals for shared-environment version drift prevention",
+          "centralized AI discovery/read-order constants across discovery, status, dashboard, schema, SBOM, and generated artifacts",
           "external SBOM/security scanner guidance",
           "manual batched release gate"
         ],
@@ -348,6 +350,7 @@ export function schemaContract() {
           "currentBatch changes are reviewed as one release note group",
           "documented JSON contracts are additive and compatible",
           "aiDiscovery.decision and dependencyQuickCheck are visible in the AI JSON contract, generated artifacts, dashboard, and examples",
+          "shared AI discovery/read-order constants are covered by release:check",
           "README, examples, schema, CHANGELOG, dashboard, and packaged AI skill describe the same AI workspace coordination contract",
           "package.json version is intentionally bumped for 0.2.0 or the chosen release"
         ],
