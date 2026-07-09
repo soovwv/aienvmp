@@ -120,6 +120,18 @@ export function dashboardMainCardsClientScript() {
   ].join("\n");
 }
 
+export function dashboardOperationalCardsClientScript() {
+  return [
+    "const operationalCards=[",
+    "['Enforcement Mode','<span class=\"pill\">advisory</span>',enforcementHtml],",
+    "['Release Readiness','<span class=\"pill warn\">'+esc(releaseReadiness?.target||'0.2.0')+'</span>',releaseReadinessHtml],",
+    "['Quality Signals','<span class=\"pill\">'+esc(qualitySignals.status||'prototype-hardening')+'</span>',qualitySignalsHtml],",
+    "['CI Readiness',ciHasFailure?'<span class=\"pill warn\">review</span>':'<span class=\"pill\">ready</span>',ciReadinessHtml]",
+    "];",
+    "const operationalCardsHtml=operationalCards.map(([title,badge,body])=>card(title,badge,body)).join('<div style=\"height:14px\"></div>');"
+  ].join("\n");
+}
+
 export function dashboardDiscoveryFallbackClientScript() {
   return [
     `const dashboardDiscoveryFallback=${JSON.stringify(dashboardDiscoveryFallback)};`,

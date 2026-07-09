@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Grouped dashboard enforcement, release, quality, and CI cards into an `operationalCards` client-side list for safer side-card maintenance.
 - Converted the dashboard main grid cards to a `mainCards` client-side list so core card order and labels are easier to review and test.
 - Moved dashboard card markup into `dashboardCardClientScript` so card priority rendering is centralized before further card-list simplification.
 - Split dashboard CSS into `dashboardStyle` so the essential human review surfaces can be tested separately from the HTML shell.
