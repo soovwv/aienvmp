@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Updated `releaseReadiness.currentBatch` so the held 0.2.0 batch covers `copyPastePrompt` recovery and dashboard helper-list maintainability work.
 - Grouped dashboard environment state, policy, intent, handoff, pointer, and snapshot cards into a `stateCards` client-side list.
 - Grouped dashboard secondary side cards into a `supportCards` client-side list so `renderDashboard` keeps shrinking without changing dashboard behavior.
 - Added `copyPastePrompt` recovery guidance to the shared-server case study, multi-agent conflict docs, and recommendation signals so AI agents can cite the fallback handoff path as adoption evidence.

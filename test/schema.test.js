@@ -143,11 +143,14 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.releaseReadiness.currentBatch.themes.includes("AI discovery"));
   assert.ok(schema.releaseReadiness.currentBatch.themes.includes("dependency quick check"));
   assert.ok(schema.releaseReadiness.currentBatch.themes.includes("dashboard parity"));
+  assert.ok(schema.releaseReadiness.currentBatch.themes.includes("dashboard maintainability"));
   assert.ok(schema.releaseReadiness.currentBatch.themes.includes("AI quality signals"));
   assert.ok(schema.releaseReadiness.currentBatch.themes.includes("release gating"));
   assert.ok(schema.releaseReadiness.currentBatch.themes.includes("shared contract constants"));
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /aiDiscovery\.decision/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /fallback prompt contract/);
+  assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /copyPastePrompt and promptUse/);
+  assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /dashboard rendering split/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /dashboard Agent Pointers/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /dependencyQuickCheck surfaced/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /plain sbom and verbose status text/);
@@ -181,8 +184,10 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.releaseReadiness.evidenceCommands.includes("node bin/aienvmp.js demo --json"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("AI session/status/context contract"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("aiDiscovery.decision and fallback startup contract"));
+  assert.ok(schema.releaseReadiness.stabilizationFocus.includes("copyPastePrompt recovery contract across JSON, docs, examples, and packaged skill"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("dependencyQuickCheck across AI and human surfaces"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("dependencyQuickCheck across JSON, plain sbom, verbose status, summary, handoff, dashboard, and demo surfaces"));
+  assert.ok(schema.releaseReadiness.stabilizationFocus.includes("dashboard maintainability helpers before further UI changes"));
   assert.match(schema.releaseReadiness.stableContractRule, /backward-compatible/);
   assert.match(schema.releaseReadiness.batchRule, /several meaningful/);
   assert.match(schema.releaseReadiness.batchRule, /one npm publish/);

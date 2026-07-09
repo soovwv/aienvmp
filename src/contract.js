@@ -312,10 +312,13 @@ export function schemaContract() {
       currentBatch: {
         status: "accumulating",
         releaseType: "stability-batch",
-        themes: ["AI discovery", "dependency quick check", "dashboard parity", "AI quality signals", "SBOM interoperability", "recommendation positioning", "shared contract constants", "release gating"],
+        themes: ["AI discovery", "dependency quick check", "dashboard parity", "dashboard maintainability", "AI quality signals", "SBOM interoperability", "recommendation positioning", "shared contract constants", "release gating"],
         changes: [
           "best-effort AI discovery with aiDiscovery.decision, discovery.json, startupChecklist, and fallback prompt contract",
+          "copyPastePrompt and promptUse recovery fields for AI hosts that miss instruction-file automatic discovery",
+          "copyPastePrompt guidance aligned across README, schema, packaged AI skill, adoption guide, and example evidence docs",
           "dashboard Agent Pointers mirrors auto-ready versus fallback-required startup decisions",
+          "dashboard rendering split into payload, document, style, card, mainCards, supportCards, operationalCards, and stateCards helpers",
           "dependencyQuickCheck surfaced in SBOM, status/context, summary, handoff, dashboard, and demo outputs",
           "plain sbom and verbose status text expose dependencyQuickCheck without expanding default status output",
           "start --json exposes root-level discoveryDecision, startupChecklist, resume, copyPastePrompt, and fallbackPrompt for AI hosts",
@@ -361,6 +364,7 @@ export function schemaContract() {
           "aiDiscovery.decision and dependencyQuickCheck are visible in the AI JSON contract, generated artifacts, plain CLI review, dashboard, and examples",
           "shared AI discovery/read-order constants are covered by release:check",
           "README, examples, schema, CHANGELOG, dashboard, and packaged AI skill describe the same AI workspace coordination contract",
+          "copyPastePrompt, promptUse, dashboard helper lists, and release notes are covered by release:check",
           "package.json version is intentionally bumped for 0.2.0 or the chosen release"
         ],
         holdWhen: [
@@ -397,10 +401,12 @@ export function schemaContract() {
       stabilizationFocus: [
         "AI session/status/context contract",
         "aiDiscovery.decision and fallback startup contract",
+        "copyPastePrompt recovery contract across JSON, docs, examples, and packaged skill",
         "light SBOM and dependency-change review loop",
         "dependencyQuickCheck across AI and human surfaces",
         "dependencyQuickCheck across JSON, plain sbom, verbose status, summary, handoff, dashboard, and demo surfaces",
         "multi-agent intent, checkpoint, timeline, and handoff flow",
+        "dashboard maintainability helpers before further UI changes",
         "dashboard essential surfaces, discovery parity, and release readiness",
         "manual batched release workflow"
       ],
