@@ -412,7 +412,8 @@ export function schemaContract() {
         file: ".aienvmp/discovery.json",
         command: "aienvmp sync",
         format: "json",
-        rootFields: ["schemaVersion", "schemaName", "decision", "automatic", "pointerStatus", "startCommand", "statusCommand", "contextCommand", "nextSetupCommand", "readOrder", "startupChecklist", "resume", "fallbackPrompt", "rule"],
+        rootFields: ["schemaVersion", "schemaName", "decision", "automatic", "pointerStatus", "startCommand", "statusCommand", "contextCommand", "nextSetupCommand", "readOrder", "maintenance", "startupChecklist", "resume", "fallbackPrompt", "rule"],
+        maintenanceFields: ["status", "nextCommand", "source", "freshness", "followUp", "dependencyQuickCheck", "beforeEnvironmentChange", "afterEnvironmentChange", "rule"],
         purpose: "Smallest generated fallback entry artifact for AI hosts that did not auto-load an instruction-file pointer."
       },
       startHere: {

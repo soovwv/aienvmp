@@ -203,6 +203,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.outputs.discovery.file, ".aienvmp/discovery.json");
   assert.equal(schema.outputs.discovery.format, "json");
   assert.ok(schema.outputs.discovery.rootFields.includes("decision"));
+  assert.ok(schema.outputs.discovery.rootFields.includes("maintenance"));
+  assert.ok(schema.outputs.discovery.maintenanceFields.includes("nextCommand"));
+  assert.ok(schema.outputs.discovery.maintenanceFields.includes("dependencyQuickCheck"));
   assert.ok(schema.outputs.discovery.rootFields.includes("fallbackPrompt"));
   assert.match(schema.outputs.discovery.purpose, /Smallest generated fallback entry/);
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("nextAgent"));

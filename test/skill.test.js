@@ -26,6 +26,7 @@ test("packaged aienvmp skill points AI agents to current startup contracts", asy
   assert.match(skill, /onboard --agents cursor,copilot/);
   assert.match(skill, /aiSession/);
   assert.match(skill, /\.aienvmp\/discovery\.json/);
+  assert.match(skill, /maintenance\.nextCommand/);
   assert.match(skill, /\.aienvmp\/status\.json/);
   assert.match(skill, /npx aienvmp start --json/);
   assert.match(skill, /artifactFreshness\.state/);

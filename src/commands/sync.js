@@ -55,6 +55,10 @@ async function writeDiscoveryArtifact(dir, status = {}) {
   const discoveryDecision = status.agentPointers?.discoveryDecision || "fallback-required";
   const pointerStatus = status.agentPointers?.discovery || "missing: run aienvmp onboard";
   const nextSetupCommand = discoveryDecision === "auto-ready" ? "none" : "npx aienvmp onboard";
+  const maintenance = status.maintenanceLoop || {};
+  const followUp = status.followUpPlan || {};
+  const dependencyQuickCheck = status.dependencyQuickCheck || {};
+  const artifactFreshness = status.artifactFreshness || {};
   const readOrder = [
     ".aienvmp/discovery.json",
     ".aienvmp/README.md",
@@ -78,6 +82,19 @@ async function writeDiscoveryArtifact(dir, status = {}) {
     nextCommand: status.nextCommand || "aienvmp status --json",
     nextSetupCommand,
     readOrder,
+    maintenance: {
+      status: followUp.status === "pending" ? "follow-up-pending" : maintenance.state || status.state || "unknown",
+      nextCommand: followUp.status === "pending"
+        ? followUp.nextCommand || "aienvmp sync"
+        : maintenance.nextCommand || status.nextSafeCommand || status.nextCommand || "aienvmp status --json",
+      source: followUp.status === "pending" ? "follow-up" : maintenance.nextCommandSource || "status",
+      freshness: artifactFreshness.state || "unknown",
+      followUp: followUp.status || "clear",
+      dependencyQuickCheck: dependencyQuickCheck.status || "unknown",
+      beforeEnvironmentChange: status.aiSession?.beforeEnvironmentChange || "aienvmp intent --actor agent:id --action planned-change --target environment",
+      afterEnvironmentChange: status.aiSession?.afterEnvironmentChange || "aienvmp checkpoint --actor agent:id --summary what-changed --target environment",
+      rule: "Use this compact block as the recurring AI environment maintenance decision before another shared environment change."
+    },
     startupChecklist: status.agentPointers?.startupChecklist || [
       "run npx aienvmp start --json when automatic discovery is uncertain",
       "read .aienvmp/status.json before environment-affecting work",

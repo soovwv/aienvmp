@@ -57,7 +57,7 @@ Local mode is warn-only. Use strict doctor checks only for CI or explicit human-
 
 ```text
 AIENV.md                 # Markdown env map for AI agents
-.aienvmp/discovery.json  # smallest AI fallback entry: discovery decision + startup routine
+.aienvmp/discovery.json  # smallest AI fallback entry: discovery decision + maintenance routine
 .aienvmp/status.json     # first AI read: clear/review, next command, nextAgent hint
 .aienvmp/README.md       # generated start-here file when AI finds the artifact folder
 .aienvmp/summary.md      # compact AI/CI summary with start-here path
@@ -79,6 +79,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `agentPointers.discovery` tells AI whether Codex, Claude, and Gemini files can discover `aienvmp`.
 - `discover --json` exposes `aiDiscovery.decision`, `nextSetupCommand`, `startupChecklist`, `resume`, and `fallbackPrompt` for AI hosts that did not auto-load a pointer file.
 - `.aienvmp/discovery.json` gives the smallest generated fallback start point when instruction-file pointers are missing.
+- `discovery.json.maintenance` gives AI one compact next command for ongoing env upkeep.
 - `readOrder` starts at `.aienvmp/discovery.json`, then start-here, status, summary, env map, plan, timeline, and intents.
 - `agentDiscovery.sessionStart` documents the startup rule for schema-only AI/CI consumers.
 - `environmentChangeProtocol` gives one before/after-change contract for runtimes, dependencies, package managers, Docker, and global tools.

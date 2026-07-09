@@ -103,6 +103,11 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.equal(discovery.automatic, false);
   assert.equal(discovery.readOrder[0], ".aienvmp/discovery.json");
   assert.equal(discovery.nextSetupCommand, "npx aienvmp onboard");
+  assert.equal(discovery.maintenance.status, "clear");
+  assert.equal(discovery.maintenance.nextCommand, "aienvmp intent --actor agent:id --action planned-change --target environment");
+  assert.equal(discovery.maintenance.followUp, "clear");
+  assert.equal(discovery.maintenance.dependencyQuickCheck, "ready");
+  assert.match(discovery.maintenance.rule, /recurring AI environment maintenance decision/);
   assert.match(discovery.fallbackPrompt, /\.aienvmp\/discovery\.json/);
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "summary.md")));
   await assert.doesNotReject(fs.access(path.join(dir, ".aienvmp", "sbom.json")));

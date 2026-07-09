@@ -54,7 +54,7 @@ npx aienvmp start --json
 
 Use `aiDiscovery.resume` and `aiSession` from start/status/context JSON as the shortest startup routine: read order, stale refresh, intent, checkpoint, and handoff.
 
-If instruction-file pointers are missing or uncertain but `.aienvmp` exists, start at `.aienvmp/discovery.json`, then read `.aienvmp/status.json`, `.aienvmp/summary.md`, and `npx aienvmp context --json`.
+If instruction-file pointers are missing or uncertain but `.aienvmp` exists, start at `.aienvmp/discovery.json`, check `maintenance.nextCommand`, then read `.aienvmp/status.json`, `.aienvmp/summary.md`, and `npx aienvmp context --json`.
 
 Use `agentPointers.discovery` or the compact `status` line containing `discovery:` to decide whether Codex, Claude, Gemini, or optional agent pointers can find the env map.
 
