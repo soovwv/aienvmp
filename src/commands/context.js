@@ -33,6 +33,7 @@ export async function contextWorkspace(args) {
       aiBootstrap: preflight.aiBootstrap,
       artifactFreshness: preflight.artifactFreshness,
       strictRecommendation: preflight.strictRecommendation,
+      operationalSafety: preflight.operationalSafety,
       preflight,
       aiReadiness: preflight.aiReadiness,
       collaboration: preflight.collaboration,

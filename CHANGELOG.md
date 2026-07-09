@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Exposed `operationalSafety` in status and context outputs so AI agents see the must-not-change contract at session start.
 - Added `operationalSafety` to the AI schema so agents have one central warn-only and must-not-change contract.
 - Added `releaseReadiness.currentBatch` so AI and humans can see why npm publish remains held while stability changes accumulate.
 - Added a dashboard surface budget contract so future dashboard growth keeps the 10-second essential AI review surfaces first.

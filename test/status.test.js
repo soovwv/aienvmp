@@ -36,6 +36,7 @@ test("buildStatus returns a compact clear state", () => {
   assert.ok(status.contract.aiEntryFields.includes("nextAgent"));
   assert.ok(status.contract.aiEntryFields.includes("collaboration"));
   assert.ok(status.contract.aiEntryFields.includes("maintenanceLoop"));
+  assert.ok(status.contract.aiEntryFields.includes("operationalSafety"));
   assert.ok(status.contract.aiEntryFields.includes("environmentChangeProtocol"));
   assert.ok(status.contract.aiEntryFields.includes("dependencyReadSet"));
   assert.equal(status.counts.runtimes, 1);
@@ -121,6 +122,11 @@ test("buildStatus returns a compact clear state", () => {
   assert.equal(status.strictRecommendation.shouldFailLocal, false);
   assert.equal(status.strictRecommendation.ciCommand, "aienvmp doctor --strict all --json");
   assert.equal(status.strictRecommendation.releaseCommand, "aienvmp doctor --strict all --json");
+  assert.equal(status.operationalSafety.mode, "advisory-first");
+  assert.equal(status.operationalSafety.defaultBehavior, "warn-only");
+  assert.match(status.operationalSafety.mustNotDo.join(" "), /audit fix/);
+  assert.ok(status.operationalSafety.allowedWithoutIntent.includes("read generated artifacts"));
+  assert.ok(status.operationalSafety.requireIntentBefore.includes("global tool installation or removal"));
   assert.equal(status.enforcementProfile.gate.localDefault, "warn-only");
   assert.equal(status.enforcementProfile.gate.failCondition, "never in default mode");
   assert.equal(status.enforcementProfile.strictPlan.ciCommand, "aienvmp doctor --strict all --json");

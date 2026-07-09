@@ -6,8 +6,37 @@ export function preflightContract() {
     version: 1,
     stability: "additive",
     requiredFields: ["schemaVersion", "state", "decision", "quickstart", "commands", "artifacts"],
-    aiEntryFields: ["state", "summary", "readOrder", "aiSession", "aiBootstrap", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "aiReadiness", "collaboration", "coordinationResolution", "maintenanceLoop", "nextAgent", "coordination", "agentActivity", "agentPointers", "sbomRisk", "followUps", "followUpPlan", "environmentChangeProtocol", "dependencyReadSet", "dependencyChangeProtocol"],
+    aiEntryFields: ["state", "summary", "readOrder", "aiSession", "aiBootstrap", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "operationalSafety", "aiReadiness", "collaboration", "coordinationResolution", "maintenanceLoop", "nextAgent", "coordination", "agentActivity", "agentPointers", "sbomRisk", "followUps", "followUpPlan", "environmentChangeProtocol", "dependencyReadSet", "dependencyChangeProtocol"],
     rule: "Consumers should ignore unknown fields and treat missing optional fields as unavailable."
+  };
+}
+
+export function operationalSafetyContract() {
+  return {
+    mode: "advisory-first",
+    localImpact: "read-mostly",
+    defaultBehavior: "warn-only",
+    strictUse: "CI, release, or explicit human-requested gates only",
+    mustNotDo: [
+      "do not install, upgrade, downgrade, or remove global software automatically",
+      "do not switch package managers or rewrite lockfiles only to satisfy an agent preference",
+      "do not run automatic fix, audit fix, or broad update commands before reading status/context and dependency signals",
+      "do not use warnings as permission to interrupt production or shared workspace operations"
+    ],
+    allowedWithoutIntent: [
+      "read generated artifacts",
+      "inspect project-local files",
+      "edit source code when runtime, dependency, package manager, Docker, global tool, or policy state is not changed"
+    ],
+    requireIntentBefore: [
+      "runtime changes",
+      "dependency or lockfile changes",
+      "package manager changes",
+      "Docker context or daemon assumption changes",
+      "global tool installation or removal",
+      "security remediation that changes dependencies or environment state"
+    ],
+    rule: "Keep local operation lightweight and non-blocking; record intent before shared environment changes and use strict checks only when CI, release, or a human asks."
   };
 }
 
@@ -75,32 +104,7 @@ export function schemaContract() {
     followUpPlanFields: ["status", "count", "targets", "readFirst", "nextCommand", "commands", "reason", "rule"],
     coordinationResolutionFields: ["status", "mode", "targets", "readFirst", "nextCommand", "steps", "commands", "mustNotDo", "rule"],
     environmentChangeProtocolFields: ["mode", "appliesWhen", "state", "readFirst", "beforeChange", "afterChange", "commands", "mustNotDo", "nextCommand", "rule"],
-    operationalSafety: {
-      mode: "advisory-first",
-      localImpact: "read-mostly",
-      defaultBehavior: "warn-only",
-      strictUse: "CI, release, or explicit human-requested gates only",
-      mustNotDo: [
-        "do not install, upgrade, downgrade, or remove global software automatically",
-        "do not switch package managers or rewrite lockfiles only to satisfy an agent preference",
-        "do not run automatic fix, audit fix, or broad update commands before reading status/context and dependency signals",
-        "do not use warnings as permission to interrupt production or shared workspace operations"
-      ],
-      allowedWithoutIntent: [
-        "read generated artifacts",
-        "inspect project-local files",
-        "edit source code when runtime, dependency, package manager, Docker, global tool, or policy state is not changed"
-      ],
-      requireIntentBefore: [
-        "runtime changes",
-        "dependency or lockfile changes",
-        "package manager changes",
-        "Docker context or daemon assumption changes",
-        "global tool installation or removal",
-        "security remediation that changes dependencies or environment state"
-      ],
-      rule: "Keep local operation lightweight and non-blocking; record intent before shared environment changes and use strict checks only when CI, release, or a human asks."
-    },
+    operationalSafety: operationalSafetyContract(),
     aiLoop: {
       name: "AI maintenance loop",
       purpose: "Shared lightweight workflow for AI agents that maintain one workspace environment.",
@@ -231,7 +235,7 @@ export function schemaContract() {
       status: {
         file: ".aienvmp/status.json",
         command: "aienvmp status --json",
-        rootFields: ["state", "readOrder", "aiSession", "aiBootstrap", "nextCommand", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "decision", "counts", "aiReadiness", "collaboration", "coordinationResolution", "maintenanceLoop", "coordination", "agentPointers", "sbomRisk", "followUpPlan", "environmentChangeProtocol"],
+        rootFields: ["state", "readOrder", "aiSession", "aiBootstrap", "nextCommand", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "operationalSafety", "decision", "counts", "aiReadiness", "collaboration", "coordinationResolution", "maintenanceLoop", "coordination", "agentPointers", "sbomRisk", "followUpPlan", "environmentChangeProtocol"],
         agentPointerFields: ["installedCount", "missingCount", "installed", "missing", "discovery", "onboardCommand", "fallbackCommand", "fallbackRead", "next", "targets", "rule"],
         contract: preflightContract()
       },
@@ -263,7 +267,7 @@ export function schemaContract() {
       },
       context: {
         command: "aienvmp context --json",
-        rootFields: ["status", "startHere", "readOrder", "aiSession", "aiBootstrap", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "preflight", "aiReadiness", "collaboration", "coordinationResolution", "maintenanceLoop", "coordination", "agentPointers", "followUpPlan", "environmentChangeProtocol", "decision", "enforcement", "recommendedActions", "workspace", "dependencySnapshot", "lightSbom", "warnings"]
+        rootFields: ["status", "startHere", "readOrder", "aiSession", "aiBootstrap", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "operationalSafety", "preflight", "aiReadiness", "collaboration", "coordinationResolution", "maintenanceLoop", "coordination", "agentPointers", "followUpPlan", "environmentChangeProtocol", "decision", "enforcement", "recommendedActions", "workspace", "dependencySnapshot", "lightSbom", "warnings"]
       },
       handoff: {
         command: "aienvmp handoff --json",
