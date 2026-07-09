@@ -463,8 +463,7 @@ function remediationLines(item) {
   ];
 }
 
-export function renderDashboard(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
-  const data = JSON.stringify(dashboardPayload(manifest, timeline, warnings, intents, policy));
+export function dashboardDocument(data, clientScript) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -545,6 +544,16 @@ code{color:var(--code);background:#0a2017;border:1px solid #17462f;padding:2px 6
 <main class="shell" id="app"></main>
 <script type="application/json" id="data">${escapeHtml(data)}</script>
 <script>
+${clientScript}
+</script>
+</main>
+</body>
+</html>`;
+}
+
+export function renderDashboard(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
+  const data = JSON.stringify(dashboardPayload(manifest, timeline, warnings, intents, policy));
+  return dashboardDocument(data, `
 const {manifest,timeline,warnings,intents,policy,releaseReadiness,schemaQualitySignals}=JSON.parse(document.getElementById('data').textContent);
 function esc(s){return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
 const entries=o=>Object.entries(o||{});
@@ -800,10 +809,7 @@ document.getElementById('app').innerHTML=\`
 </section>
 <section style="margin-top:14px">\${card('Environment Ledger','',timelineHtml)}</section>
 \`;
-</script>
-</main>
-</body>
-</html>`;
+`);
 }
 
 function pushMap(lines, title, obj = {}) {
