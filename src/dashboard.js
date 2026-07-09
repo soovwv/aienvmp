@@ -27,6 +27,12 @@ export const dashboardSurfaceBudget = Object.freeze({
   noGrowthRule: "Prefer reusing existing Light SBOM, AI Session, Collaboration, Release Readiness, and Agent Pointers cards before adding new dashboard cards."
 });
 
+export const dashboardDiscoveryFallback = Object.freeze({
+  command: "aienvmp start --json",
+  read: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+  rule: "When automatic instruction-file discovery is uncertain, show the one-command AI startup fallback before lower-level discovery details."
+});
+
 export function dashboardCardPriority(title) {
   return dashboardEssentialCards.includes(title) ? "essential" : "support";
 }
@@ -41,6 +47,15 @@ export function dashboardPriorityClientScript() {
   return [
     `const essentialCards=${JSON.stringify(dashboardEssentialCards)};`,
     "const cardPriority=title=>essentialCards.includes(title)?'essential':'support';"
+  ].join("\n");
+}
+
+export function dashboardDiscoveryFallbackClientScript() {
+  return [
+    `const dashboardDiscoveryFallback=${JSON.stringify(dashboardDiscoveryFallback)};`,
+    "const agentDiscoveryFallbackRead=manifest.preflight?.agentPointers?.fallbackRead||dashboardDiscoveryFallback.read;",
+    "const agentDiscoveryFallbackCommand=manifest.preflight?.agentPointers?.fallbackCommand||dashboardDiscoveryFallback.command;",
+    "const agentDiscoveryFallbackHtml=`<div class=\"path\">Fallback resume: <code>${esc(agentDiscoveryFallbackRead.slice(0,4).join(' -> '))}</code></div><div class=\"path\">Verify: <code>${esc(agentDiscoveryFallbackCommand)}</code></div>`;"
   ].join("\n");
 }
 
