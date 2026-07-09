@@ -302,12 +302,14 @@ export function schemaContract() {
       currentBatch: {
         status: "accumulating",
         releaseType: "stability-batch",
-        themes: ["AI discovery", "AI quality signals", "SBOM interoperability", "recommendation positioning", "dashboard surface budget", "release gating"],
+        themes: ["AI discovery", "dependency quick check", "dashboard parity", "AI quality signals", "SBOM interoperability", "recommendation positioning", "release gating"],
         changes: [
-          "best-effort AI discovery and fallback prompt contract",
+          "best-effort AI discovery with aiDiscovery.decision, startupChecklist, and fallback prompt contract",
+          "dashboard Agent Pointers mirrors auto-ready versus fallback-required startup decisions",
+          "dependencyQuickCheck surfaced in SBOM, status/context, summary, handoff, dashboard, and demo outputs",
           "operational safety contract in status/context",
           "quality signals in schema/status/context/summary/dashboard",
-          "AI adoption checklist and demo recommendation signals",
+          "AI adoption checklist and demo recommendation signals, including discovery decision and dashboard parity",
           "external SBOM/security scanner guidance",
           "manual batched release gate"
         ],
@@ -342,6 +344,7 @@ export function schemaContract() {
         readyWhen: [
           "currentBatch changes are reviewed as one release note group",
           "documented JSON contracts are additive and compatible",
+          "aiDiscovery.decision and dependencyQuickCheck are visible in the AI JSON contract, generated artifacts, dashboard, and examples",
           "README, examples, schema, CHANGELOG, dashboard, and packaged AI skill describe the same AI workspace coordination contract",
           "package.json version is intentionally bumped for 0.2.0 or the chosen release"
         ],
@@ -378,9 +381,11 @@ export function schemaContract() {
       ],
       stabilizationFocus: [
         "AI session/status/context contract",
+        "aiDiscovery.decision and fallback startup contract",
         "light SBOM and dependency-change review loop",
+        "dependencyQuickCheck across AI and human surfaces",
         "multi-agent intent, checkpoint, timeline, and handoff flow",
-        "dashboard essential surfaces and release readiness",
+        "dashboard essential surfaces, discovery parity, and release readiness",
         "manual batched release workflow"
       ],
       stableContractRule: "After 0.2.0, documented JSON fields are additive and backward-compatible; breaking changes require a contractVersion bump and migration note.",
