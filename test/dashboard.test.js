@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { dashWorkspace } from "../src/commands/dash.js";
 import { writeJson } from "../src/fsutil.js";
-import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
+import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
 
 test("renderDashboard includes the audit summary surface", () => {
   const html = renderDashboard({
@@ -400,6 +400,11 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.equal(dashboardEssentialSurfaces.nextCommand, "Next command");
   assert.ok(dashboardEssentialSurfaces.essentialCards.includes("Light SBOM"));
   assert.match(dashboardEssentialSurfaces.rule, /AI startup contract/);
+  assert.equal(dashboardSurfaceBudget.mode, "essential-first");
+  assert.equal(dashboardSurfaceBudget.primaryReviewTime, "10 seconds");
+  assert.ok(dashboardSurfaceBudget.defaultPriority.includes("firstRead"));
+  assert.match(dashboardSurfaceBudget.supportCardRule, /must not hide or replace/);
+  assert.match(dashboardSurfaceBudget.noGrowthRule, /before adding new dashboard cards/);
   assert.match(dashboardEssentialSurfaceClientScript(), /const essentialSurfaces=/);
   assert.match(dashboardPriorityClientScript(), /const essentialCards=\["AI Session"/);
   assert.match(dashboardPriorityClientScript(), /const cardPriority=title=>essentialCards\.includes\(title\)\?'essential':'support'/);

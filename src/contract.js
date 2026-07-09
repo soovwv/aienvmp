@@ -1,4 +1,4 @@
-import { dashboardEssentialSurfaces } from "./dashboard.js";
+import { dashboardEssentialSurfaces, dashboardSurfaceBudget } from "./dashboard.js";
 
 export function preflightContract() {
   return {
@@ -128,6 +128,7 @@ export function schemaContract() {
     dashboard: {
       mode: "light-human-view",
       essentialSurfaces: dashboardEssentialSurfaces,
+      surfaceBudget: dashboardSurfaceBudget,
       rule: "Dashboard support cards may grow, but the control strip, 10-second review, next command, first-read brief, and essential cards should stay visible and aligned with AI outputs."
     },
     releaseGate: {

@@ -19,6 +19,14 @@ export const dashboardEssentialSurfaces = Object.freeze({
   rule: "Keep the control strip, 10-second review, next command, first-read brief, and essential cards visible before adding support cards; the dashboard is a human view of the AI startup contract."
 });
 
+export const dashboardSurfaceBudget = Object.freeze({
+  mode: "essential-first",
+  primaryReviewTime: "10 seconds",
+  defaultPriority: ["controlStrip", "tenSecondReview", "nextCommand", "firstRead", "essentialCards"],
+  supportCardRule: "Support cards may exist, but must not hide or replace the essential AI startup surfaces.",
+  noGrowthRule: "Prefer reusing existing Light SBOM, AI Session, Collaboration, Release Readiness, and Agent Pointers cards before adding new dashboard cards."
+});
+
 export function dashboardCardPriority(title) {
   return dashboardEssentialCards.includes(title) ? "essential" : "support";
 }
