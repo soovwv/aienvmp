@@ -344,7 +344,8 @@ export function schemaContract() {
         command: "aienvmp discover --json",
         mode: "read-only",
         rootFields: ["status", "detected", "startHere", "readOrder", "freshness", "nextCommand", "agentPointers", "aiDiscovery", "artifacts", "rule"],
-        aiDiscoveryFields: ["mode", "automatic", "pointerStatus", "limitation", "installCommand", "safeStart", "sessionStart", "fallbackRead", "fallbackPrompt", "humanInstruction", "rule"],
+        aiDiscoveryFields: ["mode", "automatic", "pointerStatus", "limitation", "installCommand", "safeStart", "sessionStart", "fallbackRead", "resume", "fallbackPrompt", "humanInstruction", "rule"],
+        resumeFields: ["purpose", "readFirst", "nextCommand", "allowed", "beforeEnvironmentChange", "afterEnvironmentChange", "handoff", "mustNotDo", "rule"],
         purpose: "Zero-write detection command for AI agents or humans that need to know whether a workspace already has aienvmp artifacts."
       },
       startHere: {

@@ -20,6 +20,11 @@ test("discover reports missing aienvmp artifacts without writing files", async (
   assert.equal(result.aiDiscovery.automatic, false);
   assert.equal(result.aiDiscovery.pointerStatus, "missing");
   assert.equal(result.aiDiscovery.safeStart, "npx aienvmp sync");
+  assert.equal(result.aiDiscovery.resume.nextCommand, "npx aienvmp sync");
+  assert.equal(result.aiDiscovery.resume.readFirst[0], ".aienvmp/README.md");
+  assert.match(result.aiDiscovery.resume.beforeEnvironmentChange, /planned-change/);
+  assert.match(result.aiDiscovery.resume.afterEnvironmentChange, /checkpoint/);
+  assert.match(result.aiDiscovery.resume.mustNotDo.join(" "), /automatic pickup/);
   assert.ok(result.aiDiscovery.sessionStart.includes("Read .aienvmp/status.json before environment-affecting work."));
   assert.match(result.aiDiscovery.fallbackPrompt, /Run npx aienvmp sync/);
   assert.match(result.aiDiscovery.humanInstruction, /Paste the fallbackPrompt/);
@@ -51,6 +56,8 @@ test("discover finds generated start-here artifacts and agent pointers", async (
   assert.equal(result.aiDiscovery.automatic, true);
   assert.equal(result.aiDiscovery.pointerStatus, "ready: codex");
   assert.equal(result.aiDiscovery.safeStart, "npx aienvmp status");
+  assert.equal(result.aiDiscovery.resume.nextCommand, "npx aienvmp status");
+  assert.match(result.aiDiscovery.resume.rule, /startup contract/);
   assert.match(result.aiDiscovery.fallbackPrompt, /Use aienvmp as the workspace env map/);
   assert.deepEqual(result.aiDiscovery.fallbackRead, [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md"]);
   assert.match(result.rule, /does not write files/);
@@ -75,6 +82,8 @@ test("discover JSON output is machine-readable for AI agents", async () => {
   assert.equal(json.localMode, "read-only");
   assert.equal(json.aiDiscovery.mode, "best-effort");
   assert.equal(json.aiDiscovery.installCommand, "npx aienvmp onboard");
+  assert.equal(json.aiDiscovery.resume.handoff, "aienvmp handoff --record --actor agent:id");
+  assert.match(json.aiDiscovery.resume.allowed, /project-local code work/);
   assert.ok(json.aiDiscovery.sessionStart.some((item) => item.includes("Record intent")));
   assert.match(json.aiDiscovery.fallbackPrompt, /aienvmp context --json/);
   assert.match(json.aiDiscovery.humanInstruction, /instruction-file pointer/);

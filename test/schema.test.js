@@ -148,6 +148,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("automatic"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("fallbackRead"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("sessionStart"));
+  assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("resume"));
+  assert.ok(schema.outputs.discover.resumeFields.includes("beforeEnvironmentChange"));
+  assert.ok(schema.outputs.discover.resumeFields.includes("mustNotDo"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("fallbackPrompt"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("humanInstruction"));
   assert.match(schema.outputs.discover.purpose, /Zero-write detection/);

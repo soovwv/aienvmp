@@ -125,15 +125,32 @@ function pointerDiscovery(pointers = []) {
 
 function aiDiscoverySummary({ detected = false, stale = true, agentPointers = {}, readOrder = [] } = {}) {
   const installed = agentPointers.installed || [];
+  const safeStart = detected && !stale ? "npx aienvmp status" : "npx aienvmp sync";
+  const fallbackRead = readOrder.slice(0, 4);
   return {
     mode: "best-effort",
     automatic: installed.length > 0,
     pointerStatus: installed.length ? `ready: ${installed.join(", ")}` : "missing",
     limitation: "AI hosts only auto-read their supported instruction files; otherwise use the fallback read path.",
     installCommand: "npx aienvmp onboard",
-    safeStart: detected && !stale ? "npx aienvmp status" : "npx aienvmp sync",
+    safeStart,
     sessionStart,
-    fallbackRead: readOrder.slice(0, 4),
+    fallbackRead,
+    resume: {
+      purpose: "Minimum AI startup routine when instruction-file automatic discovery is uncertain.",
+      readFirst: fallbackRead.length ? fallbackRead : [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
+      nextCommand: safeStart,
+      allowed: "project-local code work can continue when status/context do not require environment review",
+      beforeEnvironmentChange: "aienvmp intent --actor agent:id --action planned-change --target environment",
+      afterEnvironmentChange: "aienvmp checkpoint --actor agent:id --summary what-changed --target environment",
+      handoff: "aienvmp handoff --record --actor agent:id",
+      mustNotDo: [
+        "do not assume automatic pickup worked; verify discovery or read fallback artifacts first",
+        "do not change runtimes, dependencies, package managers, Docker, or global tools before intent/review",
+        "do not run sync repeatedly when status artifacts are fresh"
+      ],
+      rule: "When an AI host did not auto-load a pointer file, use this resume routine as the shared environment startup contract."
+    },
     fallbackPrompt: detected
       ? "Use aienvmp as the workspace env map. Read .aienvmp/README.md, then .aienvmp/status.json, then run npx aienvmp context --json before environment changes."
       : "Run npx aienvmp sync to create the AI env map, then read .aienvmp/README.md and .aienvmp/status.json.",
