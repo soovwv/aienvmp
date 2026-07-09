@@ -60,8 +60,10 @@ export function renderStatusText(output = {}, options = {}) {
   ];
 
   if (options.verbose) {
+    const dependencyQuickCheck = output.dependencyQuickCheck || {};
     lines.push(
       `ai: ${output.quickstart?.readFirst || "aienvmp status --write"} -> ${detail}`,
+      `dependency: ${dependencyQuickCheck.status || "unknown"} / ${dependencyQuickCheck.scannerEvidence || "unknown"} / ${dependencyQuickCheck.nextCommand || "aienvmp sbom --json"}`,
       `stale: ${output.aiSession?.ifMissingOrStale || output.artifactFreshness?.refreshCommand || "aienvmp sync"}`,
       `intent: ${output.intentTargets?.[0]?.command || output.commands?.recordIntent || "aienvmp intent --actor agent:id --action planned-change"}`,
       `checkpoint: ${output.commands?.checkpoint || "aienvmp checkpoint --actor agent:id --summary what-changed --target environment"}`,

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added the dependency quick-check decision to verbose `status` text while keeping the default status view at five lines.
 - Updated plain `sbom` output to show the dependency quick-check decision, scanner evidence, and next command instead of an empty risk-only next value.
 - Made the README, CLI help, and adoption guide show `sbom --json` as the simple dependency/security pre-change check.
 - Updated `releaseReadiness.currentBatch` so the held 0.2.0 batch includes version drift positioning and centralized AI discovery/read-order contract work.

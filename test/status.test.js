@@ -451,6 +451,7 @@ test("statusWorkspace verbose text keeps command details", async () => {
   }
 
   const output = lines.join("\n");
+  assert.match(output, /dependency: ready \/ unknown \/ aienvmp intent --actor agent:id --action planned-change --target dependency/);
   assert.match(output, /stale: aienvmp sync/);
   assert.match(output, /intent: aienvmp intent/);
   assert.match(output, /checkpoint: aienvmp checkpoint/);
