@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `releaseReadiness.publishGate` so AI/CI have one hold-or-publish decision for the batched 0.2.0 stability release.
 - Mirrored `sbom.dependencyCoordination` in the dashboard Light SBOM card so humans see the same dependency-change coordination loop as AI agents.
 - Added `sbom.dependencyCoordination` so AI agents can connect light SBOM review to intent, scanner evidence, checkpoint, and handoff steps.
 - Added dashboard fallback resume guidance to the Agent Pointers card so humans can see the same AI startup path when automatic discovery is uncertain.

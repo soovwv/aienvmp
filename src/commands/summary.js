@@ -84,6 +84,7 @@ export function renderSummary(status = {}, manifest = {}) {
   const qualityPrinciples = toList(qualitySignals.principles).slice(0, 5);
   const qualityChecks = toList(qualitySignals.checks);
   const publishDecision = releaseReadiness.publishDecision || {};
+  const publishGate = releaseReadiness.publishGate || {};
   const currentBatch = releaseReadiness.currentBatch || {};
   const releaseChecks = toList(releaseReadiness.requiredBeforeStable);
 
@@ -171,6 +172,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- target: ${releaseReadiness.target || "0.2.0"}`,
     `- status: ${releaseReadiness.status || "prototype-hardening"}`,
     `- default decision: ${publishDecision.default || "hold"}`,
+    `- publish gate: ${publishGate.status || "hold"} / ${publishGate.nextAction || "Keep accumulating tested changes until the batch is intentionally versioned."}`,
     `- current batch: ${currentBatch.status || "accumulating"} / ${currentBatch.releaseType || "stability-batch"} / ${toList(currentBatch.themes).join(", ") || "AI contract, dashboard, SBOM, release gate"}`,
     `- batch reason: ${currentBatch.reason || "Accumulate meaningful changes before one intentional release."}`,
     `- gate: ${releaseChecks[0] || "npm run release:check passes locally"}`,

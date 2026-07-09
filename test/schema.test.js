@@ -121,6 +121,13 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.releaseReadiness.publishDecision.publishWhen.join(" "), /meaningful AI contract/);
   assert.match(schema.releaseReadiness.publishDecision.holdWhen.join(" "), /small documentation/);
   assert.match(schema.releaseReadiness.publishDecision.emergencyException, /Security/);
+  assert.equal(schema.releaseReadiness.publishGate.status, "hold");
+  assert.match(schema.releaseReadiness.publishGate.reason, /stability batch/);
+  assert.match(schema.releaseReadiness.publishGate.nextAction, /do not npm publish/);
+  assert.ok(schema.releaseReadiness.publishGate.requiredEvidence.includes("npm run release:check"));
+  assert.match(schema.releaseReadiness.publishGate.readyWhen.join(" "), /release note group/);
+  assert.match(schema.releaseReadiness.publishGate.holdWhen.join(" "), /package\.json version/);
+  assert.match(schema.releaseReadiness.publishGate.rule, /single AI-readable npm publish decision/);
   assert.match(schema.releaseReadiness.doNotPublishUntil.join(" "), /currentBatch changes/);
   assert.match(schema.releaseReadiness.doNotPublishUntil.join(" "), /package\.json version/);
   assert.ok(schema.releaseReadiness.requiredBeforeStable.includes("npm run release:check passes locally"));

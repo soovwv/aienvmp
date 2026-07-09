@@ -474,7 +474,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardReleaseReadinessClientScript(), /const currentBatch=releaseReadiness\?\.currentBatch\|\|\{\}/);
   assert.match(dashboardReleaseReadinessClientScript(), /const releaseEvidence=releaseReadiness\?\.evidenceCommands\|\|\[\]/);
   assert.match(dashboardReleaseReadinessClientScript(), /const releaseFocus=releaseReadiness\?\.stabilizationFocus\|\|\[\]/);
+  assert.match(dashboardReleaseReadinessClientScript(), /const publishGate=releaseReadiness\?\.publishGate\|\|\{\}/);
   assert.match(dashboardReleaseReadinessClientScript(), /publishDecision=releaseReadiness\?\.publishDecision\|\|\{\}/);
+  assert.match(dashboardReleaseReadinessClientScript(), /single AI-readable/);
   assert.match(dashboardReleaseReadinessClientScript(), /Batch meaningful changes before one npm publish/);
   assert.match(dashboardReleaseReadinessClientScript(), /currentBatch\.themes/);
   assert.match(dashboardQualitySignalsClientScript(), /const qualitySignals=manifest\.preflight\?\.qualitySignals/);
@@ -507,6 +509,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const releaseReadinessHtml=/);
   assert.match(html, /const qualitySignalsHtml=/);
   assert.match(html, /const currentBatch=releaseReadiness\?\.currentBatch/);
+  assert.match(html, /const publishGate=releaseReadiness\?\.publishGate/);
   assert.match(html, /releaseEvidence=releaseReadiness\?\.evidenceCommands/);
   assert.match(html, /releaseFocus=releaseReadiness\?\.stabilizationFocus/);
   assert.match(html, /Environment Protocol/);

@@ -299,6 +299,25 @@ export function schemaContract() {
         ],
         emergencyException: "Security or broken-package fixes may publish sooner, but still run the release gate."
       },
+      publishGate: {
+        status: "hold",
+        reason: "0.2.0 is still accumulating AI-contract, dashboard, SBOM, and release-gate changes as one stability batch.",
+        nextAction: "Keep committing tested stabilization changes; do not npm publish until the batch is intentionally versioned and release notes are reviewed.",
+        requiredEvidence: ["npm run release:check", "node bin/aienvmp.js schema --json", "node bin/aienvmp.js demo --json", "npm pack --dry-run"],
+        readyWhen: [
+          "currentBatch changes are reviewed as one release note group",
+          "documented JSON contracts are additive and compatible",
+          "README, examples, schema, CHANGELOG, dashboard, and packaged AI skill describe the same AI workspace coordination contract",
+          "package.json version is intentionally bumped for 0.2.0 or the chosen release"
+        ],
+        holdWhen: [
+          "changes are still accumulating for the stability batch",
+          "release notes have not been reviewed as one group",
+          "package.json version has not been intentionally bumped",
+          "release:check has not passed after the final batched change"
+        ],
+        rule: "Treat publishGate.status as the single AI-readable npm publish decision; local commits may continue while npm publish remains held."
+      },
       doNotPublishUntil: [
         "currentBatch changes are reviewed as one release note group",
         "README, examples, schema, and CHANGELOG describe the same AI workspace coordination contract",
