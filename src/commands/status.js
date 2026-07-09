@@ -49,7 +49,8 @@ export function renderStatusText(output = {}, options = {}) {
     : `aienvmp status --json -> ${detail}`;
   const startHere = output.artifacts?.startHere || ".aienvmp/README.md";
   const summary = output.artifacts?.summary || ".aienvmp/summary.md";
-  const discovery = output.agentPointers?.discovery || "missing: run aienvmp onboard";
+  const discoveryDecision = output.agentPointers?.discoveryDecision || "fallback-required";
+  const discovery = `${discoveryDecision} / ${output.agentPointers?.discovery || "missing: run aienvmp onboard"}`;
   const lines = [
     `${output.state || "unknown"}: ${output.summary || "Run aienvmp context --json for details."}`,
     `ready: ${readiness} | collaboration: ${collaboration}`,
