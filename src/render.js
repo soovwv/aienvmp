@@ -717,7 +717,7 @@ document.getElementById('app').innerHTML=\`
   \${briefItem('Freshness',artifactFreshnessValue+' / '+artifactFreshnessNext)}
   \${briefItem('Start here',startHere)}
   \${briefItem('Read first',firstRead)}
-  \${briefItem('AI discovery',agentDiscovery)}
+  \${briefItem('AI discovery',agentDiscoveryDecision+' / '+agentDiscovery)}
   \${briefItem('Review targets',reviewTargets.length?reviewTargets.slice(0,4).join(', '):'none')}
   \${briefItem('Local mode',safeMode)}
 </section>

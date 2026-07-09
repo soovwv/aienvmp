@@ -151,6 +151,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.releaseReadiness.batchRule, /one npm publish/);
   assert.equal(schema.dashboard.mode, "light-human-view");
   assert.equal(schema.dashboard.discoveryFallback.command, "aienvmp start --json");
+  assert.ok(schema.dashboard.discoveryFallback.decisionValues.includes("fallback-required"));
+  assert.equal(schema.dashboard.discoveryFallback.nextSetupCommand, "aienvmp onboard");
+  assert.match(schema.dashboard.discoveryFallback.startupChecklist.join(" "), /record intent before/);
   assert.deepEqual(schema.dashboard.discoveryFallback.read, [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
   assert.equal(schema.dashboard.releaseDefaults.target, "0.2.0");
   assert.equal(schema.dashboard.releaseDefaults.evidence, "npm run release:check");

@@ -29,6 +29,14 @@ export const dashboardSurfaceBudget = Object.freeze({
 
 export const dashboardDiscoveryFallback = Object.freeze({
   command: "aienvmp start --json",
+  decisionValues: ["auto-ready", "fallback-required"],
+  nextSetupCommand: "aienvmp onboard",
+  startupChecklist: [
+    "run aienvmp start --json when automatic discovery is uncertain",
+    "read .aienvmp/README.md, .aienvmp/status.json, and .aienvmp/summary.md",
+    "record intent before shared environment changes",
+    "checkpoint and hand off after accepted environment changes"
+  ],
   read: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
   rule: "When automatic instruction-file discovery is uncertain, show the one-command AI startup fallback before lower-level discovery details."
 });
@@ -81,7 +89,10 @@ export function dashboardDiscoveryFallbackClientScript() {
     `const dashboardDiscoveryFallback=${JSON.stringify(dashboardDiscoveryFallback)};`,
     "const agentDiscoveryFallbackRead=manifest.preflight?.agentPointers?.fallbackRead||dashboardDiscoveryFallback.read;",
     "const agentDiscoveryFallbackCommand=manifest.preflight?.agentPointers?.fallbackCommand||dashboardDiscoveryFallback.command;",
-    "const agentDiscoveryFallbackHtml=`<div class=\"path\">Fallback resume: <code>${esc(agentDiscoveryFallbackRead.slice(0,4).join(' -> '))}</code></div><div class=\"path\">Verify: <code>${esc(agentDiscoveryFallbackCommand)}</code></div>`;"
+    "const agentDiscoveryDecision=(agentPointerCount||0)>0?'auto-ready':'fallback-required';",
+    "const agentDiscoverySetup=agentDiscoveryDecision==='auto-ready'?'none':dashboardDiscoveryFallback.nextSetupCommand;",
+    "const agentDiscoveryChecklist=dashboardDiscoveryFallback.startupChecklist||[];",
+    "const agentDiscoveryFallbackHtml=`<table><tr><th>Decision</th><td><code>${esc(agentDiscoveryDecision)}</code></td></tr><tr><th>Setup</th><td><code>${esc(agentDiscoverySetup)}</code></td></tr><tr><th>Fallback</th><td><code>${esc(agentDiscoveryFallbackCommand)}</code></td></tr><tr><th>Read</th><td><code>${esc(agentDiscoveryFallbackRead.slice(0,4).join(' -> '))}</code></td></tr></table><div class=\"timeline\">${agentDiscoveryChecklist.slice(0,4).map(item=>`<div class=\"event\"><time>startup</time><div>${esc(item)}</div></div>`).join('')}</div>`;"
   ].join("\n");
 }
 

@@ -400,8 +400,12 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const agentDiscovery=manifest\.preflight\?\.agentPointers\?\.discovery/);
   assert.match(html, /const dashboardDiscoveryFallback=/);
   assert.match(html, /const agentDiscoveryFallbackRead=manifest\.preflight\?\.agentPointers\?\.fallbackRead/);
-  assert.match(html, /Fallback resume/);
+  assert.match(html, /agentDiscoveryDecision/);
+  assert.match(html, /agentDiscoverySetup/);
+  assert.match(html, /startup/);
   assert.match(html, /aienvmp start --json/);
+  assert.match(html, /fallback-required/);
+  assert.match(html, /auto-ready/);
   assert.match(html, /AI discovery/);
   assert.match(html, /AI Session/);
   assert.match(html, /Before env/);
@@ -423,8 +427,15 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.deepEqual(dashboardEssentialSurfaces.controlStrip, ["AI readiness", "Freshness", "Collaboration", "SBOM risk"]);
   assert.deepEqual(dashboardEssentialSurfaces.tenSecondReview, ["Start here", "Next command", "Review target", "Mode"]);
   assert.equal(dashboardDiscoveryFallback.command, "aienvmp start --json");
+  assert.deepEqual(dashboardDiscoveryFallback.decisionValues, ["auto-ready", "fallback-required"]);
+  assert.equal(dashboardDiscoveryFallback.nextSetupCommand, "aienvmp onboard");
+  assert.match(dashboardDiscoveryFallback.startupChecklist.join(" "), /checkpoint and hand off/);
   assert.deepEqual(dashboardDiscoveryFallback.read, [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
   assert.match(dashboardDiscoveryFallbackClientScript(), /aienvmp start --json/);
+  assert.match(dashboardDiscoveryFallbackClientScript(), /agentDiscoveryDecision=/);
+  assert.match(dashboardDiscoveryFallbackClientScript(), /fallback-required/);
+  assert.match(dashboardDiscoveryFallbackClientScript(), /agentDiscoverySetup/);
+  assert.match(dashboardDiscoveryFallbackClientScript(), /startup/);
   assert.ok(dashboardEssentialSurfaces.firstRead.includes("Start here"));
   assert.equal(dashboardEssentialSurfaces.nextCommand, "Next command");
   assert.ok(dashboardEssentialSurfaces.essentialCards.includes("Light SBOM"));
@@ -639,6 +650,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /package\.json/);
   assert.match(html, /express/);
   assert.match(html, /Agent Pointers/);
+  assert.match(html, /<th>Decision<\/th><td><code>\$\{esc\(agentDiscoveryDecision\)\}<\/code><\/td>/);
+  assert.match(html, /<th>Setup<\/th><td><code>\$\{esc\(agentDiscoverySetup\)\}<\/code><\/td>/);
   assert.match(html, /aienvmp pointer installed/);
   assert.match(html, /file detected, pointer missing/);
   assert.match(html, /aienvmp onboard/);
