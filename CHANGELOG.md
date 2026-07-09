@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Surfaced `dependencyQuickCheck` in the conflict demo so the first proof run shows the compact dependency-work decision.
 - Added `dependencyQuickCheck` to status/context preflight surfaces so AI agents can make the same compact dependency-work decision before opening the full SBOM.
 - Surfaced `dependencyQuickCheck` in summary and handoff continuation output so the next AI sees the compact dependency-work decision without opening the full SBOM first.
 - Added `dependencyQuickCheck` to light SBOM outputs, CycloneDX-lite metadata, and the dashboard so AI agents get a compact dependency-work decision before installs, lockfile edits, remediation, or release review.

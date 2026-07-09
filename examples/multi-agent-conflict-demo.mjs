@@ -23,6 +23,7 @@ const context = JSON.parse(await run("context", ["--json"]));
 const conflictTargets = status.coordination?.conflictTargets || [];
 const collaboration = status.collaboration?.status || "unknown";
 const discovery = status.agentPointers?.discovery || "unknown";
+const dependencyQuickCheck = status.dependencyQuickCheck || context.dependencyQuickCheck || {};
 const recommendation = schemaContract().recommendation;
 const adoptionSignals = (recommendation.adoptionChecklist || []).map((item) => item.signal);
 const aiProofSignals = adoptionSignals.filter((item) => [
@@ -40,6 +41,7 @@ console.log(`workspace: ${workspace}`);
 console.log(`AI discovery: ${discovery}`);
 console.log(`collaboration: ${collaboration}`);
 console.log(`conflict targets: ${conflictTargets.join(", ")}`);
+console.log(`dependency quick check: ${dependencyQuickCheck.status || "unknown"} / ${dependencyQuickCheck.scannerEvidence || "unknown"} / ${dependencyQuickCheck.nextCommand || "aienvmp sbom --json"}`);
 console.log(`next command: ${status.nextSafeCommand || status.nextCommand}`);
 console.log(`start here: ${status.artifacts?.startHere || ".aienvmp/README.md"}`);
 const readOrder = status.aiSession?.readFirst || status.readOrder || [
@@ -47,7 +49,7 @@ const readOrder = status.aiSession?.readFirst || status.readOrder || [
   status.aiBootstrap?.readFirst || ".aienvmp/status.json"
 ];
 console.log(`read order: ${readOrder.join(" -> ")}`);
-console.log(`context fields: ${Object.keys(context).filter((key) => ["status", "aiBootstrap", "collaboration", "coordination", "agentPointers", "lightSbom"].includes(key)).join(", ")}`);
+console.log(`context fields: ${Object.keys(context).filter((key) => ["status", "aiBootstrap", "collaboration", "coordination", "agentPointers", "dependencyQuickCheck", "lightSbom"].includes(key)).join(", ")}`);
 console.log(`recommendation: ${recommendation.shortPitch}`);
 console.log(`adoption signals: ${adoptionSignals.slice(0, 3).join(", ")}`);
 console.log(`AI proof signals: ${aiProofSignals.join(", ")}`);

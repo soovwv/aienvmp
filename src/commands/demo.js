@@ -22,6 +22,7 @@ export async function demoWorkspace(args = {}) {
 
   const status = await statusWorkspace({ dir, json: false, quiet: true });
   const context = await captureJson(() => contextWorkspace({ dir, json: true }));
+  const dependencyQuickCheck = status.dependencyQuickCheck || context.dependencyQuickCheck || {};
   const recommendation = schemaContract().recommendation;
   const adoptionSignals = (recommendation.adoptionChecklist || []).map((item) => item.signal);
   const aiProofSignals = adoptionSignals.filter((item) => [
@@ -39,6 +40,12 @@ export async function demoWorkspace(args = {}) {
     aiDiscovery: status.agentPointers?.discovery || "unknown",
     collaboration: status.collaboration?.status || "unknown",
     conflictTargets: status.coordination?.conflictTargets || [],
+    dependencyQuickCheck: {
+      status: dependencyQuickCheck.status || "unknown",
+      nextCommand: dependencyQuickCheck.nextCommand || "aienvmp sbom --json",
+      scannerEvidence: dependencyQuickCheck.scannerEvidence || "unknown",
+      reviewTargets: dependencyQuickCheck.reviewTargets || []
+    },
     nextCommand: status.nextSafeCommand || status.nextCommand || "aienvmp status --json",
     startHere: status.artifacts?.startHere || ".aienvmp/README.md",
     readFirst: status.aiBootstrap?.readFirst || ".aienvmp/status.json",
@@ -47,7 +54,7 @@ export async function demoWorkspace(args = {}) {
       status.aiBootstrap?.readFirst || ".aienvmp/status.json"
     ],
     artifactFreshness: status.artifactFreshness || {},
-    contextFields: Object.keys(context).filter((key) => ["status", "aiBootstrap", "artifactFreshness", "collaboration", "coordination", "agentPointers", "lightSbom"].includes(key)),
+    contextFields: Object.keys(context).filter((key) => ["status", "aiBootstrap", "artifactFreshness", "collaboration", "coordination", "agentPointers", "dependencyQuickCheck", "lightSbom"].includes(key)),
     point: "Two AI agents planned dependency changes in one workspace, so aienvmp switches shared environment changes to review-first without blocking local code work."
   };
 
@@ -63,6 +70,7 @@ export async function demoWorkspace(args = {}) {
     console.log(`AI discovery: ${result.aiDiscovery}`);
     console.log(`collaboration: ${result.collaboration}`);
     console.log(`conflict targets: ${result.conflictTargets.join(", ")}`);
+    console.log(`dependency quick check: ${result.dependencyQuickCheck.status} / ${result.dependencyQuickCheck.scannerEvidence} / ${result.dependencyQuickCheck.nextCommand}`);
     console.log(`next command: ${result.nextCommand}`);
     console.log(`start here: ${result.startHere}`);
     console.log(`read order: ${result.readOrder.join(" -> ")}`);
