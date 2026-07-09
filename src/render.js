@@ -674,7 +674,7 @@ const bootstrapState=[aiBootstrap.projectLocalWork||'allowed',aiBootstrap.enviro
 const agentDiscovery=manifest.preflight?.agentPointers?.discovery||((agentPointerCount||0)>0?'ready':'missing: run aienvmp onboard');
 const agentDiscoveryNext=manifest.preflight?.agentPointers?.next||'Run aienvmp onboard to install AI instruction-file pointers.';
 const agentDiscoveryFallbackRead=manifest.preflight?.agentPointers?.fallbackRead||['.aienvmp/README.md','.aienvmp/status.json','.aienvmp/summary.md','aienvmp context --json'];
-const agentDiscoveryFallbackCommand=manifest.preflight?.agentPointers?.fallbackCommand||'aienvmp discover --json';
+const agentDiscoveryFallbackCommand=manifest.preflight?.agentPointers?.fallbackCommand||'aienvmp start --json';
 const agentDiscoveryFallbackHtml=\`<div class="path">Fallback resume: <code>\${esc(agentDiscoveryFallbackRead.slice(0,4).join(' -> '))}</code></div><div class="path">Verify: <code>\${esc(agentDiscoveryFallbackCommand)}</code></div>\`;
 const briefItem=(key,value)=>\`<div class="brief-item"><div class="brief-k">\${key}</div><div class="brief-v">\${esc(value)}</div></div>\`;
 const handoffHtml=\`<table><tr><th>Status</th><td>\${reviewRequired?'review-required':'clear'}</td></tr><tr><th>Trust</th><td><code>\${esc(trustState)}</code></td></tr><tr><th>Read first</th><td><code>\${esc(firstRead)}</code></td></tr><tr><th>Dependency files</th><td>\${handoffFiles.length?'<code>'+esc(handoffFiles.join(', '))+'</code>':'none'}</td></tr><tr><th>Conflicts</th><td>\${conflictTargets.length?'<code>'+esc(conflictTargets.join(', '))+'</code>':'none'}</td></tr><tr><th>Next</th><td>\${esc(handoffNext)}</td></tr></table>\`;

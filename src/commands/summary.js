@@ -158,6 +158,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- installed: ${toList(agentPointers.installed).join(", ") || "none"}`,
     `- missing: ${toList(agentPointers.missing).join(", ") || "none"}`,
     `- next: ${agentPointers.next || "Run aienvmp snippet codex --write if AI agents need instruction-file discovery."}`,
+    `- fallback: ${agentPointers.fallbackCommand || "aienvmp start --json"} / ${toList(agentPointers.fallbackRead).slice(0, 4).join(" -> ") || ".aienvmp/README.md -> .aienvmp/status.json -> .aienvmp/summary.md -> aienvmp context --json"}`,
     "",
     "## Quality signals",
     "",

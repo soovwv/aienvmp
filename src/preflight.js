@@ -589,7 +589,7 @@ export function agentPointerSummary(agentFiles = {}) {
       ? `Run aienvmp onboard for Codex, Claude, and Gemini, or install one pointer with ${missing[0].installCommand}. Optional: use --agents cursor,copilot when those tools should discover aienvmp too.`
       : "Agent instruction pointers are installed for detected AI instruction files.",
     mode: "advisory",
-    rule: "Instruction-file pointers improve automatic discovery, but existing aienvmp artifacts remain directly usable by reading start-here, status, summary, then context."
+    rule: "Instruction-file pointers improve automatic discovery. When pickup is uncertain, use aienvmp start --json; existing artifacts remain directly usable by reading start-here, status, summary, then context."
   };
 }
 

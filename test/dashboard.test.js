@@ -391,7 +391,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const agentDiscovery=manifest\.preflight\?\.agentPointers\?\.discovery/);
   assert.match(html, /const agentDiscoveryFallbackRead=manifest\.preflight\?\.agentPointers\?\.fallbackRead/);
   assert.match(html, /Fallback resume/);
-  assert.match(html, /aienvmp discover --json/);
+  assert.match(html, /aienvmp start --json/);
   assert.match(html, /AI discovery/);
   assert.match(html, /AI Session/);
   assert.match(html, /Before env/);
