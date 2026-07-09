@@ -500,6 +500,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /agentDiscoveryDecision/);
   assert.match(html, /agentDiscoveryEntry/);
   assert.match(html, /agentDiscoverySetup/);
+  assert.match(html, /agentDiscoveryAiEntryFields/);
+  assert.match(html, /<th>aiEntry<\/th>/);
   assert.match(html, /startup/);
   assert.match(html, /aienvmp start --json/);
   assert.match(html, /fallback-required/);
@@ -530,6 +532,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.equal(dashboardDiscoveryFallback.entry, ".aienvmp/discovery.json");
   assert.deepEqual(dashboardDiscoveryFallback.decisionValues, ["auto-ready", "fallback-required"]);
   assert.equal(dashboardDiscoveryFallback.nextSetupCommand, "aienvmp onboard");
+  assert.ok(dashboardDiscoveryFallback.aiEntryFields.includes("copyPastePrompt"));
+  assert.ok(dashboardDiscoveryFallback.aiEntryFields.includes("beforeEnvironmentChange"));
   assert.match(dashboardDiscoveryFallback.startupChecklist.join(" "), /dependencyQuickCheck/);
   assert.match(dashboardDiscoveryFallback.startupChecklist.join(" "), /checkpoint and hand off/);
   assert.deepEqual(dashboardDiscoveryFallback.read, [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
@@ -538,6 +542,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardDiscoveryFallbackClientScript(), /agentDiscoveryDecision=/);
   assert.match(dashboardDiscoveryFallbackClientScript(), /fallback-required/);
   assert.match(dashboardDiscoveryFallbackClientScript(), /agentDiscoverySetup/);
+  assert.match(dashboardDiscoveryFallbackClientScript(), /agentDiscoveryAiEntryFields/);
+  assert.match(dashboardDiscoveryFallbackClientScript(), /<th>aiEntry<\/th>/);
   assert.match(dashboardDiscoveryFallbackClientScript(), /startup/);
   assert.ok(dashboardEssentialSurfaces.firstRead.includes("Start here"));
   assert.ok(dashboardEssentialSurfaces.firstRead.includes("AI entry"));

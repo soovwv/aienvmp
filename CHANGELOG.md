@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `aiEntry` fields to the dashboard Agent Pointers fallback table so human operators see the same compact recovery contract as AI agents.
 - Surfaced `aiEntry` in generated `.aienvmp/README.md` and `.aienvmp/summary.md` so artifact-first AI agents see the shortest recovery contract without opening schema docs.
 - Aligned the adoption guide, shared-server case study, packaged AI skill, and recommendation contract around `aiEntry` as the shortest fallback startup routine.
 - Added compact `aiEntry` recovery fields to `discover --json`, `start --json`, and generated `.aienvmp/discovery.json` so AI hosts can recover from missed automatic discovery with one small object.

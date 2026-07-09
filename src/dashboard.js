@@ -37,6 +37,7 @@ export const dashboardDiscoveryFallback = Object.freeze({
   nextSetupCommand: "aienvmp onboard",
   startupChecklist: aiStartupChecklist,
   read: aiFallbackRead,
+  aiEntryFields: ["readFirst", "nextCommand", "nextSetupCommand", "beforeEnvironmentChange", "afterEnvironmentChange", "handoff", "copyPastePrompt"],
   rule: "When automatic instruction-file discovery is uncertain, show the one-command AI startup fallback before lower-level discovery details."
 });
 
@@ -177,7 +178,8 @@ export function dashboardDiscoveryFallbackClientScript() {
     "const agentDiscoveryDecision=(agentPointerCount||0)>0?'auto-ready':'fallback-required';",
     "const agentDiscoverySetup=agentDiscoveryDecision==='auto-ready'?'none':dashboardDiscoveryFallback.nextSetupCommand;",
     "const agentDiscoveryChecklist=dashboardDiscoveryFallback.startupChecklist||[];",
-    "const agentDiscoveryFallbackHtml=`<table><tr><th>Entry</th><td><code>${esc(agentDiscoveryEntry)}</code></td></tr><tr><th>Decision</th><td><code>${esc(agentDiscoveryDecision)}</code></td></tr><tr><th>Setup</th><td><code>${esc(agentDiscoverySetup)}</code></td></tr><tr><th>Fallback</th><td><code>${esc(agentDiscoveryFallbackCommand)}</code></td></tr><tr><th>Read</th><td><code>${esc(agentDiscoveryFallbackRead.slice(0,4).join(' -> '))}</code></td></tr></table><div class=\"timeline\">${agentDiscoveryChecklist.slice(0,4).map(item=>`<div class=\"event\"><time>startup</time><div>${esc(item)}</div></div>`).join('')}</div>`;"
+    "const agentDiscoveryAiEntryFields=dashboardDiscoveryFallback.aiEntryFields||[];",
+    "const agentDiscoveryFallbackHtml=`<table><tr><th>Entry</th><td><code>${esc(agentDiscoveryEntry)}</code></td></tr><tr><th>aiEntry</th><td>${esc(agentDiscoveryAiEntryFields.join(', ')||'readFirst, nextCommand, copyPastePrompt')}</td></tr><tr><th>Decision</th><td><code>${esc(agentDiscoveryDecision)}</code></td></tr><tr><th>Setup</th><td><code>${esc(agentDiscoverySetup)}</code></td></tr><tr><th>Fallback</th><td><code>${esc(agentDiscoveryFallbackCommand)}</code></td></tr><tr><th>Read</th><td><code>${esc(agentDiscoveryFallbackRead.slice(0,4).join(' -> '))}</code></td></tr></table><div class=\"timeline\">${agentDiscoveryChecklist.slice(0,4).map(item=>`<div class=\"event\"><time>startup</time><div>${esc(item)}</div></div>`).join('')}</div>`;"
   ].join("\n");
 }
 
