@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `discover --json` `aiDiscovery` metadata so agents can distinguish best-effort automatic pickup from fallback artifact reading.
 - Mirrored external SBOM/security tool guidance in the dashboard and packaged AI skill so humans and agents see the same evidence boundary.
 - Added external SBOM/security tool guidance so AI agents keep `aienvmp` as the coordination layer while using Syft, Trivy, Grype, or Dependency-Track for full evidence.
 - Added read-only `aienvmp discover` and stronger start-here markers so AI agents can detect existing aienvmp artifacts before environment-affecting work.

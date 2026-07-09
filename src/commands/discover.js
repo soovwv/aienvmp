@@ -19,20 +19,23 @@ export async function discoverWorkspace(args = {}) {
   const detected = artifacts.stateDir.exists || artifacts.aiEnv.exists || Boolean(status);
   const freshness = status?.artifactFreshness?.state || "unknown";
   const stale = ["stale", "unknown"].includes(freshness);
+  const agentPointers = {
+    discovery: status?.agentPointers?.discovery || pointerDiscovery(pointers),
+    installed: pointers.filter((item) => item.hasPointer).map((item) => item.agent),
+    detected: pointers.filter((item) => item.exists).map((item) => item.agent)
+  };
+  const readOrder = [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md", "aienvmp context --json"];
   const result = {
     status: detected ? "detected" : "not-detected",
     detected,
     purpose: "Find the AI-readable environment map before shared environment changes.",
     localMode: "read-only",
     startHere: artifacts.startHere.exists ? ".aienvmp/README.md" : artifacts.aiEnv.exists ? "AIENV.md" : ".aienvmp/README.md",
-    readOrder: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "AIENV.md", "aienvmp context --json"],
+    readOrder,
     freshness,
     nextCommand: detected && !stale ? "npx aienvmp status" : "npx aienvmp sync",
-    agentPointers: {
-      discovery: status?.agentPointers?.discovery || pointerDiscovery(pointers),
-      installed: pointers.filter((item) => item.hasPointer).map((item) => item.agent),
-      detected: pointers.filter((item) => item.exists).map((item) => item.agent)
-    },
+    agentPointers,
+    aiDiscovery: aiDiscoverySummary({ detected, stale, agentPointers, readOrder }),
     artifacts,
     rule: "If detected, read startHere and status before changing runtimes, dependencies, package managers, Docker, or global tools. This command does not write files."
   };
@@ -108,6 +111,20 @@ async function readText(file) {
 function pointerDiscovery(pointers = []) {
   const installed = pointers.filter((item) => item.hasPointer).map((item) => item.agent);
   return installed.length ? `ready: ${installed.join(", ")}` : "missing: run aienvmp onboard";
+}
+
+function aiDiscoverySummary({ detected = false, stale = true, agentPointers = {}, readOrder = [] } = {}) {
+  const installed = agentPointers.installed || [];
+  return {
+    mode: "best-effort",
+    automatic: installed.length > 0,
+    pointerStatus: installed.length ? `ready: ${installed.join(", ")}` : "missing",
+    limitation: "AI hosts only auto-read their supported instruction files; otherwise use the fallback read path.",
+    installCommand: "npx aienvmp onboard",
+    safeStart: detected && !stale ? "npx aienvmp status" : "npx aienvmp sync",
+    fallbackRead: readOrder.slice(0, 4),
+    rule: "Do not assume automatic pickup. Verify discovery with aienvmp discover or status before shared environment changes."
+  };
 }
 
 function toSlash(value = "") {

@@ -78,12 +78,14 @@ export function schemaContract() {
       strictRule: "Local checks are warn-only; use doctor --strict only for CI or explicit human-requested gates."
     },
     agentDiscovery: {
-      mode: "instruction-file-pointer",
+      mode: "best-effort-instruction-file-pointer",
       files: ["AGENTS.md", "CLAUDE.md", "GEMINI.md"],
       optionalFiles: [".cursor/rules/environment.md", ".github/copilot-instructions.md"],
       discoverCommand: "aienvmp discover",
       installCommand: "aienvmp onboard",
       optionalInstallCommand: "aienvmp onboard --agents cursor,copilot",
+      automaticDiscovery: "best-effort",
+      automaticDiscoveryLimit: "AI hosts only auto-read their supported instruction files; otherwise use discover/status fallback artifacts.",
       fallbackCommand: "aienvmp status --json",
       fallbackRead: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
       sessionStart: [
@@ -190,7 +192,8 @@ export function schemaContract() {
       discover: {
         command: "aienvmp discover --json",
         mode: "read-only",
-        rootFields: ["status", "detected", "startHere", "readOrder", "freshness", "nextCommand", "agentPointers", "artifacts", "rule"],
+        rootFields: ["status", "detected", "startHere", "readOrder", "freshness", "nextCommand", "agentPointers", "aiDiscovery", "artifacts", "rule"],
+        aiDiscoveryFields: ["mode", "automatic", "pointerStatus", "limitation", "installCommand", "safeStart", "fallbackRead", "rule"],
         purpose: "Zero-write detection command for AI agents or humans that need to know whether a workspace already has aienvmp artifacts."
       },
       startHere: {
@@ -252,7 +255,7 @@ export function schemaContract() {
       collaborationRule: "Use collaboration.status, activeTargets, and nextCommand as the shortest multi-agent environment coordination hint.",
       coordinationResolutionRule: "Use coordinationResolution when collaboration is review-before-env-change; it gives the advisory plan, resolve, handoff, checkpoint, and must-not-do routine for conflicting shared environment targets.",
       sbomStrategyRule: "Use sbomStrategy and sbom.scannerGuidance to keep default SBOM review lightweight while requesting optional read-only scanners before security-sensitive decisions. Use externalTools for full SBOM or vulnerability evidence without replacing aienvmp coordination fields.",
-      agentDiscoveryRule: "Use agentPointers.discovery and agentPointers.onboardCommand to decide whether AI instruction-file pointers can discover aienvmp automatically; use fallbackRead when no pointer was installed but artifacts exist.",
+      agentDiscoveryRule: "Use agentPointers.discovery, discover.aiDiscovery, and agentPointers.onboardCommand to decide whether AI instruction-file pointers can discover aienvmp automatically; use fallbackRead when no pointer was installed but artifacts exist.",
       readOrderRule: "Use readOrder when present; it starts with .aienvmp/README.md for fallback discovery, then status, summary, env map, plan, timeline, and intents.",
       demoRule: "Use demo.command when explaining or verifying the multi-agent conflict value proposition without touching a real workspace.",
       recommendationRule: "Use recommendation.discoverySignals, recommendation.recommendWhen, and recommendation.doNotRecommendWhen to decide whether to suggest aienvmp for a user request.",
