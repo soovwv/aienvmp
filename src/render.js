@@ -1,10 +1,10 @@
-import { dashboardAgentClientScript, dashboardCardClientScript, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallbackClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialSurfaceClientScript, dashboardMainCardsClientScript, dashboardOperationalCardsClientScript, dashboardPackageManagerPolicyClientScript, dashboardPayload, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript } from "./dashboard.js";
+import { dashboardAgentClientScript, dashboardCardClientScript, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallbackClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialSurfaceClientScript, dashboardMainCardsClientScript, dashboardOperationalCardsClientScript, dashboardPackageManagerPolicyClientScript, dashboardPayload, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, dashboardSupportCardsClientScript } from "./dashboard.js";
 
 const markerBegin = "<!-- aienvmp:begin -->";
 const markerEnd = "<!-- aienvmp:end -->";
 
 export { markerBegin, markerEnd };
-export { dashboardAgentClientScript, dashboardCardClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallback, dashboardDiscoveryFallbackClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardMainCardsClientScript, dashboardOperationalCardsClientScript, dashboardPayload, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript } from "./dashboard.js";
+export { dashboardAgentClientScript, dashboardCardClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallback, dashboardDiscoveryFallbackClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardMainCardsClientScript, dashboardOperationalCardsClientScript, dashboardPayload, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, dashboardSupportCardsClientScript } from "./dashboard.js";
 
 export function renderAIEnv(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const lines = [];
@@ -650,6 +650,7 @@ ${dashboardPriorityClientScript()}
 ${dashboardDiscoveryFallbackClientScript()}
 ${dashboardCardClientScript()}
 ${dashboardMainCardsClientScript()}
+${dashboardSupportCardsClientScript()}
 const reviewRequired=warnings.length>0||intents.length>0;
 const recentChanges=timeline.slice(-8).length;
 const trustState=manifest.trust?.state||'observed';
@@ -757,33 +758,7 @@ document.getElementById('app').innerHTML=\`
     \${mainCardsHtml}
   </div>
   <aside>
-    \${card('Recommended Actions','<span class="pill">'+actions.length+' actions</span>',actionsHtml)}
-    <div style="height:14px"></div>
-    \${card('AI Intent Targets','<span class="pill">'+intentTargets.length+' targets</span>',intentTargetsHtml)}
-    <div style="height:14px"></div>
-    \${card('Follow-ups',(followUpPlan.status==='pending'||followUps.length)?'<span class="pill warn">'+(followUpPlan.count||followUps.length)+' pending</span>':'<span class="pill">clear</span>',followUpsHtml)}
-    <div style="height:14px"></div>
-    \${card('Agent Activity',agentActivity.multiActorTargets?.length?'<span class="pill warn">'+agentActivity.multiActorTargets.length+' shared</span>':'<span class="pill">clear</span>',activityHtml)}
-    <div style="height:14px"></div>
-    \${card('AI Collaboration',collaboration.status==='clear'?'<span class="pill">clear</span>':'<span class="pill warn">review</span>',collaborationHtml)}
-    <div style="height:14px"></div>
-    \${card('Environment Protocol','<span class="pill">'+esc(environmentProtocol.mode||'advisory')+'</span>',environmentProtocolHtml)}
-    <div style="height:14px"></div>
-    \${card('AI Session','<span class="pill">'+esc(aiSession.localWork||'allowed')+'</span>',aiSessionHtml)}
-    <div style="height:14px"></div>
-    \${card('AI Contract','<span class="pill">'+(contract.stability||'additive')+'</span>',contractHtml)}
-    <div style="height:14px"></div>
-    \${card('Dependency Read Set','<span class="pill">'+dependencyReadSet.length+' files</span>',dependencyReadSetHtml)}
-    <div style="height:14px"></div>
-    \${card('Dependency Protocol','<span class="pill">'+(dependencyProtocol.mode||'advisory')+'</span>',dependencyProtocolHtml)}
-    <div style="height:14px"></div>
-    \${card('AI Plan Artifacts',plan.markdown||plan.json?'<span class="pill">written</span>':'<span class="pill off">not written</span>',planHtml)}
-    <div style="height:14px"></div>
-    \${card('Light SBOM Artifact','<span class="pill">json</span>',sbomArtifactHtml)}
-    <div style="height:14px"></div>
-    \${card('Remediation Steps',remediation.length?'<span class="pill warn">'+remediation.length+' items</span>':'<span class="pill off">none</span>',remediationHtml)}
-    <div style="height:14px"></div>
-    \${card('Environment Steps',envSteps.length?'<span class="pill warn">'+envSteps.length+' items</span>':'<span class="pill off">none</span>',envStepsHtml)}
+    \${supportCardsHtml}
     <div style="height:14px"></div>
     \${operationalCardsHtml}
     <div style="height:14px"></div>

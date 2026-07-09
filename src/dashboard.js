@@ -132,6 +132,28 @@ export function dashboardOperationalCardsClientScript() {
   ].join("\n");
 }
 
+export function dashboardSupportCardsClientScript() {
+  return [
+    "const supportCards=[",
+    "['Recommended Actions','<span class=\"pill\">'+actions.length+' actions</span>',actionsHtml],",
+    "['AI Intent Targets','<span class=\"pill\">'+intentTargets.length+' targets</span>',intentTargetsHtml],",
+    "['Follow-ups',(followUpPlan.status==='pending'||followUps.length)?'<span class=\"pill warn\">'+(followUpPlan.count||followUps.length)+' pending</span>':'<span class=\"pill\">clear</span>',followUpsHtml],",
+    "['Agent Activity',agentActivity.multiActorTargets?.length?'<span class=\"pill warn\">'+agentActivity.multiActorTargets.length+' shared</span>':'<span class=\"pill\">clear</span>',activityHtml],",
+    "['AI Collaboration',collaboration.status==='clear'?'<span class=\"pill\">clear</span>':'<span class=\"pill warn\">review</span>',collaborationHtml],",
+    "['Environment Protocol','<span class=\"pill\">'+esc(environmentProtocol.mode||'advisory')+'</span>',environmentProtocolHtml],",
+    "['AI Session','<span class=\"pill\">'+esc(aiSession.localWork||'allowed')+'</span>',aiSessionHtml],",
+    "['AI Contract','<span class=\"pill\">'+(contract.stability||'additive')+'</span>',contractHtml],",
+    "['Dependency Read Set','<span class=\"pill\">'+dependencyReadSet.length+' files</span>',dependencyReadSetHtml],",
+    "['Dependency Protocol','<span class=\"pill\">'+(dependencyProtocol.mode||'advisory')+'</span>',dependencyProtocolHtml],",
+    "['AI Plan Artifacts',plan.markdown||plan.json?'<span class=\"pill\">written</span>':'<span class=\"pill off\">not written</span>',planHtml],",
+    "['Light SBOM Artifact','<span class=\"pill\">json</span>',sbomArtifactHtml],",
+    "['Remediation Steps',remediation.length?'<span class=\"pill warn\">'+remediation.length+' items</span>':'<span class=\"pill off\">none</span>',remediationHtml],",
+    "['Environment Steps',envSteps.length?'<span class=\"pill warn\">'+envSteps.length+' items</span>':'<span class=\"pill off\">none</span>',envStepsHtml]",
+    "];",
+    "const supportCardsHtml=supportCards.map(([title,badge,body])=>card(title,badge,body)).join('<div style=\"height:14px\"></div>');"
+  ].join("\n");
+}
+
 export function dashboardDiscoveryFallbackClientScript() {
   return [
     `const dashboardDiscoveryFallback=${JSON.stringify(dashboardDiscoveryFallback)};`,

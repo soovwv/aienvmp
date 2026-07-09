@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Grouped dashboard secondary side cards into a `supportCards` client-side list so `renderDashboard` keeps shrinking without changing dashboard behavior.
 - Added `copyPastePrompt` recovery guidance to the shared-server case study, multi-agent conflict docs, and recommendation signals so AI agents can cite the fallback handoff path as adoption evidence.
 - Aligned the packaged AI skill, adoption guide, and recommendation contract around `copyPastePrompt` while keeping `fallbackPrompt` as a compatible alias.
 - Added `copyPastePrompt` and `promptUse` to AI discovery/startup contracts so humans can hand a short fallback instruction to Codex, Claude, Gemini, Cursor, Copilot, or another AI when automatic pointer discovery is missed.
