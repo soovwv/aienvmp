@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { dashWorkspace } from "../src/commands/dash.js";
 import { writeJson } from "../src/fsutil.js";
-import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
+import { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, renderDashboard } from "../src/render.js";
 
 test("renderDashboard includes the audit summary surface", () => {
   const html = renderDashboard({
@@ -354,14 +354,16 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /\.nextbar/);
   assert.match(html, /\.brief/);
   assert.match(html, /const maintenanceLoop=manifest\.preflight\?\.maintenanceLoop\|\|\{\}/);
-  assert.match(html, /const \{manifest,timeline,warnings,intents,policy,releaseReadiness\}=JSON\.parse/);
+  assert.match(html, /const \{manifest,timeline,warnings,intents,policy,releaseReadiness,schemaQualitySignals\}=JSON\.parse/);
   assert.match(html, /const aiSession=manifest\.preflight\?\.aiSession\|\|\{\}/);
   assert.match(html, /const aiSessionStart=aiSession\.start\|\|\['aienvmp status --json','aienvmp context --json'\]/);
   assert.match(html, /const aiBootstrap=manifest\.preflight\?\.aiBootstrap\|\|\{\}/);
   assert.match(html, /const artifactFreshness=manifest\.preflight\?\.artifactFreshness\|\|\{\}/);
   assert.match(html, /const strictRecommendation=manifest\.preflight\?\.strictRecommendation\|\|\{\}/);
   assert.match(html, /const releaseChecks=releaseReadiness\?\.requiredBeforeStable\|\|\[\]/);
+  assert.match(html, /const qualitySignals=manifest\.preflight\?\.qualitySignals\|\|schemaQualitySignals\|\|\{\}/);
   assert.match(html, /Release Readiness/);
+  assert.match(html, /Quality Signals/);
   assert.match(html, /prototype-hardening/);
   assert.match(html, /publishDecision=releaseReadiness\?\.publishDecision\|\|\{\}/);
   assert.match(html, /Decision/);
@@ -456,6 +458,10 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardReleaseReadinessClientScript(), /publishDecision=releaseReadiness\?\.publishDecision\|\|\{\}/);
   assert.match(dashboardReleaseReadinessClientScript(), /Batch meaningful changes before one npm publish/);
   assert.match(dashboardReleaseReadinessClientScript(), /currentBatch\.themes/);
+  assert.match(dashboardQualitySignalsClientScript(), /const qualitySignals=manifest\.preflight\?\.qualitySignals/);
+  assert.match(dashboardQualitySignalsClientScript(), /AI-friendly/);
+  assert.match(dashboardQualitySignalsClientScript(), /First check/);
+  assert.match(dashboardQualitySignalsClientScript(), /do not require background services/);
   for (const title of dashboardEssentialCards) {
     assert.match(html, new RegExp(`card\\('${title}'`));
   }
@@ -478,6 +484,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const aiDependencyReviewHtml=aiDependencyReview\.status/);
   assert.match(html, /const environmentProtocol=manifest\.preflight\?\.environmentChangeProtocol/);
   assert.match(html, /const releaseReadinessHtml=/);
+  assert.match(html, /const qualitySignalsHtml=/);
   assert.match(html, /const currentBatch=releaseReadiness\?\.currentBatch/);
   assert.match(html, /releaseEvidence=releaseReadiness\?\.evidenceCommands/);
   assert.match(html, /releaseFocus=releaseReadiness\?\.stabilizationFocus/);

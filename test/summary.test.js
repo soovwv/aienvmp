@@ -80,6 +80,13 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
       ciCommand: "aienvmp doctor --strict security --json",
       releaseCommand: "aienvmp doctor --strict all --json"
     },
+    qualitySignals: {
+      status: "prototype-hardening",
+      principles: ["AI-friendly", "simple", "lightweight", "advisory-first", "batched-release"],
+      checks: [{ name: "AI entry path", evidence: "aienvmp discover --json && aienvmp status --json && aienvmp context --json" }],
+      mustStayTrue: ["do not fail local work by default"],
+      rule: "Use these signals as a recommendation and stabilization checklist."
+    },
     agentUse: { environmentChanges: "intent-and-review-first" },
     coordination: { next: "Check open intents.", conflictTargets: ["dependency"] },
     coordinationResolution: {
@@ -146,6 +153,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /local check: aienvmp doctor --json \(warn-only\)/);
   assert.match(markdown, /CI strict: aienvmp doctor --strict security --json/);
   assert.match(markdown, /release strict: aienvmp doctor --strict all --json/);
+  assert.match(markdown, /quality signals: prototype-hardening \/ AI-friendly, simple, lightweight, advisory-first, batched-release/);
   assert.match(markdown, /release readiness: 0\.2\.0 \/ prototype-hardening \/ hold \/ accumulating \/ npm run release:check passes locally/);
   assert.match(markdown, /collaboration rule: Do not install shared tools/);
   assert.match(markdown, /resolution rule:/);
@@ -165,6 +173,10 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /## Agent pointers/);
   assert.match(markdown, /installed: codex/);
   assert.match(markdown, /missing: claude/);
+  assert.match(markdown, /## Quality signals/);
+  assert.match(markdown, /status: prototype-hardening/);
+  assert.match(markdown, /first check: AI entry path \/ aienvmp discover --json && aienvmp status --json && aienvmp context --json/);
+  assert.match(markdown, /must stay true: do not fail local work by default/);
   assert.match(markdown, /## Release readiness/);
   assert.match(markdown, /target: 0\.2\.0/);
   assert.match(markdown, /default decision: hold/);
@@ -200,6 +212,8 @@ test("summaryWorkspace writes summary.md after sync", async () => {
   assert.match(summary, /## Dependency changes/);
   assert.match(summary, /environment before:/);
   assert.match(summary, /## Agent pointers/);
+  assert.match(summary, /## Quality signals/);
+  assert.match(summary, /quality signals: prototype-hardening/);
   assert.match(summary, /## Release readiness/);
   assert.match(summary, /release readiness: 0\.2\.0 \/ prototype-hardening \/ hold/);
   assert.match(summary, /next:/);

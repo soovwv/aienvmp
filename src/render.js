@@ -1,11 +1,11 @@
 import { schemaContract } from "./contract.js";
-import { dashboardAgentClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialSurfaceClientScript, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript } from "./dashboard.js";
+import { dashboardAgentClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialSurfaceClientScript, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript } from "./dashboard.js";
 
 const markerBegin = "<!-- aienvmp:begin -->";
 const markerEnd = "<!-- aienvmp:end -->";
 
 export { markerBegin, markerEnd };
-export { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript } from "./dashboard.js";
+export { dashboardAgentClientScript, dashboardCardPriority, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript } from "./dashboard.js";
 
 export function renderAIEnv(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const lines = [];
@@ -456,8 +456,10 @@ function remediationLines(item) {
 }
 
 export function renderDashboard(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
-  const releaseReadiness = schemaContract().releaseReadiness;
-  const data = JSON.stringify({ manifest, timeline, warnings, intents, policy, releaseReadiness });
+  const schema = schemaContract();
+  const releaseReadiness = schema.releaseReadiness;
+  const schemaQualitySignals = schema.qualitySignals;
+  const data = JSON.stringify({ manifest, timeline, warnings, intents, policy, releaseReadiness, schemaQualitySignals });
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -538,7 +540,7 @@ code{color:var(--code);background:#0a2017;border:1px solid #17462f;padding:2px 6
 <main class="shell" id="app"></main>
 <script type="application/json" id="data">${escapeHtml(data)}</script>
 <script>
-const {manifest,timeline,warnings,intents,policy,releaseReadiness}=JSON.parse(document.getElementById('data').textContent);
+const {manifest,timeline,warnings,intents,policy,releaseReadiness,schemaQualitySignals}=JSON.parse(document.getElementById('data').textContent);
 function esc(s){return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
 const entries=o=>Object.entries(o||{});
 const rows=o=>entries(o).map(([k,v])=>\`<tr><th>\${esc(k)}</th><td><code>\${esc(String(v))}</code></td></tr>\`).join('')||'<tr><td colspan="2">None detected</td></tr>';
@@ -603,6 +605,7 @@ const strictDecision=enforcementProfile.strictDecision||{};
 const strictRecommendation=manifest.preflight?.strictRecommendation||{};
 const enforcementHtml=\`<table><tr><th>Default</th><td><code>\${esc(gate.defaultMode||enforcementProfile.defaultMode||'advisory')}</code> \${esc(gate.localDefault||'warn-only')}</td></tr><tr><th>Local</th><td><code>\${esc(strictRecommendation.localCommand||strictDecision.localCommand||'aienvmp doctor --json')}</code> \${esc(strictRecommendation.localBehavior||strictDecision.local||'warn-only')}</td></tr><tr><th>Fail local</th><td><code>\${esc(strictRecommendation.shouldFailLocal?'yes':'no')}</code></td></tr><tr><th>Recommended scope</th><td><code>\${esc(strictRecommendation.recommendedScope||strictDecision.recommendedScope||strictPlan.recommendedStrictScope||'all')}</code></td></tr><tr><th>CI</th><td><code>\${esc(strictRecommendation.ciCommand||strictDecision.ciCommand||strictPlan.ciCommand||'aienvmp doctor --strict all --json')}</code></td></tr><tr><th>Release</th><td><code>\${esc(strictRecommendation.releaseCommand||'aienvmp doctor --strict all --json')}</code></td></tr></table><div class="timeline">\${strictCommands.slice(0,4).map(cmd=>\`<div class="event"><time>CI</time><div><code>\${esc(cmd)}</code></div></div>\`).join('')}</div><div class="path">\${esc(strictRecommendation.rule||strictDecision.rule||strictPlan.rule||gate.rule||enforcementProfile.reason||'Warnings stay advisory unless strict mode is requested.')}</div>\`;
 ${dashboardReleaseReadinessClientScript()}
+${dashboardQualitySignalsClientScript()}
 const contract=manifest.preflight?.contract||{};
 const contractHtml=contract.name?\`<table><tr><th>Name</th><td><code>\${esc(contract.name)}</code></td></tr><tr><th>Version</th><td><code>\${esc(contract.version||1)}</code></td></tr><tr><th>Stability</th><td><code>\${esc(contract.stability||'additive')}</code></td></tr><tr><th>AI fields</th><td>\${esc((contract.aiEntryFields||[]).join(', ')||'none')}</td></tr></table><div class="path">\${esc(contract.rule||'Ignore unknown fields.')}</div>\`:'<div class="okline">Run <code>aienvmp status --write</code> to include AI contract metadata.</div>';
 const intentTargets=manifest.preflight?.intentTargets||[];
@@ -766,6 +769,8 @@ document.getElementById('app').innerHTML=\`
     \${card('Enforcement Mode','<span class="pill">advisory</span>',enforcementHtml)}
     <div style="height:14px"></div>
     \${card('Release Readiness','<span class="pill warn">'+esc(releaseReadiness?.target||'0.2.0')+'</span>',releaseReadinessHtml)}
+    <div style="height:14px"></div>
+    \${card('Quality Signals','<span class="pill">'+esc(qualitySignals.status||'prototype-hardening')+'</span>',qualitySignalsHtml)}
     <div style="height:14px"></div>
     \${card('CI Readiness',ciHasFailure?'<span class="pill warn">review</span>':'<span class="pill">ready</span>',ciReadinessHtml)}
     <div style="height:14px"></div>

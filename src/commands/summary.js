@@ -80,6 +80,9 @@ export function renderSummary(status = {}, manifest = {}) {
   const strictDecision = status.enforcementProfile?.strictDecision || status.enforcement?.strictDecision || {};
   const strictRecommendation = status.strictRecommendation || {};
   const releaseReadiness = schemaContract().releaseReadiness || {};
+  const qualitySignals = status.qualitySignals || schemaContract().qualitySignals || {};
+  const qualityPrinciples = toList(qualitySignals.principles).slice(0, 5);
+  const qualityChecks = toList(qualitySignals.checks);
   const publishDecision = releaseReadiness.publishDecision || {};
   const currentBatch = releaseReadiness.currentBatch || {};
   const releaseChecks = toList(releaseReadiness.requiredBeforeStable);
@@ -106,6 +109,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- local check: ${strictRecommendation.localCommand || strictDecision.localCommand || "aienvmp doctor --json"} (${strictRecommendation.localBehavior || strictDecision.local || "warn-only"})`,
     `- CI strict: ${strictRecommendation.ciCommand || strictPlan.ciCommand || `${strict} --json`}`,
     `- release strict: ${strictRecommendation.releaseCommand || "aienvmp doctor --strict all --json"}`,
+    `- quality signals: ${qualitySignals.status || "prototype-hardening"} / ${qualityPrinciples.join(", ") || "AI-friendly, simple, lightweight"}`,
     `- release readiness: ${releaseReadiness.target || "0.2.0"} / ${releaseReadiness.status || "prototype-hardening"} / ${publishDecision.default || "hold"} / ${currentBatch.status || "accumulating"} / ${releaseChecks[0] || "npm run release:check passes locally"}`,
     "",
     `- state: ${status.state || "unknown"}`,
@@ -153,6 +157,14 @@ export function renderSummary(status = {}, manifest = {}) {
     `- installed: ${toList(agentPointers.installed).join(", ") || "none"}`,
     `- missing: ${toList(agentPointers.missing).join(", ") || "none"}`,
     `- next: ${agentPointers.next || "Run aienvmp snippet codex --write if AI agents need instruction-file discovery."}`,
+    "",
+    "## Quality signals",
+    "",
+    `- status: ${qualitySignals.status || "prototype-hardening"}`,
+    `- principles: ${qualityPrinciples.join(", ") || "AI-friendly, simple, lightweight, advisory-first, batched-release"}`,
+    `- first check: ${qualityChecks[0]?.name || "AI entry path"} / ${qualityChecks[0]?.evidence || "aienvmp discover --json && aienvmp status --json && aienvmp context --json"}`,
+    `- must stay true: ${toList(qualitySignals.mustStayTrue)[0] || "do not require background services, daemons, or lock managers for the default flow"}`,
+    `- rule: ${qualitySignals.rule || "Keep the default product lightweight and AI-readable before adding deeper integrations."}`,
     "",
     "## Release readiness",
     "",
