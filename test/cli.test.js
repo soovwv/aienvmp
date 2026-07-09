@@ -103,7 +103,7 @@ test("package, README, and CLI help share the AI workspace coordination position
   assert.match(readme.slice(0, 1200), /Use: AI agents share environment-affecting work/);
   assert.match(readme.slice(0, 1200), /Skip: you only need a full compliance SBOM scanner/);
   assert.match(readme.slice(0, 1200), /AI signal: shared Codex\/Claude\/Gemini work/);
-  assert.match(readme.slice(0, 1200), /Start: run `npx aienvmp onboard`/);
+  assert.match(readme.slice(0, 1200), /Start: run `npx aienvmp start`/);
   assert.ok(readme.split(/\r?\n/).length <= 155);
   assert.match(readme, /AI adoption guide/);
   assert.match(readme, /Automatic discovery is best-effort/);
@@ -113,6 +113,7 @@ test("package, README, and CLI help share the AI workspace coordination position
   assert.match(readme, /releaseReadiness\.currentBatch` is reviewed/);
   assert.match(readme, /several meaningful changes are batched/);
   assert.match(stdout, /AI-first env map \+ light SBOM coordination for shared AI workspaces/);
+  assert.match(stdout, /aienvmp start    one-command AI startup/);
   assert.match(stdout, /aienvmp discover  read-only detection of aienvmp artifacts/);
 });
 

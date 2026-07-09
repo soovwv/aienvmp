@@ -6,6 +6,7 @@ import path from "node:path";
 test("packaged aienvmp skill points AI agents to current startup contracts", async () => {
   const skill = await fs.readFile(path.resolve(".agents/skills/aienvmp/SKILL.md"), "utf8");
 
+  assert.match(skill, /npx aienvmp start/);
   assert.match(skill, /npx aienvmp onboard/);
   assert.match(skill, /Use \/ Skip \/ Start/);
   assert.match(skill, /multiple AI agents or humans/);
@@ -24,7 +25,7 @@ test("packaged aienvmp skill points AI agents to current startup contracts", asy
   assert.match(skill, /aiSession/);
   assert.match(skill, /\.aienvmp\/README\.md/);
   assert.match(skill, /\.aienvmp\/status\.json/);
-  assert.match(skill, /npx aienvmp status --json/);
+  assert.match(skill, /npx aienvmp start --json/);
   assert.match(skill, /artifactFreshness\.state/);
   assert.match(skill, /agentPointers\.discovery/);
   assert.match(skill, /aienvmp discover --json/);

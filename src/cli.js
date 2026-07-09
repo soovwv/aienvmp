@@ -20,6 +20,7 @@ import { summaryWorkspace } from "./commands/summary.js";
 import { onboardWorkspace } from "./commands/onboard.js";
 import { demoWorkspace } from "./commands/demo.js";
 import { discoverWorkspace } from "./commands/discover.js";
+import { startWorkspace } from "./commands/start.js";
 import { readFileSync } from "node:fs";
 
 const commands = new Map([
@@ -44,7 +45,8 @@ const commands = new Map([
   ["summary", summaryWorkspace],
   ["onboard", onboardWorkspace],
   ["demo", demoWorkspace],
-  ["discover", discoverWorkspace]
+  ["discover", discoverWorkspace],
+  ["start", startWorkspace]
 ]);
 
 const version = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version;
@@ -125,11 +127,13 @@ Usage:
   aienvmp sbom [--dir .] [--json] [--write]
   aienvmp summary [--dir .] [--write]
   aienvmp schema [--json]
+  aienvmp start [--dir .] [--json]
   aienvmp discover [--dir .] [--json]
   aienvmp onboard [codex claude gemini] [--agents codex,claude,gemini,cursor,copilot] [--no-sync]
   aienvmp demo [conflict] [--json]
 
 Common:
+  aienvmp start    one-command AI startup: discover, sync if needed, then status
   aienvmp onboard   install AI instruction-file pointers and refresh outputs
   aienvmp sync      update AIENV.md, start-here README, status, summary, SBOM, ledger, intents, and dashboard
   aienvmp status    print a 5-line AI/human environment decision; --verbose shows command details
@@ -159,6 +163,7 @@ Advanced:
   aienvmp doctor [--dir .] [--json] [--ci] [--strict security|policy|coordination|all]
   aienvmp sbom [--dir .] [--json] [--write]
   aienvmp summary [--dir .] [--write]
+  aienvmp start [--dir .] [--json]
   aienvmp discover [--dir .] [--json]
   aienvmp demo [conflict] [--json]
   aienvmp dash [--dir .] [--open]

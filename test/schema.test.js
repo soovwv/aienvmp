@@ -38,7 +38,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.recommendation.discoverySignals.join(" "), /Codex, Claude, Gemini/);
   assert.match(schema.recommendation.discoverySignals.join(" "), /version drift/);
   assert.match(schema.recommendation.discoverySignals.join(" "), /AI-readable environment map/);
-  assert.deepEqual(schema.recommendation.firstCommands, ["aienvmp onboard", "aienvmp status", "aienvmp context --json"]);
+  assert.deepEqual(schema.recommendation.firstCommands, ["aienvmp start", "aienvmp onboard", "aienvmp context --json"]);
   assert.equal(schema.recommendation.proofCommand, "aienvmp demo");
   assert.ok(schema.recommendation.evidenceDocs.includes("examples/ai-adoption-guide.md"));
   assert.ok(schema.recommendation.evidenceDocs.includes("examples/ai-workspace-case-study.md"));
@@ -78,6 +78,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.aiLoop.steps[5].command, "aienvmp handoff");
   assert.match(schema.aiLoop.strictRule, /warn-only/);
   assert.equal(schema.agentDiscovery.mode, "best-effort-instruction-file-pointer");
+  assert.equal(schema.agentDiscovery.startCommand, "aienvmp start");
   assert.equal(schema.agentDiscovery.discoverCommand, "aienvmp discover");
   assert.equal(schema.agentDiscovery.installCommand, "aienvmp onboard");
   assert.equal(schema.agentDiscovery.optionalInstallCommand, "aienvmp onboard --agents cursor,copilot");
@@ -85,7 +86,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.agentDiscovery.humanInstruction, /Paste the fallback prompt/);
   assert.equal(schema.agentDiscovery.automaticDiscovery, "best-effort");
   assert.match(schema.agentDiscovery.automaticDiscoveryLimit, /AI hosts only auto-read/);
-  assert.equal(schema.agentDiscovery.fallbackCommand, "aienvmp status --json");
+  assert.equal(schema.agentDiscovery.fallbackCommand, "aienvmp start --json");
   assert.deepEqual(schema.agentDiscovery.fallbackRead, [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
   assert.ok(schema.agentDiscovery.optionalFiles.includes(".github/copilot-instructions.md"));
   assert.deepEqual(schema.agentDiscovery.files, ["AGENTS.md", "CLAUDE.md", "GEMINI.md"]);
@@ -329,9 +330,10 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   assert.equal(schema.outputs.summary.file, ".aienvmp/summary.md");
   assert.equal(schema.outputs.sbom.file, ".aienvmp/sbom.json");
   assert.equal(schema.outputs.cyclonedxLite.file, ".aienvmp/sbom.cdx.json");
+  assert.equal(schema.agentDiscovery.startCommand, "aienvmp start");
   assert.equal(schema.agentDiscovery.installCommand, "aienvmp onboard");
   assert.equal(schema.agentDiscovery.discoverCommand, "aienvmp discover");
-  assert.equal(schema.agentDiscovery.fallbackCommand, "aienvmp status --json");
+  assert.equal(schema.agentDiscovery.fallbackCommand, "aienvmp start --json");
   assert.equal(schema.agentDiscovery.automaticDiscovery, "best-effort");
   assert.equal(schema.operationalSafety.defaultBehavior, "warn-only");
   assert.ok(schema.agentDiscovery.rule.includes("Optional Cursor and Copilot"));

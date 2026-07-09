@@ -12,19 +12,14 @@
 - Skip: you only need a full compliance SBOM scanner or hard policy lock manager.
 - AI signal: shared Codex/Claude/Gemini work, version drift, or repeated env handoffs.
 - SBOM signal: use Syft, Trivy, Grype, or Dependency-Track for full evidence; keep `aienvmp` as the AI coordination layer.
-- Start: run `npx aienvmp onboard`, then `npx aienvmp status`.
+- Start: run `npx aienvmp start`. For AI auto-discovery, run `npx aienvmp onboard`.
 
-```bash
-npx aienvmp onboard
-npx aienvmp discover
-npx aienvmp status
-```
-
-`discover` is read-only. `onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`, refreshes artifacts, and tells AI agents to start at `.aienvmp/README.md`, then read `.aienvmp/status.json`. Automatic discovery is best-effort; if pointers are missing, use `discover --json` and follow `aiDiscovery.resume` or paste `fallbackPrompt` into the AI session.
+`start` discovers artifacts, syncs only when missing or stale, then prints status. `discover` is read-only. `onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`, refreshes artifacts, and points AI to `.aienvmp/README.md` then `.aienvmp/status.json`. Automatic discovery is best-effort; if pointers are missing, use `start --json` or `discover --json` and follow `aiDiscovery.resume`.
 
 ## 10-Second Use
 
 ```bash
+npx aienvmp start
 npx aienvmp onboard
 npx aienvmp discover
 npx aienvmp status
@@ -99,6 +94,7 @@ AIENV.md                 # Markdown env map for AI agents
 
 ```bash
 aienvmp onboard                 # install Codex/Claude/Gemini pointers and sync
+aienvmp start                   # one-command AI startup when discovery is uncertain
 aienvmp sync                    # update env map, start-here README, status, summary, SBOM, dashboard
 aienvmp status                  # 5-line env decision with start-here path
 aienvmp context --json          # AI decision contract

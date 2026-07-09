@@ -22,8 +22,8 @@ For SBOM/security evidence, keep `aienvmp` as the AI coordination layer and use 
 Start with:
 
 ```bash
+npx aienvmp start
 npx aienvmp onboard
-npx aienvmp status
 npx aienvmp context --json
 ```
 
@@ -44,19 +44,19 @@ For optional Cursor or GitHub Copilot discovery pointers, use:
 npx aienvmp onboard --agents cursor,copilot
 ```
 
-At the start of an AI coding session, read the current status before environment-impacting work:
+At the start of an AI coding session, use the one-command startup path when automatic instruction-file discovery is uncertain:
 
 ```bash
-npx aienvmp status --json
+npx aienvmp start --json
 ```
 
-Use `aiSession` from status/context JSON as the shortest startup routine: status, stale refresh, intent, checkpoint, and handoff.
+Use `aiDiscovery.resume` and `aiSession` from start/status/context JSON as the shortest startup routine: read order, stale refresh, intent, checkpoint, and handoff.
 
 If instruction-file pointers are missing or uncertain but `.aienvmp` exists, start at `.aienvmp/README.md`, then read `.aienvmp/status.json`, `.aienvmp/summary.md`, and `npx aienvmp context --json`.
 
 Use `agentPointers.discovery` or the compact `status` line containing `discovery:` to decide whether Codex, Claude, Gemini, or optional agent pointers can find the env map.
 
-Use `npx aienvmp discover --json` and its `aiDiscovery.resume` block when automatic pickup is uncertain. Automatic discovery is best-effort because each AI host reads different instruction files.
+Use `npx aienvmp start --json` or `npx aienvmp discover --json` and the `aiDiscovery.resume` block when automatic pickup is uncertain. Automatic discovery is best-effort because each AI host reads different instruction files.
 
 When present, follow `aiDiscovery.resume.readFirst`, `nextCommand`, `beforeEnvironmentChange`, `afterEnvironmentChange`, and `handoff` as the minimum startup routine before shared environment changes.
 

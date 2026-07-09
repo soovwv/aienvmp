@@ -177,7 +177,7 @@ export function schemaContract() {
         "the workspace should be hard-locked by policy instead of advisory by default",
         "there is no need to coordinate environment-affecting work across AI agents or humans"
       ],
-      firstCommands: ["aienvmp onboard", "aienvmp status", "aienvmp context --json"],
+      firstCommands: ["aienvmp start", "aienvmp onboard", "aienvmp context --json"],
       proofCommand: "aienvmp demo",
       evidenceDocs: [
         "examples/ai-adoption-guide.md",
@@ -214,12 +214,13 @@ export function schemaContract() {
       mode: "best-effort-instruction-file-pointer",
       files: ["AGENTS.md", "CLAUDE.md", "GEMINI.md"],
       optionalFiles: [".cursor/rules/environment.md", ".github/copilot-instructions.md"],
+      startCommand: "aienvmp start",
       discoverCommand: "aienvmp discover",
       installCommand: "aienvmp onboard",
       optionalInstallCommand: "aienvmp onboard --agents cursor,copilot",
       automaticDiscovery: "best-effort",
       automaticDiscoveryLimit: "AI hosts only auto-read their supported instruction files; otherwise use discover/status fallback artifacts.",
-      fallbackCommand: "aienvmp status --json",
+      fallbackCommand: "aienvmp start --json",
       fallbackRead: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
       fallbackPrompt: "Use aienvmp as the workspace env map. Read .aienvmp/README.md, then .aienvmp/status.json, then run aienvmp context --json before environment changes.",
       humanInstruction: "Paste the fallback prompt into an AI session when the host did not auto-read an instruction-file pointer.",
@@ -229,7 +230,7 @@ export function schemaContract() {
         "Run aienvmp sync if .aienvmp/status.json is missing or stale.",
         "Continue project-local code work unless status/context requires environment review."
       ],
-      rule: "aienvmp does not replace agent instruction files; it gives them a shared live env map and light SBOM. Instruction-file pointers improve automatic discovery, while existing artifacts remain directly usable through the fallback read path starting at .aienvmp/README.md. Optional Cursor and Copilot pointers are opt-in."
+      rule: "aienvmp does not replace agent instruction files; it gives them a shared live env map and light SBOM. Instruction-file pointers improve automatic discovery, while aienvmp start gives AI hosts one fallback entry command that discovers artifacts, syncs if needed, and prints status. Existing artifacts remain directly usable through the fallback read path starting at .aienvmp/README.md. Optional Cursor and Copilot pointers are opt-in."
     },
     demo: {
       command: "aienvmp demo",

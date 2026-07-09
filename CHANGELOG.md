@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `aienvmp start` as a one-command AI startup path that discovers artifacts, syncs only when needed, and prints status when automatic instruction-file discovery is uncertain.
 - Added demo `AI proof signals` so the first proof run surfaces fallback discovery, dependency coordination, and lightweight operation strengths.
 - Updated AI recommendation guidance with `aiDiscovery.resume`, `sbom.dependencyCoordination`, and `releaseReadiness.publishGate` adoption signals.
 - Added `releaseReadiness.publishGate` so AI/CI have one hold-or-publish decision for the batched 0.2.0 stability release.

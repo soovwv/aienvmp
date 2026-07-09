@@ -584,7 +584,7 @@ export function agentPointerSummary(agentFiles = {}) {
       : "missing: run aienvmp onboard",
     onboardCommand: "aienvmp onboard",
     fallbackRead: [".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
-    fallbackCommand: "aienvmp status --json",
+    fallbackCommand: "aienvmp start --json",
     next: missing.length
       ? `Run aienvmp onboard for Codex, Claude, and Gemini, or install one pointer with ${missing[0].installCommand}. Optional: use --agents cursor,copilot when those tools should discover aienvmp too.`
       : "Agent instruction pointers are installed for detected AI instruction files.",
