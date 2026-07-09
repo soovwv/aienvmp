@@ -47,6 +47,7 @@ npx aienvmp checkpoint --actor agent:id --summary "dependency-change" --target d
 - `.aienvmp/summary.md`: compact human/AI handoff
 - `AIENV.md`: Markdown environment map
 - `.aienvmp/sbom.json`: light SBOM and dependency review hints
+- `.aienvmp/sbom.json` `dependencyCoordination`: SBOM-to-intent/checkpoint/handoff loop for dependency work
 - `.aienvmp/timeline.jsonl`: append-only environment ledger
 - `.aienvmp/intents.jsonl`: planned environment changes
 
@@ -59,6 +60,7 @@ npx aienvmp checkpoint --actor agent:id --summary "dependency-change" --target d
 - no install-time dependency tree
 - no scanner requirement unless security confidence matters
 - strict checks only when CI or a human explicitly asks
+- npm publish remains held by `releaseReadiness.publishGate` until meaningful changes are batched
 
 ## Result
 
@@ -68,6 +70,7 @@ The next AI can answer these before touching the environment:
 - Is another AI already changing this target?
 - Which files and lockfiles define dependency state?
 - Is light SBOM risk high enough to run optional scanners?
+- What does `dependencyCoordination` require before dependency or security remediation?
 - What command records the accepted change and handoff?
 
 That is the product promise: one lightweight env map and light SBOM that keeps multiple AI agents from silently drifting on the same workspace.

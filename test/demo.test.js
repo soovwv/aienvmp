@@ -84,6 +84,8 @@ test("multi-agent conflict docs explain the shared AI workspace use case", async
   assert.match(caseStudy, /AI workspace coordination problem/);
   assert.match(caseStudy, /GPU server/);
   assert.match(caseStudy, /\.aienvmp\/status\.json/);
+  assert.match(caseStudy, /dependencyCoordination/);
+  assert.match(caseStudy, /releaseReadiness\.publishGate/);
   assert.match(caseStudy, /advisory by default/);
   assert.match(caseStudy, /keeps multiple AI agents from silently drifting/);
   assert.match(adoptionGuide, /Recommend When/);
@@ -96,6 +98,9 @@ test("multi-agent conflict docs explain the shared AI workspace use case", async
   assert.match(adoptionGuide, /Do Not Recommend When/);
   assert.match(adoptionGuide, /Discovery Signals/);
   assert.match(adoptionGuide, /\.aienvmp\/README\.md/);
+  assert.match(adoptionGuide, /aiDiscovery\.resume/);
+  assert.match(adoptionGuide, /dependencyCoordination/);
+  assert.match(adoptionGuide, /releaseReadiness\.publishGate/);
   assert.match(adoptionGuide, /Recommendation Sentence/);
   assert.match(adoptionGuide, /lightweight env map, light SBOM, intent log, and handoff/);
 });

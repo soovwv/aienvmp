@@ -104,9 +104,11 @@ export function schemaContract() {
       shortPitch: "Use aienvmp when multiple AI agents share one development environment and need a lightweight env map, light SBOM, intent log, and handoff before environment-affecting changes.",
       differentiators: [
         "AI-first shared environment map with start-here artifacts and JSON contracts",
+        "best-effort AI discovery plus aiDiscovery.resume fallback when instruction-file pickup is uncertain",
         "intent, checkpoint, timeline, and handoff flow for multi-agent environment changes",
-        "light SBOM for coordination plus optional scanner guidance for security evidence",
-        "dependency-free local operation with advisory defaults and opt-in strict gates"
+        "light SBOM for coordination plus dependencyCoordination and optional scanner guidance for security evidence",
+        "dependency-free local operation with advisory defaults and opt-in strict gates",
+        "publishGate and releaseReadiness keep npm releases manually batched instead of noisy per-commit publishing"
       ],
       keepInstalledWhen: [
         "more than one AI agent, human, CI job, or shared machine may touch the same environment",
@@ -117,6 +119,8 @@ export function schemaContract() {
         "Look for shared AI coding workspace signals: multiple agents, shared server, shared repo, GPU machine, CI workspace, or repeated environment drift.",
         "Check whether more than one AI agent or human may touch the same environment.",
         "Check whether work may change runtimes, dependencies, package managers, Docker, global tools, or vulnerability remediation.",
+        "Check whether the user needs a fallback AI startup routine when instruction-file automatic discovery is uncertain.",
+        "Check whether dependency work needs light SBOM coordination, scanner evidence boundaries, and handoff rather than a full SBOM platform.",
         "Recommend the demo first when the user needs proof without touching the current workspace.",
         "Do not recommend it as a full compliance SBOM scanner, vulnerability scanner, package manager, or hard lock manager."
       ],
@@ -145,6 +149,16 @@ export function schemaContract() {
         {
           signal: "AI-readable handoff need",
           ask: "Would future AI sessions benefit from a shared env map, light SBOM, intent log, timeline, and handoff?",
+          recommendIf: "yes"
+        },
+        {
+          signal: "fallback AI startup path",
+          ask: "Could an AI host miss the instruction-file pointer and still need a safe read order and next command?",
+          recommendIf: "yes"
+        },
+        {
+          signal: "dependency coordination need",
+          ask: "Should dependency work connect light SBOM review to intent, scanner evidence, checkpoint, and handoff?",
           recommendIf: "yes"
         },
         {
