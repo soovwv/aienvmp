@@ -56,7 +56,9 @@ If instruction-file pointers are missing or uncertain but `.aienvmp` exists, sta
 
 Use `agentPointers.discovery` or the compact `status` line containing `discovery:` to decide whether Codex, Claude, Gemini, or optional agent pointers can find the env map.
 
-Use `npx aienvmp discover --json` and its `aiDiscovery` block when automatic pickup is uncertain. Automatic discovery is best-effort because each AI host reads different instruction files.
+Use `npx aienvmp discover --json` and its `aiDiscovery.resume` block when automatic pickup is uncertain. Automatic discovery is best-effort because each AI host reads different instruction files.
+
+When present, follow `aiDiscovery.resume.readFirst`, `nextCommand`, `beforeEnvironmentChange`, `afterEnvironmentChange`, and `handoff` as the minimum startup routine before shared environment changes.
 
 Use `followUpPlan` before touching a shared environment target; if it is `pending`, run its `nextCommand` first.
 

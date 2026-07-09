@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Documented `aiDiscovery.resume` in the README and packaged AI skill so fallback startup is visible to humans and agents.
 - Added `discover.aiDiscovery.resume` so AI agents get the same startup routine even when instruction-file automatic discovery is uncertain.
 - Added `handoff.continuation.resume` so the next AI gets a compact same-env-map resume routine before shared environment changes.
 - Added SBOM scanner `evidenceWorkflow` guidance so AI agents can hand off from light SBOM coordination to dedicated scanner evidence without auto-running tools.
