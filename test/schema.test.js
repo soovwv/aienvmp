@@ -54,6 +54,13 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.operationalSafety.mustNotDo.join(" "), /audit fix/);
   assert.ok(schema.operationalSafety.allowedWithoutIntent.includes("read generated artifacts"));
   assert.ok(schema.operationalSafety.requireIntentBefore.includes("dependency or lockfile changes"));
+  assert.equal(schema.qualitySignals.status, "prototype-hardening");
+  assert.ok(schema.qualitySignals.principles.includes("AI-friendly"));
+  assert.ok(schema.qualitySignals.principles.includes("batched-release"));
+  assert.match(schema.qualitySignals.checks.map((item) => item.name).join(" "), /Operational safety/);
+  assert.match(schema.qualitySignals.checks.map((item) => item.evidence).join(" "), /npm run release:check/);
+  assert.match(schema.qualitySignals.recommendWhenAllTrue.join(" "), /fallback prompt/);
+  assert.match(schema.qualitySignals.mustStayTrue.join(" "), /do not publish every small commit/);
   assert.equal(schema.aiLoop.name, "AI maintenance loop");
   assert.equal(schema.aiLoop.localMode, "warn-only");
   assert.deepEqual(schema.aiLoop.steps.map((item) => item.step), ["sync", "status", "context", "intent", "checkpoint", "handoff"]);
@@ -97,6 +104,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.releaseReadiness.currentBatch.status, "accumulating");
   assert.equal(schema.releaseReadiness.currentBatch.releaseType, "stability-batch");
   assert.ok(schema.releaseReadiness.currentBatch.themes.includes("AI discovery"));
+  assert.ok(schema.releaseReadiness.currentBatch.themes.includes("AI quality signals"));
   assert.ok(schema.releaseReadiness.currentBatch.themes.includes("release gating"));
   assert.match(schema.releaseReadiness.currentBatch.reason, /one intentional release/);
   assert.equal(schema.releaseReadiness.publishDecision.default, "hold");
@@ -142,6 +150,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("artifactFreshness"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("strictRecommendation"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("operationalSafety"));
+  assert.ok(schema.outputs.status.contract.aiEntryFields.includes("qualitySignals"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("aiReadiness"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("collaboration"));
   assert.ok(schema.outputs.status.contract.aiEntryFields.includes("coordinationResolution"));
@@ -157,6 +166,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.status.rootFields.includes("artifactFreshness"));
   assert.ok(schema.outputs.status.rootFields.includes("strictRecommendation"));
   assert.ok(schema.outputs.status.rootFields.includes("operationalSafety"));
+  assert.ok(schema.outputs.status.rootFields.includes("qualitySignals"));
   assert.ok(schema.outputs.status.rootFields.includes("followUpPlan"));
   assert.ok(schema.outputs.status.rootFields.includes("environmentChangeProtocol"));
   assert.ok(schema.outputs.status.rootFields.includes("coordinationResolution"));
@@ -184,6 +194,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.context.rootFields.includes("artifactFreshness"));
   assert.ok(schema.outputs.context.rootFields.includes("strictRecommendation"));
   assert.ok(schema.outputs.context.rootFields.includes("operationalSafety"));
+  assert.ok(schema.outputs.context.rootFields.includes("qualitySignals"));
   assert.ok(schema.outputs.context.rootFields.includes("collaboration"));
   assert.ok(schema.outputs.context.rootFields.includes("coordinationResolution"));
   assert.ok(schema.outputs.context.rootFields.includes("maintenanceLoop"));
@@ -251,6 +262,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.compatibility.strictPlanRule, /narrowest explicit strict scope/);
   assert.match(schema.compatibility.releaseGateRule, /manually batched/);
   assert.match(schema.compatibility.releaseReadinessRule, /0\.2\.0 is ready/);
+  assert.match(schema.compatibility.qualitySignalsRule, /AI-friendly/);
 });
 
 test("README documents the compact follow-up plan contract", async () => {

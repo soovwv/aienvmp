@@ -37,6 +37,7 @@ test("buildStatus returns a compact clear state", () => {
   assert.ok(status.contract.aiEntryFields.includes("collaboration"));
   assert.ok(status.contract.aiEntryFields.includes("maintenanceLoop"));
   assert.ok(status.contract.aiEntryFields.includes("operationalSafety"));
+  assert.ok(status.contract.aiEntryFields.includes("qualitySignals"));
   assert.ok(status.contract.aiEntryFields.includes("environmentChangeProtocol"));
   assert.ok(status.contract.aiEntryFields.includes("dependencyReadSet"));
   assert.equal(status.counts.runtimes, 1);
@@ -127,6 +128,13 @@ test("buildStatus returns a compact clear state", () => {
   assert.match(status.operationalSafety.mustNotDo.join(" "), /audit fix/);
   assert.ok(status.operationalSafety.allowedWithoutIntent.includes("read generated artifacts"));
   assert.ok(status.operationalSafety.requireIntentBefore.includes("global tool installation or removal"));
+  assert.equal(status.qualitySignals.status, "prototype-hardening");
+  assert.ok(status.qualitySignals.principles.includes("AI-friendly"));
+  assert.ok(status.qualitySignals.principles.includes("lightweight"));
+  assert.match(status.qualitySignals.checks.map((item) => item.name).join(" "), /AI entry path/);
+  assert.match(status.qualitySignals.checks.map((item) => item.evidence).join(" "), /aienvmp demo --json/);
+  assert.match(status.qualitySignals.mustStayTrue.join(" "), /do not fail local work by default/);
+  assert.match(status.qualitySignals.rule, /recommendation and stabilization checklist/);
   assert.equal(status.enforcementProfile.gate.localDefault, "warn-only");
   assert.equal(status.enforcementProfile.gate.failCondition, "never in default mode");
   assert.equal(status.enforcementProfile.strictPlan.ciCommand, "aienvmp doctor --strict all --json");

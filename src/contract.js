@@ -6,8 +6,57 @@ export function preflightContract() {
     version: 1,
     stability: "additive",
     requiredFields: ["schemaVersion", "state", "decision", "quickstart", "commands", "artifacts"],
-    aiEntryFields: ["state", "summary", "readOrder", "aiSession", "aiBootstrap", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "operationalSafety", "aiReadiness", "collaboration", "coordinationResolution", "maintenanceLoop", "nextAgent", "coordination", "agentActivity", "agentPointers", "sbomRisk", "followUps", "followUpPlan", "environmentChangeProtocol", "dependencyReadSet", "dependencyChangeProtocol"],
+    aiEntryFields: ["state", "summary", "readOrder", "aiSession", "aiBootstrap", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "operationalSafety", "qualitySignals", "aiReadiness", "collaboration", "coordinationResolution", "maintenanceLoop", "nextAgent", "coordination", "agentActivity", "agentPointers", "sbomRisk", "followUps", "followUpPlan", "environmentChangeProtocol", "dependencyReadSet", "dependencyChangeProtocol"],
     rule: "Consumers should ignore unknown fields and treat missing optional fields as unavailable."
+  };
+}
+
+export function qualitySignalsContract() {
+  return {
+    purpose: "Compact AI-readable quality signals for deciding whether aienvmp is safe to use, recommend, or release.",
+    status: "prototype-hardening",
+    principles: ["AI-friendly", "simple", "lightweight", "advisory-first", "batched-release"],
+    checks: [
+      {
+        name: "AI entry path",
+        signal: "status/context/schema expose readOrder, aiSession, aiBootstrap, agent discovery, and fallback prompt",
+        evidence: "aienvmp discover --json && aienvmp status --json && aienvmp context --json"
+      },
+      {
+        name: "Shared workspace coordination",
+        signal: "intent, checkpoint, timeline, coordinationResolution, and handoff are available before environment-affecting changes",
+        evidence: "aienvmp demo --json"
+      },
+      {
+        name: "Light SBOM boundary",
+        signal: "project manifests are summarized without installing packages; full evidence stays in optional external scanners",
+        evidence: "aienvmp sbom --json"
+      },
+      {
+        name: "Operational safety",
+        signal: "local mode is warn-only/read-mostly; strict failure is reserved for CI, release, or explicit human request",
+        evidence: "aienvmp doctor --json"
+      },
+      {
+        name: "Release discipline",
+        signal: "small changes accumulate; publish only after meaningful batched changes and release:check",
+        evidence: "npm run release:check"
+      }
+    ],
+    recommendWhenAllTrue: [
+      "AI entry path is discoverable or has a fallback prompt",
+      "environment-affecting changes can be recorded with intent and checkpoint",
+      "light SBOM limitations are explicit and optional scanner guidance is present",
+      "local operation remains advisory and dependency-free",
+      "release notes and tests are current before npm publish"
+    ],
+    mustStayTrue: [
+      "do not require background services, daemons, or lock managers for the default flow",
+      "do not install dependencies or change runtimes during read-only discovery/status/context",
+      "do not fail local work by default",
+      "do not publish every small commit as a new npm version"
+    ],
+    rule: "Use these signals as a recommendation and stabilization checklist; keep the default product lightweight and AI-readable before adding deeper integrations."
   };
 }
 
@@ -105,6 +154,7 @@ export function schemaContract() {
     coordinationResolutionFields: ["status", "mode", "targets", "readFirst", "nextCommand", "steps", "commands", "mustNotDo", "rule"],
     environmentChangeProtocolFields: ["mode", "appliesWhen", "state", "readFirst", "beforeChange", "afterChange", "commands", "mustNotDo", "nextCommand", "rule"],
     operationalSafety: operationalSafetyContract(),
+    qualitySignals: qualitySignalsContract(),
     aiLoop: {
       name: "AI maintenance loop",
       purpose: "Shared lightweight workflow for AI agents that maintain one workspace environment.",
@@ -183,7 +233,7 @@ export function schemaContract() {
       currentBatch: {
         status: "accumulating",
         releaseType: "stability-batch",
-        themes: ["AI discovery", "SBOM interoperability", "recommendation positioning", "dashboard surface budget", "release gating"],
+        themes: ["AI discovery", "AI quality signals", "SBOM interoperability", "recommendation positioning", "dashboard surface budget", "release gating"],
         decision: "hold",
         reason: "Several stability and AI-contract changes are being accumulated for one intentional release instead of publishing every commit."
       },
@@ -237,7 +287,7 @@ export function schemaContract() {
       status: {
         file: ".aienvmp/status.json",
         command: "aienvmp status --json",
-        rootFields: ["state", "readOrder", "aiSession", "aiBootstrap", "nextCommand", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "operationalSafety", "decision", "counts", "aiReadiness", "collaboration", "coordinationResolution", "maintenanceLoop", "coordination", "agentPointers", "sbomRisk", "followUpPlan", "environmentChangeProtocol"],
+        rootFields: ["state", "readOrder", "aiSession", "aiBootstrap", "nextCommand", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "operationalSafety", "qualitySignals", "decision", "counts", "aiReadiness", "collaboration", "coordinationResolution", "maintenanceLoop", "coordination", "agentPointers", "sbomRisk", "followUpPlan", "environmentChangeProtocol"],
         agentPointerFields: ["installedCount", "missingCount", "installed", "missing", "discovery", "onboardCommand", "fallbackCommand", "fallbackRead", "next", "targets", "rule"],
         contract: preflightContract()
       },
@@ -269,7 +319,7 @@ export function schemaContract() {
       },
       context: {
         command: "aienvmp context --json",
-        rootFields: ["status", "startHere", "readOrder", "aiSession", "aiBootstrap", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "operationalSafety", "preflight", "aiReadiness", "collaboration", "coordinationResolution", "maintenanceLoop", "coordination", "agentPointers", "followUpPlan", "environmentChangeProtocol", "decision", "enforcement", "recommendedActions", "workspace", "dependencySnapshot", "lightSbom", "warnings"]
+        rootFields: ["status", "startHere", "readOrder", "aiSession", "aiBootstrap", "nextSafeCommand", "artifactFreshness", "strictRecommendation", "operationalSafety", "qualitySignals", "preflight", "aiReadiness", "collaboration", "coordinationResolution", "maintenanceLoop", "coordination", "agentPointers", "followUpPlan", "environmentChangeProtocol", "decision", "enforcement", "recommendedActions", "workspace", "dependencySnapshot", "lightSbom", "warnings"]
       },
       handoff: {
         command: "aienvmp handoff --json",
@@ -321,7 +371,8 @@ export function schemaContract() {
       strictDecisionRule: "Use enforcement.strictDecision or preflight.enforcementProfile.strictDecision for the shortest local warn-only vs CI strict decision.",
       strictPlanRule: "Use enforcement.strictPlan or preflight.enforcementProfile.strictPlan to choose the narrowest explicit strict scope for CI.",
       releaseGateRule: "Use releaseGate.localCommand and releaseGate.workflow before npm publish; releases should be manually batched instead of published per commit.",
-      releaseReadinessRule: "Use releaseReadiness.requiredBeforeStable to decide whether 0.2.0 is ready; do not publish every commit."
+      releaseReadinessRule: "Use releaseReadiness.requiredBeforeStable to decide whether 0.2.0 is ready; do not publish every commit.",
+      qualitySignalsRule: "Use qualitySignals as the compact AI-friendly, simple, lightweight, advisory-first, and batched-release checklist before recommending or releasing aienvmp."
     }
   };
 }

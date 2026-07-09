@@ -1,7 +1,7 @@
 import { recommendedActions } from "./actions.js";
 import { aiDecision } from "./decision.js";
 import { enforcementAdvice, enforcementGate } from "./enforcement.js";
-import { operationalSafetyContract, preflightContract } from "./contract.js";
+import { operationalSafetyContract, preflightContract, qualitySignalsContract } from "./contract.js";
 import { pendingFollowUps } from "./timeline.js";
 
 export function buildPreflight(manifest = {}, warnings = [], intents = [], timeline = []) {
@@ -47,6 +47,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
   });
   const environmentChangeProtocol = environmentProtocol({ state, intentTargets, dependencyChangeProtocol, collaboration });
   const operationalSafety = operationalSafetyContract();
+  const qualitySignals = qualitySignalsContract();
   return {
     schemaVersion: 1,
     contract: preflightContract(),
@@ -58,6 +59,7 @@ export function buildPreflight(manifest = {}, warnings = [], intents = [], timel
     enforcement,
     strictRecommendation,
     operationalSafety,
+    qualitySignals,
     enforcementProfile: {
       defaultMode: "advisory",
       localOperation: "non-blocking",

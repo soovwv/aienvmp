@@ -34,6 +34,7 @@ export async function contextWorkspace(args) {
       artifactFreshness: preflight.artifactFreshness,
       strictRecommendation: preflight.strictRecommendation,
       operationalSafety: preflight.operationalSafety,
+      qualitySignals: preflight.qualitySignals,
       preflight,
       aiReadiness: preflight.aiReadiness,
       collaboration: preflight.collaboration,

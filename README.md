@@ -102,7 +102,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `scannerGuidance.externalTools` points AI to Syft, Trivy, Grype, or Dependency-Track when full SBOM/security evidence is needed.
 - `sbom --json` also carries `startHere` and `readOrder` so dependency review follows the same AI entry path.
 - `collaboration`, `coordination`, and `agentActivity` expose multi-agent conflicts and shared targets.
-- `releaseGate` and `releaseReadiness` expose the `0.2.0` batched stable-contract gate.
+- `qualitySignals`, `releaseGate`, and `releaseReadiness` expose the AI-friendly, lightweight, batched stable-contract gate.
 - After `0.2.0`, documented JSON fields stay backward-compatible; new fields are additive.
 
 ## Commands
