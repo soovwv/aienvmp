@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { aiDefaultReadOrder, aiDiscoveryEntry, aiEntryContract, aiEnvMap, aiStartHere, aiStatus, aiSummary, npxAiFallbackPrompt, npxAiMissingFallbackPrompt, npxAiStartupChecklist } from "../ai-contract.js";
+import { aiDefaultReadOrder, aiDiscoveryEntry, aiEntryContract, aiEnvMap, aiSessionUseContract, aiStartHere, aiStatus, aiSummary, npxAiFallbackPrompt, npxAiMissingFallbackPrompt, npxAiStartupChecklist } from "../ai-contract.js";
 import { readJson } from "../fsutil.js";
 import { aiEnvPath, dashboardPath, discoveryJsonPath, manifestPath, sbomJsonPath, stateDir, stateReadmePath, statusJsonPath, summaryMdPath, workspaceDir } from "../paths.js";
 
@@ -137,6 +137,13 @@ function aiDiscoverySummary({ detected = false, stale = true, agentPointers = {}
   const fallbackPrompt = detected
     ? npxAiFallbackPrompt
     : npxAiMissingFallbackPrompt;
+  const sessionUse = aiSessionUseContract({
+    decision,
+    nextCommand: safeStart,
+    nextSetupCommand,
+    copyPastePrompt: fallbackPrompt,
+    proofCommand: "npx aienvmp discover --json"
+  });
   const resume = {
     purpose: "Minimum AI startup routine when instruction-file automatic discovery is uncertain.",
     readFirst: fallbackRead.length ? fallbackRead : aiDefaultReadOrder,
@@ -165,6 +172,7 @@ function aiDiscoverySummary({ detected = false, stale = true, agentPointers = {}
     startupChecklist,
     fallbackRead,
     resume,
+    sessionUse,
     aiEntry: aiEntryContract({
       decision,
       readFirst: fallbackRead,

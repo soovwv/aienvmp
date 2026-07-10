@@ -1,5 +1,5 @@
 import { dashboardDiscoveryFallback, dashboardEssentialSurfaces, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardSurfaceBudget } from "./dashboard.js";
-import { aiDefaultReadOrder, aiEntryContract, aiFallbackPrompt, aiFallbackRead, aiStartupChecklist } from "./ai-contract.js";
+import { aiDefaultReadOrder, aiEntryContract, aiFallbackPrompt, aiFallbackRead, aiSessionUseContract, aiStartupChecklist } from "./ai-contract.js";
 
 export function preflightContract() {
   return {
@@ -105,7 +105,8 @@ export function schemaContract() {
       shortPitch: "Use aienvmp when multiple AI agents share one development environment and need a lightweight env map, light SBOM, intent log, and handoff before environment-affecting changes.",
       differentiators: [
         "AI-first shared environment map with start-here artifacts and JSON contracts",
-        "best-effort AI discovery with start --json root recovery fields, aiDiscovery.decision, discovery.json, aiEntry, startupChecklist, copyPastePrompt, and resume fallback when instruction-file pickup is uncertain",
+        "best-effort AI discovery with start --json root recovery fields, aiDiscovery.decision, discovery.json, aiEntry, sessionUse, startupChecklist, copyPastePrompt, and resume fallback when instruction-file pickup is uncertain",
+        "sessionUse gives every AI session the same compact proof command, discovery decision, next command, and fallback prompt rule",
         "dashboard mirrors the same auto-ready versus fallback-required startup decision for human operators",
         "intent, checkpoint, timeline, and handoff flow for multi-agent environment changes",
         "light SBOM for coordination plus dependencyCoordination and optional scanner guidance for security evidence",
@@ -219,6 +220,7 @@ export function schemaContract() {
         readFirst: [".aienvmp/discovery.json", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"],
         rule: "Do not assume an AI host auto-read an instruction-file pointer; use copyPastePrompt and aiEntry when discovery is uncertain."
       },
+      sessionUse: aiSessionUseContract(),
       skipWhen: [
         "the user only needs a full compliance SBOM or vulnerability scanner",
         "the workspace needs hard policy locks instead of advisory coordination",
@@ -269,6 +271,7 @@ export function schemaContract() {
       aiEntry: aiEntryContract(),
       fallbackPrompt: aiFallbackPrompt,
       copyPastePrompt: aiFallbackPrompt,
+      sessionUse: aiSessionUseContract(),
       promptUse: {
         pasteInto: ["Codex", "Claude", "Gemini", "Cursor", "Copilot", "other AI coding agents"],
         when: "Use when the AI host did not auto-read an aienvmp instruction-file pointer.",
@@ -351,6 +354,7 @@ export function schemaContract() {
           "demo --json exposes recommendationDecision so AI agents can decide recommend, skip, first commands, and proof command from one artifact",
           "demo --json recommendationDecision now uses aiAdoptionDecision while preserving compatible recommend/skip/start fields",
           "dashboard Quality Signals mirrors aiAdoptionDecision so humans see the same use/recommend/start/skip contract as AI agents",
+          "sessionUse provides a compact cross-agent startup proof command and fallback decision for every AI session",
           "plain sbom and verbose status text expose dependencyQuickCheck without expanding default status output",
           "start --json exposes root-level discoveryDecision, startupChecklist, resume, aiEntry, copyPastePrompt, and fallbackPrompt for AI hosts",
           "operational safety contract in status/context",
@@ -436,6 +440,7 @@ export function schemaContract() {
         "keep aiAdoptionDecision as the shortest schema recommendation path for AI agents",
         "keep demo --json and packaged skill aligned with aiAdoptionDecision",
         "keep dashboard Quality Signals aligned with aiAdoptionDecision",
+        "keep sessionUse aligned across discover, start, discovery.json, schema, and generated start-here artifacts",
         "validate start/onboard/discover fallback behavior across Codex, Claude, Gemini, Cursor, and Copilot surfaces",
         "keep light SBOM coordination separate from optional full scanner evidence",
         "review CHANGELOG as one 0.2.0 release-note group before any npm publish"
@@ -476,22 +481,23 @@ export function schemaContract() {
         command: "aienvmp discover --json",
         mode: "read-only",
         rootFields: ["status", "detected", "startHere", "readOrder", "freshness", "nextCommand", "agentPointers", "aiDiscovery", "artifacts", "rule"],
-        aiDiscoveryFields: ["mode", "decision", "automatic", "pointerStatus", "limitation", "installCommand", "nextSetupCommand", "safeStart", "sessionStart", "startupChecklist", "fallbackRead", "resume", "aiEntry", "fallbackPrompt", "copyPastePrompt", "promptUse", "humanInstruction", "rule"],
+        aiDiscoveryFields: ["mode", "decision", "automatic", "pointerStatus", "limitation", "installCommand", "nextSetupCommand", "safeStart", "sessionStart", "startupChecklist", "fallbackRead", "resume", "sessionUse", "aiEntry", "fallbackPrompt", "copyPastePrompt", "promptUse", "humanInstruction", "rule"],
         resumeFields: ["purpose", "readFirst", "nextCommand", "allowed", "beforeEnvironmentChange", "afterEnvironmentChange", "handoff", "mustNotDo", "rule"],
+        sessionUseFields: ["purpose", "useAt", "proofCommand", "decisionField", "decision", "nextCommand", "nextSetupCommand", "fallbackPromptField", "copyPastePrompt", "beforeEnvironmentChange", "afterEnvironmentChange", "handoff", "rule"],
         purpose: "Zero-write detection command for AI agents or humans that need to know whether a workspace already has aienvmp artifacts."
       },
       start: {
         command: "aienvmp start --json",
         mode: "read-mostly",
-        rootFields: ["status", "mode", "localMode", "purpose", "startHere", "readOrder", "decision", "summary", "nextCommand", "nextSetupCommand", "agentPointers", "aiDiscovery", "discoveryDecision", "startupChecklist", "resume", "aiEntry", "fallbackPrompt", "copyPastePrompt", "promptUse", "statusText", "rule"],
+        rootFields: ["status", "mode", "localMode", "purpose", "startHere", "readOrder", "decision", "summary", "nextCommand", "nextSetupCommand", "agentPointers", "aiDiscovery", "discoveryDecision", "startupChecklist", "resume", "sessionUse", "aiEntry", "fallbackPrompt", "copyPastePrompt", "promptUse", "statusText", "rule"],
         purpose: "One-command AI startup that syncs only when artifacts are missing or stale, then returns the discovery decision and shortest resume routine.",
-        rule: "Use root discoveryDecision, startupChecklist, resume, and fallbackPrompt before assuming instruction-file automatic discovery worked."
+        rule: "Use root discoveryDecision, startupChecklist, sessionUse, resume, and fallbackPrompt before assuming instruction-file automatic discovery worked."
       },
       discovery: {
         file: ".aienvmp/discovery.json",
         command: "aienvmp sync",
         format: "json",
-        rootFields: ["schemaVersion", "schemaName", "decision", "automatic", "pointerStatus", "startCommand", "statusCommand", "contextCommand", "nextSetupCommand", "readOrder", "maintenance", "startupChecklist", "resume", "aiEntry", "fallbackPrompt", "copyPastePrompt", "promptUse", "rule"],
+        rootFields: ["schemaVersion", "schemaName", "decision", "automatic", "pointerStatus", "startCommand", "statusCommand", "contextCommand", "nextSetupCommand", "readOrder", "maintenance", "startupChecklist", "resume", "sessionUse", "aiEntry", "fallbackPrompt", "copyPastePrompt", "promptUse", "rule"],
         maintenanceFields: ["status", "nextCommand", "source", "freshness", "followUp", "dependencyQuickCheck", "beforeEnvironmentChange", "afterEnvironmentChange", "rule"],
         purpose: "Smallest generated fallback entry artifact for AI hosts that did not auto-load an instruction-file pointer."
       },

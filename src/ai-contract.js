@@ -70,3 +70,31 @@ export function aiEntryContract({
     rule: "Read aiEntry first when automatic discovery is uncertain; keep local work advisory and record intent before shared environment changes."
   };
 }
+
+export function aiSessionUseContract({
+  decision = "fallback-required",
+  nextCommand = aiContextCommand,
+  nextSetupCommand = "aienvmp onboard",
+  copyPastePrompt = aiFallbackPrompt,
+  proofCommand = "aienvmp discover --json"
+} = {}) {
+  return {
+    purpose: "Shortest cross-agent startup decision for using this workspace env map.",
+    useAt: [
+      "start of a new AI coding session",
+      "before runtime, dependency, package manager, Docker, global tool, or security-remediation changes",
+      "when another AI or human may share the same environment"
+    ],
+    proofCommand,
+    decisionField: "aiDiscovery.decision",
+    decision,
+    nextCommand,
+    nextSetupCommand,
+    fallbackPromptField: "copyPastePrompt",
+    copyPastePrompt,
+    beforeEnvironmentChange: "aienvmp intent --actor agent:id --action planned-change --target environment",
+    afterEnvironmentChange: "aienvmp checkpoint --actor agent:id --summary what-changed --target environment",
+    handoff: "aienvmp handoff --record --actor agent:id",
+    rule: "If decision is fallback-required, do not assume the AI host auto-read a pointer file; use copyPastePrompt or run start --json before environment-affecting work."
+  };
+}

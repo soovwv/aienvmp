@@ -91,6 +91,7 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.match(startHere, /discovery mode: best-effort/);
   assert.match(startHere, /discovery decision: fallback-required/);
   assert.match(startHere, /aiEntry: read `\.aienvmp\/discovery\.json` `aiEntry`/);
+  assert.match(startHere, /sessionUse: read `\.aienvmp\/discovery\.json` `sessionUse`/);
   assert.match(startHere, /beforeEnvironmentChange/);
   assert.match(startHere, /afterEnvironmentChange/);
   assert.match(startHere, /next setup: `npx aienvmp onboard`/);
@@ -112,6 +113,10 @@ test("sync creates the AI-facing env map outputs with simple defaults", async ()
   assert.equal(discovery.maintenance.dependencyQuickCheck, "ready");
   assert.match(discovery.maintenance.rule, /recurring AI environment maintenance decision/);
   assert.match(discovery.startupChecklist.join(" "), /dependencyQuickCheck/);
+  assert.equal(discovery.sessionUse.decision, discovery.decision);
+  assert.equal(discovery.sessionUse.proofCommand, "npx aienvmp discover --json");
+  assert.equal(discovery.sessionUse.nextSetupCommand, discovery.nextSetupCommand);
+  assert.equal(discovery.sessionUse.copyPastePrompt, discovery.copyPastePrompt);
   assert.equal(discovery.aiEntry.decision, discovery.decision);
   assert.equal(discovery.aiEntry.nextSetupCommand, discovery.nextSetupCommand);
   assert.equal(discovery.aiEntry.copyPastePrompt, discovery.copyPastePrompt);

@@ -28,6 +28,7 @@ export async function startWorkspace(args = {}) {
     discoveryDecision: after.aiDiscovery?.decision || status.agentPointers?.discoveryDecision || "fallback-required",
     startupChecklist: after.aiDiscovery?.startupChecklist || [],
     resume: after.aiDiscovery?.resume || null,
+    sessionUse: after.aiDiscovery?.sessionUse || null,
     aiEntry: after.aiDiscovery?.aiEntry || null,
     fallbackPrompt: after.aiDiscovery?.fallbackPrompt || "",
     copyPastePrompt: after.aiDiscovery?.copyPastePrompt || after.aiDiscovery?.fallbackPrompt || "",

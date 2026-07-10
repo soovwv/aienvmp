@@ -263,6 +263,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("startupChecklist"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("sessionStart"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("resume"));
+  assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("sessionUse"));
+  assert.ok(schema.outputs.discover.sessionUseFields.includes("proofCommand"));
+  assert.ok(schema.outputs.discover.sessionUseFields.includes("fallbackPromptField"));
   assert.ok(schema.outputs.discover.aiDiscoveryFields.includes("aiEntry"));
   assert.ok(schema.outputs.discover.resumeFields.includes("beforeEnvironmentChange"));
   assert.ok(schema.outputs.discover.resumeFields.includes("mustNotDo"));
@@ -276,6 +279,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.start.rootFields.includes("discoveryDecision"));
   assert.ok(schema.outputs.start.rootFields.includes("startupChecklist"));
   assert.ok(schema.outputs.start.rootFields.includes("resume"));
+  assert.ok(schema.outputs.start.rootFields.includes("sessionUse"));
   assert.ok(schema.outputs.start.rootFields.includes("aiEntry"));
   assert.ok(schema.outputs.start.rootFields.includes("fallbackPrompt"));
   assert.ok(schema.outputs.start.rootFields.includes("copyPastePrompt"));
@@ -287,6 +291,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.discovery.rootFields.includes("maintenance"));
   assert.ok(schema.outputs.discovery.maintenanceFields.includes("nextCommand"));
   assert.ok(schema.outputs.discovery.maintenanceFields.includes("dependencyQuickCheck"));
+  assert.ok(schema.outputs.discovery.rootFields.includes("sessionUse"));
   assert.ok(schema.outputs.discovery.rootFields.includes("fallbackPrompt"));
   assert.ok(schema.outputs.discovery.rootFields.includes("aiEntry"));
   assert.ok(schema.outputs.discovery.rootFields.includes("copyPastePrompt"));
@@ -479,6 +484,8 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   assert.equal(schema.agentDiscovery.discoverCommand, "aienvmp discover");
   assert.equal(schema.agentDiscovery.fallbackCommand, "aienvmp start --json");
   assert.equal(schema.agentDiscovery.automaticDiscovery, "best-effort");
+  assert.equal(schema.agentDiscovery.sessionUse.decisionField, "aiDiscovery.decision");
+  assert.equal(schema.agentDiscovery.sessionUse.fallbackPromptField, "copyPastePrompt");
   assert.ok(schema.agentDiscovery.decisionValues.includes("fallback-required"));
   assert.match(schema.agentDiscovery.startupChecklist.join(" "), /checkpoint/);
   assert.equal(schema.operationalSafety.defaultBehavior, "warn-only");

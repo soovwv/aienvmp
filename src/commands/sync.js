@@ -1,5 +1,5 @@
 import fs from "node:fs/promises";
-import { aiDefaultReadOrder, aiDiscoveryEntry, aiEntryContract, aiFallbackPrompt, aiStartupChecklist, npxAiContextCommand } from "../ai-contract.js";
+import { aiDefaultReadOrder, aiDiscoveryEntry, aiEntryContract, aiFallbackPrompt, aiSessionUseContract, aiStartupChecklist, npxAiContextCommand } from "../ai-contract.js";
 import { initWorkspace } from "./init.js";
 import { scanWorkspace } from "./scan.js";
 import { compileWorkspace } from "./compile.js";
@@ -69,6 +69,13 @@ async function writeDiscoveryArtifact(dir, status = {}) {
     handoff: status.aiSession?.handoff || "aienvmp handoff --record --actor agent:id",
     rule: "Use this routine when an AI host did not auto-load an instruction-file pointer."
   };
+  const sessionUse = aiSessionUseContract({
+    decision: discoveryDecision,
+    nextCommand: resume.nextCommand,
+    nextSetupCommand,
+    copyPastePrompt: aiFallbackPrompt,
+    proofCommand: "npx aienvmp discover --json"
+  });
   const artifact = {
     schemaVersion: 1,
     schemaName: "aienvmp.ai-discovery",
@@ -99,6 +106,7 @@ async function writeDiscoveryArtifact(dir, status = {}) {
     },
     startupChecklist: status.agentPointers?.startupChecklist || aiStartupChecklist,
     resume,
+    sessionUse,
     aiEntry: aiEntryContract({
       decision: discoveryDecision,
       readFirst: readOrder,
@@ -154,6 +162,7 @@ async function writeStateReadme(dir, status = {}) {
     `- discovery: ${discovery}`,
     `- discovery decision: ${discoveryDecision}`,
     "- aiEntry: read `.aienvmp/discovery.json` `aiEntry`, then follow `readFirst`, `nextCommand`, `beforeEnvironmentChange`, `afterEnvironmentChange`, and `handoff`",
+    "- sessionUse: read `.aienvmp/discovery.json` `sessionUse`; if `decision` is `fallback-required`, use `copyPastePrompt` before environment-affecting work",
     `- next setup: \`${nextSetup}\``,
     "- discovery mode: best-effort; use `aienvmp discover --json` when automatic pickup is uncertain",
     "- startup checklist: `start --json` -> read `status.json` -> record `intent` before env changes -> `checkpoint` and `handoff` after changes",
