@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { dashWorkspace } from "../src/commands/dash.js";
 import { writeJson } from "../src/fsutil.js";
-import { dashboardAgentClientScript, dashboardAiUseClientScript, dashboardAiUseHtmlClientScript, dashboardCardClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallback, dashboardDiscoveryFallbackClientScript, dashboardDocument, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardMainCardsClientScript, dashboardOperationalCardsClientScript, dashboardPayload, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardStyle, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, dashboardStateCardsClientScript, dashboardSupportCardsClientScript, renderDashboard } from "../src/render.js";
+import { dashboardAgentClientScript, dashboardAiUseClientScript, dashboardAiUseHtmlClientScript, dashboardCardClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallback, dashboardDiscoveryFallbackClientScript, dashboardDocument, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardLayoutClientScripts, dashboardMainCardsClientScript, dashboardOperationalCardsClientScript, dashboardPayload, dashboardQualityDefaults, dashboardReleaseClientScripts, dashboardReleaseDefaults, dashboardStyle, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardSbomClientScripts, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, dashboardStateCardsClientScript, dashboardSupportCardsClientScript, renderDashboard } from "../src/render.js";
 
 test("dashboardPayload centralizes schema-backed dashboard data", () => {
   const payload = dashboardPayload(
@@ -588,6 +588,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardScannerGuidanceHtmlClientScript(), /evidence/);
   assert.match(dashboardScannerGuidanceHtmlClientScript(), /scannerGuidance\.decision/);
   assert.match(dashboardScannerGuidanceHtmlClientScript(), /security-sensitive decisions/);
+  assert.match(dashboardSbomClientScripts(), /const scannerGuidance=lightSbom\.scannerGuidance/);
+  assert.match(dashboardSbomClientScripts(), /const aiUse=lightSbom\.aiUse/);
+  assert.match(dashboardSbomClientScripts(), /const dependencyCoordination=lightSbom\.dependencyCoordination/);
   assert.match(dashboardRiskSummaryClientScript(), /const riskSummaryHtml=riskSummary\.level/);
   assert.match(dashboardRiskSummaryClientScript(), /No SBOM action required/);
   assert.match(dashboardRiskSummaryClientScript(), /No risk summary available/);
@@ -624,6 +627,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardReleaseReadinessClientScript(), /single AI-readable/);
   assert.match(dashboardReleaseReadinessClientScript(), /Batch meaningful changes before one npm publish/);
   assert.match(dashboardReleaseReadinessClientScript(), /currentBatch\.themes/);
+  assert.match(dashboardReleaseClientScripts(), /const releaseReadinessHtml=/);
+  assert.match(dashboardReleaseClientScripts(), /const qualitySignalsHtml=/);
+  assert.match(dashboardReleaseClientScripts(), /const operationalCards=/);
   assert.equal(dashboardReleaseDefaults.target, "0.2.0");
   assert.equal(dashboardReleaseDefaults.evidence, "npm run release:check");
   assert.equal(dashboardReleaseDefaults.contractReviewStatus, "pending-0.2.0-review");
@@ -703,6 +709,10 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /AI Handoff/);
   assert.match(html, /Read first/);
   assert.match(html, /\.aienvmp\/status\.json/);
+  assert.match(dashboardLayoutClientScripts(), /const essentialSurfaces=/);
+  assert.match(dashboardLayoutClientScripts(), /const card=/);
+  assert.match(dashboardLayoutClientScripts(), /const mainCards=/);
+  assert.match(dashboardLayoutClientScripts(), /const supportCards=/);
   assert.match(html, /Dependency files/);
   assert.match(html, /Conflicts/);
   assert.match(html, /Recommended Actions/);

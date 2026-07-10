@@ -251,6 +251,22 @@ export function dashboardScannerGuidanceHtmlClientScript() {
   ].join("\n");
 }
 
+export function dashboardSbomClientScripts() {
+  return [
+    dashboardScannerGuidanceClientScript(),
+    dashboardReviewPlanClientScript(),
+    dashboardAiUseClientScript(),
+    dashboardDependencyHintsClientScript(),
+    dashboardPackageManagerPolicyClientScript(),
+    dashboardRiskSummaryClientScript(),
+    dashboardReviewPlanHtmlClientScript(),
+    dashboardAiUseHtmlClientScript(),
+    dashboardDependencyReviewClientScript(),
+    dashboardDependencyCoordinationClientScript(),
+    dashboardScannerGuidanceHtmlClientScript()
+  ].join("\n");
+}
+
 export function dashboardRiskSummaryClientScript() {
   return [
     "const riskSummaryHtml=riskSummary.level?`<table><tr><th>Level</th><td><code>${esc(riskSummary.level)}</code> ${esc(riskSummary.score||0)}</td></tr><tr><th>Scanner</th><td><code>${esc(riskSummary.scanner||'unknown')}</code></td></tr><tr><th>Next</th><td>${esc(riskSummary.next||'No SBOM action required.')}</td></tr><tr><th>Targets</th><td>${esc((riskSummary.reviewTargets||[]).join(', ')||'none')}</td></tr></table>${riskSummary.signals?.length?'<div class=\"timeline\">'+riskSummary.signals.slice(0,5).map(s=>`<div class=\"event\"><time>risk</time><div>${esc(s)}</div></div>`).join('')+'</div>':''}`:'<div class=\"okline\">No risk summary available.</div>';"
@@ -309,5 +325,24 @@ export function dashboardQualitySignalsClientScript() {
     "const qualityPrinciples=qualitySignals.principles||dashboardQualityDefaults.principles;",
     "const qualityChecks=qualitySignals.checks||[];",
     "const qualitySignalsHtml=`<table><tr><th>Status</th><td><code>${esc(qualitySignals.status||dashboardQualityDefaults.status)}</code></td></tr><tr><th>Principles</th><td>${esc(qualityPrinciples.join(', '))}</td></tr><tr><th>First check</th><td>${esc(qualityChecks[0]?.name||dashboardQualityDefaults.firstCheck)}</td></tr><tr><th>Evidence</th><td><code>${esc(qualityChecks[0]?.evidence||dashboardQualityDefaults.evidence)}</code></td></tr></table><div class=\"timeline\">${qualityChecks.slice(0,5).map(item=>`<div class=\"event\"><time>quality</time><div><b>${esc(item.name)}</b> ${esc(item.signal||'')}</div></div>`).join('')}</div><div class=\"path\">${esc((qualitySignals.mustStayTrue||[])[0]||dashboardQualityDefaults.mustStayTrue)}</div><div class=\"path\">${esc(qualitySignals.rule||dashboardQualityDefaults.rule)}</div>`;"
+  ].join("\n");
+}
+
+export function dashboardReleaseClientScripts() {
+  return [
+    dashboardReleaseReadinessClientScript(),
+    dashboardQualitySignalsClientScript(),
+    dashboardOperationalCardsClientScript()
+  ].join("\n");
+}
+
+export function dashboardLayoutClientScripts() {
+  return [
+    dashboardEssentialSurfaceClientScript(),
+    dashboardPriorityClientScript(),
+    dashboardDiscoveryFallbackClientScript(),
+    dashboardCardClientScript(),
+    dashboardMainCardsClientScript(),
+    dashboardSupportCardsClientScript()
   ].join("\n");
 }

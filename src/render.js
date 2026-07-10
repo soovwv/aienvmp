@@ -1,10 +1,10 @@
-import { dashboardAgentClientScript, dashboardAiUseClientScript, dashboardAiUseHtmlClientScript, dashboardCardClientScript, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallbackClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialSurfaceClientScript, dashboardMainCardsClientScript, dashboardOperationalCardsClientScript, dashboardPackageManagerPolicyClientScript, dashboardPayload, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, dashboardStateCardsClientScript, dashboardSupportCardsClientScript } from "./dashboard.js";
+import { dashboardAgentClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardEnvironmentProtocolClientScript, dashboardLayoutClientScripts, dashboardPayload, dashboardReleaseClientScripts, dashboardSbomClientScripts, dashboardStateCardsClientScript } from "./dashboard.js";
 
 const markerBegin = "<!-- aienvmp:begin -->";
 const markerEnd = "<!-- aienvmp:end -->";
 
 export { markerBegin, markerEnd };
-export { dashboardAgentClientScript, dashboardAiUseClientScript, dashboardAiUseHtmlClientScript, dashboardCardClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallback, dashboardDiscoveryFallbackClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardMainCardsClientScript, dashboardOperationalCardsClientScript, dashboardPayload, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, dashboardStateCardsClientScript, dashboardSupportCardsClientScript } from "./dashboard.js";
+export { dashboardAgentClientScript, dashboardAiUseClientScript, dashboardAiUseHtmlClientScript, dashboardCardClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallback, dashboardDiscoveryFallbackClientScript, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardLayoutClientScripts, dashboardMainCardsClientScript, dashboardOperationalCardsClientScript, dashboardPayload, dashboardQualityDefaults, dashboardReleaseClientScripts, dashboardReleaseDefaults, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardSbomClientScripts, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, dashboardStateCardsClientScript, dashboardSupportCardsClientScript } from "./dashboard.js";
 
 export function renderAIEnv(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const lines = [];
@@ -576,17 +576,7 @@ const topRisk=lightSbom.topRisk||[];
 const riskSummary=lightSbom.riskSummary||{};
 const dependencyHints=lightSbom.dependencyChangeHints||[];
 const aiDependencyReview=lightSbom.aiDependencyReview||{};
-${dashboardScannerGuidanceClientScript()}
-${dashboardReviewPlanClientScript()}
-${dashboardAiUseClientScript()}
-${dashboardDependencyHintsClientScript()}
-${dashboardPackageManagerPolicyClientScript()}
-${dashboardRiskSummaryClientScript()}
-${dashboardReviewPlanHtmlClientScript()}
-${dashboardAiUseHtmlClientScript()}
-${dashboardDependencyReviewClientScript()}
-${dashboardDependencyCoordinationClientScript()}
-${dashboardScannerGuidanceHtmlClientScript()}
+${dashboardSbomClientScripts()}
 const lightSbomHtml=\`<table><tr><th>Packages</th><td><code>\${esc(lightSbomSummary.packages||0)}</code></td></tr><tr><th>Vulnerabilities</th><td><code>\${esc(lightSbomSummary.vulnerabilities||0)}</code></td></tr><tr><th>Direct vulnerable</th><td><code>\${esc(lightSbomSummary.directVulnerablePackages||0)}</code></td></tr><tr><th>Manifests</th><td><code>\${esc((lightSbomSummary.manifests||[]).join(', ')||'none')}</code></td></tr><tr><th>Lockfiles</th><td><code>\${esc((lightSbomSummary.lockfiles||[]).map(l=>l.file).join(', ')||'none')}</code></td></tr></table><h3 style="margin-top:12px">AI Use</h3>\${aiUseHtml}<h3 style="margin-top:12px">Dependency Quick Check</h3>\${dependencyQuickCheckHtml}<h3 style="margin-top:12px">Dependency Coordination</h3>\${dependencyCoordinationHtml}<h3 style="margin-top:12px">Scanner Guidance</h3>\${scannerGuidanceHtml}<h3 style="margin-top:12px">AI Review Plan</h3>\${aiReviewPlanHtml}<h3 style="margin-top:12px">AI Dependency Review</h3>\${aiDependencyReviewHtml}<h3 style="margin-top:12px">Risk summary</h3>\${riskSummaryHtml}<h3 style="margin-top:12px">Package manager policy</h3>\${pmPolicyHtml}\${topRisk.length?'<div class="timeline">'+topRisk.slice(0,5).map(p=>\`<div class="event"><time>\${esc(p.priority)}</time><div><b>\${esc(p.name)}</b> \${esc(p.severity)} \${p.directDependency?'<code>direct</code>':'<code>transitive</code>'}<div class="path">\${esc(p.manifest||p.ecosystem)} \${esc(p.version||'')}</div></div></div>\`).join('')+'</div>':'<div class="okline">No high-risk package summary in the current light SBOM.</div>'}<h3 style="margin-top:12px">Dependency change hints</h3>\${dependencyHintsHtml}\`;
 const sec=manifest.security||{};
 const secSummary=sec.summary||{total:0,critical:0,high:0,moderate:0,low:0,info:0};
@@ -625,9 +615,7 @@ const strictPlan=enforcementProfile.strictPlan||{};
 const strictDecision=enforcementProfile.strictDecision||{};
 const strictRecommendation=manifest.preflight?.strictRecommendation||{};
 const enforcementHtml=\`<table><tr><th>Default</th><td><code>\${esc(gate.defaultMode||enforcementProfile.defaultMode||'advisory')}</code> \${esc(gate.localDefault||'warn-only')}</td></tr><tr><th>Local</th><td><code>\${esc(strictRecommendation.localCommand||strictDecision.localCommand||'aienvmp doctor --json')}</code> \${esc(strictRecommendation.localBehavior||strictDecision.local||'warn-only')}</td></tr><tr><th>Fail local</th><td><code>\${esc(strictRecommendation.shouldFailLocal?'yes':'no')}</code></td></tr><tr><th>Recommended scope</th><td><code>\${esc(strictRecommendation.recommendedScope||strictDecision.recommendedScope||strictPlan.recommendedStrictScope||'all')}</code></td></tr><tr><th>CI</th><td><code>\${esc(strictRecommendation.ciCommand||strictDecision.ciCommand||strictPlan.ciCommand||'aienvmp doctor --strict all --json')}</code></td></tr><tr><th>Release</th><td><code>\${esc(strictRecommendation.releaseCommand||'aienvmp doctor --strict all --json')}</code></td></tr></table><div class="timeline">\${strictCommands.slice(0,4).map(cmd=>\`<div class="event"><time>CI</time><div><code>\${esc(cmd)}</code></div></div>\`).join('')}</div><div class="path">\${esc(strictRecommendation.rule||strictDecision.rule||strictPlan.rule||gate.rule||enforcementProfile.reason||'Warnings stay advisory unless strict mode is requested.')}</div>\`;
-${dashboardReleaseReadinessClientScript()}
-${dashboardQualitySignalsClientScript()}
-${dashboardOperationalCardsClientScript()}
+${dashboardReleaseClientScripts()}
 const contract=manifest.preflight?.contract||{};
 const contractHtml=contract.name?\`<table><tr><th>Name</th><td><code>\${esc(contract.name)}</code></td></tr><tr><th>Version</th><td><code>\${esc(contract.version||1)}</code></td></tr><tr><th>Stability</th><td><code>\${esc(contract.stability||'additive')}</code></td></tr><tr><th>AI fields</th><td>\${esc((contract.aiEntryFields||[]).join(', ')||'none')}</td></tr></table><div class="path">\${esc(contract.rule||'Ignore unknown fields.')}</div>\`:'<div class="okline">Run <code>aienvmp status --write</code> to include AI contract metadata.</div>';
 const intentTargets=manifest.preflight?.intentTargets||[];
@@ -647,12 +635,7 @@ const dependencyReadSet=manifest.preflight?.dependencyReadSet||[];
 const dependencyProtocol=manifest.preflight?.dependencyChangeProtocol||{};
 ${dashboardDependencyReadSetClientScript()}
 ${dashboardDependencyProtocolClientScript()}
-${dashboardEssentialSurfaceClientScript()}
-${dashboardPriorityClientScript()}
-${dashboardDiscoveryFallbackClientScript()}
-${dashboardCardClientScript()}
-${dashboardMainCardsClientScript()}
-${dashboardSupportCardsClientScript()}
+${dashboardLayoutClientScripts()}
 const reviewRequired=warnings.length>0||intents.length>0;
 const recentChanges=timeline.slice(-8).length;
 const trustState=manifest.trust?.state||'observed';
