@@ -45,6 +45,7 @@ export async function startWorkspace(args = {}) {
     console.log(`next: ${result.nextCommand}`);
     console.log(`setup: ${result.nextSetupCommand}`);
     console.log(`AI discovery: ${result.discoveryDecision} / ${result.agentPointers?.discovery || after.agentPointers.discovery}`);
+    console.log(`aiEntry: ${result.startHere} / follow aiEntry.readFirst, nextCommand, intent, checkpoint, and handoff`);
     console.log(`discovery: ${result.agentPointers?.discovery || after.agentPointers.discovery}`);
     console.log(`AI fallback: ${result.fallbackPrompt}`);
     console.log(`copy-paste prompt: ${result.copyPastePrompt}`);

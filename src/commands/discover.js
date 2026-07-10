@@ -59,6 +59,7 @@ export async function discoverWorkspace(args = {}) {
     console.log(`freshness: ${result.freshness}`);
     console.log(`agent pointers: ${result.agentPointers.discovery}`);
     console.log(`next: ${result.nextCommand}`);
+    console.log(`aiEntry: ${result.startHere} / follow aiDiscovery.aiEntry`);
     console.log(`AI fallback: ${result.aiDiscovery.fallbackPrompt}`);
     console.log(`copy-paste prompt: ${result.aiDiscovery.copyPastePrompt}`);
   }

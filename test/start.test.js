@@ -86,6 +86,7 @@ test("start text output includes a copy-paste prompt", async () => {
   }
 
   const text = output.join("\n");
+  assert.match(text, /aiEntry: \.aienvmp\/discovery\.json \/ follow aiEntry\.readFirst/);
   assert.match(text, /AI fallback:/);
   assert.match(text, /copy-paste prompt: Use aienvmp as the workspace env map/);
 });

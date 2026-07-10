@@ -317,6 +317,7 @@ export function schemaContract() {
         changes: [
           "best-effort AI discovery with aiDiscovery.decision, discovery.json, startupChecklist, and fallback prompt contract",
           "copyPastePrompt, promptUse, and aiEntry recovery fields for AI hosts that miss instruction-file automatic discovery",
+          "plain start and discover output expose aiEntry so fallback recovery is visible without opening JSON",
           "aiEntry and copyPastePrompt guidance aligned across README, schema, packaged AI skill, adoption guide, and example evidence docs",
           "generated .aienvmp/README.md and summary.md surface aiEntry for artifact-first AI agents",
           "dashboard Agent Pointers mirrors auto-ready versus fallback-required startup decisions and shows aiEntry fields",

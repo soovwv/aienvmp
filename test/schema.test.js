@@ -154,6 +154,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /aiDiscovery\.decision/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /fallback prompt contract/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /copyPastePrompt, promptUse, and aiEntry/);
+  assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /plain start and discover output expose aiEntry/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /aiEntry and copyPastePrompt guidance/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /generated \.aienvmp\/README\.md and summary\.md surface aiEntry/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /dashboard rendering split/);

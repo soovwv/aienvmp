@@ -131,5 +131,6 @@ test("discover text output includes a copy-paste prompt", async () => {
 
   const text = output.join("\n");
   assert.match(text, /AI fallback:/);
+  assert.match(text, /aiEntry: \.aienvmp\/README\.md \/ follow aiDiscovery\.aiEntry/);
   assert.match(text, /copy-paste prompt: Run npx aienvmp sync/);
 });
