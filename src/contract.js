@@ -410,6 +410,13 @@ export function schemaContract() {
         "keep light SBOM coordination separate from optional full scanner evidence",
         "review CHANGELOG as one 0.2.0 release-note group before any npm publish"
       ],
+      contractReview: {
+        status: "pending-0.2.0-review",
+        command: "node bin/aienvmp.js schema --json",
+        surfaces: ["discover", "start", "discovery", "status", "context", "handoff", "plan", "manifest", "sbom", "cyclonedxLite"],
+        reviewFields: ["outputs.*.rootFields", "outputs.*Fields", "compatibility.additiveRule", "stableContractRule"],
+        rule: "Before 0.2.0, review documented rootFields as the compatibility floor; after 0.2.0, add fields only additively unless contractVersion changes."
+      },
       stabilizationFocus: [
         "AI session/status/context contract",
         "aiDiscovery.decision and fallback startup contract",

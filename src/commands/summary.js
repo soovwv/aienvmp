@@ -102,6 +102,7 @@ export function renderSummary(status = {}, manifest = {}) {
   const currentBatch = releaseReadiness.currentBatch || {};
   const releaseChecks = toList(releaseReadiness.requiredBeforeStable);
   const nextStabilizationTasks = toList(releaseReadiness.nextStabilizationTasks);
+  const contractReview = releaseReadiness.contractReview || {};
 
   return [
     "# aienvmp summary",
@@ -195,6 +196,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- publish gate: ${publishGate.status || "hold"} / ${publishGate.nextAction || "Keep accumulating tested changes until the batch is intentionally versioned."}`,
     `- current batch: ${currentBatch.status || "accumulating"} / ${currentBatch.releaseType || "stability-batch"} / ${toList(currentBatch.themes).join(", ") || "AI contract, dashboard, SBOM, release gate"}`,
     `- next stabilization: ${nextStabilizationTasks[0] || "freeze and review documented JSON root fields before 0.2.0"}`,
+    `- contract review: ${contractReview.status || "pending-0.2.0-review"} / ${contractReview.command || "node bin/aienvmp.js schema --json"} / ${toList(contractReview.surfaces).join(", ") || "discover, start, status, context, handoff, sbom"}`,
     `- batch reason: ${currentBatch.reason || "Accumulate meaningful changes before one intentional release."}`,
     `- gate: ${releaseChecks[0] || "npm run release:check passes locally"}`,
     `- publish when: ${toList(publishDecision.publishWhen)[0] || "meaningful changes are batched"}`,

@@ -8,6 +8,7 @@ Primary positioning: AI workspace coordination first, lightweight SBOM context s
 
 - Prepare `0.2.0` as one stabilized AI workspace contract release, not a per-commit npm stream
 - Freeze and review documented JSON root fields before `0.2.0`
+- Use `releaseReadiness.contractReview` as the AI-readable checklist for root-field compatibility review
 - Keep `releaseReadiness.nextStabilizationTasks` current so AI agents can choose the next hardening step
 - Keep `releaseReadiness.evidenceCommands` current so AI/CI can prove the release gate before npm publish
 - Keep README, examples, schema, dashboard, and packaged skill aligned on AI workspace coordination

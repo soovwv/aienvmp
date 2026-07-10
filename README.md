@@ -117,7 +117,7 @@ The GitHub Action writes discovery, status, summary, schema, doctor, plan, SBOM,
 - `0.2.x` starts the stabilized AI workspace contract.
 - npm releases are manually gated and batched around meaningful changes; security fixes are the exception.
 - Default publish decision is `hold`; publish only after several meaningful changes are batched, `npm run release:check` passes, and `schema --json` `releaseReadiness.currentBatch` is reviewed.
-- `schema --json` exposes `releaseGate`, `releaseReadiness.currentBatch`, `nextStabilizationTasks`, `requiredBeforeStable`, and `evidenceCommands`; `0.1.x` is deprecated only after `0.2.0` is published.
+- `schema --json` exposes `releaseGate`, `releaseReadiness.currentBatch`, `contractReview`, `nextStabilizationTasks`, `requiredBeforeStable`, and `evidenceCommands`; `0.1.x` is deprecated only after `0.2.0` is published.
 - Broken or superseded versions are deprecated instead of unpublished.
 
 Post-`0.2.0` deprecation command:
