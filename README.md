@@ -73,7 +73,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `schema --json` prints the machine-readable contract without scanning.
 - `status`, `context`, `plan`, and `handoff` share one additive preflight contract.
 - `schemaVersion`, `contractVersion`, `stableFrom`, and compatibility rules are explicit.
-- `recommendation.recommendWhen`, `doNotRecommendWhen`, and `evidenceDocs` tell AI when to suggest this tool.
+- `aiAdoptionDecision`, `recommendation.recommendWhen`, `doNotRecommendWhen`, and `evidenceDocs` tell AI when to use, suggest, or skip this tool.
 - `agentPointers.discovery`, `aiDiscovery.decision`, `startupChecklist`, `aiEntry`, and `copyPastePrompt` tell AI whether discovery is `auto-ready` or `fallback-required`.
 - `.aienvmp/discovery.json`, `discovery.json.maintenance`, `agentDiscovery.sessionStart`, and `readOrder` give the fallback start path for schema-only or Markdown-first agents.
 - `environmentChangeProtocol`, `operationalSafety`, `followUpPlan`, `collaboration`, `coordination`, and `agentActivity` keep shared changes advisory; `followUpPlan` points to sync, status, or handoff when needed.

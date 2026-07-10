@@ -61,6 +61,17 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.recommendation.evidenceDocs.includes("examples/ai-workspace-case-study.md"));
   assert.ok(schema.recommendation.evidenceDocs.includes("examples/multi-agent-conflict.md"));
   assert.match(schema.recommendation.rule, /not as a replacement/);
+  assert.match(schema.aiAdoptionDecision.purpose, /Shortest AI-readable decision block/);
+  assert.match(schema.aiAdoptionDecision.position, /AI workspace coordination tool/);
+  assert.match(schema.aiAdoptionDecision.useWhen.join(" "), /multiple AI agents/);
+  assert.match(schema.aiAdoptionDecision.useWhen.join(" "), /lockfiles/);
+  assert.deepEqual(schema.aiAdoptionDecision.startWith, ["aienvmp start", "aienvmp onboard", "aienvmp context --json"]);
+  assert.equal(schema.aiAdoptionDecision.fallbackWhenDiscoveryMissed.fallbackValue, "fallback-required");
+  assert.equal(schema.aiAdoptionDecision.fallbackWhenDiscoveryMissed.pastePromptField, "copyPastePrompt");
+  assert.match(schema.aiAdoptionDecision.fallbackWhenDiscoveryMissed.rule, /Do not assume/);
+  assert.match(schema.aiAdoptionDecision.skipWhen.join(" "), /full compliance SBOM/);
+  assert.equal(schema.aiAdoptionDecision.proofCommand, "aienvmp demo --json");
+  assert.match(schema.aiAdoptionDecision.rule, /compact decision block/);
   assert.ok(schema.aiBootstrapFields.includes("nextSafeCommandSource"));
   assert.ok(schema.aiBootstrapFields.includes("nextSafeCommandReason"));
   assert.ok(schema.aiSessionFields.includes("ifMissingOrStale"));
@@ -166,6 +177,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /plain sbom and verbose status text/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /start --json exposes root-level discoveryDecision/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /AI adoption checklist/);
+  assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /aiAdoptionDecision/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /version drift prevention/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /centralized AI discovery\/read-order constants/);
   assert.match(schema.releaseReadiness.currentBatch.reason, /one intentional release/);
@@ -195,6 +207,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.releaseReadiness.evidenceCommands.includes("npm run release:check"));
   assert.ok(schema.releaseReadiness.evidenceCommands.includes("node bin/aienvmp.js demo --json"));
   assert.match(schema.releaseReadiness.nextStabilizationTasks.join(" "), /freeze and review documented JSON root fields/);
+  assert.match(schema.releaseReadiness.nextStabilizationTasks.join(" "), /aiAdoptionDecision/);
   assert.match(schema.releaseReadiness.nextStabilizationTasks.join(" "), /Codex, Claude, Gemini, Cursor, and Copilot/);
   assert.match(schema.releaseReadiness.nextStabilizationTasks.join(" "), /CHANGELOG as one 0\.2\.0 release-note group/);
   assert.equal(schema.releaseReadiness.contractReview.status, "pending-0.2.0-review");

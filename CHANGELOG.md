@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `aiAdoptionDecision` to `schema --json` so AI agents get one compact use/recommend/start/skip decision block before reading longer recommendation details.
 - Grouped dashboard client-script helpers for SBOM, release, and layout surfaces so future dashboard changes can stay smaller while preserving AI/human parity.
 - Mirrored `releaseReadiness.contractReview` in the dashboard Release Readiness card so humans see the same 0.2.0 JSON contract review checklist as AI agents.
 - Documented `demo --json` in `schema.outputs.demo` and added it to `contractReview.surfaces` so the recommendation proof artifact is part of the 0.2.0 root-field review.
