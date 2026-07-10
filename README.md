@@ -15,6 +15,8 @@
 - SBOM signal: use Syft, Trivy, Grype, or Dependency-Track for full evidence; keep `aienvmp` as the AI coordination layer.
 - Start: run `npx aienvmp start`; it creates the env map, light SBOM, status, summary, discovery entry, and dashboard when missing or stale.
 
+> Renamed to [`aienvmap`](https://github.com/soovwv/aienvmap). The npm package `aienvmp` is deprecated; use `npx aienvmap start` for new workspaces.
+
 `discover` is read-only and reports `aiDiscovery.decision`: `auto-ready` or `fallback-required`. `onboard` installs tiny pointers in `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`. Automatic discovery is best-effort; if pointers are missing, paste `copyPastePrompt` from `start --json` or `.aienvmp/discovery.json`, then follow `sessionUse` and `aiEntry`.
 
 ## 10-Second Use
