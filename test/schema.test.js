@@ -174,6 +174,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /SBOM aiUse is visible/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /dependencyQuickCheck surfaced/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /demo --json exposes recommendationDecision/);
+  assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /uses aiAdoptionDecision/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /plain sbom and verbose status text/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /start --json exposes root-level discoveryDecision/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /AI adoption checklist/);
@@ -208,6 +209,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.releaseReadiness.evidenceCommands.includes("node bin/aienvmp.js demo --json"));
   assert.match(schema.releaseReadiness.nextStabilizationTasks.join(" "), /freeze and review documented JSON root fields/);
   assert.match(schema.releaseReadiness.nextStabilizationTasks.join(" "), /aiAdoptionDecision/);
+  assert.match(schema.releaseReadiness.nextStabilizationTasks.join(" "), /packaged skill/);
   assert.match(schema.releaseReadiness.nextStabilizationTasks.join(" "), /Codex, Claude, Gemini, Cursor, and Copilot/);
   assert.match(schema.releaseReadiness.nextStabilizationTasks.join(" "), /CHANGELOG as one 0\.2\.0 release-note group/);
   assert.equal(schema.releaseReadiness.contractReview.status, "pending-0.2.0-review");

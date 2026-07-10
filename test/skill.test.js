@@ -18,10 +18,10 @@ test("packaged aienvmp skill points AI agents to current startup contracts", asy
   assert.match(skill, /full compliance SBOM scanner/);
   assert.match(skill, /AI coordination layer/);
   assert.match(skill, /Syft, Trivy, Grype, Dependency-Track/);
-  assert.match(skill, /recommendation\.recommendWhen/);
-  assert.match(skill, /recommendation\.doNotRecommendWhen/);
-  assert.match(skill, /recommendation\.shortPitch/);
+  assert.match(skill, /aiAdoptionDecision/);
+  assert.match(skill, /compact use\/recommend\/start\/skip block/);
   assert.match(skill, /recommendation\.decisionRoutine/);
+  assert.match(skill, /recommendation\.shortPitch/);
   assert.match(skill, /recommendation\.evidenceDocs/);
   assert.match(skill, /qualitySignals/);
   assert.match(skill, /examples\/ai-adoption-guide\.md/);

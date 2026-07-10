@@ -23,7 +23,9 @@ export async function demoWorkspace(args = {}) {
   const status = await statusWorkspace({ dir, json: false, quiet: true });
   const context = await captureJson(() => contextWorkspace({ dir, json: true }));
   const dependencyQuickCheck = status.dependencyQuickCheck || context.dependencyQuickCheck || {};
-  const recommendation = schemaContract().recommendation;
+  const schema = schemaContract();
+  const recommendation = schema.recommendation;
+  const aiAdoptionDecision = schema.aiAdoptionDecision || {};
   const adoptionSignals = (recommendation.adoptionChecklist || []).map((item) => item.signal);
   const aiProofSignals = adoptionSignals.filter((item) => [
     "fallback AI startup path",
@@ -38,11 +40,17 @@ export async function demoWorkspace(args = {}) {
     aiProofSignals,
     evidenceDocs: recommendation.evidenceDocs,
     recommendationDecision: {
-      recommendWhen: recommendation.recommendWhen || [],
-      doNotRecommendWhen: recommendation.doNotRecommendWhen || [],
-      firstCommands: recommendation.firstCommands || ["aienvmp start", "aienvmp onboard", "aienvmp context --json"],
-      proofCommand: recommendation.proofCommand || "aienvmp demo",
-      rule: recommendation.rule
+      source: "schema.aiAdoptionDecision",
+      position: aiAdoptionDecision.position || recommendation.positioning,
+      recommendWhen: aiAdoptionDecision.useWhen || recommendation.recommendWhen || [],
+      useWhen: aiAdoptionDecision.useWhen || recommendation.recommendWhen || [],
+      doNotRecommendWhen: aiAdoptionDecision.skipWhen || recommendation.doNotRecommendWhen || [],
+      skipWhen: aiAdoptionDecision.skipWhen || recommendation.doNotRecommendWhen || [],
+      firstCommands: aiAdoptionDecision.startWith || recommendation.firstCommands || ["aienvmp start", "aienvmp onboard", "aienvmp context --json"],
+      startWith: aiAdoptionDecision.startWith || recommendation.firstCommands || ["aienvmp start", "aienvmp onboard", "aienvmp context --json"],
+      fallbackWhenDiscoveryMissed: aiAdoptionDecision.fallbackWhenDiscoveryMissed || {},
+      proofCommand: aiAdoptionDecision.proofCommand || recommendation.proofCommand || "aienvmp demo --json",
+      rule: aiAdoptionDecision.rule || recommendation.rule
     },
     aiDiscovery: status.agentPointers?.discovery || "unknown",
     collaboration: status.collaboration?.status || "unknown",
