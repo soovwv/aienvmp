@@ -23,6 +23,8 @@ test("dashboardPayload centralizes schema-backed dashboard data", () => {
   assert.equal(payload.policy.node, "24");
   assert.equal(payload.releaseReadiness.target, "0.2.0");
   assert.equal(payload.schemaQualitySignals.status, "prototype-hardening");
+  assert.equal(payload.schemaAiAdoptionDecision.proofCommand, "aienvmp demo --json");
+  assert.match(payload.schemaAiAdoptionDecision.position, /AI workspace coordination tool/);
 });
 
 test("dashboardDocument wraps escaped payload and client script", () => {
@@ -470,7 +472,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /\.nextbar/);
   assert.match(html, /\.brief/);
   assert.match(html, /const maintenanceLoop=manifest\.preflight\?\.maintenanceLoop\|\|\{\}/);
-  assert.match(html, /const \{manifest,timeline,warnings,intents,policy,releaseReadiness,schemaQualitySignals\}=JSON\.parse/);
+  assert.match(html, /const \{manifest,timeline,warnings,intents,policy,releaseReadiness,schemaQualitySignals,schemaAiAdoptionDecision\}=JSON\.parse/);
   assert.match(html, /const aiSession=manifest\.preflight\?\.aiSession\|\|\{\}/);
   assert.match(html, /const aiSessionStart=aiSession\.start\|\|\['aienvmp status --json','aienvmp context --json'\]/);
   assert.match(html, /const aiBootstrap=manifest\.preflight\?\.aiBootstrap\|\|\{\}/);
@@ -478,6 +480,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const strictRecommendation=manifest\.preflight\?\.strictRecommendation\|\|\{\}/);
   assert.match(html, /const releaseChecks=releaseReadiness\?\.requiredBeforeStable\|\|\[\]/);
   assert.match(html, /const qualitySignals=manifest\.preflight\?\.qualitySignals\|\|schemaQualitySignals\|\|\{\}/);
+  assert.match(html, /schemaAiAdoptionDecision/);
   assert.match(html, /Release Readiness/);
   assert.match(html, /Quality Signals/);
   assert.match(html, /prototype-hardening/);
@@ -634,9 +637,13 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.equal(dashboardReleaseDefaults.evidence, "npm run release:check");
   assert.equal(dashboardReleaseDefaults.contractReviewStatus, "pending-0.2.0-review");
   assert.match(dashboardQualitySignalsClientScript(), /const qualitySignals=manifest\.preflight\?\.qualitySignals/);
+  assert.match(dashboardQualitySignalsClientScript(), /const aiAdoptionDecision=schemaAiAdoptionDecision\|\|\{\}/);
   assert.match(dashboardQualitySignalsClientScript(), /const dashboardQualityDefaults=/);
   assert.match(dashboardQualitySignalsClientScript(), /AI-friendly/);
   assert.equal(dashboardQualityDefaults.evidence, "aienvmp start --json && aienvmp context --json");
+  assert.match(dashboardQualitySignalsClientScript(), /Adoption/);
+  assert.match(dashboardQualitySignalsClientScript(), /aiAdoptionDecision\.useWhen/);
+  assert.match(dashboardQualitySignalsClientScript(), /aienvmp demo --json/);
   assert.match(dashboardQualitySignalsClientScript(), /First check/);
   assert.match(dashboardQualitySignalsClientScript(), /do not require background services/);
   for (const title of dashboardEssentialCards) {

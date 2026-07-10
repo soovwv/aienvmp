@@ -350,6 +350,7 @@ export function schemaContract() {
           "dependencyQuickCheck surfaced in SBOM, status/context, summary, handoff, dashboard, and demo outputs",
           "demo --json exposes recommendationDecision so AI agents can decide recommend, skip, first commands, and proof command from one artifact",
           "demo --json recommendationDecision now uses aiAdoptionDecision while preserving compatible recommend/skip/start fields",
+          "dashboard Quality Signals mirrors aiAdoptionDecision so humans see the same use/recommend/start/skip contract as AI agents",
           "plain sbom and verbose status text expose dependencyQuickCheck without expanding default status output",
           "start --json exposes root-level discoveryDecision, startupChecklist, resume, aiEntry, copyPastePrompt, and fallbackPrompt for AI hosts",
           "operational safety contract in status/context",
@@ -434,6 +435,7 @@ export function schemaContract() {
         "keep README, examples, schema, dashboard, and packaged skill aligned on AI workspace coordination",
         "keep aiAdoptionDecision as the shortest schema recommendation path for AI agents",
         "keep demo --json and packaged skill aligned with aiAdoptionDecision",
+        "keep dashboard Quality Signals aligned with aiAdoptionDecision",
         "validate start/onboard/discover fallback behavior across Codex, Claude, Gemini, Cursor, and Copilot surfaces",
         "keep light SBOM coordination separate from optional full scanner evidence",
         "review CHANGELOG as one 0.2.0 release-note group before any npm publish"

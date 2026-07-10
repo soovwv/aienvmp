@@ -558,7 +558,7 @@ ${clientScript}
 export function renderDashboard(manifest, timeline = [], warnings = [], intents = [], policy = {}) {
   const data = JSON.stringify(dashboardPayload(manifest, timeline, warnings, intents, policy));
   return dashboardDocument(data, `
-const {manifest,timeline,warnings,intents,policy,releaseReadiness,schemaQualitySignals}=JSON.parse(document.getElementById('data').textContent);
+const {manifest,timeline,warnings,intents,policy,releaseReadiness,schemaQualitySignals,schemaAiAdoptionDecision}=JSON.parse(document.getElementById('data').textContent);
 function esc(s){return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
 const entries=o=>Object.entries(o||{});
 const rows=o=>entries(o).map(([k,v])=>\`<tr><th>\${esc(k)}</th><td><code>\${esc(String(v))}</code></td></tr>\`).join('')||'<tr><td colspan="2">None detected</td></tr>';

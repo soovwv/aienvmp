@@ -73,6 +73,7 @@ export function dashboardPayload(manifest, timeline = [], warnings = [], intents
   const schema = schemaContract();
   const releaseReadiness = schema.releaseReadiness;
   const schemaQualitySignals = schema.qualitySignals;
+  const schemaAiAdoptionDecision = schema.aiAdoptionDecision;
   return {
     manifest,
     timeline,
@@ -80,7 +81,8 @@ export function dashboardPayload(manifest, timeline = [], warnings = [], intents
     intents,
     policy,
     releaseReadiness,
-    schemaQualitySignals
+    schemaQualitySignals,
+    schemaAiAdoptionDecision
   };
 }
 
@@ -322,9 +324,10 @@ export function dashboardQualitySignalsClientScript() {
   return [
     `const dashboardQualityDefaults=${JSON.stringify(dashboardQualityDefaults)};`,
     "const qualitySignals=manifest.preflight?.qualitySignals||schemaQualitySignals||{};",
+    "const aiAdoptionDecision=schemaAiAdoptionDecision||{};",
     "const qualityPrinciples=qualitySignals.principles||dashboardQualityDefaults.principles;",
     "const qualityChecks=qualitySignals.checks||[];",
-    "const qualitySignalsHtml=`<table><tr><th>Status</th><td><code>${esc(qualitySignals.status||dashboardQualityDefaults.status)}</code></td></tr><tr><th>Principles</th><td>${esc(qualityPrinciples.join(', '))}</td></tr><tr><th>First check</th><td>${esc(qualityChecks[0]?.name||dashboardQualityDefaults.firstCheck)}</td></tr><tr><th>Evidence</th><td><code>${esc(qualityChecks[0]?.evidence||dashboardQualityDefaults.evidence)}</code></td></tr></table><div class=\"timeline\">${qualityChecks.slice(0,5).map(item=>`<div class=\"event\"><time>quality</time><div><b>${esc(item.name)}</b> ${esc(item.signal||'')}</div></div>`).join('')}</div><div class=\"path\">${esc((qualitySignals.mustStayTrue||[])[0]||dashboardQualityDefaults.mustStayTrue)}</div><div class=\"path\">${esc(qualitySignals.rule||dashboardQualityDefaults.rule)}</div>`;"
+    "const qualitySignalsHtml=`<table><tr><th>Status</th><td><code>${esc(qualitySignals.status||dashboardQualityDefaults.status)}</code></td></tr><tr><th>Principles</th><td>${esc(qualityPrinciples.join(', '))}</td></tr><tr><th>Adoption</th><td>${esc(aiAdoptionDecision.position||'AI workspace coordination tool')}</td></tr><tr><th>Start</th><td><code>${esc((aiAdoptionDecision.startWith||['aienvmp start','aienvmp onboard','aienvmp context --json']).join(' -> '))}</code></td></tr><tr><th>Skip when</th><td>${esc((aiAdoptionDecision.skipWhen||[])[0]||'full compliance SBOM scanner only')}</td></tr><tr><th>Proof</th><td><code>${esc(aiAdoptionDecision.proofCommand||'aienvmp demo --json')}</code></td></tr><tr><th>First check</th><td>${esc(qualityChecks[0]?.name||dashboardQualityDefaults.firstCheck)}</td></tr><tr><th>Evidence</th><td><code>${esc(qualityChecks[0]?.evidence||dashboardQualityDefaults.evidence)}</code></td></tr></table><div class=\"timeline\">${(aiAdoptionDecision.useWhen||[]).slice(0,3).map(item=>`<div class=\"event\"><time>adopt</time><div>${esc(item)}</div></div>`).join('')}</div><div class=\"timeline\">${qualityChecks.slice(0,5).map(item=>`<div class=\"event\"><time>quality</time><div><b>${esc(item.name)}</b> ${esc(item.signal||'')}</div></div>`).join('')}</div><div class=\"path\">${esc((qualitySignals.mustStayTrue||[])[0]||dashboardQualityDefaults.mustStayTrue)}</div><div class=\"path\">${esc(aiAdoptionDecision.rule||qualitySignals.rule||dashboardQualityDefaults.rule)}</div>`;"
   ].join("\n");
 }
 
