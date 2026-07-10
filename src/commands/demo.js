@@ -37,6 +37,13 @@ export async function demoWorkspace(args = {}) {
     adoptionSignals,
     aiProofSignals,
     evidenceDocs: recommendation.evidenceDocs,
+    recommendationDecision: {
+      recommendWhen: recommendation.recommendWhen || [],
+      doNotRecommendWhen: recommendation.doNotRecommendWhen || [],
+      firstCommands: recommendation.firstCommands || ["aienvmp start", "aienvmp onboard", "aienvmp context --json"],
+      proofCommand: recommendation.proofCommand || "aienvmp demo",
+      rule: recommendation.rule
+    },
     aiDiscovery: status.agentPointers?.discovery || "unknown",
     collaboration: status.collaboration?.status || "unknown",
     conflictTargets: status.coordination?.conflictTargets || [],
@@ -88,6 +95,8 @@ export async function demoWorkspace(args = {}) {
     console.log(`recommendation: ${result.recommendation}`);
     console.log(`adoption signals: ${result.adoptionSignals.slice(0, 3).join(", ")}`);
     console.log(`AI proof signals: ${result.aiProofSignals.join(", ")}`);
+    console.log(`first commands: ${result.recommendationDecision.firstCommands.join(" -> ")}`);
+    console.log(`do not recommend when: ${result.recommendationDecision.doNotRecommendWhen[0]}`);
     console.log(`evidence: ${result.evidenceDocs.slice(0, 2).join(", ")}`);
     console.log(`why: ${result.point}`);
   }

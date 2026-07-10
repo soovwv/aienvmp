@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `demo --json` `recommendationDecision` and plain demo first-command guidance so AI agents can recommend or skip the tool from one proof artifact.
 - Added `aiEntry` to plain `start` and `discover` output so humans and AI sessions see the minimum fallback contract without opening JSON first.
 - Reduced the CI matrix to one cross-platform Node 20 check plus Windows Node 18/20/22 checks so the quality gate stays representative without creating avoidable queued-job failures.
 - Surfaced SBOM `aiUse` in summary and dashboard outputs so AI agents and humans see the shortest dependency/security safety summary before deeper SBOM details.

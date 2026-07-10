@@ -324,6 +324,7 @@ export function schemaContract() {
           "dashboard rendering split into payload, document, style, card, mainCards, supportCards, operationalCards, and stateCards helpers",
           "SBOM aiUse is visible in JSON, summary, dashboard, and schema as the shortest dependency/security safety summary",
           "dependencyQuickCheck surfaced in SBOM, status/context, summary, handoff, dashboard, and demo outputs",
+          "demo --json exposes recommendationDecision so AI agents can decide recommend, skip, first commands, and proof command from one artifact",
           "plain sbom and verbose status text expose dependencyQuickCheck without expanding default status output",
           "start --json exposes root-level discoveryDecision, startupChecklist, resume, aiEntry, copyPastePrompt, and fallbackPrompt for AI hosts",
           "operational safety contract in status/context",

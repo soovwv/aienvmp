@@ -162,6 +162,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /shows aiEntry fields/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /SBOM aiUse is visible/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /dependencyQuickCheck surfaced/);
+  assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /demo --json exposes recommendationDecision/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /plain sbom and verbose status text/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /start --json exposes root-level discoveryDecision/);
   assert.match(schema.releaseReadiness.currentBatch.changes.join(" "), /AI adoption checklist/);

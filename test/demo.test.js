@@ -27,6 +27,8 @@ test("multi-agent conflict demo detects dependency coordination", async () => {
   assert.match(stdout, /recommendation: Use aienvmp when multiple AI agents share one development environment/);
   assert.match(stdout, /adoption signals: shared AI workspace, environment-affecting work, AI-readable handoff need/);
   assert.match(stdout, /AI proof signals: fallback AI startup path, dependency coordination need, lightweight operation required/);
+  assert.match(stdout, /first commands: aienvmp start -> aienvmp onboard -> aienvmp context --json/);
+  assert.match(stdout, /do not recommend when: the user only needs a full compliance SBOM or vulnerability scanner/);
   assert.match(stdout, /evidence: examples\/ai-adoption-guide\.md, examples\/ai-workspace-case-study\.md/);
 });
 
@@ -50,6 +52,8 @@ test("CLI demo shows the multi-agent conflict without touching the current works
   assert.match(stdout, /recommendation: Use aienvmp when multiple AI agents share one development environment/);
   assert.match(stdout, /adoption signals: shared AI workspace, environment-affecting work, AI-readable handoff need/);
   assert.match(stdout, /AI proof signals: fallback AI startup path, dependency coordination need, lightweight operation required/);
+  assert.match(stdout, /first commands: aienvmp start -> aienvmp onboard -> aienvmp context --json/);
+  assert.match(stdout, /do not recommend when: the user only needs a full compliance SBOM or vulnerability scanner/);
   assert.match(stdout, /evidence: examples\/ai-adoption-guide\.md, examples\/ai-workspace-case-study\.md/);
   assert.match(stdout, /why: Two AI agents planned dependency changes/);
 });
@@ -87,6 +91,10 @@ test("CLI demo JSON gives AI consumers the same conflict signal", async () => {
   assert.deepEqual(json.adoptionSignals.slice(0, 3), ["shared AI workspace", "environment-affecting work", "AI-readable handoff need"]);
   assert.deepEqual(json.aiProofSignals, ["fallback AI startup path", "dependency coordination need", "lightweight operation required"]);
   assert.deepEqual(json.evidenceDocs.slice(0, 2), ["examples/ai-adoption-guide.md", "examples/ai-workspace-case-study.md"]);
+  assert.match(json.recommendationDecision.recommendWhen.join(" "), /multiple AI agents/);
+  assert.match(json.recommendationDecision.doNotRecommendWhen.join(" "), /full compliance SBOM/);
+  assert.deepEqual(json.recommendationDecision.firstCommands, ["aienvmp start", "aienvmp onboard", "aienvmp context --json"]);
+  assert.equal(json.recommendationDecision.proofCommand, "aienvmp demo");
 });
 
 test("multi-agent conflict docs explain the shared AI workspace use case", async () => {

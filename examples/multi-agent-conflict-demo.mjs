@@ -55,6 +55,8 @@ console.log(`context fields: ${Object.keys(context).filter((key) => ["status", "
 console.log(`recommendation: ${recommendation.shortPitch}`);
 console.log(`adoption signals: ${adoptionSignals.slice(0, 3).join(", ")}`);
 console.log(`AI proof signals: ${aiProofSignals.join(", ")}`);
+console.log(`first commands: ${(recommendation.firstCommands || ["aienvmp start", "aienvmp onboard", "aienvmp context --json"]).join(" -> ")}`);
+console.log(`do not recommend when: ${(recommendation.doNotRecommendWhen || [])[0]}`);
 console.log(`evidence: ${recommendation.evidenceDocs.slice(0, 2).join(", ")}`);
 
 async function run(command, args = []) {
