@@ -6,11 +6,13 @@ Primary positioning: AI workspace coordination first, lightweight SBOM context s
 
 ## Near Term
 
-- Prepare `0.2.0` as the stabilized AI workspace contract release
-- Expose `releaseReadiness` in `schema --json` so AI/CI can verify the stable-contract checklist
+- Prepare `0.2.0` as one stabilized AI workspace contract release, not a per-commit npm stream
+- Freeze and review documented JSON root fields before `0.2.0`
+- Keep `releaseReadiness.nextStabilizationTasks` current so AI agents can choose the next hardening step
 - Keep `releaseReadiness.evidenceCommands` current so AI/CI can prove the release gate before npm publish
+- Keep README, examples, schema, dashboard, and packaged skill aligned on AI workspace coordination
+- Validate start/onboard/discover fallback behavior across Codex, Claude, Gemini, Cursor, and Copilot surfaces
 - Keep JSON contracts additive after `0.2.0`; breaking changes require a contract version bump and migration notes
-- Use manual release gating so npm publish happens only for meaningful batched changes
 - Deprecate `0.1.x` prototype versions after `0.2.0` is published
 - Strengthen trust states: observed, planned, changed, review, verified, stale
 - Detect multi-agent environment intent conflicts

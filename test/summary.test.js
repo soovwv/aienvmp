@@ -204,6 +204,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /default decision: hold/);
   assert.match(markdown, /publish gate: hold \/ Keep committing tested stabilization changes/);
   assert.match(markdown, /current batch: accumulating \/ stability-batch \/ AI discovery, dependency quick check, dashboard parity/);
+  assert.match(markdown, /next stabilization: freeze and review documented JSON root fields before 0\.2\.0/);
   assert.match(markdown, /batch reason: Several stability and AI-contract changes/);
   assert.match(markdown, /publish when: meaningful AI contract/);
   assert.match(markdown, /hold when: only one small documentation/);

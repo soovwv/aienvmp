@@ -194,6 +194,9 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.releaseReadiness.requiredBeforeStable.includes("package metadata and CLI help match AI workspace coordination positioning"));
   assert.ok(schema.releaseReadiness.evidenceCommands.includes("npm run release:check"));
   assert.ok(schema.releaseReadiness.evidenceCommands.includes("node bin/aienvmp.js demo --json"));
+  assert.match(schema.releaseReadiness.nextStabilizationTasks.join(" "), /freeze and review documented JSON root fields/);
+  assert.match(schema.releaseReadiness.nextStabilizationTasks.join(" "), /Codex, Claude, Gemini, Cursor, and Copilot/);
+  assert.match(schema.releaseReadiness.nextStabilizationTasks.join(" "), /CHANGELOG as one 0\.2\.0 release-note group/);
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("AI session/status/context contract"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("aiDiscovery.decision and fallback startup contract"));
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("aiEntry and copyPastePrompt recovery contract across JSON, docs, examples, and packaged skill"));
@@ -457,6 +460,7 @@ test("schemaWorkspace prints JSON without requiring a workspace", async () => {
   assert.equal(schema.releaseReadiness.target, "0.2.0");
   assert.equal(schema.releaseReadiness.currentBatch.decision, "hold");
   assert.ok(schema.releaseReadiness.evidenceCommands.includes("npm pack --dry-run"));
+  assert.ok(schema.releaseReadiness.nextStabilizationTasks.includes("freeze and review documented JSON root fields before 0.2.0"));
   assert.match(schema.compatibility.localBehavior, /read-only/);
 });
 

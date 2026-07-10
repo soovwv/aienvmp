@@ -119,6 +119,7 @@ test("package, README, and CLI help share the AI workspace coordination position
   assert.match(readme, /aiEntry/);
   assert.match(readme, /operationalSafety/);
   assert.match(readme, /releaseReadiness\.currentBatch/);
+  assert.match(readme, /nextStabilizationTasks/);
   assert.match(readme, /releaseReadiness\.currentBatch` is reviewed/);
   assert.match(readme, /several meaningful changes are batched/);
   assert.match(stdout, /AI-first env map \+ light SBOM coordination for shared AI workspaces/);

@@ -403,6 +403,13 @@ export function schemaContract() {
         "npm pack --dry-run",
         "npm view aienvmp version"
       ],
+      nextStabilizationTasks: [
+        "freeze and review documented JSON root fields before 0.2.0",
+        "keep README, examples, schema, dashboard, and packaged skill aligned on AI workspace coordination",
+        "validate start/onboard/discover fallback behavior across Codex, Claude, Gemini, Cursor, and Copilot surfaces",
+        "keep light SBOM coordination separate from optional full scanner evidence",
+        "review CHANGELOG as one 0.2.0 release-note group before any npm publish"
+      ],
       stabilizationFocus: [
         "AI session/status/context contract",
         "aiDiscovery.decision and fallback startup contract",
