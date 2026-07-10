@@ -201,6 +201,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.releaseReadiness.contractReview.command, "node bin/aienvmp.js schema --json");
   assert.ok(schema.releaseReadiness.contractReview.surfaces.includes("start"));
   assert.ok(schema.releaseReadiness.contractReview.surfaces.includes("sbom"));
+  assert.ok(schema.releaseReadiness.contractReview.surfaces.includes("demo"));
   assert.ok(schema.releaseReadiness.contractReview.reviewFields.includes("outputs.*.rootFields"));
   assert.match(schema.releaseReadiness.contractReview.rule, /compatibility floor/);
   assert.ok(schema.releaseReadiness.stabilizationFocus.includes("AI session/status/context contract"));
@@ -386,6 +387,12 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.ok(schema.outputs.sbom.aiUseFields.includes("afterChange"));
   assert.ok(schema.outputs.sbom.aiUseFields.includes("mustNotDo"));
   assert.equal(schema.outputs.cyclonedxLite.command, "aienvmp sbom --format cyclonedx-lite --json");
+  assert.equal(schema.outputs.demo.command, "aienvmp demo --json");
+  assert.ok(schema.outputs.demo.rootFields.includes("recommendationDecision"));
+  assert.ok(schema.outputs.demo.rootFields.includes("dependencyQuickCheck"));
+  assert.ok(schema.outputs.demo.recommendationDecisionFields.includes("firstCommands"));
+  assert.ok(schema.outputs.demo.recommendationDecisionFields.includes("doNotRecommendWhen"));
+  assert.match(schema.outputs.demo.purpose, /recommend aienvmp/);
   assert.equal(schema.compatibility.stability, "additive");
   assert.equal(schema.compatibility.contractVersion, "0.1-prototype");
   assert.equal(schema.compatibility.stableFrom, "0.2.0");

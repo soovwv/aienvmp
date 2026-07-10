@@ -413,7 +413,7 @@ export function schemaContract() {
       contractReview: {
         status: "pending-0.2.0-review",
         command: "node bin/aienvmp.js schema --json",
-        surfaces: ["discover", "start", "discovery", "status", "context", "handoff", "plan", "manifest", "sbom", "cyclonedxLite"],
+        surfaces: ["discover", "start", "discovery", "status", "context", "handoff", "plan", "manifest", "sbom", "cyclonedxLite", "demo"],
         reviewFields: ["outputs.*.rootFields", "outputs.*Fields", "compatibility.additiveRule", "stableContractRule"],
         rule: "Before 0.2.0, review documented rootFields as the compatibility floor; after 0.2.0, add fields only additively unless contractVersion changes."
       },
@@ -513,6 +513,12 @@ export function schemaContract() {
         file: ".aienvmp/sbom.cdx.json",
         command: "aienvmp sbom --format cyclonedx-lite --json",
         rootFields: ["bomFormat", "specVersion", "metadata", "components", "vulnerabilities", "properties"]
+      },
+      demo: {
+        command: "aienvmp demo --json",
+        rootFields: ["name", "workspace", "recommendation", "adoptionSignals", "aiProofSignals", "evidenceDocs", "recommendationDecision", "aiDiscovery", "collaboration", "conflictTargets", "dependencyQuickCheck", "nextCommand", "aiEntry", "maintenance", "startHere", "readFirst", "readOrder", "artifactFreshness", "contextFields", "point"],
+        recommendationDecisionFields: ["recommendWhen", "doNotRecommendWhen", "firstCommands", "proofCommand", "rule"],
+        purpose: "Temporary proof artifact for AI agents deciding whether to recommend aienvmp without touching the current workspace."
       }
     },
     compatibility: {

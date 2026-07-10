@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Documented `demo --json` in `schema.outputs.demo` and added it to `contractReview.surfaces` so the recommendation proof artifact is part of the 0.2.0 root-field review.
 - Added `releaseReadiness.contractReview` so AI/CI can review documented JSON root fields before the 0.2.0 stable contract.
 - Added `releaseReadiness.nextStabilizationTasks` and surfaced the first task in summaries so AI agents can choose the next 0.2.0 hardening step without guessing.
 - Added `demo --json` `recommendationDecision` and plain demo first-command guidance so AI agents can recommend or skip the tool from one proof artifact.
