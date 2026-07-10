@@ -25,6 +25,8 @@ test("dashboardPayload centralizes schema-backed dashboard data", () => {
   assert.equal(payload.schemaQualitySignals.status, "prototype-hardening");
   assert.equal(payload.schemaAiAdoptionDecision.proofCommand, "aienvmp demo --json");
   assert.match(payload.schemaAiAdoptionDecision.position, /AI workspace coordination tool/);
+  assert.equal(payload.schemaAgentDiscovery.sessionUse.decisionField, "aiDiscovery.decision");
+  assert.equal(payload.schemaAgentDiscovery.sessionUse.fallbackPromptField, "copyPastePrompt");
 });
 
 test("dashboardDocument wraps escaped payload and client script", () => {
@@ -472,7 +474,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /\.nextbar/);
   assert.match(html, /\.brief/);
   assert.match(html, /const maintenanceLoop=manifest\.preflight\?\.maintenanceLoop\|\|\{\}/);
-  assert.match(html, /const \{manifest,timeline,warnings,intents,policy,releaseReadiness,schemaQualitySignals,schemaAiAdoptionDecision\}=JSON\.parse/);
+  assert.match(html, /const \{manifest,timeline,warnings,intents,policy,releaseReadiness,schemaQualitySignals,schemaAiAdoptionDecision,schemaAgentDiscovery\}=JSON\.parse/);
   assert.match(html, /const aiSession=manifest\.preflight\?\.aiSession\|\|\{\}/);
   assert.match(html, /const aiSessionStart=aiSession\.start\|\|\['aienvmp status --json','aienvmp context --json'\]/);
   assert.match(html, /const aiBootstrap=manifest\.preflight\?\.aiBootstrap\|\|\{\}/);
@@ -535,6 +537,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.equal(dashboardDiscoveryFallback.entry, ".aienvmp/discovery.json");
   assert.deepEqual(dashboardDiscoveryFallback.decisionValues, ["auto-ready", "fallback-required"]);
   assert.equal(dashboardDiscoveryFallback.nextSetupCommand, "aienvmp onboard");
+  assert.equal(dashboardDiscoveryFallback.sessionUse.decisionField, "aiDiscovery.decision");
+  assert.equal(dashboardDiscoveryFallback.sessionUse.fallbackPromptField, "copyPastePrompt");
   assert.ok(dashboardDiscoveryFallback.aiEntryFields.includes("copyPastePrompt"));
   assert.ok(dashboardDiscoveryFallback.aiEntryFields.includes("beforeEnvironmentChange"));
   assert.match(dashboardDiscoveryFallback.startupChecklist.join(" "), /dependencyQuickCheck/);
@@ -546,6 +550,8 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardDiscoveryFallbackClientScript(), /fallback-required/);
   assert.match(dashboardDiscoveryFallbackClientScript(), /agentDiscoverySetup/);
   assert.match(dashboardDiscoveryFallbackClientScript(), /agentDiscoveryAiEntryFields/);
+  assert.match(dashboardDiscoveryFallbackClientScript(), /agentSessionUse/);
+  assert.match(dashboardDiscoveryFallbackClientScript(), /<th>sessionUse<\/th>/);
   assert.match(dashboardDiscoveryFallbackClientScript(), /<th>aiEntry<\/th>/);
   assert.match(dashboardDiscoveryFallbackClientScript(), /startup/);
   assert.ok(dashboardEssentialSurfaces.firstRead.includes("Start here"));
@@ -794,6 +800,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /package\.json/);
   assert.match(html, /express/);
   assert.match(html, /Agent Pointers/);
+  assert.match(html, /<th>sessionUse<\/th><td><code>\$\{esc\(agentSessionUse\.proofCommand\|\|'aienvmp discover --json'\)\}<\/code>/);
   assert.match(html, /<th>Decision<\/th><td><code>\$\{esc\(agentDiscoveryDecision\)\}<\/code><\/td>/);
   assert.match(html, /<th>Setup<\/th><td><code>\$\{esc\(agentDiscoverySetup\)\}<\/code><\/td>/);
   assert.match(html, /aienvmp pointer installed/);

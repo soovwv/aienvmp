@@ -1,4 +1,4 @@
-import { aiFallbackRead, aiStartupChecklist } from "./ai-contract.js";
+import { aiFallbackRead, aiSessionUseContract, aiStartupChecklist } from "./ai-contract.js";
 import { schemaContract } from "./contract.js";
 
 export const dashboardEssentialCards = Object.freeze([
@@ -37,6 +37,7 @@ export const dashboardDiscoveryFallback = Object.freeze({
   nextSetupCommand: "aienvmp onboard",
   startupChecklist: aiStartupChecklist,
   read: aiFallbackRead,
+  sessionUse: aiSessionUseContract(),
   aiEntryFields: ["readFirst", "nextCommand", "nextSetupCommand", "beforeEnvironmentChange", "afterEnvironmentChange", "handoff", "copyPastePrompt"],
   rule: "When automatic instruction-file discovery is uncertain, show the one-command AI startup fallback before lower-level discovery details."
 });
@@ -74,6 +75,7 @@ export function dashboardPayload(manifest, timeline = [], warnings = [], intents
   const releaseReadiness = schema.releaseReadiness;
   const schemaQualitySignals = schema.qualitySignals;
   const schemaAiAdoptionDecision = schema.aiAdoptionDecision;
+  const schemaAgentDiscovery = schema.agentDiscovery;
   return {
     manifest,
     timeline,
@@ -82,7 +84,8 @@ export function dashboardPayload(manifest, timeline = [], warnings = [], intents
     policy,
     releaseReadiness,
     schemaQualitySignals,
-    schemaAiAdoptionDecision
+    schemaAiAdoptionDecision,
+    schemaAgentDiscovery
   };
 }
 
@@ -183,7 +186,8 @@ export function dashboardDiscoveryFallbackClientScript() {
     "const agentDiscoverySetup=agentDiscoveryDecision==='auto-ready'?'none':dashboardDiscoveryFallback.nextSetupCommand;",
     "const agentDiscoveryChecklist=dashboardDiscoveryFallback.startupChecklist||[];",
     "const agentDiscoveryAiEntryFields=dashboardDiscoveryFallback.aiEntryFields||[];",
-    "const agentDiscoveryFallbackHtml=`<table><tr><th>Entry</th><td><code>${esc(agentDiscoveryEntry)}</code></td></tr><tr><th>aiEntry</th><td>${esc(agentDiscoveryAiEntryFields.join(', ')||'readFirst, nextCommand, copyPastePrompt')}</td></tr><tr><th>Decision</th><td><code>${esc(agentDiscoveryDecision)}</code></td></tr><tr><th>Setup</th><td><code>${esc(agentDiscoverySetup)}</code></td></tr><tr><th>Fallback</th><td><code>${esc(agentDiscoveryFallbackCommand)}</code></td></tr><tr><th>Read</th><td><code>${esc(agentDiscoveryFallbackRead.slice(0,4).join(' -> '))}</code></td></tr></table><div class=\"timeline\">${agentDiscoveryChecklist.slice(0,4).map(item=>`<div class=\"event\"><time>startup</time><div>${esc(item)}</div></div>`).join('')}</div>`;"
+    "const agentSessionUse=(schemaAgentDiscovery?.sessionUse)||dashboardDiscoveryFallback.sessionUse||{};",
+    "const agentDiscoveryFallbackHtml=`<table><tr><th>Entry</th><td><code>${esc(agentDiscoveryEntry)}</code></td></tr><tr><th>sessionUse</th><td><code>${esc(agentSessionUse.proofCommand||'aienvmp discover --json')}</code> / <code>${esc(agentSessionUse.fallbackPromptField||'copyPastePrompt')}</code></td></tr><tr><th>aiEntry</th><td>${esc(agentDiscoveryAiEntryFields.join(', ')||'readFirst, nextCommand, copyPastePrompt')}</td></tr><tr><th>Decision</th><td><code>${esc(agentDiscoveryDecision)}</code></td></tr><tr><th>Setup</th><td><code>${esc(agentDiscoverySetup)}</code></td></tr><tr><th>Fallback</th><td><code>${esc(agentDiscoveryFallbackCommand)}</code></td></tr><tr><th>Read</th><td><code>${esc(agentDiscoveryFallbackRead.slice(0,4).join(' -> '))}</code></td></tr></table><div class=\"timeline\">${agentDiscoveryChecklist.slice(0,4).map(item=>`<div class=\"event\"><time>startup</time><div>${esc(item)}</div></div>`).join('')}</div><div class=\"path\">${esc(agentSessionUse.rule||'Use copyPastePrompt when automatic discovery is uncertain.')}</div>`;"
   ].join("\n");
 }
 

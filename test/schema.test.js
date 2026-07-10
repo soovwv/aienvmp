@@ -237,6 +237,7 @@ test("schemaContract describes stable AI output contracts", () => {
   assert.equal(schema.dashboard.discoveryFallback.entry, ".aienvmp/discovery.json");
   assert.ok(schema.dashboard.discoveryFallback.decisionValues.includes("fallback-required"));
   assert.equal(schema.dashboard.discoveryFallback.nextSetupCommand, "aienvmp onboard");
+  assert.equal(schema.dashboard.discoveryFallback.sessionUse.fallbackPromptField, "copyPastePrompt");
   assert.match(schema.dashboard.discoveryFallback.startupChecklist.join(" "), /record intent before/);
   assert.deepEqual(schema.dashboard.discoveryFallback.read, [".aienvmp/discovery.json", ".aienvmp/README.md", ".aienvmp/status.json", ".aienvmp/summary.md", "aienvmp context --json"]);
   assert.equal(schema.dashboard.releaseDefaults.target, "0.2.0");

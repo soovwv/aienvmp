@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Bumped the package to `0.1.70` for the next batched prototype release.
+- Mirrored `sessionUse` in the dashboard Agent Pointers fallback table so human operators see the same compact proof command and fallback prompt rule as AI agents.
+- Tightened README startup wording around `start`, generated outputs, and the `sessionUse` fallback path.
 - Added `sessionUse` to `discover --json`, `start --json`, generated `.aienvmp/discovery.json`, generated `.aienvmp/README.md`, and `schema --json` so every AI session gets the same compact discovery proof command, decision, next command, and fallback prompt rule.
 - Mirrored `aiAdoptionDecision` in the dashboard Quality Signals card so humans see the same compact use/recommend/start/skip guidance as AI agents.
 - Aligned `demo --json` `recommendationDecision` and the packaged AI skill with `aiAdoptionDecision` so AI agents see the same compact use/recommend/start/skip contract across schema, demo, and skill surfaces.
