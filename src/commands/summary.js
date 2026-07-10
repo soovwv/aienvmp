@@ -76,6 +76,12 @@ export function renderSummary(status = {}, manifest = {}) {
     scannerEvidence: aiDependencyReview.securityConfidence || "unknown",
     reviewTargets: aiDependencyReview.reviewTargets || sbomReview.reviewTargets || []
   };
+  const aiUse = manifest.lightSbom?.aiUse || {
+    decision: dependencyQuickCheck.status || aiDependencyReview.status || "unknown",
+    securityConfidence: aiDependencyReview.securityConfidence || "unknown",
+    scannerCommand: sbomReview.nextCommand || "aienvmp sync --security",
+    nextCommand: dependencyQuickCheck.nextCommand || aiDependencyReview.beforeDependencyChange?.[0] || "aienvmp sbom --json"
+  };
   const aiReviewPlan = manifest.lightSbom?.aiReviewPlan || {
     status: aiDependencyReview.status || "unknown",
     risk: `${riskLevel}/${riskScore}`,
@@ -146,6 +152,7 @@ export function renderSummary(status = {}, manifest = {}) {
     `- source: ${manifest.lightSbom?.source?.dependencies || "project manifests"}`,
     `- confidence: transitive ${manifest.lightSbom?.confidence?.transitiveDependencies || "not-resolved"}`,
     `- maintenance SBOM review: ${sbomReview.status || "unknown"} / ${sbomReview.securityConfidence || "unknown"} / ${sbomReview.nextCommand || maintenanceLoop.sbomCommand || "aienvmp sbom --json"}`,
+    `- AI SBOM use: ${aiUse.decision || "unknown"} / ${aiUse.securityConfidence || "unknown"} / ${aiUse.scannerCommand || "aienvmp sync --security"} / ${aiUse.nextCommand || "aienvmp sbom --json"}`,
     `- dependency quick check: ${dependencyQuickCheck.status || "unknown"} / ${dependencyQuickCheck.scannerEvidence || "unknown"} / ${dependencyQuickCheck.nextCommand || "aienvmp sbom --json"} / ${toList(dependencyQuickCheck.reviewTargets).join(", ") || "none"}`,
     `- AI SBOM plan: ${aiReviewPlan.status || "unknown"} / ${aiReviewPlan.risk || `${riskLevel}/${riskScore}`} / ${aiReviewPlan.securityConfidence || "unknown"} / ${aiReviewPlan.beforeChange || "aienvmp sbom --json"}`,
     `- AI dependency review: ${aiDependencyReview.status || "unknown"} / ${aiDependencyReview.securityConfidence || "unknown"} / ${aiDependencyReview.beforeDependencyChange?.[0] || "aienvmp sbom --json"}`,

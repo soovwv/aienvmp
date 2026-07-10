@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reduced the CI matrix to one cross-platform Node 20 check plus Windows Node 18/20/22 checks so the quality gate stays representative without creating avoidable queued-job failures.
+- Surfaced SBOM `aiUse` in summary and dashboard outputs so AI agents and humans see the shortest dependency/security safety summary before deeper SBOM details.
 - Documented `sbom --json` `aiUse` as a schema root field and added `scannerCommand` plus `mustNotDo` so AI agents get the shortest dependency/security safety summary without digging into nested blocks.
 - Added `aiEntry` fields to the dashboard Agent Pointers fallback table so human operators see the same compact recovery contract as AI agents.
 - Surfaced `aiEntry` in generated `.aienvmp/README.md` and `.aienvmp/summary.md` so artifact-first AI agents see the shortest recovery contract without opening schema docs.

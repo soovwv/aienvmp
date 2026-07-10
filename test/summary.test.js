@@ -133,6 +133,12 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
         securityConfidence: "scanner-summary",
         beforeChange: "aienvmp sync --security"
       },
+      aiUse: {
+        decision: "review",
+        securityConfidence: "scanner-summary",
+        scannerCommand: "aienvmp sync --security",
+        nextCommand: "aienvmp sync --security"
+      },
       dependencyQuickCheck: {
         status: "review",
         scannerEvidence: "scanner-summary",
@@ -173,6 +179,7 @@ test("renderSummary keeps the AI handoff compact and actionable", () => {
   assert.match(markdown, /conflict targets: dependency/);
   assert.match(markdown, /multi-actor targets: node/);
   assert.match(markdown, /AI SBOM plan: review \/ medium\/42 \/ scanner-summary \/ aienvmp sync --security/);
+  assert.match(markdown, /AI SBOM use: review \/ scanner-summary \/ aienvmp sync --security \/ aienvmp sync --security/);
   assert.match(markdown, /AI dependency review: review \/ scanner-summary \/ aienvmp intent --actor agent:id --action dependency-review --target dependency/);
   assert.match(markdown, /dependency quick check: review \/ scanner-summary \/ aienvmp sync --security \/ package\.json/);
   assert.match(markdown, /maintenance SBOM review: review \/ scanner-summary \/ aienvmp sync --security/);
@@ -225,6 +232,7 @@ test("summaryWorkspace writes summary.md after sync", async () => {
   assert.match(summary, /AI maintenance loop:/);
   assert.match(summary, /## SBOM/);
   assert.match(summary, /AI SBOM plan:/);
+  assert.match(summary, /AI SBOM use:/);
   assert.match(summary, /## Dependency changes/);
   assert.match(summary, /environment before:/);
   assert.match(summary, /## Agent pointers/);

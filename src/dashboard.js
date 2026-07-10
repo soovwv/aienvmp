@@ -208,6 +208,18 @@ export function dashboardReviewPlanClientScript() {
   ].join("\n");
 }
 
+export function dashboardAiUseClientScript() {
+  return [
+    "const aiUse=lightSbom.aiUse||{decision:aiReviewPlan.status||aiDependencyReview.status||'ready',securityConfidence:aiReviewPlan.securityConfidence||aiDependencyReview.securityConfidence||'unknown',scannerCommand:scannerGuidance.scannerCommand||'aienvmp sync --security',nextCommand:aiReviewPlan.beforeChange||aiDependencyReview.beforeDependencyChange?.[0]||'aienvmp sbom --json',readFirst:['.aienvmp/sbom.json','.aienvmp/status.json','aienvmp context --json'],mustNotDo:['do not run broad install, update, audit fix, or lockfile rewrite commands before reading SBOM and status'],rule:'Use aiUse as the shortest AI dependency/security safety summary.'};"
+  ].join("\n");
+}
+
+export function dashboardAiUseHtmlClientScript() {
+  return [
+    "const aiUseHtml=`<table><tr><th>Decision</th><td><code>${esc(aiUse.decision||'ready')}</code></td></tr><tr><th>Confidence</th><td><code>${esc(aiUse.securityConfidence||'unknown')}</code></td></tr><tr><th>Next</th><td><code>${esc(aiUse.nextCommand||'aienvmp sbom --json')}</code></td></tr><tr><th>Scanner</th><td><code>${esc(aiUse.scannerCommand||'aienvmp sync --security')}</code></td></tr><tr><th>Read</th><td><code>${esc((aiUse.readFirst||[]).join(' -> ')||'.aienvmp/sbom.json')}</code></td></tr></table><div class=\"timeline\">${(aiUse.mustNotDo||[]).slice(0,3).map(item=>`<div class=\"event\"><time>avoid</time><div>${esc(item)}</div></div>`).join('')}</div><div class=\"path\">${esc(aiUse.rule||'Use aiUse as the shortest AI dependency/security safety summary.')}</div>`;"
+  ].join("\n");
+}
+
 export function dashboardDependencyReviewClientScript() {
   return [
     "const aiDependencyReviewHtml=aiDependencyReview.status?`<table><tr><th>Status</th><td><code>${esc(aiDependencyReview.status)}</code> ${esc(aiDependencyReview.mode||'advisory')}</td></tr><tr><th>Reason</th><td>${esc(aiDependencyReview.statusReason||'No dependency review reason provided.')}</td></tr><tr><th>Security confidence</th><td><code>${esc(aiDependencyReview.securityConfidence||'unknown')}</code></td></tr><tr><th>Read first</th><td>${esc((aiDependencyReview.readFirst||[]).join(', ')||'riskSummary')}</td></tr><tr><th>Targets</th><td>${esc((aiDependencyReview.reviewTargets||[]).join(', ')||'none')}</td></tr><tr><th>Before</th><td><code>${esc((aiDependencyReview.beforeDependencyChange||[]).slice(0,3).join(' -> ')||'aienvmp intent --actor agent:id --action dependency-review --target dependency')}</code></td></tr><tr><th>After</th><td><code>${esc((aiDependencyReview.afterDependencyChange||[]).slice(-1)[0]||'aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency')}</code></td></tr></table><div class=\"path\">${esc(aiDependencyReview.rule||'Dependency review is advisory and non-blocking.')}</div>`:'<div class=\"okline\">No AI dependency review block available. Run <code>aienvmp sync</code>.</div>';"

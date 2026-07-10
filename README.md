@@ -77,7 +77,7 @@ AIENV.md                 # Markdown env map for AI agents
 - `agentPointers.discovery`, `aiDiscovery.decision`, `startupChecklist`, `aiEntry`, and `copyPastePrompt` tell AI whether discovery is `auto-ready` or `fallback-required`.
 - `.aienvmp/discovery.json`, `discovery.json.maintenance`, `agentDiscovery.sessionStart`, and `readOrder` give the fallback start path for schema-only or Markdown-first agents.
 - `environmentChangeProtocol`, `operationalSafety`, `followUpPlan`, `collaboration`, `coordination`, and `agentActivity` keep shared changes advisory; `followUpPlan` points to sync, status, or handoff when needed.
-- `dependencyQuickCheck`, `sbomStrategy`, `scannerGuidance.decision`, `aiReviewPlan`, `externalTools`, and `evidenceWorkflow` keep SBOM review light while pointing to Syft, Trivy, Grype, or Dependency-Track when full evidence is needed.
+- `aiUse`, `dependencyQuickCheck`, `sbomStrategy`, `scannerGuidance.decision`, `aiReviewPlan`, `externalTools`, and `evidenceWorkflow` keep SBOM review light while pointing to Syft, Trivy, Grype, or Dependency-Track when full evidence is needed.
 - `qualitySignals`, `releaseGate`, and `releaseReadiness` expose the AI-friendly, lightweight, batched stable-contract gate.
 - After `0.2.0`, documented JSON fields stay backward-compatible; new fields are additive.
 

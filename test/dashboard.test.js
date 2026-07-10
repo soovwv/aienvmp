@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { dashWorkspace } from "../src/commands/dash.js";
 import { writeJson } from "../src/fsutil.js";
-import { dashboardAgentClientScript, dashboardCardClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallback, dashboardDiscoveryFallbackClientScript, dashboardDocument, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardMainCardsClientScript, dashboardOperationalCardsClientScript, dashboardPayload, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardStyle, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, dashboardStateCardsClientScript, dashboardSupportCardsClientScript, renderDashboard } from "../src/render.js";
+import { dashboardAgentClientScript, dashboardAiUseClientScript, dashboardAiUseHtmlClientScript, dashboardCardClientScript, dashboardCardPriority, dashboardDependencyCoordinationClientScript, dashboardDependencyHintsClientScript, dashboardDependencyProtocolClientScript, dashboardDependencyReadSetClientScript, dashboardDependencyReviewClientScript, dashboardDiscoveryFallback, dashboardDiscoveryFallbackClientScript, dashboardDocument, dashboardEnvironmentProtocolClientScript, dashboardEssentialCards, dashboardEssentialSurfaceClientScript, dashboardEssentialSurfaces, dashboardMainCardsClientScript, dashboardOperationalCardsClientScript, dashboardPayload, dashboardQualityDefaults, dashboardReleaseDefaults, dashboardStyle, dashboardSurfaceBudget, dashboardPackageManagerPolicyClientScript, dashboardPriorityClientScript, dashboardQualitySignalsClientScript, dashboardReleaseReadinessClientScript, dashboardReviewPlanClientScript, dashboardReviewPlanHtmlClientScript, dashboardRiskSummaryClientScript, dashboardScannerGuidanceClientScript, dashboardScannerGuidanceHtmlClientScript, dashboardStateCardsClientScript, dashboardSupportCardsClientScript, renderDashboard } from "../src/render.js";
 
 test("dashboardPayload centralizes schema-backed dashboard data", () => {
   const payload = dashboardPayload(
@@ -571,6 +571,10 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardReviewPlanClientScript(), /const aiReviewPlan=lightSbom\.aiReviewPlan/);
   assert.match(dashboardReviewPlanClientScript(), /packageManagerPolicy/);
   assert.match(dashboardReviewPlanClientScript(), /aienvmp checkpoint --actor agent:id --summary dependency-change --target dependency/);
+  assert.match(dashboardAiUseClientScript(), /const aiUse=lightSbom\.aiUse/);
+  assert.match(dashboardAiUseClientScript(), /shortest AI dependency\/security safety summary/);
+  assert.match(dashboardAiUseHtmlClientScript(), /const aiUseHtml=/);
+  assert.match(dashboardAiUseHtmlClientScript(), /Scanner/);
   assert.match(dashboardReviewPlanHtmlClientScript(), /const aiReviewPlanHtml=aiReviewPlan\.status/);
   assert.match(dashboardReviewPlanHtmlClientScript(), /No AI review plan available/);
   assert.match(dashboardReviewPlanHtmlClientScript(), /aienvmp sbom --json/);
@@ -641,6 +645,9 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const scannerGuidance=lightSbom\.scannerGuidance/);
   assert.match(html, /const scannerTools=/);
   assert.match(html, /const aiReviewPlan=lightSbom\.aiReviewPlan/);
+  assert.match(html, /const aiUse=lightSbom\.aiUse/);
+  assert.match(html, /const aiUseHtml=/);
+  assert.match(html, /AI Use/);
   assert.match(html, /const aiReviewPlanHtml=aiReviewPlan\.status/);
   assert.match(html, /const scannerGuidanceHtml=/);
   assert.match(html, /const dependencyCoordinationHtml=/);

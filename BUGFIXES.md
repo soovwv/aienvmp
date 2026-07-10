@@ -2,6 +2,14 @@
 
 Short record of bugs, fixes, and follow-up checks.
 
+## 2026-07-10
+
+### CI matrix could fail from queued job cancellation
+
+- Issue: a push run could show failed even when completed jobs passed, because several large matrix jobs stayed queued and were cancelled.
+- Fix: CI now keeps cross-platform Node 20 coverage and Windows Node 18/20/22 compatibility while reducing the matrix from 9 jobs to 5.
+- Verification: `npm run release:check` passes locally; the next GitHub Actions run should confirm the lighter matrix.
+
 ## 2026-07-08
 
 ### GitHub Action hid strict-plan guidance inside artifacts
