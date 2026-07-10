@@ -617,12 +617,16 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(dashboardReleaseReadinessClientScript(), /const releaseEvidence=releaseReadiness\?\.evidenceCommands\|\|\[\]/);
   assert.match(dashboardReleaseReadinessClientScript(), /const releaseFocus=releaseReadiness\?\.stabilizationFocus\|\|\[\]/);
   assert.match(dashboardReleaseReadinessClientScript(), /const publishGate=releaseReadiness\?\.publishGate\|\|\{\}/);
+  assert.match(dashboardReleaseReadinessClientScript(), /const contractReview=releaseReadiness\?\.contractReview\|\|\{\}/);
   assert.match(dashboardReleaseReadinessClientScript(), /publishDecision=releaseReadiness\?\.publishDecision\|\|\{\}/);
+  assert.match(dashboardReleaseReadinessClientScript(), /Contract review/);
+  assert.match(dashboardReleaseReadinessClientScript(), /contractReview\.surfaces/);
   assert.match(dashboardReleaseReadinessClientScript(), /single AI-readable/);
   assert.match(dashboardReleaseReadinessClientScript(), /Batch meaningful changes before one npm publish/);
   assert.match(dashboardReleaseReadinessClientScript(), /currentBatch\.themes/);
   assert.equal(dashboardReleaseDefaults.target, "0.2.0");
   assert.equal(dashboardReleaseDefaults.evidence, "npm run release:check");
+  assert.equal(dashboardReleaseDefaults.contractReviewStatus, "pending-0.2.0-review");
   assert.match(dashboardQualitySignalsClientScript(), /const qualitySignals=manifest\.preflight\?\.qualitySignals/);
   assert.match(dashboardQualitySignalsClientScript(), /const dashboardQualityDefaults=/);
   assert.match(dashboardQualitySignalsClientScript(), /AI-friendly/);
@@ -665,6 +669,7 @@ test("renderDashboard includes the audit summary surface", () => {
   assert.match(html, /const qualitySignalsHtml=/);
   assert.match(html, /const currentBatch=releaseReadiness\?\.currentBatch/);
   assert.match(html, /const publishGate=releaseReadiness\?\.publishGate/);
+  assert.match(html, /const contractReview=releaseReadiness\?\.contractReview/);
   assert.match(html, /releaseEvidence=releaseReadiness\?\.evidenceCommands/);
   assert.match(html, /releaseFocus=releaseReadiness\?\.stabilizationFocus/);
   assert.match(html, /Environment Protocol/);
